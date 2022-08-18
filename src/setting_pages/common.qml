@@ -13,10 +13,6 @@ ScrollView {
     contentHeight: rootColumn.implicitHeight
     contentWidth: rootColumn.implicitWidth
 
-    function showClickThroughInfo() {
-        Global.windowSettings.showInfo(qsTr("Mouse clicks will be ignored by the chat window. You can return to the previous state through the tray icon"))
-    }
-
     Column {
         id: rootColumn
 
@@ -106,7 +102,7 @@ ScrollView {
                 flat: true
                 icon.source: "qrc:/resources/images/help-round-button.svg"
                 onClicked: {
-                    showClickThroughInfo()
+                    Global.windowSettings.showInfo(qsTr("Mouse clicks will be ignored by the chat window. You can return to the previous state through the tray icon"))
                 }
             }
         }
@@ -170,6 +166,30 @@ ScrollView {
                 if (checked)
                 {
                     chatHandler.playNewMessageSound();
+                }
+            }
+        }
+
+        Row {
+            Switch {
+                text: qsTr("Show when author changes name")
+                enabled: outputToFile.enabled
+
+                Component.onCompleted: {
+                    checked = chatHandler.enabledShowAuthorNameChanged;
+                }
+
+                onCheckedChanged: {
+                    chatHandler.enabledShowAuthorNameChanged = checked;
+                }
+            }
+
+            RoundButton {
+                anchors.verticalCenter: parent.verticalCenter
+                flat: true
+                icon.source: "qrc:/resources/images/help-round-button.svg"
+                onClicked: {
+                    Global.windowSettings.showInfo(qsTr("Works only when output to file is enabled"))
                 }
             }
         }

@@ -512,8 +512,6 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             file.close();
         }
 
-
-
         {
             const QByteArray newName = prepare(author->name());
 
@@ -547,6 +545,8 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
                     if (!prevName.isEmpty())
                     {
                         qDebug() << "Author" << author->authorId() << "changed name" << prevName << "to" << newName;
+
+                        emit authorNameChanged(*author, prevName, newName);
                     }
 
                     needAddName = true;

@@ -374,11 +374,6 @@ void Twitch::reconnect()
     }
 }
 
-QString Twitch::getNameLocalized() const
-{
-    return tr("Twitch");
-}
-
 void Twitch::onIRCMessage(const QString &rawData)
 {
     if (_timerCheckPong.isActive())

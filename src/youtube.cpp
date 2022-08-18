@@ -275,11 +275,6 @@ void YouTube::reconnect()
     setLink(link);
 }
 
-QString YouTube::getNameLocalized() const
-{
-    return tr("YouTube");
-}
-
 AbstractChatService::ConnectionStateType YouTube::connectionStateType() const
 {
     if (_info.broadcastConnected)

@@ -24,7 +24,6 @@ public:
     QString userSpecifiedLink() const;
     bool isBroadcastIdUserSpecified() const;
     void reconnect() override;
-    QString getNameLocalized() const override;
 
     ConnectionStateType connectionStateType() const override;
     QString stateDescription() const override;

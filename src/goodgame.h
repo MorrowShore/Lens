@@ -21,7 +21,6 @@ public:
     QString detailedInformation() const override;
     int viewersCount() const override;
     void reconnect() override;
-    QString getNameLocalized() const override;
 
 signals:
 

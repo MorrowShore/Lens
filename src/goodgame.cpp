@@ -124,11 +124,6 @@ void GoodGame::reconnect()
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
 }
 
-QString GoodGame::getNameLocalized() const
-{
-    return tr("GoodGame");
-}
-
 void GoodGame::onWebSocketReceived(const QString &rawData)
 {
     const QJsonDocument document = QJsonDocument::fromJson(rawData.toUtf8());

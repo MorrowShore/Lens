@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include <QObject>
 #include <QQmlEngine>
+#include <QCoreApplication>
 
 class ChatHandler;
 class ChatAuthor;
@@ -42,6 +43,22 @@ public:
         return "unknown";
     }
 
+    static QString serviceTypeToLocalizedName(const AbstractChatService::ServiceType serviceType)
+    {
+        switch (serviceType)
+        {
+        case AbstractChatService::ServiceType::Unknown: return tr("Unknown");
+        case AbstractChatService::ServiceType::Software: return QCoreApplication::applicationName();
+        case AbstractChatService::ServiceType::Test: return tr("Test");
+
+        case AbstractChatService::ServiceType::YouTube: return tr("YouTube");
+        case AbstractChatService::ServiceType::Twitch: return tr("Twitch");
+        case AbstractChatService::ServiceType::GoodGame: return tr("GoodGame");
+        }
+
+        return tr("Unknown");
+    }
+
     enum class ConnectionStateType
     {
         NotConnected = 10,
@@ -74,7 +91,6 @@ public:
     virtual ConnectionStateType connectionStateType() const = 0;
     virtual QString stateDescription() const  = 0;
     virtual QString detailedInformation() const = 0;
-    virtual QString getNameLocalized() const = 0;
     virtual ServiceType getServiceType() const { return serviceType; }
 
     virtual int viewersCount() const = 0;
@@ -82,6 +98,11 @@ public:
     virtual qint64 traffic() const { return -1; }
 
     virtual void reconnect() = 0;
+
+    QString getNameLocalized() const
+    {
+        return serviceTypeToLocalizedName(serviceType);
+    }
 
 signals:
     void stateChanged();

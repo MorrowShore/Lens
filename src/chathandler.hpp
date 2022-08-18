@@ -28,6 +28,7 @@ class ChatHandler : public QObject
     Q_PROPERTY(int  viewersTotalCount                READ viewersTotalCount                                                          NOTIFY viewersTotalCountChanged)
     Q_PROPERTY(bool enabledSoundNewMessage           READ enabledSoundNewMessage           WRITE setEnabledSoundNewMessage           NOTIFY enabledSoundNewMessageChanged)
     Q_PROPERTY(bool enabledClearMessagesOnLinkChange READ enabledClearMessagesOnLinkChange WRITE setEnabledClearMessagesOnLinkChange NOTIFY enabledClearMessagesOnLinkChangeChanged)
+    Q_PROPERTY(bool enabledShowAuthorNameChanged     READ enabledShowAuthorNameChanged     WRITE setEnabledShowAuthorNameChanged     NOTIFY enabledShowAuthorNameChangedChanged)
 
     Q_PROPERTY(bool    proxyEnabled       READ proxyEnabled       WRITE setProxyEnabled       NOTIFY proxyChanged)
     Q_PROPERTY(QString proxyServerAddress READ proxyServerAddress WRITE setProxyServerAddress NOTIFY proxyChanged)
@@ -54,6 +55,9 @@ public:
     inline bool enabledSoundNewMessage() const { return _enabledSoundNewMessage; }
     void setEnabledSoundNewMessage(bool enabled);
 
+    inline bool enabledShowAuthorNameChanged() const { return _enableShowAuthorNameChanged; }
+    void setEnabledShowAuthorNameChanged(bool enabled);
+
     inline bool enabledClearMessagesOnLinkChange() const { return _enabledClearMessagesOnLinkChange; }
     void setEnabledClearMessagesOnLinkChange(bool enabled);
 
@@ -75,6 +79,7 @@ signals:
     void viewersTotalCountChanged();
     void enabledSoundNewMessageChanged();
     void enabledClearMessagesOnLinkChangeChanged();
+    void enabledShowAuthorNameChangedChanged();
     void proxyChanged();
     void messagesDataChanged();
 
@@ -94,6 +99,7 @@ public slots:
 private slots:
     void onConnected(QString name);
     void onDisconnected(QString name);
+    void onAuthorNameChanged(const ChatAuthor& author, const QString& prevName, const QString& newName);
 
 private:
     void updateProxy();
@@ -110,13 +116,14 @@ private:
     QList<AbstractChatService*> services;
 
 #ifndef AXELCHAT_LIBRARY
-    OutputToFile _outputToFile;
-    ChatBot _bot;
+    OutputToFile outputToFile;
+    ChatBot bot;
     AuthorQMLProvider authorQMLProvider;
 #endif
 
     bool _enabledSoundNewMessage = false;
     bool _enabledClearMessagesOnLinkChange = false;
+    bool _enableShowAuthorNameChanged = false;
 
 #ifdef QT_MULTIMEDIA_LIB
     std::unique_ptr<QSound> _soundDefaultNewMessage = std::unique_ptr<QSound>(new QSound(":/resources/sound/ui/beep1.wav"));

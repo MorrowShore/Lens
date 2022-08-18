@@ -49,6 +49,7 @@ signals:
     void outputFolderChanged();
     void enabledChanged();
     void youTubeLastMessageIdChanged(const QString& id);
+    void authorNameChanged(const ChatAuthor& author, const QString& prevName, const QString& newName);
 
 private:
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);

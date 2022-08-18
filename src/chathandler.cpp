@@ -14,6 +14,7 @@ static const QString SettingsGroupPath = "chat_handler";
 
 static const QString SettingsEnabledSoundNewMessage             = SettingsGroupPath + "/enabledSoundNewMessage";
 static const QString SettingsEnabledClearMessagesOnLinkChange   = SettingsGroupPath + "/enabledClearMessagesOnLinkChange";
+static const QString SettingsEnabledShowAuthorNameChanged       = SettingsGroupPath + "/enabledShowAuthorNameChanged";
 static const QString SettingsProxyEnabled                       = SettingsGroupPath + "/proxyEnabled";
 static const QString SettingsProxyAddress                       = SettingsGroupPath + "/proxyServerAddress";
 static const QString SettingsProxyPort                          = SettingsGroupPath + "/proxyServerPort";
@@ -24,13 +25,17 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     : QObject(parent)
     , settings(settings_)
     , network(network_)
-    , _outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel)
-    , _bot(settings, SettingsGroupPath + "/chat_bot")
-    , authorQMLProvider(*this, messagesModel, _outputToFile)
+    , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel)
+    , bot(settings, SettingsGroupPath + "/chat_bot")
+    , authorQMLProvider(*this, messagesModel, outputToFile)
 {
+    connect(&outputToFile, &OutputToFile::authorNameChanged, this, &ChatHandler::onAuthorNameChanged);
+
     setEnabledSoundNewMessage(settings.value(SettingsEnabledSoundNewMessage, _enabledSoundNewMessage).toBool());
 
     setEnabledClearMessagesOnLinkChange(settings.value(SettingsEnabledClearMessagesOnLinkChange, _enabledClearMessagesOnLinkChange).toBool());
+
+    setEnabledShowAuthorNameChanged(settings.value(SettingsEnabledShowAuthorNameChanged, _enableShowAuthorNameChanged).toBool());
 
     setProxyEnabled(settings.value(SettingsProxyEnabled, _enabledProxy).toBool());
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
@@ -47,7 +52,6 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(*goodGame);
 }
 
-//ToDo: использование ссылок в слотах и сигналах может плохо кончиться! Особенно, если соеденены разные потоки
 void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors)
 {
     if (messages.count() != authors.count())
@@ -105,14 +109,14 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         messagesValidToAdd.append(std::move(message));
     }
 
-    _outputToFile.writeAuthors(updatedAuthors);
+    outputToFile.writeAuthors(updatedAuthors);
 
     if (messagesValidToAdd.isEmpty())
     {
         return;
     }
 
-    _outputToFile.writeMessages(messagesValidToAdd);
+    outputToFile.writeMessages(messagesValidToAdd);
 
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {
@@ -121,7 +125,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
 #ifndef AXELCHAT_LIBRARY
         if (message.authorId() != messagesModel.softwareAuthor().authorId())
         {
-            _bot.processMessage(message);
+            bot.processMessage(message);
         }
 #endif
 
@@ -199,7 +203,7 @@ void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
         type = service->getServiceType();
     }
 
-    _outputToFile.tryDownloadAvatar(channelId, url, type);
+    outputToFile.tryDownloadAvatar(channelId, url, type);
     messagesModel.applyAvatar(channelId, url);
 }
 
@@ -212,11 +216,11 @@ void ChatHandler::onStateChanged()
 {
     if (qobject_cast<YouTube*>(sender()) && youtube)
     {
-        _outputToFile.setYouTubeInfo(youtube->getInfo());
+        outputToFile.setYouTubeInfo(youtube->getInfo());
     }
     else if (qobject_cast<Twitch*>(sender()) && twitch)
     {
-        _outputToFile.setTwitchInfo(twitch->getInfo());
+        outputToFile.setTwitchInfo(twitch->getInfo());
     }
 
     emit viewersTotalCountChanged();
@@ -258,6 +262,17 @@ void ChatHandler::onDisconnected(QString name)
     }
 
     emit connectedCountChanged();
+}
+
+void ChatHandler::onAuthorNameChanged(const ChatAuthor& author, const QString &prevName, const QString &newName)
+{
+    if (_enableShowAuthorNameChanged)
+    {
+        sendSoftwareMessage(tr("%1: \"%2\" changed name to \"%3\"")
+                            .arg(AbstractChatService::serviceTypeToLocalizedName(author.getServiceType()))
+                            .arg(prevName)
+                            .arg(newName));
+    }
 }
 
 void ChatHandler::updateProxy()
@@ -302,12 +317,12 @@ void ChatHandler::addService(AbstractChatService& service)
 #ifndef AXELCHAT_LIBRARY
 ChatBot& ChatHandler::getBot()
 {
-    return _bot;
+    return bot;
 }
 
 OutputToFile& ChatHandler::getOutputToFile()
 {
-    return _outputToFile;
+    return outputToFile;
 }
 #endif
 
@@ -345,6 +360,18 @@ void ChatHandler::setEnabledSoundNewMessage(bool enabled)
         settings.setValue(SettingsEnabledSoundNewMessage, enabled);
 
         emit enabledSoundNewMessageChanged();
+    }
+}
+
+void ChatHandler::setEnabledShowAuthorNameChanged(bool enabled)
+{
+    if (_enableShowAuthorNameChanged != enabled)
+    {
+        _enableShowAuthorNameChanged = enabled;
+
+        settings.setValue(SettingsEnabledShowAuthorNameChanged, enabled);
+
+        emit enabledShowAuthorNameChangedChanged();
     }
 }
 

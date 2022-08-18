@@ -35,7 +35,6 @@ public:
     AxelChat::TwitchInfo getInfo() const;
 
     void reconnect() override;
-    QString getNameLocalized() const override;
 
 signals:
 
