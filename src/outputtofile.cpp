@@ -46,6 +46,11 @@ int getStatusCode(const QNetworkReply& reply)
     return -1;
 }
 
+QString timeToString(const QDateTime& dateTime)
+{
+    return dateTime.toTimeZone(QTimeZone::systemTimeZone()).toString(Qt::DateFormat::ISODateWithMs);
+}
+
 }
 
 OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, QObject *parent)
@@ -194,7 +199,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         tags.append(QPair<QString, QString>("author", author->name()));
         tags.append(QPair<QString, QString>("author_id", authorId));
         tags.append(QPair<QString, QString>("message", message.text()));
-        tags.append(QPair<QString, QString>("time", message.publishedAt().toTimeZone(QTimeZone::systemTimeZone()).toString(Qt::DateFormat::ISODateWithMs)));
+        tags.append(QPair<QString, QString>("time", timeToString(message.publishedAt())));
         tags.append(QPair<QString, QString>("service", AbstractChatService::serviceTypeToString(type)));
 
         writeMessage(tags);
@@ -503,10 +508,11 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             file.write("[info]\n");
             file.write("name=" + prepare(author->name()) + "\n");
             file.write("id=" + prepare(author->authorId()) + "\n");
+            file.write("service=" + prepare(AbstractChatService::serviceTypeToString(author->getServiceType())) + "\n");
             file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
             file.write("avatar_name=" + prepare(avatarName) + "\n");
             file.write("page_url=" + prepare(author->pageUrl().toString()) + "\n");
-            file.write("service=" + prepare(AbstractChatService::serviceTypeToString(author->getServiceType())) + "\n");
+            //ToDo: file.write("last_message_at=" +  + "\n");
 
             file.flush();
             file.close();
@@ -645,7 +651,7 @@ void OutputToFile::writeStartupInfo(const QString& messagesFolder)
 
         _iniCurrentInfo->setValue("software/current_messages_folder",   messagesFolder);
 
-        _iniCurrentInfo->setValue("software/startup_time",              _startupDateTime.toTimeZone(QTimeZone::systemTimeZone()).toString(Qt::DateFormat::ISODateWithMs));
+        _iniCurrentInfo->setValue("software/startup_time",              timeToString(_startupDateTime));
     }
 }
 
