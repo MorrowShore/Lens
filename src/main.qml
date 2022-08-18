@@ -5,7 +5,6 @@ import Qt.labs.settings 1.1
 import AxelChat.ChatHandler 1.0
 import AxelChat.UpdateChecker 1.0
 import AxelChat.MessageAuthor 1.0
-import AxelChat.ChatMessage 1.0
 import AxelChat.Tray 1.0
 import QtQuick.Window 2.15
 import "my_components" as MyComponents
@@ -363,7 +362,7 @@ ApplicationWindow {
     }
     function openAuthorWindow(authorChannelId,
                               authorName,
-                              messageType,
+                              authorServiceType,
                               authorAvatarUrl,
                               authorPageUrl,
                               authorChatModerator,
@@ -371,7 +370,7 @@ ApplicationWindow {
                               authorChatSponsor,
                               authorIsVerified)
     {
-        if (messageType === ChatMessage.SoftwareNotification || messageType === ChatMessage.TestMessage)
+        if (authorServiceType === Global._SoftwareServiceType || authorServiceType === Global._TestServiceType)
         {
             return;
         }
@@ -384,22 +383,10 @@ ApplicationWindow {
             root.authorInfoWindow.destroy();
         }
 
-        var component = Qt.createComponent("qrc:/author_info_window.qml");
+        var component = Qt.createComponent("qrc:/author_window.qml");
         root.authorInfoWindow = component.createObject(root);
 
         root.authorInfoWindow.close();
-
-        root.authorInfoWindow.messageType = messageType;
-
-        root.authorInfoWindow.authorChannelId = authorChannelId;
-        root.authorInfoWindow.authorName      = authorName;
-        root.authorInfoWindow.authorAvatarUrl = authorAvatarUrl;
-        root.authorInfoWindow.authorPageUrl   = authorPageUrl;
-
-        root.authorInfoWindow.authorChatModerator = authorChatModerator;
-        root.authorInfoWindow.authorIsChatOwner   = authorIsChatOwner;
-        root.authorInfoWindow.authorChatSponsor   = authorChatSponsor;
-        root.authorInfoWindow.authorIsVerified    = authorIsVerified;
 
         if (typeof(posX) != "undefined")
         {
@@ -427,14 +414,14 @@ ApplicationWindow {
     {
         switch (platform)
         {
-        case ChatMessage.YouTube:               return "qrc:/resources/images/youtube-icon.svg"
-        case ChatMessage.Twitch:                return "qrc:/resources/images/twitch-icon.svg"
-        case ChatMessage.GoodGame:              return "qrc:/resources/images/goodgame-icon.svg"
+        case Global._YouTubeServiceType:               return "qrc:/resources/images/youtube-icon.svg"
+        case Global._TwitchServiceType:                return "qrc:/resources/images/twitch-icon.svg"
+        case Global._GoodGameServiceType:              return "qrc:/resources/images/goodgame-icon.svg"
 
-        case ChatMessage.SoftwareNotification:  return "qrc:/resources/images/axelchat-rounded.svg"
-        case ChatMessage.TestMessage:           return "qrc:/resources/images/flask2.svg"
+        case Global._SoftwareServiceType:  return "qrc:/resources/images/axelchat-rounded.svg"
+        case Global._TestServiceType:           return "qrc:/resources/images/flask2.svg"
 
-        case ChatMessage.Unknown:               return ""
+        case Global._UnknownServiceType:               return ""
         }
 
         return ""
@@ -490,7 +477,7 @@ ApplicationWindow {
             border.width: Global.windowChatMessageFrameBorderWidth
             border.color: Global.windowChatMessageFrameBorderColor
             color: {
-                if (messageBodyBackgroundForcedColor != "")
+                if (messageBodyBackgroundForcedColor !== "")
                 {
                     return messageBodyBackgroundForcedColor
                 }
@@ -528,7 +515,7 @@ ApplicationWindow {
                     //readOnly: true
                     style: Text.Outline
                     color: {
-                        if (messageType == ChatMessage.YouTube)
+                        if (authorServiceType === Global._YouTubeServiceType)
                         {
                             if (authorIsChatOwner)
                             {
@@ -547,9 +534,9 @@ ApplicationWindow {
                                 return "#107516";
                             }
                         }
-                        else if (messageType == ChatMessage.Twitch)
+                        else if (authorServiceType === Global._TwitchServiceType)
                         {
-                            if (authorNicknameColor != "#000000")
+                            if (authorNicknameColor !== "#000000")
                             {
                                 return authorNicknameColor;
                             }
@@ -562,8 +549,8 @@ ApplicationWindow {
                         authorIsChatOwner   |
                         authorChatSponsor   |
                         authorIsVerified    |
-                        messageType == ChatMessage.SoftwareNotification |
-                        messageType == ChatMessage.TestMessage*/
+                        authorServiceType == ChatMessage.SoftwareNotification |
+                        authorServiceType == ChatMessage.TestMessage*/
                     font.pointSize: Global.windowChatMessageAuthorNameFontSize
                     //font.hintingPreference: Font.PreferFullHinting
                     //style: Text.Outline;
@@ -571,8 +558,8 @@ ApplicationWindow {
 
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled: messageType != ChatMessage.SoftwareNotification &&
-                                      messageType != ChatMessage.TestMessage &&
+                        hoverEnabled: authorServiceType !== Global._SoftwareServiceType &&
+                                      authorServiceType !== Global._TestServiceType &&
                                       !messageIsPlatformGeneric;
                         cursorShape: {
                             if (hoverEnabled)
@@ -582,7 +569,7 @@ ApplicationWindow {
                             if (hoverEnabled)
                                 openAuthorWindow(authorChannelId,
                                              authorName,
-                                             messageType,
+                                             authorServiceType,
                                              authorAvatarUrl,
                                              authorPageUrl,
                                              authorChatModerator,
@@ -608,13 +595,13 @@ ApplicationWindow {
                         var postfix = "";
 
                         if (Global.windowChatMessageShowPlatformIcon &&
-                                messageType != ChatMessage.SoftwareNotification &&
-                                messageType != ChatMessage.TestMessage)
+                                authorServiceType !== Global._SoftwareServiceType &&
+                                authorServiceType !== Global._TestServiceType)
                         {
-                            prefix += createImgTag(getPlatformIcon(messageType), badgePixelSize) + " "
+                            prefix += createImgTag(getPlatformIcon(authorServiceType), badgePixelSize) + " "
                         }
 
-                        if (messageType === ChatMessage.YouTube)
+                        if (authorServiceType === Global._YouTubeServiceType)
                         {
                             if (authorIsChatOwner)
                             {
@@ -632,12 +619,12 @@ ApplicationWindow {
                             }
 
 
-                            if (authorCustomBadgeUrl != "undefined")
+                            if (authorCustomBadgeUrl !== "undefined")
                             {
                                 postfix += " " + createImgTag(authorCustomBadgeUrl, badgePixelSize)
                             }
                         }
-                        else if (messageType === ChatMessage.Twitch)
+                        else if (authorServiceType === Global._TwitchServiceType)
                         {
                             for (var i = 0; i < authorTwitchBadgesUrls.length; i++)
                             {
@@ -672,8 +659,8 @@ ApplicationWindow {
                 id: avatarImage
                 visible: Global.windowChatMessageShowAvatar
 
-                rounded: messageType != ChatMessage.SoftwareNotification &&
-                         messageType != ChatMessage.TestMessage &&
+                rounded: authorServiceType !== Global._SoftwareServiceType &&
+                         authorServiceType !== Global._TestServiceType &&
                          !messageIsPlatformGeneric;
 
                 height: Global.windowChatMessageAvatarSize
@@ -691,13 +678,13 @@ ApplicationWindow {
                         return authorAvatarUrl;
                     }
 
-                    return getPlatformIcon(messageType)
+                    return getPlatformIcon(authorServiceType)
                 }
 
                 MouseArea {
                     anchors.fill: parent;
-                    hoverEnabled: messageType != ChatMessage.SoftwareNotification &&
-                                  messageType != ChatMessage.TestMessage &&
+                    hoverEnabled: authorServiceType !== Global._SoftwareServiceType &&
+                                  authorServiceType !== Global._TestServiceType &&
                                   !messageIsPlatformGeneric;
                     acceptedButtons: Qt.LeftButton;
                     cursorShape: {
@@ -708,7 +695,7 @@ ApplicationWindow {
                         if (hoverEnabled)
                             openAuthorWindow(authorChannelId,
                                          authorName,
-                                         messageType,
+                                         authorServiceType,
                                          authorAvatarUrl,
                                          authorPageUrl,
                                          authorChatModerator,
@@ -732,7 +719,7 @@ ApplicationWindow {
                 text: messageText
                 font.weight: messageIsBotCommand ? Font.Black : Font.DemiBold
                 font.italic: messageMarkedAsDeleted || messageIsTwitchAction
-                font.bold: messageType == ChatMessage.SoftwareNotification
+                font.bold: authorServiceType === Global._SoftwareServiceType
                 selectByMouse: true
                 selectByKeyboard: true
                 readOnly: true
@@ -909,7 +896,7 @@ ApplicationWindow {
                 var t = ""
                 var size = 18
 
-                if (youTube.connectionStateType === 30)//ConnectionStateType.Connected
+                if (youTube.connectionStateType === Global._ConnectedConnectionStateType)
                 {
                     t += "<img align=\"middle\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\" src=\"qrc:/resources/images/youtube-icon-18x18.png\">: "
                     if (youTube.viewersCount !== -1)
@@ -918,7 +905,7 @@ ApplicationWindow {
                         t += "?"
                 }
 
-                if (twitch.connectionStateType === 30)//ConnectionStateType.Connected
+                if (twitch.connectionStateType === Global._ConnectedConnectionStateType)
                 {
                     t += "<img align=\"middle\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\" src=\"qrc:/resources/images/twitch-icon-18x18.png\">: "
                     if (twitch.viewersCount !== -1)

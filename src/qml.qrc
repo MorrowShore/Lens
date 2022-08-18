@@ -14,7 +14,7 @@
         <file>setting_pages/authors.qml</file>
         <file>setting_pages/common.qml</file>
         <file>my_components/RoundMouseArea.qml</file>
-        <file>author_info_window.qml</file>
+        <file>author_window.qml</file>
         <file>setting_pages/all_commands_window.qml</file>
         <file>Global.qml</file>
         <file>qmldir</file>

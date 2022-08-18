@@ -33,6 +33,7 @@ MessageAuthor MessageAuthor::createFromYouTube(
     author._isChatOwner = isChatOwner;
     author._isChatSponsor = isChatSponsor;
     author._isChatModerator = isChatModerator;
+    author._serviceType = AbstractChatService::ServiceType::YouTube;
 
     return author;
 }
@@ -55,6 +56,8 @@ MessageAuthor MessageAuthor::createFromTwitch(const QString &name, const QString
     author._isVerified = badges.contains("partner/1");
     author._isChatOwner = badges.contains("broadcaster/1");
     author._isChatModerator = badges.contains("moderator/1");
+
+    author._serviceType = AbstractChatService::ServiceType::Twitch;
 
     /*const QList<QString> badgesNames = badges.keys();
     for (const QString& badgeName : badgesNames)
@@ -87,6 +90,8 @@ MessageAuthor MessageAuthor::createFromGoodGame(const QString &name, const QStri
     {
         //author._avatarUrl = TwitchDefaultAvatarUrl;
     }*/
+
+    author._serviceType = AbstractChatService::ServiceType::GoodGame;
 
     return author;
 }
@@ -143,7 +148,6 @@ ChatMessage ChatMessage::createFromYouTube(const QString& text,
     message._id          = id;
     message._publishedAt = publishedAt;
     message._receivedAt  = receivedAt;
-    message._type        = Type::YouTube;
     message._author      = author;
     message._flags       = flags;
     message._forcedColors = forcedColors;
@@ -163,7 +167,6 @@ ChatMessage ChatMessage::createFromTwitch(const QString &text, const QDateTime &
     message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
     message._publishedAt = receivedAt;//ToDo: возможно, это нужно исправить
     message._receivedAt  = receivedAt;
-    message._type        = Type::Twitch;
     message._author      = author;
     message._flags       = flags;
 
@@ -182,7 +185,6 @@ ChatMessage ChatMessage::createFromGoodGame(const QString &text, const QDateTime
     message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
     message._publishedAt = timestamp;//ToDo: возможно, это нужно исправить
     message._receivedAt  = timestamp;
-    message._type        = Type::GoodGame;
     message._author      = author;
 
     trimCustom(message._text);
@@ -212,7 +214,6 @@ ChatMessage ChatMessage::createSoftwareNotification(const QString &text)
     message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
     message._publishedAt = QDateTime::currentDateTime();
     message._receivedAt  = QDateTime::currentDateTime();
-    message._type        = Type::SoftwareNotification;
     message._author      = MessageAuthor::softwareAuthor();
 
     return message;
@@ -227,7 +228,6 @@ ChatMessage ChatMessage::createTestMessage(const QString &text)
     message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
     message._publishedAt = QDateTime::currentDateTime();
     message._receivedAt  = QDateTime::currentDateTime();
-    message._type        = Type::TestMessage;
     message._author      = MessageAuthor::testMessageAuthor();
 
     return message;
@@ -336,7 +336,6 @@ void ChatMessage::trimCustom(QString &text)
 const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArray>{
     {MessageId ,              "messageId"},
     {MessageText ,            "messageText"},
-    {MessageType ,            "messageType"},
     {MessagePublishedAt ,     "messagePublishedAt"},
     {MessageReceivedAt ,      "messageReceivedAt"},
     {MessageIsBotCommand ,    "messageIsBotCommand"},
@@ -352,7 +351,8 @@ const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArr
 
     {MessageBodyBackgroundForcedColor, "messageBodyBackgroundForcedColor"},
 
-    {AuthorChannelId ,        "authorChannelId"},
+    {AuthorServiceType ,      "authorServiceType"},
+    {AuthorId ,               "authorId"},
     {AuthorPageUrl ,          "authorPageUrl"},
     {AuthorName ,             "authorName"},
     {AuthorNicknameColor ,    "authorNicknameColor"},
@@ -660,7 +660,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
         break;
-    case MessageType:
+    case AuthorServiceType:
         return false;
     case MessagePublishedAt:
         return false;
@@ -679,7 +679,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
         }
         break;
 
-    case AuthorChannelId:
+    case AuthorId:
         return false;
     case AuthorPageUrl:
         return false;
@@ -722,8 +722,8 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role)
         return message.id();
     case MessageText:
         return message.text();
-    case MessageType:
-        return message.type();
+    case AuthorServiceType:
+        return (int)message.author().getServiceType();
     case MessagePublishedAt:
         return message.publishedAt();
     case MessageReceivedAt:
@@ -752,7 +752,7 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role)
     case MessageBodyBackgroundForcedColor:
         return message.forcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);
 
-    case AuthorChannelId:
+    case AuthorId:
         return message.author().channelId();
     case AuthorPageUrl:
         return message.author().pageUrl();

@@ -21,18 +21,6 @@ Window {
 
     color: Material.background
 
-    property var messageType;
-    property string authorName: "";
-    property var authorChannelId;
-    property var authorAvatarUrl;
-    property var authorPageUrl;
-    property var authorCustomBadgeUrl;
-    property bool authorChatModerator: false;
-    property bool authorIsChatOwner:   false;
-    property bool authorChatSponsor:   false;
-    property bool authorIsVerified:    false;
-
-
     flags: Qt.Dialog |
            Qt.CustomizeWindowHint |
            Qt.WindowTitleHint |
@@ -40,7 +28,7 @@ Window {
            //Qt.WindowMaximizeButtonHint
 
     Settings {
-        category: "author_info_window"
+        category: "author_window"
         property alias window_width:  rootWindow.width;
         property alias window_height: rootWindow.height;
     }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "chatmessage.hpp"
 #include <QString>
 #include <QDateTime>
 #include <QAbstractListModel>

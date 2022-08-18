@@ -1,4 +1,5 @@
 #include "twitch.hpp"
+#include "chatmessage.hpp"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
@@ -67,7 +68,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 }
 
 Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-  : AbstractChatService(parent)
+  : AbstractChatService(AbstractChatService::ServiceType::Twitch, parent)
   , settings(settings_)
   , SettingsGroupPath(settingsGroupPath)
   , network(network_)

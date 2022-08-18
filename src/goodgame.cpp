@@ -1,11 +1,12 @@
 #include "goodgame.h"
+#include "chatmessage.hpp"
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QNetworkAccessManager>
 
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : AbstractChatService(parent)
+    : AbstractChatService(AbstractChatService::ServiceType::GoodGame, parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)

@@ -3,15 +3,47 @@
 
 #include "types.hpp"
 #include <QObject>
+#include <QQmlEngine>
 
 class ChatHandler;
+class MessageAuthor;
+class ChatMessage;
 
 class AbstractChatService : public QObject
 {
     Q_OBJECT
 
 public:
-    enum ConnectionStateType {
+    enum class ServiceType
+    {
+        Unknown = -1,
+
+        Software = 10,
+        Test = 11,
+
+        YouTube = 100,
+        Twitch = 101,
+        GoodGame = 102,
+    };
+
+    static QString serviceTypeToString(const AbstractChatService::ServiceType serviceType)
+    {
+        switch (serviceType)
+        {
+        case AbstractChatService::ServiceType::Software: return "softwarenotification";
+        case AbstractChatService::ServiceType::Test: return "testmessage";
+        case AbstractChatService::ServiceType::YouTube: return "youtube";
+        case AbstractChatService::ServiceType::Twitch: return "twitch";
+        case AbstractChatService::ServiceType::Unknown:
+        default:
+            return "unknown";
+        }
+
+        return "unknown";
+    }
+
+    enum class ConnectionStateType
+    {
         NotConnected = 10,
         Connecting = 20,
         Connected = 30
@@ -30,8 +62,9 @@ public:
 
     Q_PROPERTY(qint64               traffic                      READ traffic                    NOTIFY stateChanged)
 
-    explicit AbstractChatService(QObject *parent = nullptr)
+    explicit AbstractChatService(ServiceType serviceType_, QObject *parent = nullptr)
         : QObject(parent)
+        , serviceType(serviceType_)
     { }
 
     virtual QUrl chatUrl() const { return QString(); }
@@ -42,22 +75,13 @@ public:
     virtual QString stateDescription() const  = 0;
     virtual QString detailedInformation() const = 0;
     virtual QString getNameLocalized() const = 0;
+    virtual ServiceType getServiceType() const { return serviceType; }
 
     virtual int viewersCount() const = 0;
 
     virtual qint64 traffic() const { return -1; }
 
     virtual void reconnect() = 0;
-
-#ifdef QT_QUICK_LIB
-    static void declareQML()
-    {
-        //qmlRegisterUncreatableType<ConnectionStateType>("AxelChat.ConnectionStateType", 1, 0, "ConnectionStateType", "Type cannot be created in QML");
-        qRegisterMetaType<ConnectionStateType>("AbstractChatService::ConnectionStateType");
-        qmlRegisterUncreatableType<MessageAuthor>("AxelChat.AbstractChatService",
-                                     1, 0, "AbstractChatService", "Type cannot be created in QML");
-    }
-#endif
 
 signals:
     void stateChanged();
@@ -73,6 +97,8 @@ protected:
     {
         emit needSendNotification(text);
     }
+
+    const ServiceType serviceType;
 };
 
 #endif // ABSTRACTCHATSERVICE_H

@@ -5,6 +5,7 @@
 #include <QSettings>
 #include "chatmessage.hpp"
 #include "types.hpp"
+#include "abstractchatservice.hpp"
 
 class OutputToFile : public QObject
 {
@@ -47,14 +48,14 @@ public slots:
     void writeMessages(const QList<ChatMessage>& messages);
     Q_INVOKABLE void showInExplorer();
     void saveAuthorInfo(const MessageAuthor& author);
-    void tryDownloadAvatar(const QString& authorId, const QUrl &url, const ChatMessage::Type service);
+    void tryDownloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
 
 private slots:
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
 
 private:
     QByteArray prepare(const QString& text);
-    QString getAuthorDirectory(const ChatMessage::Type service, const QString& authorId);
+    QString getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString& authorId);
 
     struct AuthorInfo{
         QString name;

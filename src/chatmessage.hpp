@@ -11,6 +11,8 @@
 #include <QQmlEngine>
 #endif
 
+#include "abstractchatservice.hpp"
+
 class ChatMessage;
 class MessageAuthor{
     Q_GADGET
@@ -72,6 +74,11 @@ public:
         return _nicknameColor;
     }
 
+    inline AbstractChatService::ServiceType getServiceType() const
+    {
+        return _serviceType;
+    }
+
     static MessageAuthor createFromYouTube(const QString& name,
                                            const QString& channelId,
                                            const QUrl& avatarUrl,
@@ -120,6 +127,7 @@ private:
     bool _isChatModerator = false;
     bool _isDonation      = false;
     int _messagesSentCurrent = 0;
+    AbstractChatService::ServiceType _serviceType = AbstractChatService::ServiceType::Unknown;
 
     static MessageAuthor _softwareAuthor;
     static MessageAuthor _testMessageAuthor;
@@ -147,33 +155,6 @@ public:
 
     friend class ChatMessagesModel;
     ChatMessage() { }
-
-    enum Type
-    {
-        Unknown,
-        SoftwareNotification,
-        TestMessage,
-        YouTube,
-        Twitch,
-        GoodGame
-    };
-    Q_ENUM(Type)
-
-    static QString convertServiceId(const ChatMessage::Type type)
-    {
-        switch (type)
-        {
-        case ChatMessage::SoftwareNotification: return "softwarenotification";
-        case ChatMessage::TestMessage: return "testmessage";
-        case ChatMessage::YouTube: return "youtube";
-        case ChatMessage::Twitch: return "twitch";
-        case ChatMessage::Unknown:
-        default:
-            return "unknown";
-        }
-
-        return "unknown";
-    }
 
     static ChatMessage createFromYouTube(const QString& text,
                               const QString& id,
@@ -213,10 +194,6 @@ public:
     inline bool isDeleterItem() const
     {
         return _isDeleterItem;
-    }
-    inline Type type() const
-    {
-        return _type;
     }
     inline const QDateTime& publishedAt() const
     {
@@ -270,8 +247,6 @@ private:
     mutable bool _isBotCommand = false;
     bool _isDeleterItem = false;
 
-    Type _type = Type::Unknown;
-
     QDateTime _publishedAt;
     QDateTime _receivedAt;
 
@@ -292,7 +267,6 @@ public:
     enum ChatMessageRoles {
         MessageId = Qt::UserRole + 1,
         MessageText,
-        MessageType,
         MessagePublishedAt,
         MessageReceivedAt,
         MessageIsBotCommand,
@@ -310,7 +284,8 @@ public:
 
         MessageIsTwitchAction,
 
-        AuthorChannelId,
+        AuthorServiceType,
+        AuthorId,
         AuthorPageUrl,
         AuthorName,
         AuthorNicknameColor,

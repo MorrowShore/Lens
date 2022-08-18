@@ -144,11 +144,11 @@ void ChatHandler::playNewMessageSound()
 
 void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
 {
-    ChatMessage::Type type = ChatMessage::Type::Unknown;
-    Twitch* twitch = qobject_cast<Twitch*>(sender());
-    if (twitch)
+    AbstractChatService::ServiceType type = AbstractChatService::ServiceType::Unknown;
+    AbstractChatService* service = qobject_cast<AbstractChatService*>(sender());
+    if (service)
     {
-        type = ChatMessage::Type::Twitch;
+        type = service->getServiceType();
     }
 
     _outputToFile->tryDownloadAvatar(channelId, url, type);
@@ -280,8 +280,6 @@ ChatMessagesModel& ChatHandler::getMessagesModel()
 #ifdef QT_QUICK_LIB
 void ChatHandler::declareQml()
 {
-    AbstractChatService::declareQML();
-
     qmlRegisterUncreatableType<ChatHandler> ("AxelChat.ChatHandler",
                                              1, 0, "ChatHandler", "Type cannot be created in QML");
 

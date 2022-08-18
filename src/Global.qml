@@ -4,6 +4,17 @@ import QtQuick 2.0
 QtObject {
     id: qtObject
 
+    readonly property int _UnknownServiceType: -1
+    readonly property int _SoftwareServiceType: 10
+    readonly property int _TestServiceType: 11
+    readonly property int _YouTubeServiceType: 100
+    readonly property int _TwitchServiceType: 101
+    readonly property int _GoodGameServiceType: 102
+
+    readonly property int _NotConnectedConnectionStateType: 10
+    readonly property int _ConnectingConnectionStateType: 20
+    readonly property int _ConnectedConnectionStateType: 30
+
     property var windowChat
     property var windowSettings
 

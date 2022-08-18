@@ -1,5 +1,6 @@
 #include "youtube.hpp"
 #include "types.hpp"
+#include "chatmessage.hpp"
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -42,7 +43,7 @@ QByteArray extractDigitsOnly(const QByteArray& data)
 }
 
 YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : AbstractChatService(parent)
+    : AbstractChatService(AbstractChatService::ServiceType::YouTube, parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)

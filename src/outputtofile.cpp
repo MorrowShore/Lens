@@ -169,10 +169,10 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
     {
         const ChatMessage& message = messages[i];
 
-        const ChatMessage::Type type = message.type();
+        const AbstractChatService::ServiceType type = message.author().getServiceType();
 
-        if (type == ChatMessage::Type::Unknown ||
-            type == ChatMessage::Type::TestMessage)
+        if (type == AbstractChatService::ServiceType::Unknown ||
+            type == AbstractChatService::ServiceType::Test)
         {
             continue;
         }
@@ -183,11 +183,11 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         tags.append(QPair<QString, QString>("author_id", message.author().channelId()));
         tags.append(QPair<QString, QString>("message", message.text()));
         tags.append(QPair<QString, QString>("time", message.publishedAt().toTimeZone(QTimeZone::systemTimeZone()).toString(Qt::DateFormat::ISODateWithMs)));
-        tags.append(QPair<QString, QString>("service", ChatMessage::convertServiceId(type)));
+        tags.append(QPair<QString, QString>("service", AbstractChatService::serviceTypeToString(type)));
 
         writeMessage(tags);
 
-        if (message.type() == ChatMessage::Type::YouTube)
+        if (message.author().getServiceType() == AbstractChatService::ServiceType::YouTube)
         {
             const QString id = message.id();
             if (!id.isEmpty())
@@ -198,16 +198,16 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         switch (type)
         {
-        case ChatMessage::GoodGame:
-        case ChatMessage::YouTube:
-        case ChatMessage::Twitch:
+        case AbstractChatService::ServiceType::GoodGame:
+        case AbstractChatService::ServiceType::YouTube:
+        case AbstractChatService::ServiceType::Twitch:
             tryDownloadAvatar(message.author().channelId(), message.author().avatarUrl(), type);
             saveAuthorInfo(message.author());
             break;
 
-        case ChatMessage::Unknown:
-        case ChatMessage::SoftwareNotification:
-        case ChatMessage::TestMessage:
+        case AbstractChatService::ServiceType::Unknown:
+        case AbstractChatService::ServiceType::Software:
+        case AbstractChatService::ServiceType::Test:
             break;
         }
     }
@@ -223,12 +223,12 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + _outputFolder));
 }
 
-void OutputToFile::saveAuthorInfo(const MessageAuthor &author)
+void OutputToFile::saveAuthorInfo(const MessageAuthor& author)
 {
-
+    const QString fileName = getAuthorDirectory(author.getServiceType(), author.channelId()) + "/info.ini";
 }
 
-void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, const ChatMessage::Type service)
+void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, const AbstractChatService::ServiceType service)
 {
     if (url.isEmpty() || downloadedAvatarsAuthorId.contains(authorId) || !_enabled)
     {
@@ -449,9 +449,9 @@ QByteArray OutputToFile::prepare(const QString &text_)
     return text.toUtf8();
 }
 
-QString OutputToFile::getAuthorDirectory(const ChatMessage::Type service, const QString &authorId)
+QString OutputToFile::getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString &authorId)
 {
-    return _outputFolder + "/authors/" + ChatMessage::convertServiceId(service) + "/" + authorId;
+    return _outputFolder + "/authors/" + AbstractChatService::serviceTypeToString(serviceType) + "/" + authorId;
 }
 
 void OutputToFile::reinit(bool forceUpdateOutputFolder)

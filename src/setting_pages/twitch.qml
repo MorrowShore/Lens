@@ -2,8 +2,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import "../my_components" as MyComponents
-import AxelChat.AbstractChatService 1.0
 import AxelChat.Twitch 1.0
+import "../"
 
 ScrollView {
     id: root
@@ -38,7 +38,7 @@ ScrollView {
 
             BusyIndicator {
                 id: busyIndicator
-                visible: twitch.connectionStateType === 20 // ToDo: need refactoring
+                visible: twitch.connectionStateType === Global._ConnectingConnectionStateType
                 height: 40
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
@@ -53,11 +53,11 @@ ScrollView {
                 anchors.verticalCenter: parent.verticalCenter
                 mipmap: true
                 source: {
-                    if (twitch.connectionStateType === 10) // ToDo: need refactoring
+                    if (twitch.connectionStateType === Global._NotConnectedConnectionStateType)
                     {
                         return "qrc:/resources/images/alert1.svg"
                     }
-                    else if (twitch.connectionStateType === 30) // ToDo: need refactoring
+                    else if (twitch.connectionStateType === Global._ConnectedConnectionStateType)
                     {
                         return "qrc:/resources/images/tick.svg"
                     }
