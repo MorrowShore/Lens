@@ -26,7 +26,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     , network(network_)
     , _outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel)
     , _bot(settings, SettingsGroupPath + "/chat_bot")
-    , authorQMLProvider(messagesModel, _outputToFile)
+    , authorQMLProvider(*this, messagesModel, _outputToFile)
 {
     setEnabledSoundNewMessage(settings.value(SettingsEnabledSoundNewMessage, _enabledSoundNewMessage).toBool());
 
@@ -72,15 +72,15 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         ChatAuthor* prevAuthor = messagesModel.getAuthor(author._authorId);
         if (prevAuthor)
         {
-            const auto prevMessagesSent = prevAuthor->_messagesSent;
+            const auto prevMessagesCount = prevAuthor->_messagesCount;
             *prevAuthor = author;
-            prevAuthor->_messagesSent = prevMessagesSent + 1;
+            prevAuthor->_messagesCount = prevMessagesCount + 1;
         }
         else
         {
             ChatAuthor* newAuthor = new ChatAuthor();
             *newAuthor = author;
-            newAuthor->_messagesSent = 1;
+            newAuthor->_messagesCount = 1;
             messagesModel.addAuthor(newAuthor);
         }
 

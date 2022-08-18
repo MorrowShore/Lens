@@ -5,6 +5,8 @@
 #include "outputtofile.hpp"
 #include <QObject>
 
+class ChatHandler;
+
 class AuthorQMLProvider : public QObject
 {
     Q_OBJECT
@@ -14,7 +16,7 @@ class AuthorQMLProvider : public QObject
     Q_PROPERTY(int messagesCount READ getMessagesCount NOTIFY changed)
 
 public:
-    explicit AuthorQMLProvider(const ChatMessagesModel& messagesModel, const OutputToFile& outputToFile, QObject *parent = nullptr);
+    explicit AuthorQMLProvider(const ChatHandler& chantHandler, const ChatMessagesModel& messagesModel, const OutputToFile& outputToFile, QObject *parent = nullptr);
 
     static void declareQML()
     {

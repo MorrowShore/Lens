@@ -288,7 +288,11 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, c
             return;
         }
 
-        const QString avatarsDirectory = getAuthorDirectory(service, authorId) + "/avatars";
+        const QString authorDirectory = getAuthorDirectory(service, authorId);
+
+        const QString authorInfoFileName = authorDirectory + "/info.ini";
+
+        const QString avatarsDirectory = authorDirectory + "/avatars";
         QDir dir(avatarsDirectory);
         if (!dir.exists())
         {

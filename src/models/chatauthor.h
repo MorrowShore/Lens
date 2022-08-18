@@ -58,7 +58,7 @@ public:
 
     inline int messagesCount() const
     {
-        return _messagesSent;
+        return _messagesCount;
     }
 
     inline const QColor& nicknameColor() const
@@ -105,7 +105,7 @@ private:
     bool _isChatSponsor   = false;
     bool _isChatModerator = false;
     bool _isDonation      = false;
-    int _messagesSent = 0;
+    int _messagesCount = 0;
     AbstractChatService::ServiceType _serviceType = AbstractChatService::ServiceType::Unknown;
 };
 

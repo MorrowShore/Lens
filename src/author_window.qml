@@ -4,6 +4,7 @@ import QtQuick.Window 2.15
 import QtQuick.Controls.Material 2.12
 import "my_components" as MyComponents
 import AxelChat.AuthorQMLProvider 1.0
+import AxelChat.ChatHandler 1.0
 
 Window {
     id: root
@@ -86,9 +87,8 @@ Window {
                 }*/
 
                 Label {
-                    id: labelMessagesSent
-                    text: qsTr("Messages: %1")
-                        .arg(authorQMLProvider.messagesCount)
+                    id: labelMessagesCount
+                    text: qsTr("Messages: %1").arg(authorQMLProvider.messagesCount)
                 }
 
                 Button {

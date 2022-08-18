@@ -1,6 +1,7 @@
 #include "authorqmlprovider.h"
 #include "models/chatauthor.h"
 #include "youtube.hpp"
+#include "chathandler.hpp"
 #include <QDesktopServices>
 
 namespace
@@ -10,12 +11,15 @@ static const int YouTubeAvatarSize = 1080;
 
 }
 
-AuthorQMLProvider::AuthorQMLProvider(const ChatMessagesModel& messagesModel_, const OutputToFile& outputToFile_, QObject *parent)
+AuthorQMLProvider::AuthorQMLProvider(const ChatHandler& chantHandler, const ChatMessagesModel& messagesModel_, const OutputToFile& outputToFile_, QObject *parent)
     : QObject{parent}
     , messagesModel(messagesModel_)
     , outputToFile(outputToFile_)
 {
-
+    connect(&chantHandler, &ChatHandler::messagesDataChanged, this, [this]()
+    {
+        emit changed();
+    });
 }
 
 void AuthorQMLProvider::setSelectedAuthorId(const QString &authorId_)
