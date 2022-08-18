@@ -483,32 +483,99 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             QDir().mkpath(pathDir);
         }
 
-        const QString authorFileName = pathDir + "/info.ini";
-        QFile file(authorFileName);
-        if (!file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
         {
-            qWarning() << "Failed to save" << authorFileName;
-            continue;
+            const QString fileName = pathDir + "/info.ini";
+            QFile file(fileName);
+            if (!file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
+            {
+                qWarning() << "Failed to open/save" << fileName;
+                continue;
+            }
+
+            const QString avatarUrlStr = author->avatarUrl().toString();
+            if (!avatarUrlStr.contains('/'))
+            {
+                qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->authorId() << author->name();
+            }
+
+            const QString avatarName = avatarUrlStr.mid(avatarUrlStr.lastIndexOf('/') + 1);
+
+            file.write("[info]\n");
+            file.write("name=" + prepare(author->name()) + "\n");
+            file.write("id=" + prepare(author->authorId()) + "\n");
+            file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
+            file.write("avatar_name=" + prepare(avatarName) + "\n");
+            file.write("page_url=" + prepare(author->pageUrl().toString()) + "\n");
+            file.write("service=" + prepare(AbstractChatService::serviceTypeToString(author->getServiceType())) + "\n");
+
+            file.flush();
+            file.close();
         }
 
-        const QString avatarUrlStr = author->avatarUrl().toString();
-        if (!avatarUrlStr.contains('/'))
+
+
         {
-            qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->authorId() << author->name();
+            const QByteArray newName = prepare(author->name());
+
+            bool needAddName = false;
+
+            const QString fileName = pathDir + "/names.txt";
+            QFile file(fileName);
+            if (file.exists())
+            {
+                if (!file.open(QFile::OpenModeFlag::ReadOnly | QFile::OpenModeFlag::Text))
+                {
+                    qWarning() << "Failed to open" << fileName;
+                    continue;
+                }
+
+                const QByteArray data = file.readAll();
+                QByteArray prevName;
+                if (data.contains('\n'))
+                {
+                    prevName = data.mid(data.lastIndexOf('\n') + 1);
+                }
+                else
+                {
+                    prevName = data;
+                }
+
+                file.close();
+
+                if (prevName != newName)
+                {
+                    if (!prevName.isEmpty())
+                    {
+                        qDebug() << "Author" << author->authorId() << "changed name" << prevName << "to" << newName;
+                    }
+
+                    needAddName = true;
+                }
+            }
+            else
+            {
+                needAddName = true;
+            }
+
+            if (needAddName)
+            {
+                QFile file(fileName);
+                if (!file.open(QFile::OpenModeFlag::Append | QFile::OpenModeFlag::Text))
+                {
+                    qWarning() << "Failed to save" << fileName;
+                    continue;
+                }
+
+                if (file.size() > 0)
+                {
+                    file.write("\n");
+                }
+
+                file.write(newName);
+                file.flush();
+                file.close();
+            }
         }
-
-        const QString avatarName = avatarUrlStr.mid(avatarUrlStr.lastIndexOf('/') + 1);
-
-        file.write("[info]\n");
-        file.write("name=" + prepare(author->name()) + "\n");
-        file.write("id=" + prepare(author->authorId()) + "\n");
-        file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
-        file.write("avatar_name=" + prepare(avatarName) + "\n");
-        file.write("page_url=" + prepare(author->pageUrl().toString()) + "\n");
-        file.write("service=" + prepare(AbstractChatService::serviceTypeToString(author->getServiceType())) + "\n");
-
-        file.flush();
-        file.close();
     }
 }
 
