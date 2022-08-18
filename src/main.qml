@@ -54,7 +54,7 @@ ApplicationWindow {
     color: Qt.rgba(0, 0, 0, Global.windowChatBackgroundOpacity)
 
     property var settingsWindow;
-    property var authorInfoWindow;
+    property var authorWindow: null
     property var updatesWindow;
 
     Settings {
@@ -359,28 +359,13 @@ ApplicationWindow {
             return visibleArea.yPosition * contentHeight + listMessages.height + 160 >= contentHeight;
         }
     }
-    function openAuthorWindow(authorId)
-    {
-        var posX, posY;
-        if (typeof(root.authorInfoWindow) != "undefined")
-        {
-            posX = root.authorInfoWindow.x;
-            posY = root.authorInfoWindow.y;
-            root.authorInfoWindow.destroy();
+    function openAuthorWindow(authorId) {
+        if (root.authorWindow === null) {
+            root.authorWindow = Qt.createComponent("qrc:/author_window.qml").createObject(root)
         }
 
-        var component = Qt.createComponent("qrc:/author_window.qml");
-        root.authorInfoWindow = component.createObject(root);
-
-        root.authorInfoWindow.close();
-
-        if (typeof(posX) != "undefined")
-        {
-            root.authorInfoWindow.x = posX;
-            root.authorInfoWindow.y = posY;
-        }
-
-        root.authorInfoWindow.show();
+        root.authorWindow.authorId = authorId
+        root.authorWindow.show()
     }
 
     function redrawTextEdit(_textEditObject)

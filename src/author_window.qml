@@ -1,19 +1,17 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
-import Qt.labs.settings 1.1
 import QtQuick.Controls.Material 2.12
 import "my_components" as MyComponents
-import AxelChat.ChatHandler 1.0
+import AxelChat.AuthorQMLProvider 1.0
 
 Window {
-    id: rootWindow
+    id: root
     title: qsTr("Participant Information")
 
     Material.theme: Material.Dark
     Material.accent :     "#03A9F4"
     Material.background : "black"
-    //Material.elevation :  "#03A9F4"
     Material.foreground : "#03A9F4"
     Material.primary :    "#03A9F4"
 
@@ -22,196 +20,147 @@ Window {
     flags: Qt.Dialog |
            Qt.CustomizeWindowHint |
            Qt.WindowTitleHint |
-           Qt.WindowCloseButtonHint //|
-           //Qt.WindowMaximizeButtonHint
+           Qt.WindowCloseButtonHint
 
-    Settings {
-        category: "author_window"
-        property alias window_width:  rootWindow.width;
-        property alias window_height: rootWindow.height;
+    property string authorId: ""
+
+    onAuthorIdChanged: {
+        authorQMLProvider.setSelectedAuthorId(authorId)
     }
 
-    width: rootScrollView.contentWidth
-    height: rootScrollView.contentHeight
-    minimumWidth:  480
-    minimumHeight: 256
-    maximumHeight: 256
+    width: 480
+    height: 256
 
     ScrollView {
-        id: rootScrollView
-        contentWidth:  480
-        contentHeight: 256
-        width: rootWindow.width
-        height: rootWindow.height
-        Item {
-            id: root
-            width:  Math.max(rootScrollView.width,  rootScrollView.contentWidth)
-            height: Math.max(rootScrollView.height, rootScrollView.contentHeight)
+        id: scrollView
+        anchors.fill: parent
 
-            MyComponents.ImageRounded {
-                id: avatarImage
-                x: 8
-                y: 8
-                rounded: false
-                height: 240
-                width:  height
-                mipmap: true
-                source: {
-                    if (messageType === ChatMessage.YouTube)
-                    {
-                        return typeof(rootWindow.authorAvatarUrl) == "object" ? youTube.createResizedAvatarUrl(rootWindow.authorAvatarUrl, height) : ""
-                    }
+        Row {
+            x: 6
+            y: 6
+            spacing: 6
+            width: root.width - 12
 
-                    return rootWindow.authorAvatarUrl;
-                }
-            }
+            Column {
+                id: leftColumnt
+                spacing: 6
 
-            MyComponents.MyTextField {
-                id: labelAuthorName
-                width: 400
-                anchors.left: avatarImage.right
-                anchors.leftMargin: 6
-                anchors.top: avatarImage.top
-                anchors.rightMargin: 6
-                anchors.right: parent.right
-                text: typeof(rootWindow.authorName) == "string" ? rootWindow.authorName : ""
-                color: {
-                    /*if (authorIsChatOwner)
-                    {
-                        return "#FFD90F";
-                    }
-                    else if (authorIsVerified)
-                    {
-                        return "#F48FB1";
-                    }
-                    else if (authorChatModerator)
-                    {
-                        return "#5F84F1";
-                    }
-                    else if (authorChatSponsor)
-                    {
-                        return "#107516";
-                    }*/
+                MyComponents.ImageRounded {
+                    id: avatarImage
+                    rounded: false
+                    height: 240
+                    width:  height
+                    mipmap: true
+                    source: {
+                        if (authorQMLProvider.serviceType === Global._YouTubeServiceType) {
+                            return typeof(authorQMLProvider.avatarUrl) == "object" ? youTube.createResizedAvatarUrl(authorQMLProvider.avatarUrl, height) : ""
+                        }
 
-                    return "#03A9F4";
-                }
-                font.bold: true
-                selectByMouse: true
-                readOnly: true
-                wrapMode: Text.Wrap
-            }
-
-            Label {
-                id: labelAuthorType
-                text: {
-                    var typeName = "";
-
-                    if (authorIsChatOwner)
-                    {
-                        if (typeName.length > 0) { typeName += ", "; }
-                        typeName += qsTr("Channel Author");
-                    }
-
-                    if (authorChatModerator)
-                    {
-                        if (typeName.length > 0) { typeName += ", "; }
-                        typeName += qsTr("Moderator");
-                    }
-
-                    if (authorChatSponsor)
-                    {
-                        if (typeName.length > 0) { typeName += ", "; }
-                        typeName += qsTr("Sponsor");
-                    }
-
-                    if (typeName === "")
-                    {
-                        typeName = qsTr("Regular Participant");
-                    }
-
-                    if (authorIsVerified)
-                    {
-                        if (typeName.length > 0) { typeName += ", "; }
-                        typeName += qsTr("Verified Account");
-                    }
-
-                    return typeName;
-                }
-                anchors.left: avatarImage.right
-                anchors.top: labelAuthorName.bottom
-                anchors.topMargin: 8
-                anchors.leftMargin: 6
-
-            }
-
-            Label {
-                id: labelMessagesSent
-                text: qsTr("Messages (current session): %1")
-                    .arg(chatHandler.authorMessagesSentCurrent(authorChannelId))
-                anchors.left: avatarImage.right
-                anchors.top: labelAuthorType.bottom
-                anchors.topMargin: 6
-                anchors.leftMargin: 6
-
-                Connections {
-                    target: chatHandler
-                    function onMessagesDataChanged() {
-                        labelMessagesSent.text = qsTr("Messages (current session): %1")
-                        .arg(chatHandler.authorMessagesSentCurrent(authorChannelId));
+                        return authorQMLProvider.avatarUrl
                     }
                 }
             }
 
-            Button {
-                id: buttonAvatar
-                text: qsTr("Open Image")
-                anchors.top: labelMessagesSent.bottom
-                anchors.topMargin: 12
-                anchors.left: avatarImage.right
-                anchors.leftMargin: 6
-                icon.source: "qrc:/resources/images/forward-arrow.svg"
-                highlighted: false
-                flat: true
+            Column {
+                spacing: 4
+                width: parent.width - leftColumnt.width
 
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
+                MyComponents.MyTextField {
+                    id: labelAuthorName
+                    width: parent.width
+                    text: authorQMLProvider.name
+                    color: "#03A9F4";
+                    font.bold: true
+                    selectByMouse: true
+                    readOnly: true
+                    wrapMode: Text.Wrap
                 }
 
-                onClicked: {
-                    if (typeof(rootWindow.authorPageUrl) == "object")
-                    {
-                        Qt.openUrlExternally(youTube.createResizedAvatarUrl(rootWindow.authorAvatarUrl, 720))
+                /*Label {
+                    id: labelAuthorType
+                    text: {
+                        var typeName = "123";
+                        return typeName;
+                    }
+
+                }*/
+
+                Label {
+                    id: labelMessagesSent
+                    text: qsTr("Messages: %1")
+                        .arg(authorQMLProvider.messagesCount)
+                }
+
+                Button {
+                    text: qsTr("Folder")
+                    icon.source: "qrc:/resources/images/forward-arrow.svg"
+                    highlighted: false
+                    flat: true
+
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.NoButton
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                    }
+
+                    onClicked: {
+                        if (!authorQMLProvider.openFolder()) {
+                            dialog.title = qsTr("The folder does not exist or an error occurred")
+                            dialog.open()
+                        }
                     }
                 }
-            }
 
-            Button {
-                id: buttonChannel
-                text: qsTr("Go To Channel")
-                anchors.top: buttonAvatar.bottom
-                anchors.topMargin: 0
-                anchors.left: avatarImage.right
-                anchors.leftMargin: 6
-                icon.source: "qrc:/resources/images/forward-arrow.svg"
-                highlighted: true
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
+                Button {
+                    text: qsTr("Avatar")
+                    icon.source: "qrc:/resources/images/forward-arrow.svg"
+                    highlighted: false
+                    flat: true
+
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.NoButton
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                    }
+
+                    onClicked: {
+                        if (!authorQMLProvider.openAvatar()) {
+                            dialog.title = qsTr("Unknown error")
+                            dialog.open()
+                        }
+                    }
                 }
 
-                onClicked: {
-                    if (typeof(rootWindow.authorPageUrl) == "object")
-                    {
-                        Qt.openUrlExternally(rootWindow.authorPageUrl)
+                Button {
+                    text: qsTr("Page")
+
+                    icon.source: "qrc:/resources/images/forward-arrow.svg"
+                    highlighted: true
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.NoButton
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                    }
+
+                    onClicked: {
+                        if (!authorQMLProvider.openPage()) {
+                            dialog.title = qsTr("Unknown error")
+                            dialog.open()
+                        }
                     }
                 }
             }
         }
+    }
+
+    Dialog {
+        id: dialog
+        anchors.centerIn: parent
+        modal: true
+        standardButtons: Dialog.Ok
     }
 }
 

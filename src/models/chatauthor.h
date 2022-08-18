@@ -56,7 +56,7 @@ public:
         return _pageUrl;
     }
 
-    inline int messagesSentCurrent() const
+    inline int messagesCount() const
     {
         return _messagesSent;
     }

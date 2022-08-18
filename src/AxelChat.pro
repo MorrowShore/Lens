@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 HEADERS += \
     abstractchatservice.hpp \
     applicationinfo.hpp \
+    authorqmlprovider.h \
     botaction.hpp \
     chatbot.hpp \
     chathandler.hpp \
@@ -37,6 +38,7 @@ HEADERS += \
     youtube.hpp
 
 SOURCES += \
+        authorqmlprovider.cpp \
         botaction.cpp \
         chatbot.cpp \
         chathandler.cpp \
@@ -64,8 +66,7 @@ contains(QT_ARCH, i386)|contains(QT_ARCH, x86_64) {
 }
 
 TRANSLATIONS += \
-    Translation_ru_RU.ts \
-    Translation_ja_JP.ts
+    Translation_ru_RU.ts
 
 CONFIG += lrelease
 CONFIG += embed_translations

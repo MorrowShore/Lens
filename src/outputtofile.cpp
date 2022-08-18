@@ -460,7 +460,7 @@ QByteArray OutputToFile::prepare(const QString &text_)
     return text.toUtf8();
 }
 
-QString OutputToFile::getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString &authorId)
+QString OutputToFile::getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString &authorId) const
 {
     return _outputFolder + "/authors/" + AbstractChatService::serviceTypeToString(serviceType) + "/" + authorId;
 }

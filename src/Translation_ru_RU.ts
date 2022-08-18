@@ -4,17 +4,17 @@
 <context>
     <name>ChatBot</name>
     <message>
-        <location filename="chatbot.cpp" line="254"/>
+        <location filename="chatbot.cpp" line="255"/>
         <source>Custom commands</source>
         <translation>Пользовательские команды</translation>
     </message>
     <message>
-        <location filename="chatbot.cpp" line="261"/>
+        <location filename="chatbot.cpp" line="262"/>
         <source>Built-in commands</source>
         <translation>Встроенные команды</translation>
     </message>
     <message>
-        <location filename="chatbot.cpp" line="272"/>
+        <location filename="chatbot.cpp" line="273"/>
         <source>2nd Channel Edition</source>
         <translation></translation>
     </message>
@@ -34,30 +34,25 @@
         <translation type="vanished">YouTube подключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="283"/>
         <source>YouTube connected</source>
-        <translation>YouTube подключён</translation>
+        <translation type="vanished">YouTube подключён</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="289"/>
         <source>Twitch connected</source>
         <oldsource>Twitch connected: %1</oldsource>
-        <translation>Twitch подключён</translation>
+        <translation type="vanished">Twitch подключён</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="295"/>
         <source>GoodGame connected</source>
-        <translation>GoodGame подключён</translation>
+        <translation type="vanished">GoodGame подключён</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="315"/>
         <source>YouTube disconnected</source>
-        <translation>YouTube отключён</translation>
+        <translation type="vanished">YouTube отключён</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="322"/>
         <source>Twitch disconnected</source>
-        <translation>Twitch отключён</translation>
+        <translation type="vanished">Twitch отключён</translation>
     </message>
     <message>
         <source>YouTube disconnected: %1</source>
@@ -66,6 +61,16 @@
     <message>
         <source>Twitch disconnected: %1</source>
         <translation type="vanished">Twitch отключён: %1</translation>
+    </message>
+    <message>
+        <location filename="chathandler.cpp" line="220"/>
+        <source>%1 connected: %2</source>
+        <translation>%1 подключён: %2</translation>
+    </message>
+    <message>
+        <location filename="chathandler.cpp" line="233"/>
+        <source>%1 disconnected: %2</source>
+        <translation>%1 отключён: %2</translation>
     </message>
 </context>
 <context>
@@ -160,7 +165,7 @@
     <message>
         <location filename="commandsingleeditor.cpp" line="120"/>
         <location filename="commandsingleeditor.cpp" line="127"/>
-        <location filename="commandsingleeditor.cpp" line="205"/>
+        <location filename="commandsingleeditor.cpp" line="199"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -171,13 +176,13 @@
     </message>
     <message>
         <location filename="commandsingleeditor.cpp" line="127"/>
-        <location filename="commandsingleeditor.cpp" line="206"/>
+        <location filename="commandsingleeditor.cpp" line="200"/>
         <source>Sound file not specified</source>
         <translation>Звуковой файл не указан</translation>
     </message>
     <message>
         <location filename="commandsingleeditor.cpp" line="135"/>
-        <location filename="commandsingleeditor.cpp" line="214"/>
+        <location filename="commandsingleeditor.cpp" line="208"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
@@ -187,17 +192,17 @@
         <translation>Файл &quot;%1&quot; не найен. Всё равно сохранить команду?</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="187"/>
+        <location filename="commandsingleeditor.cpp" line="181"/>
         <source>Sound File Openning...</source>
         <translation>Открытие звукового файла...</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="189"/>
+        <location filename="commandsingleeditor.cpp" line="183"/>
         <source>WAV File</source>
         <translation>WAV-файл</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="189"/>
+        <location filename="commandsingleeditor.cpp" line="183"/>
         <source>All Files</source>
         <translation>Все файлы</translation>
     </message>
@@ -210,7 +215,7 @@
         <translation type="vanished">ВСе файлы (*)</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="215"/>
+        <location filename="commandsingleeditor.cpp" line="209"/>
         <source>File &quot;%1&quot; not found</source>
         <translation>Файл &quot;%1&quot; не найден</translation>
     </message>
@@ -262,24 +267,32 @@
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="74"/>
+        <location filename="commandseditor.cpp" line="68"/>
         <source>Sound: %1</source>
         <translation>Звук: %1</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="77"/>
+        <location filename="commandseditor.cpp" line="71"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="132"/>
+        <location filename="commandseditor.cpp" line="126"/>
         <source>Deletion</source>
         <translation>Удаление</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="133"/>
+        <location filename="commandseditor.cpp" line="127"/>
         <source>Are you sure you want to delete the command?</source>
         <translation>Вы уверены, что хотите удалить команду?</translation>
+    </message>
+</context>
+<context>
+    <name>GoodGame</name>
+    <message>
+        <location filename="goodgame.cpp" line="129"/>
+        <source>GoodGame</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -358,7 +371,7 @@
 <context>
     <name>QTranslator</name>
     <message>
-        <location filename="chatmessage.cpp" line="115"/>
+        <location filename="models/chatmessagesmodle.cpp" line="306"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -399,60 +412,70 @@
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="twitch.cpp" line="137"/>
+        <location filename="twitch.cpp" line="135"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="212"/>
+        <location filename="twitch.cpp" line="210"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="217"/>
+        <location filename="twitch.cpp" line="215"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="220"/>
+        <location filename="twitch.cpp" line="218"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="223"/>
+        <location filename="twitch.cpp" line="221"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="226"/>
+        <location filename="twitch.cpp" line="224"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="twitch.cpp" line="379"/>
+        <source>Twitch</source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>YouTube</name>
     <message>
-        <location filename="youtube.cpp" line="313"/>
+        <location filename="youtube.cpp" line="280"/>
+        <source>YouTube</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="youtube.cpp" line="303"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="318"/>
+        <location filename="youtube.cpp" line="308"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="321"/>
+        <location filename="youtube.cpp" line="311"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="324"/>
+        <location filename="youtube.cpp" line="314"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="327"/>
+        <location filename="youtube.cpp" line="317"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -469,22 +492,22 @@
         <translation type="vanished">ID трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="421"/>
+        <location filename="youtube.cpp" line="406"/>
         <source>Broadcast Short URL: %1</source>
         <translation>Короткий URL трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="422"/>
+        <location filename="youtube.cpp" line="407"/>
         <source>Broadcast Long URL: %1</source>
         <translation>Длинный URL трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="423"/>
+        <location filename="youtube.cpp" line="408"/>
         <source>Chat URL: %1</source>
         <translation>URL чата: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="424"/>
+        <location filename="youtube.cpp" line="409"/>
         <source>Control Panel URL: %1</source>
         <translation>URL панели управления: %1</translation>
     </message>
@@ -699,52 +722,42 @@ Latest version available: %2</oldsource>
 <context>
     <name>author_info_window</name>
     <message>
-        <location filename="author_info_window.qml" line="13"/>
         <source>Participant Information</source>
-        <translation>Информация об участнике</translation>
+        <translation type="vanished">Информация об участнике</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="149"/>
         <source>Verified Account</source>
-        <translation>Подтверждённый аккаунт</translation>
+        <translation type="vanished">Подтверждённый аккаунт</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="181"/>
         <source>Open Image</source>
-        <translation>Открыть изображение</translation>
+        <translation type="vanished">Открыть изображение</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="207"/>
         <source>Go To Channel</source>
         <oldsource>Channel</oldsource>
-        <translation>Перейти на канал</translation>
+        <translation type="vanished">Перейти на канал</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="143"/>
         <source>Regular Participant</source>
-        <translation>Обычный участник</translation>
+        <translation type="vanished">Обычный участник</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="163"/>
-        <location filename="author_info_window.qml" line="173"/>
         <source>Messages (current session): %1</source>
         <oldsource>Messages (in the current session): %1</oldsource>
-        <translation>Сообщений (текущая сессия): %1</translation>
+        <translation type="vanished">Сообщений (текущая сессия): %1</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="126"/>
         <source>Channel Author</source>
-        <translation>Автор канала</translation>
+        <translation type="vanished">Автор канала</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="132"/>
         <source>Moderator</source>
-        <translation>Модератор</translation>
+        <translation type="vanished">Модератор</translation>
     </message>
     <message>
-        <location filename="author_info_window.qml" line="138"/>
         <source>Sponsor</source>
-        <translation>Спонсор</translation>
+        <translation type="vanished">Спонсор</translation>
     </message>
     <message>
         <source>Download Image</source>
@@ -753,6 +766,45 @@ Latest version available: %2</oldsource>
     <message>
         <source>Verified</source>
         <translation type="vanished">Проверенный</translation>
+    </message>
+</context>
+<context>
+    <name>author_window</name>
+    <message>
+        <location filename="author_window.qml" line="10"/>
+        <source>Participant Information</source>
+        <translation>Информация об участнике</translation>
+    </message>
+    <message>
+        <location filename="author_window.qml" line="90"/>
+        <source>Messages: %1</source>
+        <translation>Сообщения: %1</translation>
+    </message>
+    <message>
+        <location filename="author_window.qml" line="95"/>
+        <source>Folder</source>
+        <translation>Папка</translation>
+    </message>
+    <message>
+        <location filename="author_window.qml" line="109"/>
+        <source>The folder does not exist or an error occurred</source>
+        <translation>Папка не существует или произошла ошибка</translation>
+    </message>
+    <message>
+        <location filename="author_window.qml" line="116"/>
+        <source>Avatar</source>
+        <translation>Аватар</translation>
+    </message>
+    <message>
+        <location filename="author_window.qml" line="130"/>
+        <location filename="author_window.qml" line="150"/>
+        <source>Unknown error</source>
+        <translation>Неизвестная ошибка</translation>
+    </message>
+    <message>
+        <location filename="author_window.qml" line="137"/>
+        <source>Page</source>
+        <translation>Страница</translation>
     </message>
 </context>
 <context>
@@ -814,7 +866,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прокси</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="203"/>
+        <location filename="setting_pages/common.qml" line="196"/>
         <source>Host name...</source>
         <translation>Имя хоста...</translation>
     </message>
@@ -823,7 +875,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Сервер...</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="224"/>
+        <location filename="setting_pages/common.qml" line="217"/>
         <source>Port...</source>
         <translation>Порт...</translation>
     </message>
@@ -841,27 +893,27 @@ Latest version available: %2</oldsource>
         <translation>Клики мыши будут игнорироваться окном чата. Вернуться в предыдущее состояние можно через иконку в трее</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="100"/>
+        <location filename="setting_pages/common.qml" line="93"/>
         <source>Click-through window</source>
         <translation>Пропускать клики мыши</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="122"/>
+        <location filename="setting_pages/common.qml" line="115"/>
         <source>Clear Messages on Link Change</source>
         <translation>Очистить сообщения при смене ссылки</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="134"/>
+        <location filename="setting_pages/common.qml" line="127"/>
         <source>Enabled Hardware Graphics Accelerator</source>
         <translation>Включить аппаратный ускоритель графики</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="150"/>
+        <location filename="setting_pages/common.qml" line="143"/>
         <source>Enabled HighDpi scaling</source>
         <translation>Включить HighDpi масштабирование</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="255"/>
+        <location filename="setting_pages/common.qml" line="248"/>
         <source>Program folder</source>
         <translation>Папка программы</translation>
     </message>
@@ -870,7 +922,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="166"/>
+        <location filename="setting_pages/common.qml" line="159"/>
         <source>Enable Sound when New Message Received</source>
         <translation>Включить звук при получении нового сообщения</translation>
     </message>
@@ -884,12 +936,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Не обрабатывать ввод</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="188"/>
+        <location filename="setting_pages/common.qml" line="181"/>
         <source>Proxy (SOCKS5)</source>
         <translation>Прокси (SOCKS5)</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="86"/>
+        <location filename="setting_pages/common.qml" line="79"/>
         <source>Stay on Top Window</source>
         <translation>Поверх всех окон</translation>
     </message>
@@ -953,12 +1005,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="860"/>
+        <location filename="main.qml" line="804"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="864"/>
+        <location filename="main.qml" line="808"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
@@ -1323,27 +1375,27 @@ Latest version available: %2</oldsource>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="55"/>
+        <location filename="updatesnotification.qml" line="56"/>
         <source>More Details</source>
         <translation>Подробнее</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="71"/>
+        <location filename="updatesnotification.qml" line="72"/>
         <source>Skip This Version</source>
         <translation>Пропустить эту версию</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="82"/>
+        <location filename="updatesnotification.qml" line="83"/>
         <source>New Version Available %1</source>
         <translation>Доступна новая версия %1</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="99"/>
+        <location filename="updatesnotification.qml" line="100"/>
         <source>Current version: %1</source>
         <translation>Текущая версия: %1</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="123"/>
+        <location filename="updatesnotification.qml" line="124"/>
         <source>Published: %1</source>
         <translation>Опубликовано: %1</translation>
     </message>
@@ -1381,10 +1433,9 @@ Latest version available: %2</oldsource>
         <translation>Чат</translation>
     </message>
     <message>
-        <location filename="setting_pages/youtube.qml" line="153"/>
         <source>Show messages sent before connecting</source>
         <oldsource>Do not show messages sent before connection</oldsource>
-        <translation>Показывать сообщения, отправленные до подключения</translation>
+        <translation type="vanished">Показывать сообщения, отправленные до подключения</translation>
     </message>
     <message>
         <source>Proxy</source>

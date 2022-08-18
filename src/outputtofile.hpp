@@ -43,6 +43,7 @@ public:
     Q_INVOKABLE void showInExplorer();
     void saveAuthorInfo(const ChatAuthor& author);
     void tryDownloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
+    QString getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString& authorId) const;
 
 signals:
     void outputFolderChanged();
@@ -52,7 +53,6 @@ signals:
 private:
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
     QByteArray prepare(const QString& text);
-    QString getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString& authorId);
 
     struct AuthorInfo{
         QString name;

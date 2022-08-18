@@ -5,6 +5,7 @@
 #include "youtube.hpp"
 #include "twitch.hpp"
 #include "goodgame.h"
+#include "authorqmlprovider.h"
 #include <QSettings>
 #include <QMap>
 #include <QDateTime>
@@ -41,8 +42,9 @@ public:
     ChatMessagesModel& getMessagesModel();
 
 #ifndef AXELCHAT_LIBRARY
-    OutputToFile& getOutputToFile() const;
-    ChatBot& getBot() const;
+    OutputToFile& getOutputToFile();
+    ChatBot& getBot();
+    AuthorQMLProvider& getAuthorQMLProvider() { return authorQMLProvider; }
 #endif
 
 #ifdef QT_QUICK_LIB
@@ -108,8 +110,9 @@ private:
     QList<AbstractChatService*> services;
 
 #ifndef AXELCHAT_LIBRARY
-    OutputToFile* _outputToFile             = nullptr;
-    ChatBot* _bot                           = nullptr;
+    OutputToFile _outputToFile;
+    ChatBot _bot;
+    AuthorQMLProvider authorQMLProvider;
 #endif
 
     bool _enabledSoundNewMessage = false;

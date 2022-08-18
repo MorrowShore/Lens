@@ -24,6 +24,9 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     : QObject(parent)
     , settings(settings_)
     , network(network_)
+    , _outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel)
+    , _bot(settings, SettingsGroupPath + "/chat_bot")
+    , authorQMLProvider(messagesModel, _outputToFile)
 {
     setEnabledSoundNewMessage(settings.value(SettingsEnabledSoundNewMessage, _enabledSoundNewMessage).toBool());
 
@@ -32,14 +35,6 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyEnabled(settings.value(SettingsProxyEnabled, _enabledProxy).toBool());
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
-
-#ifndef AXELCHAT_LIBRARY
-    //Bot
-    _bot = new ChatBot(settings, SettingsGroupPath + "/chat_bot", this);
-
-    //Output to file
-    _outputToFile = new OutputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, this);
-#endif
 
     youtube = new YouTube(settings, SettingsGroupPath + "/youtube", network, this);
     addService(*youtube);
@@ -97,19 +92,16 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         return;
     }
 
-    if (_outputToFile)
-    {
-        _outputToFile->writeMessages(messagesValidToAdd);
-    }
+    _outputToFile.writeMessages(messagesValidToAdd);
 
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {
         ChatMessage&& message = std::move(messagesValidToAdd[i]);
 
 #ifndef AXELCHAT_LIBRARY
-        if (_bot && message.authorId() != messagesModel.softwareAuthor().authorId())
+        if (message.authorId() != messagesModel.softwareAuthor().authorId())
         {
-            _bot->processMessage(message);
+            _bot.processMessage(message);
         }
 #endif
 
@@ -187,7 +179,7 @@ void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
         type = service->getServiceType();
     }
 
-    _outputToFile->tryDownloadAvatar(channelId, url, type);
+    _outputToFile.tryDownloadAvatar(channelId, url, type);
     messagesModel.applyAvatar(channelId, url);
 }
 
@@ -198,16 +190,13 @@ void ChatHandler::clearMessages()
 
 void ChatHandler::onStateChanged()
 {
-    if (_outputToFile)
+    if (qobject_cast<YouTube*>(sender()) && youtube)
     {
-        if (qobject_cast<YouTube*>(sender()) && youtube)
-        {
-            _outputToFile->setYouTubeInfo(youtube->getInfo());
-        }
-        else if (qobject_cast<Twitch*>(sender()) && twitch)
-        {
-            _outputToFile->setTwitchInfo(twitch->getInfo());
-        }
+        _outputToFile.setYouTubeInfo(youtube->getInfo());
+    }
+    else if (qobject_cast<Twitch*>(sender()) && twitch)
+    {
+        _outputToFile.setTwitchInfo(twitch->getInfo());
     }
 
     emit viewersTotalCountChanged();
@@ -291,14 +280,14 @@ void ChatHandler::addService(AbstractChatService& service)
 }
 
 #ifndef AXELCHAT_LIBRARY
-ChatBot& ChatHandler::getBot() const
+ChatBot& ChatHandler::getBot()
 {
-    return *_bot;
+    return _bot;
 }
 
-OutputToFile& ChatHandler::getOutputToFile() const
+OutputToFile& ChatHandler::getOutputToFile()
 {
-    return *_outputToFile;
+    return _outputToFile;
 }
 #endif
 
@@ -322,6 +311,7 @@ void ChatHandler::declareQml()
     qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
                                               1, 0, "OutputToFile", "Type cannot be created in QML");
 
+    AuthorQMLProvider::declareQML();
     ChatBot::declareQml();
 }
 #endif

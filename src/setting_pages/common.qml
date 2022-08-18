@@ -36,15 +36,12 @@ ScrollView {
                 model: ListModel {
                     ListElement { text: "English"; }
                     ListElement { text: "Русский"; }
-                    ListElement { text: "日本語 (experimental)"; }
                 }
 
                 property bool enableForEditing: false
                 Component.onCompleted: {
                     if (i18n.language == "ru")
                         currentIndex = 1;
-                    else if (i18n.language == "ja")
-                        currentIndex = 2;
                     else
                         currentIndex = 0;
                     enableForEditing = true;
@@ -60,8 +57,6 @@ ScrollView {
                         i18n.setLanguage("C");
                     if (currentIndex == 1)
                         i18n.setLanguage("ru");
-                    if (currentIndex == 2)
-                        i18n.setLanguage("ja");
                 }
             }
 
@@ -76,8 +71,6 @@ ScrollView {
                         return "qrc:/resources/images/flags/usa.svg";
                     if (comboBoxLanguage.currentIndex === 1)
                         return "qrc:/resources/images/flags/russia.svg";
-                    if (comboBoxLanguage.currentIndex === 2)
-                        return "qrc:/resources/images/flags/japan.svg";
                 }
             }
         }

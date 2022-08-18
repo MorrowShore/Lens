@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("twitch",             &chatHandler.getTwitch());
     engine.rootContext()->setContextProperty("outputToFile",       &chatHandler.getOutputToFile());
     engine.rootContext()->setContextProperty("chatBot",            &chatHandler.getBot());
+    engine.rootContext()->setContextProperty("authorQMLProvider",  &chatHandler.getAuthorQMLProvider());
     engine.rootContext()->setContextProperty("updateChecker",      &github);
     engine.rootContext()->setContextProperty("clipboard",          &clipboard);
     engine.rootContext()->setContextProperty("qmlUtils",           &qmlUtils);
