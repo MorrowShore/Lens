@@ -46,13 +46,15 @@ public slots:
     void setOutputFolder(QString outputFolder);
     void writeMessages(const QList<ChatMessage>& messages);
     Q_INVOKABLE void showInExplorer();
-    void downloadAvatar(const QString &channelId, const QUrl &url, const ChatMessage::Type& service);
+    void saveAuthorInfo(const MessageAuthor& author);
+    void tryDownloadAvatar(const QString& authorId, const QUrl &url, const ChatMessage::Type service);
 
 private slots:
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
 
 private:
     QByteArray prepare(const QString& text);
+    QString getAuthorDirectory(const ChatMessage::Type service, const QString& authorId);
 
     struct AuthorInfo{
         QString name;
@@ -70,11 +72,13 @@ private:
 
     bool _enabled = false;
     QString _outputFolder = standardOutputFolder();
-    QString _intermediateFolder;
+    QString _sessionFolder;
 
     QFile* _fileMessagesCount           = nullptr;
     QFile* _fileMessages                = nullptr;
     QSettings* _iniCurrentInfo          = nullptr;
+
+    const int imageSize = 72;
 
     QString _youTubeLastMessageId;
 
@@ -85,8 +89,6 @@ private:
     AxelChat::GoodGameInfo _goodGameInfo;
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
-
-    QString _sessionFolder;
 
     QSet<QString> downloadedAvatarsAuthorId;
 };

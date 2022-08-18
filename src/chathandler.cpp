@@ -72,9 +72,9 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages)
         /*qDebug(QString("%1: %2")
                .arg(message.authorName).arg(message.text).toUtf8());*/
 
-        const MessageAuthor author = message.author();
+        const MessageAuthor& author = message.author();
 
-        const QString channelId = author.channelId();
+        const QString& channelId = author.channelId();
 
         if (authors.contains(channelId))
         {
@@ -151,7 +151,7 @@ void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
         type = ChatMessage::Type::Twitch;
     }
 
-    _outputToFile->downloadAvatar(channelId, url, type);
+    _outputToFile->tryDownloadAvatar(channelId, url, type);
     messagesModel.applyAvatar(channelId, url);
 }
 

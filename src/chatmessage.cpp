@@ -44,7 +44,7 @@ MessageAuthor MessageAuthor::createFromTwitch(const QString &name, const QString
     author._valid = true;
     author._name = name;
     author._nicknameColor = nicknameColor;
-    author._twitchBadges = badges;
+    author._twitchBadgesUrls = badges.values();
     author._channelId = channelId;
     author._pageUrl = QUrl(QString("https://www.twitch.tv/%1").arg(channelId));
     if (avatarUrl.isValid())
@@ -411,7 +411,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
             if (!message._author.avatarUrl().isValid())
             {
-                const QString channelId = message.author().channelId();
+                const QString& channelId = message.author().channelId();
                 if (!_needUpdateAvatarMessages.contains(channelId))
                 {
                     _needUpdateAvatarMessages.insert(channelId, QSet<uint64_t>());
@@ -783,7 +783,7 @@ QVariant ChatMessagesModel::dataByNumId(const uint64_t &idNum, int role)
     if (_dataByIdNum.contains(idNum))
     {
         const QVariant* data = _dataByIdNum.value(idNum);
-        const ChatMessage& message = qvariant_cast<ChatMessage>(*data);
+        const ChatMessage message = qvariant_cast<ChatMessage>(*data);
         return dataByRole(message, role);
     }
 

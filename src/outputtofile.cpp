@@ -201,7 +201,8 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         case ChatMessage::GoodGame:
         case ChatMessage::YouTube:
         case ChatMessage::Twitch:
-            downloadAvatar(message.author().channelId(), message.author().avatarUrl(), type);
+            tryDownloadAvatar(message.author().channelId(), message.author().avatarUrl(), type);
+            saveAuthorInfo(message.author());
             break;
 
         case ChatMessage::Unknown:
@@ -222,21 +223,33 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + _outputFolder));
 }
 
-void OutputToFile::downloadAvatar(const QString &channelId, const QUrl &url, const ChatMessage::Type& service)
+void OutputToFile::saveAuthorInfo(const MessageAuthor &author)
 {
-    if (url.isEmpty() || downloadedAvatarsAuthorId.contains(channelId) || !_enabled)
+
+}
+
+void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, const ChatMessage::Type service)
+{
+    if (url.isEmpty() || downloadedAvatarsAuthorId.contains(authorId) || !_enabled)
     {
         return;
     }
 
-    const QString serviceId = ChatMessage::convertServiceId(service);
+    const QString urlStr = url.toString();
+    if (!urlStr.contains('/'))
+    {
+        qWarning() << "Url not contains '/'";
+        return;
+    }
 
-    //qDebug() << "Load avatar for" << channelId + "/" + channelId << message.author().avatarUrl();
+    const QString avatarName = urlStr.mid(urlStr.lastIndexOf('/') + 1);
+
+    //qDebug() << "Load avatar " << avatarName << "from" << urlStr;
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, serviceId, channelId]()
+    connect(reply, &QNetworkReply::finished, this, [this, service, authorId, avatarName]()
     {
         QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
         if (!reply)
@@ -246,7 +259,7 @@ void OutputToFile::downloadAvatar(const QString &channelId, const QUrl &url, con
 
         if (reply->bytesAvailable() <= 0)
         {
-            qDebug() << "Failed download, reply is empty, status code =" << reply->errorString() << " avatar =" << channelId;
+            qDebug() << "Failed download, reply is empty, status code =" << reply->errorString() << " avatar =" << avatarName;
             return;
         }
 
@@ -260,11 +273,11 @@ void OutputToFile::downloadAvatar(const QString &channelId, const QUrl &url, con
 
         if (format.isEmpty())
         {
-            qDebug() << "Failed to detect avatar format" << channelId;
+            qDebug() << "Failed to detect avatar format" << avatarName;
             return;
         }
 
-        const QString avatarsDirectory = _sessionFolder + "/avatars/" + serviceId;
+        const QString avatarsDirectory = getAuthorDirectory(service, authorId) + "/avatars";
         QDir dir(avatarsDirectory);
         if (!dir.exists())
         {
@@ -274,21 +287,27 @@ void OutputToFile::downloadAvatar(const QString &channelId, const QUrl &url, con
             }
         }
 
-        const QString fileName = avatarsDirectory + "/" + channelId + "." + format;
+        QString fileName = avatarsDirectory + "/" + avatarName;
+
+        if (!avatarName.endsWith("." + format, Qt::CaseSensitivity::CaseInsensitive))
+        {
+            fileName += "." + format;
+        }
+
         QFile file(fileName);
         if (file.open(QFile::OpenModeFlag::WriteOnly))
         {
             file.write(reply->readAll());
             file.close();
 
-            qDebug() << "Saved avatar" << channelId;
+            qDebug() << "Saved avatar" << avatarName;
         }
         else
         {
             qDebug() << "Failed to save avatar" << fileName;
         }
 
-        downloadedAvatarsAuthorId.insert(channelId);
+        downloadedAvatarsAuthorId.insert(authorId);
 
         reply->deleteLater();
     });
@@ -428,6 +447,11 @@ QByteArray OutputToFile::prepare(const QString &text_)
     qWarning() << Q_FUNC_INFO << "unknown codec";
 
     return text.toUtf8();
+}
+
+QString OutputToFile::getAuthorDirectory(const ChatMessage::Type service, const QString &authorId)
+{
+    return _outputFolder + "/authors/" + ChatMessage::convertServiceId(service) + "/" + authorId;
 }
 
 void OutputToFile::reinit(bool forceUpdateOutputFolder)

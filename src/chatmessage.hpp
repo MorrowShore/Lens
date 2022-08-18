@@ -21,15 +21,15 @@ public:
     MessageAuthor() { };
 
     inline bool valid() const;
-    inline QString channelId() const
+    inline const QString& channelId() const
     {
         return _channelId;
     }
-    inline QString name() const
+    inline const QString& name() const
     {
         return _name;
     }
-    inline QUrl avatarUrl() const
+    inline const QUrl& avatarUrl() const
     {
         return _avatarUrl;
     }
@@ -49,15 +49,15 @@ public:
     {
         return _isChatModerator;
     }
-    inline QUrl customBadgeUrl() const
+    inline const QUrl& customBadgeUrl() const
     {
         return _customBadgeUrl;
     }
-    inline QStringList twitchBadgesUrls() const
+    inline const QStringList& twitchBadgesUrls() const
     {
-        return _twitchBadges.values();
+        return _twitchBadgesUrls;
     }
-    inline QUrl pageUrl() const
+    inline const QUrl& pageUrl() const
     {
         return _pageUrl;
     }
@@ -67,7 +67,7 @@ public:
         return _messagesSentCurrent;
     }
 
-    inline QColor nicknameColor() const
+    inline const QColor& nicknameColor() const
     {
         return _nicknameColor;
     }
@@ -110,7 +110,7 @@ private:
     QString _channelId;
     QString _name;
     QColor _nicknameColor;
-    QMap<QString, QString> _twitchBadges; // <name, url>
+    QStringList _twitchBadgesUrls;
     QUrl _pageUrl;
     QUrl _avatarUrl;
     QUrl _customBadgeUrl;
@@ -198,11 +198,11 @@ public:
     static ChatMessage createSoftwareNotification(const QString& text);
     static ChatMessage createTestMessage         (const QString& text);
 
-    inline QString id() const
+    inline const QString& id() const
     {
         return _id;
     }
-    inline QString text() const
+    inline const QString& text() const
     {
         return _text;
     }
@@ -218,15 +218,15 @@ public:
     {
         return _type;
     }
-    inline QDateTime publishedAt() const
+    inline const QDateTime& publishedAt() const
     {
         return _publishedAt;
     }
-    inline QDateTime receivedAt() const
+    inline const QDateTime& receivedAt() const
     {
         return _receivedAt;
     }
-    inline MessageAuthor author() const
+    inline const MessageAuthor& author() const
     {
         return _author;
     }
