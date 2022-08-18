@@ -17,7 +17,7 @@ ScrollView {
         id: rootColumn
 
         Row {
-            spacing: 6
+            spacing: 10
 
             Label {
                 text: qsTr("Language")
@@ -62,12 +62,7 @@ ScrollView {
                 anchors.verticalCenter: parent.verticalCenter
                 mipmap: true
                 fillMode: Image.PreserveAspectFit
-                source: {
-                    if (comboBoxLanguage.currentIndex === 0)
-                        return "qrc:/resources/images/flags/usa.svg";
-                    if (comboBoxLanguage.currentIndex === 1)
-                        return "qrc:/resources/images/flags/russia.svg";
-                }
+                source: "qrc:/resources/images/language-svgrepo-com.svg"
             }
         }
 

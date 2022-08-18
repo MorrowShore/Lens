@@ -23,9 +23,6 @@
         <file>resources/images/tick.svg</file>
         <file>resources/images/forward-arrow.svg</file>
         <file>resources/sound/ui/beep1.wav</file>
-        <file>resources/images/flags/russia.svg</file>
-        <file>resources/images/flags/uk.svg</file>
-        <file>resources/images/flags/usa.svg</file>
         <file>resources/images/github.svg</file>
         <file>resources/images/feedback.svg</file>
         <file>resources/images/new-release.svg</file>
@@ -65,7 +62,7 @@
         <file>resources/images/heart.svg</file>
         <file>resources/images/goodgame-icon.svg</file>
         <file>resources/images/viewer.svg</file>
-        <file>resources/images/flags/japan.svg</file>
         <file>resources/images/internet-globe.svg</file>
+        <file>resources/images/language-svgrepo-com.svg</file>
     </qresource>
 </RCC>
