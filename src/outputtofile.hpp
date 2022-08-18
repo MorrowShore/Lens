@@ -41,9 +41,9 @@ public:
     void setOutputFolder(QString outputFolder);
     void writeMessages(const QList<ChatMessage>& messages);
     Q_INVOKABLE void showInExplorer();
-    void saveAuthorInfo(const ChatAuthor& author);
     void tryDownloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
     QString getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString& authorId) const;
+    void writeAuthors(const QList<ChatAuthor*>& authors);
 
 signals:
     void outputFolderChanged();
@@ -77,7 +77,7 @@ private:
     QFile* _fileMessages                = nullptr;
     QSettings* _iniCurrentInfo          = nullptr;
 
-    const int imageSize = 72;
+    const int youTubeAvatarSize = 72;
 
     QString _youTubeLastMessageId;
 

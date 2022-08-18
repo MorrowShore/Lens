@@ -1,6 +1,7 @@
 #include "outputtofile.hpp"
 #include "models/chatauthor.h"
 #include "models/chatmessage.h"
+#include "youtube.hpp"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>
@@ -213,7 +214,6 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         case AbstractChatService::ServiceType::YouTube:
         case AbstractChatService::ServiceType::Twitch:
             tryDownloadAvatar(authorId, author->avatarUrl(), type);
-            saveAuthorInfo(*author);
             break;
 
         case AbstractChatService::ServiceType::Unknown:
@@ -234,13 +234,14 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + _outputFolder));
 }
 
-void OutputToFile::saveAuthorInfo(const ChatAuthor& author)
+void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, const AbstractChatService::ServiceType service)
 {
-    const QString fileName = getAuthorDirectory(author.getServiceType(), author.authorId()) + "/info.ini";
-}
+    QUrl url = url_;
+    if (service == AbstractChatService::ServiceType::YouTube)
+    {
+        url = YouTube::createResizedAvatarUrl(url, youTubeAvatarSize);
+    }
 
-void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, const AbstractChatService::ServiceType service)
-{
     if (url.isEmpty() || downloadedAvatarsAuthorId.contains(authorId) || !_enabled)
     {
         return;
@@ -289,8 +290,6 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, c
         }
 
         const QString authorDirectory = getAuthorDirectory(service, authorId);
-
-        const QString authorInfoFileName = authorDirectory + "/info.ini";
 
         const QString avatarsDirectory = authorDirectory + "/avatars";
         QDir dir(avatarsDirectory);
@@ -467,6 +466,50 @@ QByteArray OutputToFile::prepare(const QString &text_)
 QString OutputToFile::getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString &authorId) const
 {
     return _outputFolder + "/authors/" + AbstractChatService::serviceTypeToString(serviceType) + "/" + authorId;
+}
+
+void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
+{
+    if (!_enabled)
+    {
+        return;
+    }
+
+    for (const ChatAuthor* author : authors)
+    {
+        const QString pathDir = getAuthorDirectory(author->getServiceType(), author->authorId());
+        if (!QDir(pathDir).exists())
+        {
+            QDir().mkpath(pathDir);
+        }
+
+        const QString authorFileName = pathDir + "/info.ini";
+        QFile file(authorFileName);
+        if (!file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
+        {
+            qWarning() << "Failed to save" << authorFileName;
+            continue;
+        }
+
+        const QString avatarUrlStr = author->avatarUrl().toString();
+        if (!avatarUrlStr.contains('/'))
+        {
+            qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->authorId() << author->name();
+        }
+
+        const QString avatarName = avatarUrlStr.mid(avatarUrlStr.lastIndexOf('/') + 1);
+
+        file.write("[info]\n");
+        file.write("name=" + prepare(author->name()) + "\n");
+        file.write("id=" + prepare(author->authorId()) + "\n");
+        file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
+        file.write("avatar_name=" + prepare(avatarName) + "\n");
+        file.write("page_url=" + prepare(author->pageUrl().toString()) + "\n");
+        file.write("service=" + prepare(AbstractChatService::serviceTypeToString(author->getServiceType())) + "\n");
+
+        file.flush();
+        file.close();
+    }
 }
 
 void OutputToFile::reinit(bool forceUpdateOutputFolder)

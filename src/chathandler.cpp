@@ -57,11 +57,11 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
     }
 
     QList<ChatMessage> messagesValidToAdd;
+    QList<ChatAuthor*> updatedAuthors;
 
     for (int i = 0; i < messages.count(); ++i)
     {
         ChatMessage&& message = std::move(messages[i]);
-
         if (messagesModel.contains(message.id()) && !message.isDeleterItem())
         {
             continue;
@@ -69,12 +69,14 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
 
         ChatAuthor&& author = std::move(authors[i]);
 
+        ChatAuthor* resultAuthor = nullptr;
         ChatAuthor* prevAuthor = messagesModel.getAuthor(author._authorId);
         if (prevAuthor)
         {
             const auto prevMessagesCount = prevAuthor->_messagesCount;
             *prevAuthor = author;
             prevAuthor->_messagesCount = prevMessagesCount + 1;
+            resultAuthor = prevAuthor;
         }
         else
         {
@@ -82,10 +84,28 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
             *newAuthor = author;
             newAuthor->_messagesCount = 1;
             messagesModel.addAuthor(newAuthor);
+            resultAuthor = newAuthor;
+        }
+
+        if (resultAuthor && !message.isDeleterItem())
+        {
+            switch (resultAuthor->getServiceType())
+            {
+            case AbstractChatService::ServiceType::Unknown:
+            case AbstractChatService::ServiceType::Software:
+            case AbstractChatService::ServiceType::Test:
+                break;
+
+            default:
+                updatedAuthors.append(resultAuthor);
+                break;
+            }
         }
 
         messagesValidToAdd.append(std::move(message));
     }
+
+    _outputToFile.writeAuthors(updatedAuthors);
 
     if (messagesValidToAdd.isEmpty())
     {

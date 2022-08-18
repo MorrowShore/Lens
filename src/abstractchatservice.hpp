@@ -30,13 +30,13 @@ public:
     {
         switch (serviceType)
         {
-        case AbstractChatService::ServiceType::Software: return "softwarenotification";
-        case AbstractChatService::ServiceType::Test: return "testmessage";
+        case AbstractChatService::ServiceType::Unknown: return "unknown";
+        case AbstractChatService::ServiceType::Software: return "software";
+        case AbstractChatService::ServiceType::Test: return "test";
+
         case AbstractChatService::ServiceType::YouTube: return "youtube";
         case AbstractChatService::ServiceType::Twitch: return "twitch";
-        case AbstractChatService::ServiceType::Unknown:
-        default:
-            return "unknown";
+        case AbstractChatService::ServiceType::GoodGame: return "goodgame";
         }
 
         return "unknown";
