@@ -1,6 +1,8 @@
 #include "youtube.hpp"
 #include "types.hpp"
-#include "chatmessage.hpp"
+#include "models/chatmessagesmodle.hpp"
+#include "models/chatauthor.h"
+#include "models/chatmessage.h"
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -602,7 +604,6 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
     if (!_info.broadcastConnected && !_info.broadcastId.isEmpty())
     {
-        qDebug() << "YouTube connected" << _info.broadcastId;
         _info.broadcastConnected = true;
 
         emit connected(_info.broadcastId);
@@ -610,6 +611,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
     }
 
     QList<ChatMessage> messages;
+    QList<ChatAuthor> authors;
 
     foreach (const QJsonValue& actionJson, array)
     {
@@ -898,10 +900,11 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 const ChatMessage& message = ChatMessage::createDeleterFromYouTube(messageText, messageId);
                 messages.append(message);
+                authors.append(ChatAuthor());
             }
             else
             {
-                const MessageAuthor& author = MessageAuthor::createFromYouTube(
+                const ChatAuthor& author = ChatAuthor::createFromYouTube(
                             authorName,
                             authorChannelId,
                             authorAvatarUrl,
@@ -916,18 +919,19 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                             messageId,
                             publishedAt,
                             receivedAt,
-                            author,
+                            authorChannelId,
                             flags,
                             forcedColors);
 
                 messages.append(message);
+                authors.append(author);
 
                 _messagesReceived++;
             }
         }
     }
 
-    emit readyRead(messages);
+    emit readyRead(messages, authors);
     emit stateChanged();
 }
 

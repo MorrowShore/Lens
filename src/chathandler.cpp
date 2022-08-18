@@ -1,4 +1,6 @@
 #include "chathandler.hpp"
+#include "models/chatauthor.h"
+#include "models/chatmessage.h"
 #include <QCoreApplication>
 #ifndef AXELCHAT_LIBRARY
 #include <QDesktopServices>
@@ -36,7 +38,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     _bot = new ChatBot(settings, SettingsGroupPath + "/chat_bot", this);
 
     //Output to file
-    _outputToFile = new OutputToFile(settings, SettingsGroupPath + "/output_to_file", network, this);
+    _outputToFile = new OutputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, this);
 #endif
 
     youtube = new YouTube(settings, SettingsGroupPath + "/youtube", network, this);
@@ -50,14 +52,15 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(*goodGame);
 }
 
-MessageAuthor ChatHandler::getAuthorByChannelId(const QString &channelId) const
-{
-    return authors.value(channelId);
-}
-
 //ToDo: использование ссылок в слотах и сигналах может плохо кончиться! Особенно, если соеденены разные потоки
-void ChatHandler::onReadyRead(QList<ChatMessage>& messages)
+void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors)
 {
+    if (messages.count() != authors.count())
+    {
+        qWarning() << "The number of messages is not equal to the number of authors";
+        return;
+    }
+
     QList<ChatMessage> messagesValidToAdd;
 
     for (int i = 0; i < messages.count(); ++i)
@@ -69,29 +72,22 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages)
             continue;
         }
 
-        /*qDebug(QString("%1: %2")
-               .arg(message.authorName).arg(message.text).toUtf8());*/
+        ChatAuthor&& author = std::move(authors[i]);
 
-        const MessageAuthor& author = message.author();
-
-        const QString& channelId = author.channelId();
-
-        if (authors.contains(channelId))
+        ChatAuthor* prevAuthor = messagesModel.getAuthor(author._authorId);
+        if (prevAuthor)
         {
-            authors[channelId]._messagesSentCurrent++;
+            const auto prevMessagesSent = prevAuthor->_messagesSent;
+            *prevAuthor = author;
+            prevAuthor->_messagesSent = prevMessagesSent + 1;
         }
         else
         {
-            authors[channelId] = author;
-            authors[channelId]._messagesSentCurrent = 1;
+            ChatAuthor* newAuthor = new ChatAuthor();
+            *newAuthor = author;
+            newAuthor->_messagesSent = 1;
+            messagesModel.addAuthor(newAuthor);
         }
-
-#ifndef AXELCHAT_LIBRARY
-        if (_bot && channelId != MessageAuthor::softwareAuthor().channelId())
-        {
-            _bot->processMessage(message);
-        }
-#endif
 
         messagesValidToAdd.append(std::move(message));
     }
@@ -109,6 +105,14 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages)
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {
         ChatMessage&& message = std::move(messagesValidToAdd[i]);
+
+#ifndef AXELCHAT_LIBRARY
+        if (_bot && message.authorId() != messagesModel.softwareAuthor().authorId())
+        {
+            _bot->processMessage(message);
+        }
+#endif
+
         messagesModel.append(std::move(message));
     }
 
@@ -122,8 +126,40 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages)
 
 void ChatHandler::sendTestMessage(const QString &text)
 {
-    QList<ChatMessage> messages = {ChatMessage::createTestMessage(text)};
-    onReadyRead(messages);
+    ChatAuthor author = messagesModel.testAuthor();
+    QList<ChatAuthor> authors;
+    authors.append(author);
+
+    const QString authorId = author.authorId();
+    ChatMessage message(text,
+                        authorId + "/" + QUuid::createUuid().toString(QUuid::Id128),
+                        QDateTime::currentDateTime(),
+                        QDateTime::currentDateTime(),
+                        authorId,
+                        {}, {});
+    QList<ChatMessage> messages;
+    messages.append(message);
+
+    onReadyRead(messages, authors);
+}
+
+void ChatHandler::sendSoftwareMessage(const QString &text)
+{
+    ChatAuthor author = messagesModel.softwareAuthor();
+    QList<ChatAuthor> authors;
+    authors.append(author);
+
+    const QString authorId = author.authorId();
+    ChatMessage message(text,
+                        authorId + "/" + QUuid::createUuid().toString(QUuid::Id128),
+                        QDateTime::currentDateTime(),
+                        QDateTime::currentDateTime(),
+                        authorId,
+                        {}, {});
+    QList<ChatMessage> messages;
+    messages.append(message);
+
+    onReadyRead(messages, authors);
 }
 
 void ChatHandler::playNewMessageSound()
@@ -192,7 +228,7 @@ void ChatHandler::onConnected(QString name)
         return;
     }
 
-    sendNotification(tr("%1 connected: %2").arg(service->getNameLocalized()).arg(name));
+    sendSoftwareMessage(tr("%1 connected: %2").arg(service->getNameLocalized()).arg(name));
 
     emit connectedCountChanged();
 }
@@ -205,7 +241,7 @@ void ChatHandler::onDisconnected(QString name)
         return;
     }
 
-    sendNotification(tr("%1 disconnected: %2").arg(service->getNameLocalized()).arg(name));
+    sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getNameLocalized()).arg(name));
 
     if (_enabledClearMessagesOnLinkChange)
     {
@@ -213,12 +249,6 @@ void ChatHandler::onDisconnected(QString name)
     }
 
     emit connectedCountChanged();
-}
-
-void ChatHandler::sendNotification(const QString &text)
-{
-    QList<ChatMessage> messages = {ChatMessage::createSoftwareNotification(text)};
-    onReadyRead(messages);
 }
 
 void ChatHandler::updateProxy()
@@ -256,7 +286,7 @@ void ChatHandler::addService(AbstractChatService& service)
             return;
         }
 
-        sendNotification(service->getNameLocalized() + ": " + text);
+        sendSoftwareMessage(service->getNameLocalized() + ": " + text);
     });
 }
 
@@ -293,8 +323,6 @@ void ChatHandler::declareQml()
                                               1, 0, "OutputToFile", "Type cannot be created in QML");
 
     ChatBot::declareQml();
-    MessageAuthor::declareQML();
-    ChatMessage::declareQML();
 }
 #endif
 
@@ -358,16 +386,6 @@ int ChatHandler::viewersTotalCount() const
     }
 
     return result;
-}
-
-int ChatHandler::authorMessagesSentCurrent(const QString &channelId) const
-{
-    return authors.value(channelId)._messagesSentCurrent;
-}
-
-QUrl ChatHandler::authorSizedAvatarUrl(const QString &channelId, int height) const
-{
-    return YouTube::createResizedAvatarUrl(authors.value(channelId).avatarUrl(), height);
 }
 
 void ChatHandler::setProxyEnabled(bool enabled)

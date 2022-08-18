@@ -4,9 +4,7 @@ import QtQuick.Window 2.15
 import Qt.labs.settings 1.1
 import QtQuick.Controls.Material 2.12
 import "my_components" as MyComponents
-import AxelChat.MessageAuthor 1.0
 import AxelChat.ChatHandler 1.0
-import AxelChat.ChatMessage 1.0
 
 Window {
     id: rootWindow

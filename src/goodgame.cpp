@@ -1,5 +1,7 @@
 #include "goodgame.h"
-#include "chatmessage.hpp"
+#include "models/chatmessagesmodle.hpp"
+#include "models/chatmessage.h"
+#include "models/chatauthor.h"
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
@@ -138,6 +140,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     if (type == "channel_history")
     {
         QList<ChatMessage> messages;
+        QList<ChatAuthor> authors;
 
         const QJsonArray jsonMessages = data.value("messages").toArray();
         for (const QJsonValue& value : qAsConst(jsonMessages))
@@ -151,15 +154,16 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const qint64 timestamp = qint64(jsonMessage.value("timestamp").toDouble());
             const QString text = jsonMessage.value("text").toString();
 
-            const MessageAuthor author = MessageAuthor::createFromGoodGame(userName, userId, userGroup);
-            const ChatMessage message = ChatMessage::createFromGoodGame(text, QDateTime::fromMSecsSinceEpoch(timestamp), author);
+            const ChatAuthor author = ChatAuthor::createFromGoodGame(userName, userId, userGroup);
+            const ChatMessage message = ChatMessage::createFromGoodGame(text, QDateTime::fromMSecsSinceEpoch(timestamp), userId);
 
             messages.append(message);
+            authors.append(author);
         }
 
         if (!messages.isEmpty())
         {
-            emit readyRead(messages);
+            emit readyRead(messages, authors);
         }
     }
     else if (type == "welcome")

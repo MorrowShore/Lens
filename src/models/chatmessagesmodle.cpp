@@ -1,337 +1,9 @@
-#include "chatmessage.hpp"
+#include "chatmessagesmodle.hpp"
+#include "chatauthor.h"
+#include "chatmessage.h"
 #include <QCoreApplication>
-#include <QUuid>
 #include <QTranslator>
-
-namespace
-{
-
-static const QUrl YouTubeDefaultAvatarUrl   = QUrl("qrc:/resources/images/youtube-rounded.svg");
-static const QUrl TwitchDefaultAvatarUrl    = QUrl("qrc:/resources/images/twitch-round.svg");
-
-}
-
-MessageAuthor MessageAuthor::createFromYouTube(
-        const QString &name,
-        const QString &channelId,
-        const QUrl &avatarUrl,
-        const QUrl badgeUrl,
-        const bool isVerified,
-        const bool isChatOwner,
-        const bool isChatSponsor,
-        const bool isChatModerator)
-{
-    MessageAuthor author;
-
-    author._valid = true;
-    author._name = name;
-    author._channelId = channelId;
-    author._pageUrl = QUrl(QString("https://www.youtube.com/channel/%1").arg(channelId));
-    author._avatarUrl = avatarUrl;
-    author._customBadgeUrl = badgeUrl;
-    author._isVerified = isVerified;
-    author._isChatOwner = isChatOwner;
-    author._isChatSponsor = isChatSponsor;
-    author._isChatModerator = isChatModerator;
-    author._serviceType = AbstractChatService::ServiceType::YouTube;
-
-    return author;
-}
-
-MessageAuthor MessageAuthor::createFromTwitch(const QString &name, const QString &channelId, const QUrl& avatarUrl, const QColor& nicknameColor, const QMap<QString, QString>& badges)
-{
-    MessageAuthor author;
-
-    author._valid = true;
-    author._name = name;
-    author._nicknameColor = nicknameColor;
-    author._twitchBadgesUrls = badges.values();
-    author._channelId = channelId;
-    author._pageUrl = QUrl(QString("https://www.twitch.tv/%1").arg(channelId));
-    if (avatarUrl.isValid())
-    {
-        author._avatarUrl = avatarUrl;
-    }
-
-    author._isVerified = badges.contains("partner/1");
-    author._isChatOwner = badges.contains("broadcaster/1");
-    author._isChatModerator = badges.contains("moderator/1");
-
-    author._serviceType = AbstractChatService::ServiceType::Twitch;
-
-    /*const QList<QString> badgesNames = badges.keys();
-    for (const QString& badgeName : badgesNames)
-    {
-        if (badgeName.startsWith("subscriber/"))
-        {
-            author._isChatSponsor = true;
-            break;
-        }
-    }*/
-
-    return author;
-}
-
-MessageAuthor MessageAuthor::createFromGoodGame(const QString &name, const QString &userId, const int userGroup)
-{
-    MessageAuthor author;
-
-    author._valid = true;
-    author._name = name;
-    //author._nicknameColor = nicknameColor;
-    //author._twitchBadgesUrls = badgesUrls;
-    author._channelId = userId;
-    author._pageUrl = QUrl(QString("https://goodgame.ru/user/%1").arg(userId));
-    /*if (avatarUrl.isValid())
-    {
-        author._avatarUrl = avatarUrl;
-    }
-    else
-    {
-        //author._avatarUrl = TwitchDefaultAvatarUrl;
-    }*/
-
-    author._serviceType = AbstractChatService::ServiceType::GoodGame;
-
-    return author;
-}
-
-MessageAuthor MessageAuthor::_softwareAuthor;
-const MessageAuthor& MessageAuthor::softwareAuthor()
-{
-    if (!_softwareAuthor._valid)
-    {
-        _softwareAuthor._channelId = "____" + QCoreApplication::applicationName() + "____";
-        _softwareAuthor._name = QCoreApplication::applicationName();
-        //_softwareAuthor._avatarUrl = QUrl("qrc:/resources/images/axelchat-rounded.svg");
-
-        //_softwareAuthor._customBadgeUrl = QUrl("qrc:/resources/images/axelchat.svg");
-    }
-
-    return _softwareAuthor;
-}
-
-MessageAuthor MessageAuthor::_testMessageAuthor;
-const MessageAuthor& MessageAuthor::testMessageAuthor()
-{
-    if (!_testMessageAuthor._valid)
-    {
-        _testMessageAuthor._channelId = "____TEST_MESSAGE____";
-        _testMessageAuthor._name = QTranslator::tr("Test Message");
-        //_testMessageAuthor._avatarUrl = QUrl("qrc:/resources/images/flask.svg");
-
-        //_testMessageAuthor._customBadgeUrl = QUrl("qrc:/resources/images/axelchat.svg");
-    }
-
-    return _testMessageAuthor;
-}
-
-
-
-bool MessageAuthor::valid() const
-{
-    return _valid;
-}
-
-ChatMessage ChatMessage::createFromYouTube(const QString& text,
-                                       const QString& id,
-                                       const QDateTime& publishedAt,
-                                       const QDateTime& receivedAt,
-                                       const MessageAuthor& author,
-                                       const QSet<Flags>& flags,
-                                       const QHash<ForcedColorRoles, QColor>& forcedColors)
-{
-    ChatMessage message = ChatMessage();
-
-    message._valid = true;
-    message._text        = text;
-    message._id          = id;
-    message._publishedAt = publishedAt;
-    message._receivedAt  = receivedAt;
-    message._author      = author;
-    message._flags       = flags;
-    message._forcedColors = forcedColors;
-
-    trimCustom(message._text);
-    trimCustom(message._author._name);
-
-    return message;
-}
-
-ChatMessage ChatMessage::createFromTwitch(const QString &text, const QDateTime &receivedAt, const MessageAuthor &author, const QSet<Flags>& flags)
-{
-    ChatMessage message = ChatMessage();
-
-    message._valid = true;
-    message._text        = text;
-    message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
-    message._publishedAt = receivedAt;//ToDo: возможно, это нужно исправить
-    message._receivedAt  = receivedAt;
-    message._author      = author;
-    message._flags       = flags;
-
-    trimCustom(message._text);
-    trimCustom(message._author._name);
-
-    return message;
-}
-
-ChatMessage ChatMessage::createFromGoodGame(const QString &text, const QDateTime &timestamp, const MessageAuthor &author)
-{
-    ChatMessage message = ChatMessage();
-
-    message._valid = true;
-    message._text        = text;
-    message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
-    message._publishedAt = timestamp;//ToDo: возможно, это нужно исправить
-    message._receivedAt  = timestamp;
-    message._author      = author;
-
-    trimCustom(message._text);
-    trimCustom(message._author._name);
-
-    return message;
-}
-
-ChatMessage ChatMessage::createDeleterFromYouTube(const QString& text,const QString& id)
-{
-    ChatMessage message = ChatMessage();
-
-    message._valid         = true;
-    message._text          = text;
-    message._id            = id;
-    message._isDeleterItem = true;
-
-    return message;
-}
-
-ChatMessage ChatMessage::createSoftwareNotification(const QString &text)
-{
-    ChatMessage message = ChatMessage();
-
-    message._valid       = true;
-    message._text        = text;
-    message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
-    message._publishedAt = QDateTime::currentDateTime();
-    message._receivedAt  = QDateTime::currentDateTime();
-    message._author      = MessageAuthor::softwareAuthor();
-
-    return message;
-}
-
-ChatMessage ChatMessage::createTestMessage(const QString &text)
-{
-    ChatMessage message = ChatMessage();
-
-    message._valid       = true;
-    message._text        = text;
-    message._id          = QUuid::createUuid().toString(QUuid::Id128);//ToDo: отказать вовсе того, чтобы id был обязателен
-    message._publishedAt = QDateTime::currentDateTime();
-    message._receivedAt  = QDateTime::currentDateTime();
-    message._author      = MessageAuthor::testMessageAuthor();
-
-    return message;
-}
-
-bool ChatMessage::valid() const
-{
-    return _valid;
-}
-
-QString boolToString(const bool& value)
-{
-    if (value)
-    {
-        return "true";
-    }
-    else
-    {
-        return "false";
-    }
-}
-
-void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
-{
-    QString resultString = prefix;
-    if (!resultString.isEmpty())
-        resultString += "\n";
-
-    resultString += "===========================";
-
-    resultString += "\nAuthor Name: \"" + author().name() + "\"";
-    resultString += "\nMessage Text: \"" + text() + "\"";
-    resultString += "\nMessage Id: \"" + id() + "\"";
-    resultString += QString("\nMessage Id Num: %1").arg(idNum());
-
-    if (row != -1)
-    {
-        resultString += QString("\nMessage Row: %1").arg(row);
-    }
-    else
-    {
-        resultString += "\nMessage Row: failed to retrieve";
-    }
-
-    resultString += "\nMessage Is Valid: " + boolToString(valid());
-    resultString += "\nMessage Is Bot Command: " + boolToString(isBotCommand());
-    resultString += "\nMessage Is Marked as Deleted: " + boolToString(markedAsDeleted());
-    resultString += "\nMessage Is Deleter: " + boolToString(isDeleterItem());
-    //ToDo: message._type message._receivedAt message._publishedAt
-    //ToDo: other author data
-
-    resultString += "\n===========================";
-    qDebug(resultString.toUtf8());
-}
-
-QString ChatMessage::forcedColorRoleToQMLString(const ForcedColorRoles &role) const
-{
-    if (_forcedColors.contains(role) && _forcedColors[role].isValid())
-    {
-        return _forcedColors[role].name(QColor::HexArgb);
-    }
-
-    return QString();
-}
-
-void ChatMessage::trimCustom(QString &text)
-{
-    static const QSet<QChar> trimChars = {
-        ' ',
-        '\n',
-        '\r',
-    };
-
-    int left = 0;
-    int right = 0;
-
-    for (int i = 0; i < text.length(); ++i)
-    {
-        const QChar& c = text[i];
-        if (trimChars.contains(c))
-        {
-            left++;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    for (int i = text.length() - 1; i >= 0; --i)
-    {
-        const QChar& c = text[i];
-        if (trimChars.contains(c))
-        {
-            right++;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    text = text.mid(left, text.length() - left - right);
-}
+#include <QUuid>
 
 const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArray>{
     {MessageId ,              "messageId"},
@@ -375,10 +47,9 @@ void ChatMessagesModel::append(ChatMessage&& message)
 {
     //ToDo: добавить сортировку сообщений по времени
 
-    if (!message.valid())
+    if (message.id().isEmpty())
     {
-        message.printMessageInfo(QString("%1: Ignore not valid message:")
-                                  .arg(Q_FUNC_INFO));
+        message.printMessageInfo("Ignore message with empty id");
         return;
     }
 
@@ -409,16 +80,17 @@ void ChatMessagesModel::append(ChatMessage&& message)
             _dataByIdNum.insert(message._idNum, messageData);
             _idNumByData.insert(messageData, message._idNum);
 
-            if (!message._author.avatarUrl().isValid())
+            const ChatAuthor* author = getAuthor(message.authorId());
+            if (author && !author->avatarUrl().isValid())
             {
-                const QString& channelId = message.author().channelId();
-                if (!_needUpdateAvatarMessages.contains(channelId))
+                const QString& authorId = author->authorId();
+                if (!_needUpdateAvatarMessages.contains(authorId))
                 {
-                    _needUpdateAvatarMessages.insert(channelId, QSet<uint64_t>());
+                    _needUpdateAvatarMessages.insert(authorId, QSet<uint64_t>());
 
                 }
 
-                _needUpdateAvatarMessages[channelId].insert(message._idNum);
+                _needUpdateAvatarMessages[authorId].insert(message._idNum);
             }
 
             _data.append(messageData);
@@ -608,6 +280,46 @@ std::vector<uint64_t> ChatMessagesModel::searchByMessageText(const QString& samp
     return result;
 }
 
+const ChatAuthor &ChatMessagesModel::softwareAuthor()
+{
+    const QString authorId = "____" + QCoreApplication::applicationName() + "____";
+    if (!_authorsById.contains(authorId))
+    {
+        ChatAuthor* author = new ChatAuthor();
+        author->_serviceType = AbstractChatService::ServiceType::Software;
+        author->_authorId = authorId;
+        author->_name = QCoreApplication::applicationName();
+        _authorsById.insert(authorId, author);
+    }
+
+    return *_authorsById.value(authorId);
+}
+
+const ChatAuthor &ChatMessagesModel::testAuthor()
+{
+    const QString authorId = "____TEST_MESSAGE____";
+    if (!_authorsById.contains(authorId))
+    {
+        ChatAuthor* author = new ChatAuthor();
+        author->_serviceType = AbstractChatService::ServiceType::Test;
+        author->_authorId = authorId;
+        author->_name = QTranslator::tr("Test Message");
+        _authorsById.insert(authorId, author);
+    }
+
+    return *_authorsById.value(authorId);
+}
+
+void ChatMessagesModel::addAuthor(ChatAuthor* author)
+{
+    if (!author)
+    {
+        return;
+    }
+
+    _authorsById.insert(author->authorId(), author);
+}
+
 bool ChatMessagesModel::contains(const QString &id)
 {
     return _dataById.contains(id);
@@ -688,7 +400,11 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     case AuthorAvatarUrl:
         if (value.canConvert(QMetaType::QUrl))
         {
-            message._author._avatarUrl = value.toUrl();
+            ChatAuthor* author = getAuthor(message._authorId);
+            if (author)
+            {
+                author->_avatarUrl = value.toUrl();
+            }
         }
         else
         {
@@ -715,15 +431,15 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     return true;
 }
 
-QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role)
+QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) const
 {
+    const ChatAuthor* author = getAuthor(message._authorId);
+
     switch (role) {
     case MessageId:
         return message.id();
     case MessageText:
         return message.text();
-    case AuthorServiceType:
-        return (int)message.author().getServiceType();
     case MessagePublishedAt:
         return message.publishedAt();
     case MessageReceivedAt:
@@ -752,28 +468,30 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role)
     case MessageBodyBackgroundForcedColor:
         return message.forcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);
 
+    case AuthorServiceType:
+        return (int)(author ? author->getServiceType() : AbstractChatService::ServiceType::Unknown);
     case AuthorId:
-        return message.author().channelId();
+        return author ? author->authorId() : QString();
     case AuthorPageUrl:
-        return message.author().pageUrl();
+        return author ? author->pageUrl() : QUrl();
     case AuthorName:
-        return message.author().name();
+        return author ? author->name() : QString();
     case AuthorNicknameColor:
-        return message.author().nicknameColor();
+        return author ? author->nicknameColor() : QColor();
     case AuthorAvatarUrl:
-        return message.author().avatarUrl();
+        return author ? author->avatarUrl() : QUrl();
     case AuthorCustomBadgeUrl:
-        return message.author().customBadgeUrl();
+        return author ? author->customBadgeUrl() : QUrl();
     case AuthorTwitchBadgesUrls:
-        return message.author().twitchBadgesUrls();
+        return author ? author->twitchBadgesUrls() : QStringList();
     case AuthorIsVerified:
-        return message.author().isVerified();
+        return author ? author->isVerified() : false;
     case AuthorIsChatOwner:
-        return message.author().isChatOwner();
+        return author ? author->isChatOwner() : false;
     case AuthorChatSponsor:
-        return message.author().isChatSponsor();
+        return author ? author->isChatSponsor() : false;
     case AuthorChatModerator:
-        return message.author().isChatModerator();
+        return author ? author->isChatModerator() : false;
     }
     return QVariant();
 }

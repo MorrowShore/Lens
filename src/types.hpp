@@ -2,10 +2,10 @@
 
 #include <QString>
 #include <QDateTime>
-#include <QAbstractListModel>
 #include <QUrl>
 #include <QFile>
 #include <QDir>
+#include <QDebug>
 
 namespace AxelChat
 {
@@ -38,20 +38,6 @@ struct TwitchInfo {
     QString detailedInformation;
     bool connected = false;
     int viewers = -1;
-
-    /*bool operator==(const TwitchInfo& other) const
-    {
-        return  channelLogin == other.channelLogin &&
-                userSpecifiedChannel == other.userSpecifiedChannel &&
-                oauthToken == other.oauthToken &&
-                connected == other.connected &&
-                viewers == other.viewers;
-    }
-
-    bool operator!=(const TwitchInfo& other) const
-    {
-        return !(*this == other);
-    }*/
 };
 
 struct GoodGameInfo {
@@ -101,6 +87,7 @@ static QString simplifyUrl(const QString& url)
 
 static void saveDebugDataToFile(const QString& folder, const QString& fileName, const QByteArray& data)
 {
+    return;
 #ifndef AXELCHAT_LIBRARY
 #ifndef QT_NO_DEBUG
     QDir().mkpath(folder);

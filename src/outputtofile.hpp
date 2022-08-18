@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QSettings>
-#include "chatmessage.hpp"
+#include "models/chatmessagesmodle.hpp"
 #include "types.hpp"
 #include "abstractchatservice.hpp"
 
@@ -11,7 +11,7 @@ class OutputToFile : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString outputFolderPath READ outputFolder WRITE setOutputFolder NOTIFY outputFolderChanged)
-    Q_PROPERTY(QString standardOutputFolder READ standardOutputFolder)
+    Q_PROPERTY(QString standardOutputFolder READ standardOutputFolder CONSTANT)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
@@ -22,7 +22,7 @@ public:
         ANSIWithUTF8Codec = 200
     };
 
-    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const ChatMessagesModel& messages, QObject *parent = nullptr);
     ~OutputToFile();
 
     bool enabled() const;
@@ -38,22 +38,19 @@ public:
     Q_INVOKABLE bool setCodecOption(int option, bool applyWithoutReset); // return true if need restart
     Q_INVOKABLE int codecOption() const;
 
+    void setOutputFolder(QString outputFolder);
+    void writeMessages(const QList<ChatMessage>& messages);
+    Q_INVOKABLE void showInExplorer();
+    void saveAuthorInfo(const ChatAuthor& author);
+    void tryDownloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
+
 signals:
     void outputFolderChanged();
     void enabledChanged();
     void youTubeLastMessageIdChanged(const QString& id);
 
-public slots:
-    void setOutputFolder(QString outputFolder);
-    void writeMessages(const QList<ChatMessage>& messages);
-    Q_INVOKABLE void showInExplorer();
-    void saveAuthorInfo(const MessageAuthor& author);
-    void tryDownloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
-
-private slots:
-    void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
-
 private:
+    void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
     QByteArray prepare(const QString& text);
     QString getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString& authorId);
 
@@ -70,6 +67,7 @@ private:
     QSettings& settings;
     const QString SettingsGroupPath;
     QNetworkAccessManager& network;
+    const ChatMessagesModel& messagesModel;
 
     bool _enabled = false;
     QString _outputFolder = standardOutputFolder();

@@ -1,4 +1,6 @@
 #include "outputtofile.hpp"
+#include "models/chatauthor.h"
+#include "models/chatmessage.h"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>
@@ -45,11 +47,12 @@ int getStatusCode(const QNetworkReply& reply)
 
 }
 
-OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
+OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, QObject *parent)
     : QObject(parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)
+    , messagesModel(messagesModel_)
 {
     reinit(true);
 
@@ -169,7 +172,15 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
     {
         const ChatMessage& message = messages[i];
 
-        const AbstractChatService::ServiceType type = message.author().getServiceType();
+        const QString authorId = message.authorId();
+        const ChatAuthor* author = messagesModel.getAuthor(authorId);
+        if (!author)
+        {
+            qWarning() << "Not found author id" << message.authorId();
+            continue;
+        }
+
+        const AbstractChatService::ServiceType type = author->getServiceType();
 
         if (type == AbstractChatService::ServiceType::Unknown ||
             type == AbstractChatService::ServiceType::Test)
@@ -179,15 +190,15 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         QList<QPair<QString, QString>> tags;
 
-        tags.append(QPair<QString, QString>("author", message.author().name()));
-        tags.append(QPair<QString, QString>("author_id", message.author().channelId()));
+        tags.append(QPair<QString, QString>("author", author->name()));
+        tags.append(QPair<QString, QString>("author_id", authorId));
         tags.append(QPair<QString, QString>("message", message.text()));
         tags.append(QPair<QString, QString>("time", message.publishedAt().toTimeZone(QTimeZone::systemTimeZone()).toString(Qt::DateFormat::ISODateWithMs)));
         tags.append(QPair<QString, QString>("service", AbstractChatService::serviceTypeToString(type)));
 
         writeMessage(tags);
 
-        if (message.author().getServiceType() == AbstractChatService::ServiceType::YouTube)
+        if (author->getServiceType() == AbstractChatService::ServiceType::YouTube)
         {
             const QString id = message.id();
             if (!id.isEmpty())
@@ -201,8 +212,8 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         case AbstractChatService::ServiceType::GoodGame:
         case AbstractChatService::ServiceType::YouTube:
         case AbstractChatService::ServiceType::Twitch:
-            tryDownloadAvatar(message.author().channelId(), message.author().avatarUrl(), type);
-            saveAuthorInfo(message.author());
+            tryDownloadAvatar(authorId, author->avatarUrl(), type);
+            saveAuthorInfo(*author);
             break;
 
         case AbstractChatService::ServiceType::Unknown:
@@ -223,9 +234,9 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + _outputFolder));
 }
 
-void OutputToFile::saveAuthorInfo(const MessageAuthor& author)
+void OutputToFile::saveAuthorInfo(const ChatAuthor& author)
 {
-    const QString fileName = getAuthorDirectory(author.getServiceType(), author.channelId()) + "/info.ini";
+    const QString fileName = getAuthorDirectory(author.getServiceType(), author.authorId()) + "/info.ini";
 }
 
 void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, const AbstractChatService::ServiceType service)
@@ -300,7 +311,7 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url, c
             file.write(reply->readAll());
             file.close();
 
-            qDebug() << "Saved avatar" << avatarName;
+            //qDebug() << "Saved avatar" << avatarName;
         }
         else
         {

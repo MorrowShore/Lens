@@ -4,7 +4,6 @@ import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import AxelChat.ChatHandler 1.0
 import AxelChat.UpdateChecker 1.0
-import AxelChat.MessageAuthor 1.0
 import AxelChat.Tray 1.0
 import QtQuick.Window 2.15
 import "my_components" as MyComponents
@@ -360,21 +359,8 @@ ApplicationWindow {
             return visibleArea.yPosition * contentHeight + listMessages.height + 160 >= contentHeight;
         }
     }
-    function openAuthorWindow(authorChannelId,
-                              authorName,
-                              authorServiceType,
-                              authorAvatarUrl,
-                              authorPageUrl,
-                              authorChatModerator,
-                              authorIsChatOwner,
-                              authorChatSponsor,
-                              authorIsVerified)
+    function openAuthorWindow(authorId)
     {
-        if (authorServiceType === Global._SoftwareServiceType || authorServiceType === Global._TestServiceType)
-        {
-            return;
-        }
-
         var posX, posY;
         if (typeof(root.authorInfoWindow) != "undefined")
         {
@@ -414,14 +400,14 @@ ApplicationWindow {
     {
         switch (platform)
         {
-        case Global._YouTubeServiceType:               return "qrc:/resources/images/youtube-icon.svg"
-        case Global._TwitchServiceType:                return "qrc:/resources/images/twitch-icon.svg"
-        case Global._GoodGameServiceType:              return "qrc:/resources/images/goodgame-icon.svg"
+        case Global._YouTubeServiceType:                return "qrc:/resources/images/youtube-icon.svg"
+        case Global._TwitchServiceType:                 return "qrc:/resources/images/twitch-icon.svg"
+        case Global._GoodGameServiceType:               return "qrc:/resources/images/goodgame-icon.svg"
 
-        case Global._SoftwareServiceType:  return "qrc:/resources/images/axelchat-rounded.svg"
-        case Global._TestServiceType:           return "qrc:/resources/images/flask2.svg"
+        case Global._SoftwareServiceType:               return "qrc:/resources/images/axelchat-rounded.svg"
+        case Global._TestServiceType:                   return "qrc:/resources/images/flask2.svg"
 
-        case Global._UnknownServiceType:               return ""
+        case Global._UnknownServiceType:                return ""
         }
 
         return ""
@@ -566,16 +552,9 @@ ApplicationWindow {
                                 return Qt.PointingHandCursor;
                         }
                         onClicked: {
-                            if (hoverEnabled)
-                                openAuthorWindow(authorChannelId,
-                                             authorName,
-                                             authorServiceType,
-                                             authorAvatarUrl,
-                                             authorPageUrl,
-                                             authorChatModerator,
-                                             authorIsChatOwner,
-                                             authorChatSponsor,
-                                             authorIsVerified);
+                            if (hoverEnabled) {
+                                openAuthorWindow(authorId);
+                            }
                         }
                     }
 
@@ -692,16 +671,9 @@ ApplicationWindow {
                             return Qt.PointingHandCursor;
                     }
                     onClicked: {
-                        if (hoverEnabled)
-                            openAuthorWindow(authorChannelId,
-                                         authorName,
-                                         authorServiceType,
-                                         authorAvatarUrl,
-                                         authorPageUrl,
-                                         authorChatModerator,
-                                         authorIsChatOwner,
-                                         authorChatSponsor,
-                                         authorIsVerified);
+                        if (hoverEnabled) {
+                            openAuthorWindow(authorId);
+                        }
                     }
                 }
             }

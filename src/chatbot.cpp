@@ -1,4 +1,5 @@
 #include "chatbot.hpp"
+#include "models/chatmessage.h"
 #include <QSoundEffect>
 #include <QJsonObject>
 #include <QJsonArray>

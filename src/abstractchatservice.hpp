@@ -6,7 +6,7 @@
 #include <QQmlEngine>
 
 class ChatHandler;
-class MessageAuthor;
+class ChatAuthor;
 class ChatMessage;
 
 class AbstractChatService : public QObject
@@ -86,7 +86,7 @@ public:
 signals:
     void stateChanged();
     void detailedInformationChanged();
-    void readyRead(QList<ChatMessage>& messages);
+    void readyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors);
     void connected(QString name);
     void disconnected(QString name);
     void avatarDiscovered(const QString& channelId, const QUrl& url);

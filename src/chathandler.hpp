@@ -34,7 +34,6 @@ class ChatHandler : public QObject
 
 public:
     explicit ChatHandler(QSettings& settings, QNetworkAccessManager& network, QObject *parent = nullptr);
-    MessageAuthor getAuthorByChannelId(const QString& channelId) const;
 
     YouTube& getYoutube();
     Twitch& getTwitch() const;
@@ -59,9 +58,6 @@ public:
     int connectedCount() const;
     int viewersTotalCount() const;
 
-    Q_INVOKABLE int authorMessagesSentCurrent(const QString& channelId) const;
-    Q_INVOKABLE QUrl authorSizedAvatarUrl(const QString& channelId, int height) const;
-
     void setProxyEnabled(bool enabled);
     inline bool proxyEnabled() const { return _enabledProxy; }
 
@@ -81,9 +77,9 @@ signals:
     void messagesDataChanged();
 
 public slots:
-    void onReadyRead(QList<ChatMessage>& messages);
+    void onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors);
     void sendTestMessage(const QString& text);
-    void sendNotification(const QString& text);
+    void sendSoftwareMessage(const QString& text);
     void playNewMessageSound();
     void onAvatarDiscovered(const QString& channelId, const QUrl& url);
     void clearMessages();
@@ -102,7 +98,6 @@ private:
     void addService(AbstractChatService& service);
 
     ChatMessagesModel messagesModel;
-    QMap<QString, MessageAuthor> authors;
 
     QSettings& settings;
     QNetworkAccessManager& network;

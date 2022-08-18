@@ -19,10 +19,12 @@ HEADERS += \
     botaction.hpp \
     chatbot.hpp \
     chathandler.hpp \
-    chatmessage.hpp \
     clipboardqml.hpp \
     commandseditor.h \
     commandsingleeditor.h \
+    models/chatauthor.h \
+    models/chatmessage.h \
+    models/chatmessagesmodle.hpp \
     githubapi.hpp \
     goodgame.h \
     i18n.hpp \
@@ -38,10 +40,12 @@ SOURCES += \
         botaction.cpp \
         chatbot.cpp \
         chathandler.cpp \
-        chatmessage.cpp \
         clipboardqml.cpp \
         commandseditor.cpp \
         commandsingleeditor.cpp \
+        models/chatauthor.cpp \
+        models/chatmessage.cpp \
+        models/chatmessagesmodle.cpp \
         githubapi.cpp \
         goodgame.cpp \
         i18n.cpp \

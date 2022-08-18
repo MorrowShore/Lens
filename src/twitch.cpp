@@ -1,5 +1,7 @@
 #include "twitch.hpp"
-#include "chatmessage.hpp"
+#include "models/chatmessagesmodle.hpp"
+#include "models/chatauthor.h"
+#include "models/chatmessage.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
@@ -81,8 +83,6 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     QObject::connect(&_socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
 
     QObject::connect(&_socket, &QWebSocket::connected, this, [=]() {
-        qDebug() << "Twitch: connected" << _info.channelLogin;
-
         if (_info.connected)
         {
             _info.connected = false;
@@ -103,8 +103,6 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     });
 
     QObject::connect(&_socket, &QWebSocket::disconnected, this, [=](){
-        qDebug() << "Twitch: disconnected";
-
         if (_info.connected)
         {
             _info.connected = false;
@@ -389,6 +387,7 @@ void Twitch::onIRCMessage(const QString &rawData)
     }
 
     QList<ChatMessage> messages;
+    QList<ChatAuthor> authors;
 
     const QVector<QStringRef> rawMessages = rawData.splitRef("\r\n");
     for (const QStringRef& raw : rawMessages)
@@ -623,7 +622,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             displayName = channelLogin;
         }
 
-        const MessageAuthor author = MessageAuthor::createFromTwitch(displayName, channelLogin, avatar, nicknameColor, badges);
+        const ChatAuthor author = ChatAuthor::createFromTwitch(displayName, channelLogin, avatar, nicknameColor, badges);
 
         QString messageText;
         if (emotesInfo.isEmpty())
@@ -662,15 +661,16 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
         }
 
-        const ChatMessage message = ChatMessage::createFromTwitch(messageText, QDateTime::currentDateTime(), author, flags);
+        const ChatMessage message = ChatMessage::createFromTwitch(messageText, QDateTime::currentDateTime(), channelLogin, flags);
         messages.append(message);
+        authors.append(author);
 
         //qDebug() << "Twitch:" << authorName << ":" << messageText;
     }
 
     if (!messages.isEmpty())
     {
-        emit readyRead(messages);
+        emit readyRead(messages, authors);
     }
 }
 
