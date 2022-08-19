@@ -622,13 +622,16 @@ ApplicationWindow {
             MyComponents.ImageRounded {
                 id: avatarImage
                 visible: Global.windowChatMessageShowAvatar
+                cache: false // TODO: need check
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
                          authorServiceType !== Global._TestServiceType &&
                          !messageIsPlatformGeneric;
 
-                height: Global.windowChatMessageAvatarSize
                 width: Global.windowChatMessageAvatarSize
+                height: Global.windowChatMessageAvatarSize
+                sourceSize.width: width
+                sourceSize.height: height
                 mipmap: true
 
                 anchors.verticalCenter: parent.verticalCenter
@@ -637,6 +640,10 @@ ApplicationWindow {
 
                 asynchronous: true
                 source: {
+                    if (!Global.windowChatMessageShowAvatar) {
+                        return "" // Potentialy optimization
+                    }
+
                     if (authorAvatarUrl.toString() !== "")
                     {
                         return authorAvatarUrl;

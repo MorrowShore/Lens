@@ -81,7 +81,7 @@ private:
 
     QHash<QString, ChatAuthor*> _authorsById;
 
-    const int _maxSize  = 10000;
+    const int _maxSize  = 1000;
 
     uint64_t _lastIdNum = 0;
     uint64_t _removedRows = 0;
