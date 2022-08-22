@@ -181,7 +181,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         tags.append(QPair<QString, QString>("author", author->getName()));
         tags.append(QPair<QString, QString>("author_id", authorId));
-        tags.append(QPair<QString, QString>("message", message.getText()));
+        tags.append(QPair<QString, QString>("message", message.getHtml()));
         tags.append(QPair<QString, QString>("time", timeToString(message.getPublishedAt())));
         tags.append(QPair<QString, QString>("service", ChatService::getServiceTypeId(type)));
 

@@ -11,7 +11,7 @@ public:
 
     enum ChatMessageRoles {
         MessageId = Qt::UserRole + 1,
-        MessageText,
+        MessageHtml,
         MessagePublishedAt,
         MessageReceivedAt,
         MessageIsBotCommand,

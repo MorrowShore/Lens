@@ -34,8 +34,117 @@ public:
         BodyBackgroundForcedColorRole
     };
 
+    class Content
+    {
+    public:
+        enum class Type { Unknown, Text, Image , Hyperlink };
+
+        Type getType() const
+        {
+            return type;
+        }
+
+    protected:
+        Content(const Type type_)
+            : type(type_)
+        {
+
+        }
+
+        Type type = Type::Unknown;
+    };
+
+    class Text : public Content
+    {
+    public:
+        struct Style
+        {
+            Style()
+                : bold(false)
+            {}
+
+            bool bold;
+        };
+
+        Text(const QString& text_, const Style& style_ = Style())
+            : Content(Type::Text)
+            , text(text_)
+            , style(style_)
+        {
+        }
+
+        const QString& getText() const
+        {
+            return text;
+        }
+
+        const Style& getStyle() const
+        {
+            return style;
+        }
+
+        Style& getStyle()
+        {
+            return style;
+        }
+
+    private:
+        const QString text;
+        Style style;
+    };
+
+    class Hyperlink : public Content
+    {
+    public:
+        Hyperlink(const QString& text_, const QUrl& url_)
+            : Content(Type::Hyperlink)
+            , text(text_)
+            , url(url_)
+        {
+        }
+
+        const QString& getText() const
+        {
+            return text;
+        }
+
+        const QUrl& getUrl() const
+        {
+            return url;
+        }
+
+    private:
+        const QString text;
+        const QUrl url;
+    };
+
+    class Image : public Content
+    {
+    public:
+        Image(const QUrl& url_, const int height_ = 0)
+            : Content(Type::Image)
+            , url(url_)
+            , height(height_)
+        {
+        }
+
+        const QUrl& getUrl() const
+        {
+            return url;
+        }
+
+        int getHeight() const
+        {
+            return height;
+        }
+
+    private:
+        QUrl url;
+        const int height;
+    };
+
     ChatMessage() { }
-    ChatMessage(const QString& text,
+    ChatMessage(const QList<Content*>& contents,
                 const QString& authorId,
                 const QDateTime& publishedAt = QDateTime::currentDateTime(),
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
@@ -44,16 +153,9 @@ public:
                 const std::set<Flags>& flags = {},
                 const QHash<ForcedColorRoles, QColor>& forcedColors = {});
 
-    static ChatMessage createYouTubeDeleter(const QString& text,
-                                            const QString& id);
-
     inline const QString& getId() const
     {
         return messageId;
-    }
-    inline const QString& getText() const
-    {
-        return text;
     }
     inline const QString& getHtml() const
     {
@@ -95,15 +197,11 @@ public:
     {
         idNum = idNum_;
     }
-    inline void setText(const QString& text_)
-    {
-        text = text_;
-        updateHtml();
-    }
     inline bool isHasFlag(const Flags flag) const
     {
         return flags.find(flag) != flags.end();
     }
+    void setPlainText(const QString& text);
 
     void setFlag(const Flags flag, bool enable);
 
@@ -111,13 +209,13 @@ public:
 
     QString getForcedColorRoleToQMLString(const ForcedColorRoles& role) const;
 
-    static void trimText(QString& text);
     static QString flagToString(const Flags flag);
 
 private:
     void updateHtml();
+    static void trimText(QString& text);
 
-    QString text;
+    QList<Content*> contents;
     QString html;
     QString messageId;
     QDateTime publishedAt;

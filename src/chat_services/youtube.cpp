@@ -2,7 +2,6 @@
 #include "types.hpp"
 #include "models/chatmessagesmodle.hpp"
 #include "models/chatauthor.h"
-#include "models/chatmessage.h"
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -613,7 +612,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         bool valid = false;
         bool isDeleter = false;
 
-        QString messageText;
+        QList<ChatMessage::Content*> contents;
 
         QString messageId;
         const QDateTime& receivedAt = QDateTime::currentDateTime();
@@ -623,6 +622,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         QString authorChannelId;
         QStringList rightBadges;
         QUrl authorAvatarUrl;
+        QMap<QUrl, QList<int>> images;
         std::set<ChatMessage::Flags> messageFlags;
         std::set<ChatAuthor::Flags> authorFlags;
 
@@ -713,14 +713,22 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         itemRenderer.value("timestampUsec").toString().toLongLong() / 1000,
                         Qt::TimeSpec::UTC).toLocalTime();
 
-            tryAppedToText(authorName, itemRenderer, "authorName", false);
+            QList<ChatMessage::Content*> authorNameContent;
+            tryAppedToText(authorNameContent, itemRenderer, "authorName", false);
+            if (!authorNameContent.isEmpty())
+            {
+                if (const ChatMessage::Content* content = authorNameContent.first(); content->getType() == ChatMessage::Content::Type::Text)
+                {
+                    authorName = static_cast<const ChatMessage::Text*>(content)->getText();
+                }
+            }
 
-            tryAppedToText(messageText, itemRenderer, "purchaseAmountText", true);
-            tryAppedToText(messageText, itemRenderer, "headerPrimaryText",  true);
-            tryAppedToText(messageText, itemRenderer, "headerSubtext",      false);
-            tryAppedToText(messageText, itemRenderer, "text",               true);
-            tryAppedToText(messageText, itemRenderer, "subtext",            false);
-            tryAppedToText(messageText, itemRenderer, "message",            false);
+            tryAppedToText(contents, itemRenderer, "purchaseAmountText", true);
+            tryAppedToText(contents, itemRenderer, "headerPrimaryText",  true);
+            tryAppedToText(contents, itemRenderer, "headerSubtext",      false);
+            tryAppedToText(contents, itemRenderer, "text",               true);
+            tryAppedToText(contents, itemRenderer, "subtext",            false);
+            tryAppedToText(contents, itemRenderer, "message",            false);
 
             authorChannelId = itemRenderer
                     .value("authorExternalChannelId").toString();
@@ -802,12 +810,12 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 const QString stickerUrl = createResizedAvatarUrl(stickerThumbnails.first().toObject().value("url").toString(), _stickerSize).toString();
 
-                if (!messageText.isEmpty())
+                if (!contents.isEmpty() && contents.last()->getType() == ChatMessage::Content::Type::Text)
                 {
-                    messageText += "<br>";
+                    contents.append(new ChatMessage::Text("\n"));
                 }
 
-                messageText += QString(" <img align=\"top\" height=\"%1\" width=\"%1\" src=\"%2\"> ").arg(_stickerSize).arg(stickerUrl);
+                contents.append(new ChatMessage::Image(stickerUrl, _stickerSize));
             }
 
             //Other colors: headerBackgroundColor headerTextColor bodyBackgroundColor bodyTextColor authorNameTextColor timestampColor backgroundColor moneyChipBackgroundColor moneyChipTextColor
@@ -836,7 +844,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
             const QJsonObject& markChatItemAsDeletedAction = actionObject.value("markChatItemAsDeletedAction").toObject();
 
-            tryAppedToText(messageText, markChatItemAsDeletedAction, "deletedStateMessage", false);
+            tryAppedToText(contents, markChatItemAsDeletedAction, "deletedStateMessage", false);
 
             messageId = markChatItemAsDeletedAction.value("targetItemId").toString();
 
@@ -850,7 +858,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
             const QJsonObject& markChatItemsByAuthorAsDeletedAction = actionObject.value("markChatItemsByAuthorAsDeletedAction").toObject();
 
-            tryAppedToText(messageText, markChatItemsByAuthorAsDeletedAction, "deletedStateMessage", false);
+            tryAppedToText(contents, markChatItemsByAuthorAsDeletedAction, "deletedStateMessage", false);
 
             messageId = markChatItemsByAuthorAsDeletedAction.value("targetItemId").toString();
 
@@ -880,14 +888,18 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             AxelChat::saveDebugDataToFile(FolderLogs, "unknown_action_structure.json", doc.toJson());
         }
 
-        ChatMessage::trimText(messageText);
-
         if (valid)
         {
             if (isDeleter)
             {
-                const ChatMessage& message = ChatMessage::createYouTubeDeleter(messageText, messageId);
-                messages.append(message);
+                messages.append(ChatMessage(contents,
+                                            QString(),
+                                            QDateTime::currentDateTime(),
+                                            QDateTime::currentDateTime(),
+                                            messageId,
+                                            {},
+                                            {ChatMessage::Flags::DeleterItem}));
+
                 authors.append(ChatAuthor());
             }
             else
@@ -902,12 +914,12 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                                         authorFlags);
 
                 const ChatMessage message(
-                            messageText,
+                            contents,
                             authorChannelId,
                             publishedAt,
                             receivedAt,
                             messageId,
-                            {},
+                            images,
                             messageFlags,
                             forcedColors);
 
@@ -1025,55 +1037,48 @@ void YouTube::processBadLivePageReply()
     }
 }
 
-void YouTube::tryAppedToText(QString &text, const QJsonObject &jsonObject, const QString &varName, bool bold) const
+void YouTube::tryAppedToText(QList<ChatMessage::Content*>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const
 {
     if (!jsonObject.contains(varName))
     {
         return;
     }
 
-    QString newText = parseText(jsonObject.value(varName).toObject());
-    ChatMessage::trimText(newText);
-    if (newText.isEmpty())
+    QList<ChatMessage::Content*> newContents;
+    parseText(jsonObject.value(varName).toObject(), newContents);
+
+    if (!contents.isEmpty() && !newContents.isEmpty())
     {
-        return;
+        if (contents.last()->getType() == ChatMessage::Content::Type::Text && contents.last()->getType() == newContents.first()->getType())
+        {
+            contents.append(new ChatMessage::Text("\n"));
+        }
     }
 
-    if (bold)
+    for (ChatMessage::Content* content : newContents)
     {
-        newText = QString("<b>") + newText + "</b>";
+        if (content->getType() == ChatMessage::Content::Type::Text)
+        {
+            static_cast<ChatMessage::Text*>(content)->getStyle().bold = bold;
+        }
     }
 
-    if (!text.isEmpty())
-    {
-        text += "<br>";
-    }
-
-    text += newText;
+    contents.append(newContents);
 }
 
-QString YouTube::parseText(const QJsonObject &message) const
+void YouTube::parseText(const QJsonObject &message, QList<ChatMessage::Content*>& contents) const
 {
-    QString result;
-
     if (message.contains("simpleText"))
     {
-        QString text_ = message.value("simpleText").toString();
-        if (text_ == "\n")
+        const QString text = message.value("simpleText").toString().trimmed();
+        if (!text.isEmpty())
         {
-            text_ = "<br>";
+            contents.append(new ChatMessage::Text(text));
         }
-
-        result += text_;
     }
 
     if (message.contains("runs"))
     {
-        if (!result.isEmpty() && !result.endsWith("<br>") && !result.endsWith("\n"))
-        {
-            result += "<br>";
-        }
-
         const QJsonArray& runs = message.value("runs").toArray();
 
         for (const QJsonValue& run : runs)
@@ -1094,7 +1099,7 @@ QString YouTube::parseText(const QJsonObject &message) const
                         url = "https://www.youtube.com" + url;
                     }
 
-                    result += "<a href=\"" + url + "\">" + text + "</a>";
+                    contents.append(new ChatMessage::Hyperlink(text, url));
                     continue;
                 }
                 else
@@ -1111,7 +1116,7 @@ QString YouTube::parseText(const QJsonObject &message) const
                     text_ = "<br>";
                 }
 
-                result += text_;
+                contents.append(new ChatMessage::Text(text_));
             }
             else if (runObject.contains("emoji"))
             {
@@ -1121,12 +1126,10 @@ QString YouTube::parseText(const QJsonObject &message) const
 
                 if (!thumbnails.isEmpty())
                 {
-                    //ToDo: можно использовать большие эмодзи
                     const QString empjiUrl = thumbnails.first().toObject().value("url").toString();
                     if (!empjiUrl.isEmpty())
                     {
-                        //qDebug() << empjiUrl;
-                        result += QString(" <img align=\"top\" height=\"%1\" width=\"%1\" src=\"%2\"> ").arg(_emojiPixelSize).arg(empjiUrl);
+                        contents.append(new ChatMessage::Image(empjiUrl, _emojiPixelSize));
                     }
                     else
                     {
@@ -1144,8 +1147,6 @@ QString YouTube::parseText(const QJsonObject &message) const
             }
         }
     }
-
-    return result;
 }
 
 QColor YouTube::intToColor(quint64 rawColor) const

@@ -7,7 +7,7 @@
 
 const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArray>{
     {MessageId ,                    "messageId"},
-    {MessageText ,                  "messageText"},
+    {MessageHtml ,                  "messageHtml"},
     {MessagePublishedAt ,           "messagePublishedAt"},
     {MessageReceivedAt ,            "messageReceivedAt"},
     {MessageIsBotCommand ,          "messageIsBotCommand"},
@@ -137,7 +137,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
                     message.printMessageInfo("Raw message:");
                 }
 
-                if (!setData(index, message.getText(), ChatMessageRoles::MessageText))
+                if (!setData(index, message.getHtml(), ChatMessageRoles::MessageHtml))
                 {
                     qDebug(QString("%1: failed to set data with role ChatMessageRoles::MessageText")
                            .arg(Q_FUNC_INFO).toUtf8());
@@ -322,10 +322,10 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     switch (role) {
     case MessageId:
         return false;
-    case MessageText:
+    case MessageHtml:
         if (value.canConvert(QMetaType::QString))
         {
-            message.setText(value.toString());
+            message.setPlainText(value.toString());
         }
         else
         {
@@ -400,8 +400,8 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
     switch (role) {
     case MessageId:
         return message.getId();
-    case MessageText:
-        return message.getText();
+    case MessageHtml:
+        return message.getHtml();
     case MessagePublishedAt:
         return message.getPublishedAt();
     case MessageReceivedAt:

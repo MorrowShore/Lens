@@ -160,7 +160,9 @@ void ChatHandler::sendTestMessage(const QString &text)
     QList<ChatAuthor> authors;
     authors.append(author);
 
-    ChatMessage message(text, author.getId());
+
+
+    ChatMessage message({new ChatMessage::Text(text)}, author.getId());
     message.setCustomAuthorName(tr("Test Message"));
     message.setCustomAuthorAvatarUrl(QUrl("qrc:/resources/images/flask2.svg"));
 
@@ -177,7 +179,7 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
     authors.append(author);
 
     QList<ChatMessage> messages;
-    messages.append(ChatMessage(text,
+    messages.append(ChatMessage({new ChatMessage::Text(text)},
                                 author.getId(),
                                 QDateTime::currentDateTime(),
                                 QDateTime::currentDateTime(),

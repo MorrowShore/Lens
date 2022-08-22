@@ -1,8 +1,9 @@
 #include "chatmessage.h"
 #include <QUuid>
 #include <QMetaEnum>
+#include <QDebug>
 
-ChatMessage::ChatMessage(const QString &text_,
+ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
                          const QString &authorId_,
                          const QDateTime &publishedAt_,
                          const QDateTime &receivedAt_,
@@ -10,7 +11,7 @@ ChatMessage::ChatMessage(const QString &text_,
                          const QMap<QUrl, QList<int>>& images_,
                          const std::set<Flags> &flags_,
                          const QHash<ForcedColorRoles, QColor> &forcedColors_)
-    : text(text_)
+    : contents(contents_)
     , messageId(messageId_)
     , publishedAt(publishedAt_)
     , receivedAt(receivedAt_)
@@ -27,15 +28,10 @@ ChatMessage::ChatMessage(const QString &text_,
     updateHtml();
 }
 
-ChatMessage ChatMessage::createYouTubeDeleter(const QString& text,const QString& id)
+void ChatMessage::setPlainText(const QString &text)
 {
-    ChatMessage message = ChatMessage();
-
-    message.text         = text;
-    message.messageId    = id;
-    message.flags.insert(ChatMessage::Flags::DeleterItem);
-
-    return message;
+    contents = QList<Content*>({new Text(text)});
+    updateHtml();
 }
 
 void ChatMessage::setFlag(const Flags flag, bool enable)
@@ -155,5 +151,55 @@ QString ChatMessage::flagToString(const Flags flag)
 
 void ChatMessage::updateHtml()
 {
-    //TODO
+    html.clear();
+
+    for (const Content* content : qAsConst(contents))
+    {
+        switch (content->getType())
+        {
+        case Content::Type::Unknown:
+            qWarning() << "Unknown content type";
+            break;
+
+        case Content::Type::Text:
+        {
+            const Text* text = static_cast<const Text*>(content);
+            if (text)
+            {
+                html += text->getText();
+            }
+        }
+            break;
+
+        case ChatMessage::Content::Type::Image:
+        {
+            const Image* image = static_cast<const Image*>(content);
+            if (image)
+            {
+                const QString url = image->getUrl().toString();
+                if (image->getHeight() == 0)
+                {
+                    html += QString(" <img align=\"top\" src=\"%1\"> ").arg(url);
+                }
+                else
+                {
+                    html += QString(" <img align=\"top\" height=\"%1\" width=\"%1\" src=\"%2\"> ").arg(image->getHeight()).arg(url);
+                }
+            }
+        }
+            break;
+
+        case ChatMessage::Content::Type::Hyperlink:
+        {
+            const Hyperlink* hyperlink = static_cast<const Hyperlink*>(content);
+            if (hyperlink)
+            {
+                html += " <a href=\"" + hyperlink->getUrl().toString() + "\">" + hyperlink->getText() + "</a> ";
+            }
+        }
+            break;
+        }
+    }
+
+    trimText(html);
 }

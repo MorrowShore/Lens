@@ -653,7 +653,7 @@ ApplicationWindow {
                 anchors.margins: 4
                 wrapMode: Text.Wrap
                 textFormat: TextEdit.RichText
-                text: messageText
+                text: messageHtml
                 font.weight: messageIsBotCommand ? Font.Black : Font.DemiBold
                 font.italic: messageMarkedAsDeleted || messageIsTwitchAction
                 font.bold: authorServiceType === Global._SoftwareServiceType

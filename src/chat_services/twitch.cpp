@@ -644,13 +644,16 @@ void Twitch::onIRCMessage(const QString &rawData)
                                 authorFlags,
                                 nicknameColor);
 
-        QString messageText;
+        QList<ChatMessage::Content*> contents;
+
         if (emotesInfo.isEmpty())
         {
-            messageText = rawMessageText;
+            contents.append(new ChatMessage::Text(rawMessageText));
         }
         else
         {
+            QString textChunk;
+
             for (int i = 0; i < rawMessageText.length(); ++i)
             {
                 bool needIgnoreChar = false;
@@ -666,22 +669,35 @@ void Twitch::onIRCMessage(const QString &rawData)
 
                         if (i == indexPair.first)
                         {
+                            if (!textChunk.isEmpty())
+                            {
+                                contents.append(new ChatMessage::Text(textChunk));
+                                textChunk.clear();
+                            }
+
                             static const QString sizeUrlPart = "1.0";
                             const QString emoteUrl = QString("https://static-cdn.jtvnw.net/emoticons/v2/%1/default/light/%2").arg(emoteInfo.id, sizeUrlPart);
 
-                            messageText += QString("<img align=\"top\" src=\"%1\">").arg(emoteUrl);
+                            contents.append(new ChatMessage::Image(emoteUrl));
                         }
                     }
                 }
 
                 if (!needIgnoreChar)
                 {
-                    messageText += rawMessageText[i];
+
+                    textChunk += rawMessageText[i];
                 }
+            }
+
+            if (!textChunk.isEmpty())
+            {
+                contents.append(new ChatMessage::Text(textChunk));
+                textChunk.clear();
             }
         }
 
-        const ChatMessage message = ChatMessage(messageText,
+        const ChatMessage message = ChatMessage(contents,
                                                 channelLogin,
                                                 QDateTime::currentDateTime(),
                                                 QDateTime::currentDateTime(),
