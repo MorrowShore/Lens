@@ -81,8 +81,8 @@ private:
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
 
-    const int youTubeAvatarSize = 72;
-    QSet<QString> downloadedAvatarsAuthorId;
+    const int avatarHeight = 72;
+    QSet<QString> needIgnoreDownloadFileNames;
 };
 
 Q_DECLARE_METATYPE(OutputToFile::OutputToFileCodec)
