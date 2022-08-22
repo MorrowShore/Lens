@@ -19,7 +19,7 @@ const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArr
     {MessageIsDonateWithText, "messageIsDonateWithText"},
     {MessageIsDonateWithImage,"messageIsDonateWithImage"},
 
-    {MessageIsPlatformGeneric,          "messageIsPlatformGeneric"},
+    {MessageIsServiceMessage,           "messageIsServiceMessage"},
     {MessageIsYouTubeChatMembership,    "messageIsYouTubeChatMembership"},
     {MessageIsTwitchAction,             "messageIsTwitchAction"},
 
@@ -422,8 +422,8 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
     case MessageIsDonateWithImage:
         return message.isHasFlag(ChatMessage::Flags::DonateWithImage);
 
-    case MessageIsPlatformGeneric:
-        return message.isHasFlag(ChatMessage::Flags::PlatformGeneric);
+    case MessageIsServiceMessage:
+        return message.isHasFlag(ChatMessage::Flags::ServiceMessage);
 
     case MessageIsYouTubeChatMembership:
         return message.isHasFlag(ChatMessage::Flags::YouTubeChatMembership);

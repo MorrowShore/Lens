@@ -381,22 +381,6 @@ ApplicationWindow {
         _textEditObject.select(selectionStart, selectionEnd)
     }
 
-    function getPlatformIcon(platform)
-    {
-        switch (platform)
-        {
-        case Global._YouTubeServiceType:                return youTube.iconUrl
-        case Global._TwitchServiceType:                 return twitch.iconUrl
-        case Global._GoodGameServiceType:               return goodGame.iconUrl
-
-        case Global._SoftwareServiceType:               return "qrc:/resources/images/axelchat-rounded.svg"
-
-        case Global._UnknownServiceType:                return ""
-        }
-
-        return ""
-    }
-
     Component {
         id: messageDelegate
 
@@ -522,7 +506,7 @@ ApplicationWindow {
 
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsPlatformGeneric;
+                        hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsServiceMessage;
                         cursorShape: {
                             if (hoverEnabled)
                                 return Qt.PointingHandCursor;
@@ -551,7 +535,7 @@ ApplicationWindow {
 
                         if (Global.windowChatMessageShowPlatformIcon && authorServiceType !== Global._SoftwareServiceType)
                         {
-                            prefix += createImgTag(getPlatformIcon(authorServiceType), badgePixelSize) + " "
+                            prefix += createImgTag(chatHandler.getQMLServiceIconUrl(authorServiceType), badgePixelSize) + " "
                         }
 
                         var i;
@@ -566,7 +550,19 @@ ApplicationWindow {
                             postfix += createImgTag(authorRightBadgesUrls[i], badgePixelSize) + " "
                         }
 
-                        var name = messageCustomAuthorName.length === 0 ? authorName : messageCustomAuthorName
+                        var name = ""
+
+                        if (name.length === 0) {
+                            name = messageCustomAuthorName
+                        }
+
+                        if (name.length === 0) {
+                            name = authorName
+                        }
+
+                        if (name.length === 0 && messageIsServiceMessage) {
+                            name = chatHandler.getQMLServiceLocalizedName(authorServiceType)
+                        }
 
                         return prefix + name + postfix
                     }
@@ -597,7 +593,7 @@ ApplicationWindow {
                 //cache: false // TODO: need check
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
-                         !messageIsPlatformGeneric &&
+                         !messageIsServiceMessage &&
                          messageCustomAuthorAvatarUrl.toString() === "";
 
                 width: Global.windowChatMessageAvatarSize
@@ -627,12 +623,12 @@ ApplicationWindow {
                         return authorAvatarUrl;
                     }
 
-                    return getPlatformIcon(authorServiceType)
+                    return chatHandler.getQMLServiceIconUrl(authorServiceType)
                 }
 
                 MouseArea {
                     anchors.fill: parent;
-                    hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsPlatformGeneric;
+                    hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsServiceMessage;
                     acceptedButtons: Qt.LeftButton;
                     cursorShape: {
                         if (hoverEnabled)

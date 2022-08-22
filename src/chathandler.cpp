@@ -264,7 +264,7 @@ void ChatHandler::onAuthorNameChanged(const ChatAuthor& author, const QString &p
     if (_enableShowAuthorNameChanged)
     {
         sendSoftwareMessage(tr("%1: \"%2\" changed name to \"%3\"")
-                            .arg(AbstractChatService::serviceTypeToLocalizedName(author.getServiceType()))
+                            .arg(AbstractChatService::getNameLocalized(author.getServiceType()))
                             .arg(prevName)
                             .arg(newName));
     }
@@ -466,6 +466,16 @@ QNetworkProxy ChatHandler::proxy() const
     }
 
     return QNetworkProxy(QNetworkProxy::NoProxy);
+}
+
+QString ChatHandler::getQMLServiceLocalizedName(const int serviceType) const
+{
+    return AbstractChatService::getNameLocalized((AbstractChatService::ServiceType)serviceType);
+}
+
+QUrl ChatHandler::getQMLServiceIconUrl(const int serviceType) const
+{
+    return AbstractChatService::getIconUrl((AbstractChatService::ServiceType)serviceType);
 }
 
 YouTube& ChatHandler::getYoutube()

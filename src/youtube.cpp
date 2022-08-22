@@ -174,11 +174,6 @@ QUrl YouTube::controlPanelUrl() const
     return _info.controlPanelUrl;
 }
 
-QUrl YouTube::getIconUrl() const
-{
-    return QUrl("qrc:/resources/images/youtube-icon.svg");
-}
-
 QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeight)
 {
     //qDebug("Source URL: " + sourceAvatarUrl.toString().toUtf8());
@@ -681,7 +676,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 if (iconType == "POLL")
                 {
                     itemRenderer = std::move(itemRenderer_);
-                    messageFlags.insert(ChatMessage::Flags::PlatformGeneric);
+                    messageFlags.insert(ChatMessage::Flags::ServiceMessage);
                     valid = true;
                 }
                 else if (iconType == "YOUTUBE_ROUND")

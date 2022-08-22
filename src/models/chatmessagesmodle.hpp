@@ -23,7 +23,7 @@ public:
         MessageIsDonateWithText,
         MessageIsDonateWithImage,
 
-        MessageIsPlatformGeneric,
+        MessageIsServiceMessage,
 
         MessageBodyBackgroundForcedColor,
 

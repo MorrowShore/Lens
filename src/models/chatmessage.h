@@ -23,7 +23,7 @@ public:
         DonateWithText,
         DonateWithImage,
 
-        PlatformGeneric,
+        ServiceMessage,
 
         YouTubeChatMembership,
         TwitchAction,

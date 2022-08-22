@@ -74,6 +74,9 @@ public:
 
     QNetworkProxy proxy() const;
 
+    Q_INVOKABLE QString getQMLServiceLocalizedName(const int serviceType) const;
+    Q_INVOKABLE QUrl getQMLServiceIconUrl(const int serviceType) const;
+
 signals:
     void connectedCountChanged();
     void viewersTotalCountChanged();

@@ -33,7 +33,6 @@ public:
     QUrl broadcastLongUrl() const;
     QUrl chatUrl() const override;
     QUrl controlPanelUrl() const override;
-    QUrl getIconUrl() const override;
     Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
 
     qint64 traffic() const override { return _traffic; }

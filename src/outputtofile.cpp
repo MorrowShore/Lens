@@ -183,7 +183,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         tags.append(QPair<QString, QString>("author_id", authorId));
         tags.append(QPair<QString, QString>("message", message.getText()));
         tags.append(QPair<QString, QString>("time", timeToString(message.getPublishedAt())));
-        tags.append(QPair<QString, QString>("service", AbstractChatService::serviceTypeToString(type)));
+        tags.append(QPair<QString, QString>("service", AbstractChatService::getServiceTypeId(type)));
 
         writeMessage(tags);
 
@@ -473,7 +473,7 @@ QByteArray OutputToFile::prepare(const QString &text_)
 
 QString OutputToFile::getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString &authorId) const
 {
-    return outputDirectory.get() + "/authors/" + AbstractChatService::serviceTypeToString(serviceType) + "/" + authorId;
+    return outputDirectory.get() + "/authors/" + AbstractChatService::getServiceTypeId(serviceType) + "/" + authorId;
 }
 
 void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
@@ -511,7 +511,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             file.write("[info]\n");
             file.write("name=" + prepare(author->getName()) + "\n");
             file.write("id=" + prepare(author->getId()) + "\n");
-            file.write("service=" + prepare(AbstractChatService::serviceTypeToString(author->getServiceType())) + "\n");
+            file.write("service=" + prepare(AbstractChatService::getServiceTypeId(author->getServiceType())) + "\n");
             file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
             file.write("avatar_name=" + prepare(avatarName) + "\n");
             file.write("page_url=" + prepare(author->getPageUrl().toString()) + "\n");

@@ -27,7 +27,6 @@ public:
     QUrl chatUrl() const override;
     QUrl controlPanelUrl() const override;
     QUrl broadcastUrl() const override;
-    QUrl getIconUrl() const override;
 
     bool isChannelNameUserSpecified() const;
     QString oauthToken() const { return _info.oauthToken; }

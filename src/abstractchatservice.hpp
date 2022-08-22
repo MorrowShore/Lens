@@ -26,7 +26,7 @@ public:
         GoodGame = 102,
     };
 
-    static QString serviceTypeToString(const AbstractChatService::ServiceType serviceType)
+    static QString getServiceTypeId(const AbstractChatService::ServiceType serviceType)
     {
         switch (serviceType)
         {
@@ -41,7 +41,7 @@ public:
         return "unknown";
     }
 
-    static QString serviceTypeToLocalizedName(const AbstractChatService::ServiceType serviceType)
+    static QString getNameLocalized(const AbstractChatService::ServiceType serviceType)
     {
         switch (serviceType)
         {
@@ -54,6 +54,21 @@ public:
         }
 
         return tr("Unknown");
+    }
+
+    static QUrl getIconUrl(const AbstractChatService::ServiceType serviceType)
+    {
+        switch (serviceType)
+        {
+        case AbstractChatService::ServiceType::Unknown: return QUrl();
+        case AbstractChatService::ServiceType::Software: return QUrl("qrc:/resources/images/axelchat-rounded.svg");
+
+        case AbstractChatService::ServiceType::YouTube: return QUrl("qrc:/resources/images/youtube-icon.svg");
+        case AbstractChatService::ServiceType::Twitch: return QUrl("qrc:/resources/images/twitch-icon.svg");
+        case AbstractChatService::ServiceType::GoodGame: return QUrl("qrc:/resources/images/goodgame-icon.svg");
+        }
+
+        return QUrl();
     }
 
     enum class ConnectionStateType
@@ -85,7 +100,6 @@ public:
     virtual QUrl chatUrl() const { return QString(); }
     virtual QUrl controlPanelUrl() const { return QString(); }
     virtual QUrl broadcastUrl() const { return QString(); }
-    virtual QUrl getIconUrl() const = 0;
 
     virtual ConnectionStateType connectionStateType() const = 0;
     virtual QString stateDescription() const  = 0;
@@ -100,7 +114,12 @@ public:
 
     QString getNameLocalized() const
     {
-        return serviceTypeToLocalizedName(serviceType);
+        return getNameLocalized(serviceType);
+    }
+
+    QUrl getIconUrl() const
+    {
+        return getIconUrl(serviceType);
     }
 
 signals:
