@@ -1110,13 +1110,11 @@ void YouTube::parseText(const QJsonObject &message, QList<ChatMessage::Content*>
 
             if (runObject.contains("text"))
             {
-                QString text_ = runObject.value("text").toString();
-                if (text_ == "\n")
+                const QString text = runObject.value("text").toString();
+                if (!text.isEmpty())
                 {
-                    text_ = "<br>";
+                    contents.append(new ChatMessage::Text(text));
                 }
-
-                contents.append(new ChatMessage::Text(text_));
             }
             else if (runObject.contains("emoji"))
             {

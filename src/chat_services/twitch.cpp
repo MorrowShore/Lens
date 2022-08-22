@@ -648,7 +648,10 @@ void Twitch::onIRCMessage(const QString &rawData)
 
         if (emotesInfo.isEmpty())
         {
-            contents.append(new ChatMessage::Text(rawMessageText));
+            if (!rawMessageText.isEmpty())
+            {
+                contents.append(new ChatMessage::Text(rawMessageText));
+            }
         }
         else
         {
