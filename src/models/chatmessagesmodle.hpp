@@ -61,8 +61,6 @@ public:
     int getRow(QVariant* data);
     void applyAvatar(const QString& channelId, const QUrl& url);
 
-    std::vector<uint64_t> searchByMessageText(const QString& sample, Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitivity::CaseInsensitive);//ToDo: need test
-
     const ChatAuthor& softwareAuthor();
     const ChatAuthor& testAuthor();
 

@@ -47,7 +47,7 @@ signals:
 
 public slots:
     void setVolume(int volume);
-    void processMessage(const ChatMessage& message);
+    void processMessage(ChatMessage& message);
     void execute(BotAction& action);
 
 private:

@@ -68,7 +68,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
             beginInsertRows(QModelIndex(), _data.count(), _data.count());
 
-            message._idNum = _lastIdNum;
+            message.setIdNum(_lastIdNum);
             _lastIdNum++;
 
             QVariant* messageData = new QVariant();
@@ -77,8 +77,8 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
             _idByData.insert(messageData, message.getMessageId());
             _dataById.insert(message.getMessageId(), messageData);
-            _dataByIdNum.insert(message._idNum, messageData);
-            _idNumByData.insert(messageData, message._idNum);
+            _dataByIdNum.insert(message.getIdNum(), messageData);
+            _idNumByData.insert(messageData, message.getIdNum());
 
             const ChatAuthor* author = getAuthor(message.getAuthorId());
             if (author && !author->avatarUrl().isValid())
@@ -90,7 +90,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
                 }
 
-                _needUpdateAvatarMessages[authorId].insert(message._idNum);
+                _needUpdateAvatarMessages[authorId].insert(message.getIdNum());
             }
 
             _data.append(messageData);
@@ -258,28 +258,6 @@ void ChatMessagesModel::applyAvatar(const QString &channelId, const QUrl &url)
     _needUpdateAvatarMessages.remove(channelId);
 }
 
-std::vector<uint64_t> ChatMessagesModel::searchByMessageText(const QString& sample, Qt::CaseSensitivity caseSensitivity)
-{
-    std::vector<uint64_t> result;
-    result.reserve(std::min(_dataByIdNum.size(), 1000));
-
-    for (auto it = _dataByIdNum.begin(); it != _dataByIdNum.end(); ++it)
-    {
-        QVariant*& data = it.value();
-        if (!data)
-        {
-            continue;
-        }
-
-        if (((ChatMessage*&)(data))->_text.contains(sample, caseSensitivity))
-        {
-            result.push_back(it.key());
-        }
-    }
-
-    return result;
-}
-
 const ChatAuthor &ChatMessagesModel::softwareAuthor()
 {
     const QString authorId = "____" + QCoreApplication::applicationName() + "____";
@@ -365,7 +343,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     case MessageText:
         if (value.canConvert(QMetaType::QString))
         {
-            message._text = value.toString();
+            message.setText(value.toString());
         }
         else
         {
@@ -383,7 +361,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     case MessageMarkedAsDeleted:
         if (value.canConvert(QMetaType::Bool))
         {
-            message._markedAsDeleted = value.toBool();
+            message.setMarkedAsDeleted(value.toBool());
         }
         else
         {
@@ -400,7 +378,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     case AuthorAvatarUrl:
         if (value.canConvert(QMetaType::QUrl))
         {
-            ChatAuthor* author = getAuthor(message._authorId);
+            ChatAuthor* author = getAuthor(message.getAuthorId());
             if (author)
             {
                 author->_avatarUrl = value.toUrl();
@@ -433,7 +411,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
 
 QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) const
 {
-    const ChatAuthor* author = getAuthor(message._authorId);
+    const ChatAuthor* author = getAuthor(message.getAuthorId());
 
     switch (role) {
     case MessageId:
@@ -450,20 +428,20 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
         return message.isMarkedAsDeleted();
 
     case MessageIsDonateSimple:
-        return message._flags.contains(ChatMessage::Flags::DonateSimple);
+        return message.getFlags().contains(ChatMessage::Flags::DonateSimple);
     case MessageIsDonateWithText:
-        return message._flags.contains(ChatMessage::Flags::DonateWithText);
+        return message.getFlags().contains(ChatMessage::Flags::DonateWithText);
     case MessageIsDonateWithImage:
-        return message._flags.contains(ChatMessage::Flags::DonateWithImage);
+        return message.getFlags().contains(ChatMessage::Flags::DonateWithImage);
 
     case MessageIsPlatformGeneric:
-        return message._flags.contains(ChatMessage::Flags::PlatformGeneric);
+        return message.getFlags().contains(ChatMessage::Flags::PlatformGeneric);
 
     case MessageIsYouTubeChatMembership:
-        return message._flags.contains(ChatMessage::Flags::YouTubeChatMembership);
+        return message.getFlags().contains(ChatMessage::Flags::YouTubeChatMembership);
 
     case MessageIsTwitchAction:
-        return message._flags.contains(ChatMessage::Flags::TwitchAction);
+        return message.getFlags().contains(ChatMessage::Flags::TwitchAction);
 
     case MessageBodyBackgroundForcedColor:
         return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);

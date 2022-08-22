@@ -142,7 +142,7 @@ void ChatBot::setVolume(int volume)
     }
 }
 
-void ChatBot::processMessage(const ChatMessage &message)
+void ChatBot::processMessage(ChatMessage &message)
 {
     for (BotAction* action : _actions)
     {

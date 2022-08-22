@@ -74,7 +74,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         ChatAuthor&& author = std::move(authors[i]);
 
         ChatAuthor* resultAuthor = nullptr;
-        ChatAuthor* prevAuthor = messagesModel.getAuthor(author._authorId);
+        ChatAuthor* prevAuthor = messagesModel.getAuthor(author.authorId());
         if (prevAuthor)
         {
             const auto prevMessagesCount = prevAuthor->_messagesCount;

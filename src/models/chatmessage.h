@@ -27,7 +27,6 @@ public:
         BodyBackgroundForcedColorRole
     };
 
-    friend class ChatMessagesModel;
     ChatMessage() { }
     ChatMessage(const QString& text,
                 const QString& authorId,
@@ -43,11 +42,15 @@ public:
 
     inline const QString& getMessageId() const
     {
-        return _messageId;
+        return messageId;
     }
     inline const QString& getText() const
     {
-        return _text;
+        return text;
+    }
+    inline const QString& getHtml() const
+    {
+        return html;
     }
     inline bool isBotCommand() const
     {
@@ -59,27 +62,45 @@ public:
     }
     inline const QDateTime& getPublishedAt() const
     {
-        return _publishedAt;
+        return publishedAt;
     }
     inline const QDateTime& getReceivedAt() const
     {
-        return _receivedAt;
+        return receivedAt;
     }
     inline const QString& getAuthorId() const
     {
-        return _authorId;
-    }
-    inline void setIsBotCommand(bool isBotCommand) const
-    {
-        _isBotCommand = isBotCommand;
+        return authorId;
     }
     inline uint64_t getIdNum() const
     {
-        return _idNum;
+        return idNum;
     }
     inline bool isMarkedAsDeleted() const
     {
-        return _markedAsDeleted;
+        return _isMarkedAsDeleted;
+    }
+
+    inline void setIsBotCommand(bool isBotCommand_)
+    {
+        _isBotCommand = isBotCommand_;
+    }
+    inline void setMarkedAsDeleted(bool markedAsDeleted_)
+    {
+        _isMarkedAsDeleted = markedAsDeleted_;
+    }
+    inline void setIdNum(uint64_t idNum_)
+    {
+        idNum = idNum_;
+    }
+    inline void setText(const QString& text_)
+    {
+        text = text_;
+    }
+
+    inline const QSet<Flags>& getFlags() const
+    {
+        return flags;
     }
 
     void printMessageInfo(const QString& prefix, const int& row = -1) const;
@@ -89,20 +110,20 @@ public:
     static void trimText(QString& text);
 
 private:
-    QString _text;
-    QString _messageId;
-    QDateTime _publishedAt;
-    QDateTime _receivedAt;
-    QString _authorId;
-    QSet<Flags> _flags;
-    QHash<ForcedColorRoles, QColor> _forcedColors;
+    QString text;
+    QString html;
+    QString messageId;
+    QDateTime publishedAt;
+    QDateTime receivedAt;
+    QString authorId;
+    QSet<Flags> flags;
+    QHash<ForcedColorRoles, QColor> forcedColors;
     QMap<QUrl, QList<int>> images; // <image url, [image poses]>
 
-    bool _markedAsDeleted = false;
+    uint64_t idNum = 0;
 
-    uint64_t _idNum = 0;
-
-    mutable bool _isBotCommand = false;
+    bool _isMarkedAsDeleted = false;
+    bool _isBotCommand = false;
     bool _isDeleterItem = false;
 };
 

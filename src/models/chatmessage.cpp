@@ -9,18 +9,18 @@ ChatMessage::ChatMessage(const QString &text_,
                          const QMap<QUrl, QList<int>>& images_,
                          const QSet<Flags> &flags_,
                          const QHash<ForcedColorRoles, QColor> &forcedColors_)
-    : _text(text_)
-    , _messageId(messageId_)
-    , _publishedAt(publishedAt_)
-    , _receivedAt(receivedAt_)
-    , _authorId(authorId_)
-    , _flags(flags_)
-    , _forcedColors(forcedColors_)
+    : text(text_)
+    , messageId(messageId_)
+    , publishedAt(publishedAt_)
+    , receivedAt(receivedAt_)
+    , authorId(authorId_)
+    , flags(flags_)
+    , forcedColors(forcedColors_)
     , images(images_)
 {
-    if (_messageId.isEmpty())
+    if (messageId.isEmpty())
     {
-        _messageId = _authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
+        messageId = authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
     }
 }
 
@@ -28,8 +28,8 @@ ChatMessage ChatMessage::createYouTubeDeleter(const QString& text,const QString&
 {
     ChatMessage message = ChatMessage();
 
-    message._text          = text;
-    message._messageId            = id;
+    message.text          = text;
+    message.messageId    = id;
     message._isDeleterItem = true;
 
     return message;
@@ -56,7 +56,7 @@ void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
     resultString += "===========================";
 
     resultString += "\nAuthor Id: \"" + getAuthorId() + "\"";
-    resultString += "\nMessage Text: \"" + getText() + "\"";
+    resultString += "\nMessage Text: \"" + getHtml() + "\"";
     resultString += "\nMessage Id: \"" + getMessageId() + "\"";
     resultString += QString("\nMessage Id Num: %1").arg(getIdNum());
 
@@ -81,9 +81,9 @@ void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
 
 QString ChatMessage::getForcedColorRoleToQMLString(const ForcedColorRoles &role) const
 {
-    if (_forcedColors.contains(role) && _forcedColors[role].isValid())
+    if (forcedColors.contains(role) && forcedColors[role].isValid())
     {
-        return _forcedColors[role].name(QColor::HexArgb);
+        return forcedColors[role].name(QColor::HexArgb);
     }
 
     return QString();
