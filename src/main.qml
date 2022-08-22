@@ -4,6 +4,7 @@ import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import AxelChat.ChatHandler 1.0
 import AxelChat.UpdateChecker 1.0
+import AxelChat.AbstractChatService 1.0
 import AxelChat.Tray 1.0
 import QtQuick.Window 2.15
 import "my_components" as MyComponents
@@ -105,6 +106,11 @@ ApplicationWindow {
         qmlUtils.setValue("windowChatMessageTimeFontSize",          Global.windowChatMessageTimeFontSize)
 
         qmlUtils.setValue("windowChatShowViewersCount",             Global.windowChatShowViewersCount)
+    }
+
+    function createImgHtmlTag(imgurl, size)
+    {
+        return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
     }
 
     onClosing: {
@@ -535,19 +541,19 @@ ApplicationWindow {
 
                         if (Global.windowChatMessageShowPlatformIcon && authorServiceType !== Global._SoftwareServiceType)
                         {
-                            prefix += createImgTag(chatHandler.getQMLServiceIconUrl(authorServiceType), badgePixelSize) + " "
+                            prefix += createImgHtmlTag(chatHandler.getQMLServiceIconUrl(authorServiceType), badgePixelSize) + " "
                         }
 
                         var i;
 
                         for (i = 0; i < authorLeftBadgesUrls.length; i++)
                         {
-                            prefix += createImgTag(authorLeftBadgesUrls[i], badgePixelSize) + " "
+                            prefix += createImgHtmlTag(authorLeftBadgesUrls[i], badgePixelSize) + " "
                         }
 
                         for (i = 0; i < authorRightBadgesUrls.length; i++)
                         {
-                            postfix += createImgTag(authorRightBadgesUrls[i], badgePixelSize) + " "
+                            postfix += createImgHtmlTag(authorRightBadgesUrls[i], badgePixelSize) + " "
                         }
 
                         var name = ""
@@ -565,11 +571,6 @@ ApplicationWindow {
                         }
 
                         return prefix + name + postfix
-                    }
-
-                    function createImgTag(imgurl, size)
-                    {
-                        return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
                     }
                 }
             }
@@ -829,28 +830,24 @@ ApplicationWindow {
                     return ""
                 }
 
-                var t = ""
-                var size = 18
+                var text = ""
 
-                if (youTube.connectionStateType === Global._ConnectedConnectionStateType)
+                for (var i = 0; i < chatHandler.getQMLServicesCount(); ++i)
                 {
-                    t += "<img align=\"middle\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\" src=\"qrc:/resources/images/youtube-icon-18x18.png\">: "
-                    if (youTube.viewersCount !== -1)
-                        t += String("%1   ").arg(youTube.viewersCount)
-                    else
-                        t += "?"
+                    var service = chatHandler.getQMLServiceAtIndex(i)
+
+                    if (service.connectionStateType === Global._ConnectedConnectionStateType)
+                    {
+                        text += createImgHtmlTag(service.iconUrl, 20)
+
+                        if (service.viewersCount !== -1)
+                            text += String("%1   ").arg(service.viewersCount)
+                        else
+                            text += "?   "
+                    }
                 }
 
-                if (twitch.connectionStateType === Global._ConnectedConnectionStateType)
-                {
-                    t += "<img align=\"middle\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\" src=\"qrc:/resources/images/twitch-icon-18x18.png\">: "
-                    if (twitch.viewersCount !== -1)
-                        t += String("%1   ").arg(twitch.viewersCount)
-                    else
-                        t += "?"
-                }
-
-                return t
+                return text
             }
 
         }

@@ -341,6 +341,9 @@ void ChatHandler::declareQml()
     qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
                                               1, 0, "OutputToFile", "Type cannot be created in QML");
 
+    qmlRegisterUncreatableType<AbstractChatService> ("AxelChat.AbstractChatService",
+                                              1, 0, "AbstractChatService", "Type cannot be created in QML");
+
     AuthorQMLProvider::declareQML();
     ChatBot::declareQml();
 }
@@ -468,6 +471,21 @@ QNetworkProxy ChatHandler::proxy() const
     return QNetworkProxy(QNetworkProxy::NoProxy);
 }
 
+int ChatHandler::getQMLServicesCount() const
+{
+    return services.count();
+}
+
+int ChatHandler::getQMLServiceTypeAtIndex(int index) const
+{
+    if (index >= services.count())
+    {
+        return (int)AbstractChatService::ServiceType::Unknown;
+    }
+
+    return (int)services.at(index)->getServiceType();
+}
+
 QString ChatHandler::getQMLServiceLocalizedName(const int serviceType) const
 {
     return AbstractChatService::getNameLocalized((AbstractChatService::ServiceType)serviceType);
@@ -476,6 +494,16 @@ QString ChatHandler::getQMLServiceLocalizedName(const int serviceType) const
 QUrl ChatHandler::getQMLServiceIconUrl(const int serviceType) const
 {
     return AbstractChatService::getIconUrl((AbstractChatService::ServiceType)serviceType);
+}
+
+AbstractChatService *ChatHandler::getQMLServiceAtIndex(int index) const
+{
+    if (index >= services.count())
+    {
+        return nullptr;
+    }
+
+    return services.at(index);
 }
 
 YouTube& ChatHandler::getYoutube()

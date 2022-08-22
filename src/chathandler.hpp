@@ -74,8 +74,11 @@ public:
 
     QNetworkProxy proxy() const;
 
+    Q_INVOKABLE int getQMLServicesCount() const;
+    Q_INVOKABLE int getQMLServiceTypeAtIndex(int index) const;
     Q_INVOKABLE QString getQMLServiceLocalizedName(const int serviceType) const;
     Q_INVOKABLE QUrl getQMLServiceIconUrl(const int serviceType) const;
+    Q_INVOKABLE AbstractChatService* getQMLServiceAtIndex(int index) const;
 
 signals:
     void connectedCountChanged();

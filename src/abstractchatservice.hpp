@@ -90,7 +90,7 @@ public:
 
     Q_PROPERTY(int                  viewersCount                 READ viewersCount                    NOTIFY stateChanged)
 
-    Q_PROPERTY(qint64               traffic                      READ traffic                    NOTIFY stateChanged)
+    Q_PROPERTY(qint64               traffic                      READ traffic                         NOTIFY stateChanged)
 
     explicit AbstractChatService(ServiceType serviceType_, QObject *parent = nullptr)
         : QObject(parent)

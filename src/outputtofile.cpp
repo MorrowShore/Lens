@@ -237,7 +237,7 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
     const QString urlStr = url.toString();
     if (!urlStr.contains('/'))
     {
-        qWarning() << "Url not contains '/'";
+        qWarning() << "Url not contains '/', url =" << urlStr;
         return;
     }
 
@@ -503,7 +503,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             const QString avatarUrlStr = author->getAvatarUrl().toString();
             if (!avatarUrlStr.contains('/'))
             {
-                qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->getId() << author->getName();
+                qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->getId() << ", name =" << author->getName();
             }
 
             const QString avatarName = avatarUrlStr.mid(avatarUrlStr.lastIndexOf('/') + 1);
