@@ -203,7 +203,7 @@ void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
         type = service->getServiceType();
     }
 
-    outputToFile.tryDownloadAvatar(channelId, url, type);
+    outputToFile.downloadAvatar(channelId, url, type);
     messagesModel.applyAvatar(channelId, url);
 }
 

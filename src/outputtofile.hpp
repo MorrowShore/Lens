@@ -42,7 +42,8 @@ public:
     void setOutputFolder(const QString& outputDirectory);
     void writeMessages(const QList<ChatMessage>& messages);
     Q_INVOKABLE void showInExplorer();
-    void tryDownloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
+    void downloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
+    void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, bool ignoreIfExists);
     QString getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString& authorId) const;
     void writeAuthors(const QList<ChatAuthor*>& authors);
 

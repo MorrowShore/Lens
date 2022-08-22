@@ -202,7 +202,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         case AbstractChatService::ServiceType::GoodGame:
         case AbstractChatService::ServiceType::YouTube:
         case AbstractChatService::ServiceType::Twitch:
-            tryDownloadAvatar(authorId, author->avatarUrl(), type);
+            downloadAvatar(authorId, author->avatarUrl(), type);
             break;
 
         case AbstractChatService::ServiceType::Unknown:
@@ -223,7 +223,7 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + outputDirectory.get()));
 }
 
-void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, const AbstractChatService::ServiceType service)
+void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, const AbstractChatService::ServiceType service)
 {
     QUrl url = url_;
     if (service == AbstractChatService::ServiceType::YouTube)
@@ -270,26 +270,35 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
 
     const QString fileName = avatarsDirectory + "/" + avatarName + "." + ImageFileFormat;
 
+    if (QFile(fileName).exists())
+    {
+        needIgnoreDownloadFileNames.insert(fileName);
+    }
+
     if (needIgnoreDownloadFileNames.contains(fileName))
     {
         return;
     }
 
-    if (QFile(fileName).exists())
+    downloadImage(url, fileName, ImageFileFormat, true);
+}
+
+void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const QString& imageFormat, bool ignoreIfExists)
+{
+    if (ignoreIfExists && QFile(fileName).exists())
     {
-        needIgnoreDownloadFileNames.insert(fileName);
+        //qDebug() << "Ignore download image, file" << fileName << "already exists";
         return;
     }
-
-    //qDebug() << "Load avatar " << avatarName << "from" << urlStr;
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, fileName]()
+    connect(reply, &QNetworkReply::finished, this, [this, fileName, imageFormat, ignoreIfExists]()
     {
-        if (needIgnoreDownloadFileNames.contains(fileName))
+        if (ignoreIfExists && QFile(fileName).exists())
         {
+            //qDebug() << "Ignore save image, file" << fileName << "already exists";
             return;
         }
 
@@ -301,29 +310,33 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
 
         if (reply->bytesAvailable() <= 0)
         {
-            qDebug() << "Failed download, reply is empty, status code =" << reply->errorString() << " image =" << fileName;
+            qDebug() << "Failed download image, reply is empty, status code =" << reply->errorString() << ", file name =" << fileName;
             return;
         }
 
         QImage rawImage;
         if (rawImage.loadFromData(reply->readAll()))
         {
-            const QImage scaled = rawImage.scaledToHeight(avatarHeight, Qt::TransformationMode::SmoothTransformation);
+            QImage image = rawImage.scaledToHeight(avatarHeight, Qt::TransformationMode::SmoothTransformation);
 
-            if (scaled.save(fileName, ImageFileFormat.toStdString().c_str()))
+            const char* format = nullptr;
+            if (!imageFormat.isEmpty())
             {
-                qDebug() << "Saved downloaded image" << fileName;
+                format = imageFormat.toStdString().c_str();
+            }
+
+            if (image.save(fileName, format))
+            {
+                qDebug() << "Downloaded image" << fileName;
             }
             else
             {
-                qWarning() << "Failed to save downloaded image" << fileName;
+                qWarning() << "Failed to save downloaded image, file name =" << fileName;
             }
-
-            needIgnoreDownloadFileNames.insert(fileName);
         }
         else
         {
-            qWarning() << "Failed to open downloaded image" << fileName;
+            qWarning() << "Failed to read downloaded image, file name" << fileName;
         }
 
         reply->deleteLater();
