@@ -203,5 +203,5 @@ void ChatMessage::updateHtml()
 
     trimText(html);
 
-    html = html.replace('\n', "");
+    html = html.replace('\n', "<br>");
 }
