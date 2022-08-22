@@ -78,8 +78,6 @@ private:
     QFile* _fileMessages                = nullptr;
     QSettings* _iniCurrentInfo          = nullptr;
 
-    const int youTubeAvatarSize = 72;
-
     QString _youTubeLastMessageId;
 
     OutputToFileCodec _codec = OutputToFileCodec::UTF8Codec;
@@ -90,6 +88,7 @@ private:
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
 
+    const int youTubeAvatarSize = 72;
     QSet<QString> downloadedAvatarsAuthorId;
 };
 

@@ -268,6 +268,11 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
     QNetworkReply* reply = network.get(request);
     connect(reply, &QNetworkReply::finished, this, [this, service, authorId, avatarName]()
     {
+        if (downloadedAvatarsAuthorId.contains(authorId))
+        {
+            return;
+        }
+
         QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
         if (!reply)
         {
@@ -277,20 +282,6 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
         if (reply->bytesAvailable() <= 0)
         {
             qDebug() << "Failed download, reply is empty, status code =" << reply->errorString() << " avatar =" << avatarName;
-            return;
-        }
-
-        QByteArray format;
-
-        {
-            format = QImageReader(reply).format();
-        }
-
-        format = format.trimmed().toLower();
-
-        if (format.isEmpty())
-        {
-            qDebug() << "Failed to detect avatar format" << avatarName;
             return;
         }
 
@@ -306,27 +297,33 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
             }
         }
 
+        static const QString ImageFileFormat = "png";
+
         QString fileName = avatarsDirectory + "/" + avatarName;
 
-        if (!avatarName.endsWith("." + format, Qt::CaseSensitivity::CaseInsensitive))
+        if (!avatarName.endsWith("." + ImageFileFormat, Qt::CaseSensitivity::CaseInsensitive))
         {
-            fileName += "." + format;
+            fileName += "." + ImageFileFormat;
         }
 
-        QFile file(fileName);
-        if (file.open(QFile::OpenModeFlag::WriteOnly))
+        QImage image;
+        if (image.loadFromData(reply->readAll()))
         {
-            file.write(reply->readAll());
-            file.close();
+            if (image.save(fileName, ImageFileFormat.toStdString().c_str()))
+            {
+                qDebug() << "Saved downloaded image" << fileName;
+            }
+            else
+            {
+                qWarning() << "Failed to save downloaded image" << fileName;
+            }
 
-            //qDebug() << "Saved avatar" << avatarName;
+            downloadedAvatarsAuthorId.insert(authorId);
         }
         else
         {
-            qDebug() << "Failed to save avatar" << fileName;
+            qWarning() << "Failed to open downloaded image" << avatarName;
         }
-
-        downloadedAvatarsAuthorId.insert(authorId);
 
         reply->deleteLater();
     });
