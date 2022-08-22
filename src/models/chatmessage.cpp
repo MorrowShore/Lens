@@ -202,4 +202,6 @@ void ChatMessage::updateHtml()
     }
 
     trimText(html);
+
+    html = html.replace('\n', "");
 }
