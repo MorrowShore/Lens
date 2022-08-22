@@ -622,7 +622,7 @@ ApplicationWindow {
             MyComponents.ImageRounded {
                 id: avatarImage
                 visible: Global.windowChatMessageShowAvatar
-                cache: false // TODO: need check
+                //cache: false // TODO: need check
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
                          authorServiceType !== Global._TestServiceType &&
