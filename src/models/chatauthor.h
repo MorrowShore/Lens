@@ -18,9 +18,6 @@ public:
         Verified,
     };
 
-    friend class ChatHandler;
-    friend class ChatMessagesModel;
-
     ChatAuthor() { };
     ChatAuthor(AbstractChatService::ServiceType serviceType,
                const QString& name,
