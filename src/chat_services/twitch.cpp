@@ -70,7 +70,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 }
 
 Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-  : AbstractChatService(AbstractChatService::ServiceType::Twitch, parent)
+  : ChatService(ChatService::ServiceType::Twitch, parent)
   , settings(settings_)
   , SettingsGroupPath(settingsGroupPath)
   , network(network_)
@@ -187,18 +187,18 @@ Twitch::~Twitch()
     emit stateChanged();
 }
 
-AbstractChatService::ConnectionStateType Twitch::connectionStateType() const
+ChatService::ConnectionStateType Twitch::connectionStateType() const
 {
     if (_info.connected)
     {
-        return AbstractChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionStateType::Connected;
     }
     else if (!_info.oauthToken.isEmpty() && !_info.channelLogin.isEmpty())
     {
-        return AbstractChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionStateType::Connecting;
     }
 
-    return AbstractChatService::ConnectionStateType::NotConnected;
+    return ChatService::ConnectionStateType::NotConnected;
 }
 
 QString Twitch::stateDescription() const
@@ -634,7 +634,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             authorFlags.insert(ChatAuthor::Flags::Moderator);
         }
 
-        const ChatAuthor author(AbstractChatService::ServiceType::Twitch,
+        const ChatAuthor author(ChatService::ServiceType::Twitch,
                                 displayName,
                                 channelLogin,
                                 avatar,

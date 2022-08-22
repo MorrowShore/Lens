@@ -41,8 +41,8 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
 
-    youtube = new YouTube(settings, SettingsGroupPath + "/youtube", network, this);
-    addService(*youtube);
+    youTube = new YouTube(settings, SettingsGroupPath + "/youtube", network, this);
+    addService(*youTube);
 
     twitch = new Twitch(settings, SettingsGroupPath + "/twitch", network, this);
     connect(twitch, &Twitch::avatarDiscovered, this, &ChatHandler::onAvatarDiscovered);
@@ -50,6 +50,21 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
 
     goodGame = new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this);
     addService(*goodGame);
+}
+
+YouTube &ChatHandler::getYoutube()
+{
+    return *youTube;
+}
+
+Twitch &ChatHandler::getTwitch() const
+{
+    return *twitch;
+}
+
+GoodGame &ChatHandler::getGoodGame() const
+{
+    return *goodGame;
 }
 
 void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors)
@@ -95,8 +110,8 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         {
             switch (resultAuthor->getServiceType())
             {
-            case AbstractChatService::ServiceType::Unknown:
-            case AbstractChatService::ServiceType::Software:
+            case ChatService::ServiceType::Unknown:
+            case ChatService::ServiceType::Software:
                 break;
 
             default:
@@ -191,8 +206,8 @@ void ChatHandler::playNewMessageSound()
 
 void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
 {
-    AbstractChatService::ServiceType type = AbstractChatService::ServiceType::Unknown;
-    AbstractChatService* service = qobject_cast<AbstractChatService*>(sender());
+    ChatService::ServiceType type = ChatService::ServiceType::Unknown;
+    ChatService* service = qobject_cast<ChatService*>(sender());
     if (service)
     {
         type = service->getServiceType();
@@ -209,11 +224,11 @@ void ChatHandler::clearMessages()
 
 void ChatHandler::onStateChanged()
 {
-    if (qobject_cast<YouTube*>(sender()) && youtube)
+    if (YouTube* youTube = qobject_cast<YouTube*>(sender()); youTube)
     {
-        outputToFile.setYouTubeInfo(youtube->getInfo());
+        outputToFile.setYouTubeInfo(youTube->getInfo());
     }
-    else if (qobject_cast<Twitch*>(sender()) && twitch)
+    else if (qobject_cast<Twitch*>(sender()); twitch)
     {
         outputToFile.setTwitchInfo(twitch->getInfo());
     }
@@ -230,7 +245,7 @@ void ChatHandler::openProgramFolder()
 
 void ChatHandler::onConnected(QString name)
 {
-    AbstractChatService* service = qobject_cast<AbstractChatService*>(sender());
+    ChatService* service = qobject_cast<ChatService*>(sender());
     if (!service)
     {
         return;
@@ -243,7 +258,7 @@ void ChatHandler::onConnected(QString name)
 
 void ChatHandler::onDisconnected(QString name)
 {
-    AbstractChatService* service = qobject_cast<AbstractChatService*>(sender());
+    ChatService* service = qobject_cast<ChatService*>(sender());
     if (!service)
     {
         return;
@@ -264,7 +279,7 @@ void ChatHandler::onAuthorNameChanged(const ChatAuthor& author, const QString &p
     if (_enableShowAuthorNameChanged)
     {
         sendSoftwareMessage(tr("%1: \"%2\" changed name to \"%3\"")
-                            .arg(AbstractChatService::getNameLocalized(author.getServiceType()))
+                            .arg(ChatService::getNameLocalized(author.getServiceType()))
                             .arg(prevName)
                             .arg(newName));
     }
@@ -281,7 +296,7 @@ void ChatHandler::updateProxy()
         network.setProxy(QNetworkProxy(QNetworkProxy::NoProxy));
     }
 
-    for (AbstractChatService* chat : qAsConst(services))
+    for (ChatService* chat : qAsConst(services))
     {
         chat->reconnect();
     }
@@ -289,17 +304,17 @@ void ChatHandler::updateProxy()
     emit proxyChanged();
 }
 
-void ChatHandler::addService(AbstractChatService& service)
+void ChatHandler::addService(ChatService& service)
 {
     services.append(&service);
 
-    connect(&service, &AbstractChatService::readyRead, this, &ChatHandler::onReadyRead);
-    connect(&service, &AbstractChatService::connected, this, &ChatHandler::onConnected);
-    connect(&service, &AbstractChatService::disconnected, this, &ChatHandler::onDisconnected);
-    connect(&service, &AbstractChatService::stateChanged, this, &ChatHandler::onStateChanged);
-    connect(&service, &AbstractChatService::needSendNotification, this, [this](const QString& text)
+    connect(&service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
+    connect(&service, &ChatService::connected, this, &ChatHandler::onConnected);
+    connect(&service, &ChatService::disconnected, this, &ChatHandler::onDisconnected);
+    connect(&service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
+    connect(&service, &ChatService::needSendNotification, this, [this](const QString& text)
     {
-        AbstractChatService* service = qobject_cast<AbstractChatService*>(sender());
+        ChatService* service = qobject_cast<ChatService*>(sender());
         if (!service)
         {
             return;
@@ -341,8 +356,8 @@ void ChatHandler::declareQml()
     qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
                                               1, 0, "OutputToFile", "Type cannot be created in QML");
 
-    qmlRegisterUncreatableType<AbstractChatService> ("AxelChat.AbstractChatService",
-                                              1, 0, "AbstractChatService", "Type cannot be created in QML");
+    qmlRegisterUncreatableType<ChatService> ("AxelChat.ChatService",
+                                              1, 0, "ChatService", "Type cannot be created in QML");
 
     AuthorQMLProvider::declareQML();
     ChatBot::declareQml();
@@ -389,9 +404,9 @@ int ChatHandler::connectedCount() const
 {
     int result = 0;
 
-    for (AbstractChatService* service : services)
+    for (ChatService* service : services)
     {
-        if (service->connectionStateType()  == AbstractChatService::ConnectionStateType::Connected)
+        if (service->connectionStateType()  == ChatService::ConnectionStateType::Connected)
         {
             result++;
         }
@@ -404,9 +419,9 @@ int ChatHandler::viewersTotalCount() const
 {
     int result = 0;
 
-    for (AbstractChatService* service : services)
+    for (ChatService* service : services)
     {
-        if (service->connectionStateType()  == AbstractChatService::ConnectionStateType::Connected)
+        if (service->connectionStateType()  == ChatService::ConnectionStateType::Connected)
         {
             const int count = service->viewersCount();
             if (count < 0)
@@ -471,32 +486,12 @@ QNetworkProxy ChatHandler::proxy() const
     return QNetworkProxy(QNetworkProxy::NoProxy);
 }
 
-int ChatHandler::getQMLServicesCount() const
+int ChatHandler::getServicesCount() const
 {
     return services.count();
 }
 
-int ChatHandler::getQMLServiceTypeAtIndex(int index) const
-{
-    if (index >= services.count())
-    {
-        return (int)AbstractChatService::ServiceType::Unknown;
-    }
-
-    return (int)services.at(index)->getServiceType();
-}
-
-QString ChatHandler::getQMLServiceLocalizedName(const int serviceType) const
-{
-    return AbstractChatService::getNameLocalized((AbstractChatService::ServiceType)serviceType);
-}
-
-QUrl ChatHandler::getQMLServiceIconUrl(const int serviceType) const
-{
-    return AbstractChatService::getIconUrl((AbstractChatService::ServiceType)serviceType);
-}
-
-AbstractChatService *ChatHandler::getQMLServiceAtIndex(int index) const
+ChatService *ChatHandler::getServiceAtIndex(int index) const
 {
     if (index >= services.count())
     {
@@ -506,17 +501,25 @@ AbstractChatService *ChatHandler::getQMLServiceAtIndex(int index) const
     return services.at(index);
 }
 
-YouTube& ChatHandler::getYoutube()
+ChatService *ChatHandler::getServiceByType(int type) const
 {
-    return *youtube;
+    for (ChatService* service : services)
+    {
+        if (service->getServiceType() == (ChatService::ServiceType)type)
+        {
+            return service;
+        }
+    }
+
+    return nullptr;
 }
 
-Twitch& ChatHandler::getTwitch() const
+QUrl ChatHandler::getServiceIconUrl(int serviceType) const
 {
-    return *twitch;
+    return ChatService::getIconUrl((ChatService::ServiceType)serviceType);
 }
 
-GoodGame& ChatHandler::getGoodGame() const
+QUrl ChatHandler::getServiceNameLocalized(int serviceType) const
 {
-    return *goodGame;
+    return ChatService::getNameLocalized((ChatService::ServiceType)serviceType);
 }

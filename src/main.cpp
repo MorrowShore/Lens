@@ -15,8 +15,8 @@
 #include <QDir>
 #include <QQmlContext>
 #include "commandseditor.h"
-#include "twitch.hpp"
-#include "goodgame.h"
+#include "chat_services/twitch.hpp"
+#include "chat_services/goodgame.h"
 #include "tray.h"
 #include <QQuickWindow>
 

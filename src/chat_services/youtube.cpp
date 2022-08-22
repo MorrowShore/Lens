@@ -45,7 +45,7 @@ QByteArray extractDigitsOnly(const QByteArray& data)
 }
 
 YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : AbstractChatService(AbstractChatService::ServiceType::YouTube, parent)
+    : ChatService(ChatService::ServiceType::YouTube, parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)
@@ -275,18 +275,18 @@ void YouTube::reconnect()
     setLink(link);
 }
 
-AbstractChatService::ConnectionStateType YouTube::connectionStateType() const
+ChatService::ConnectionStateType YouTube::connectionStateType() const
 {
     if (_info.broadcastConnected)
     {
-        return AbstractChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionStateType::Connected;
     }
     else if (!_info.broadcastId.isEmpty())
     {
-        return AbstractChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionStateType::Connecting;
     }
 
-    return AbstractChatService::ConnectionStateType::NotConnected;
+    return ChatService::ConnectionStateType::NotConnected;
 }
 
 QString YouTube::stateDescription() const
@@ -892,7 +892,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             }
             else
             {
-                const ChatAuthor author(AbstractChatService::ServiceType::YouTube,
+                const ChatAuthor author(ChatService::ServiceType::YouTube,
                                         authorName,
                                         authorChannelId,
                                         authorAvatarUrl,

@@ -1,6 +1,6 @@
 #include "authorqmlprovider.h"
 #include "models/chatauthor.h"
-#include "youtube.hpp"
+#include "chat_services/youtube.hpp"
 #include "chathandler.hpp"
 #include <QDesktopServices>
 
@@ -44,7 +44,7 @@ int AuthorQMLProvider::getServiceType() const
     const ChatAuthor* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
-        return (int)AbstractChatService::ServiceType::Unknown;
+        return (int)ChatService::ServiceType::Unknown;
     }
 
     return (int)author->getServiceType();
@@ -82,7 +82,7 @@ bool AuthorQMLProvider::openAvatar() const
 
     QUrl url = author->getAvatarUrl();
 
-    if (author->getServiceType() == AbstractChatService::ServiceType::YouTube)
+    if (author->getServiceType() == ChatService::ServiceType::YouTube)
     {
         const QUrl url_ = YouTube::createResizedAvatarUrl(author->getAvatarUrl(), YouTubeAvatarSize);
         if (url_.isValid())

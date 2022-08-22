@@ -2,13 +2,13 @@
 #define TWITCH_HPP
 
 #include "types.hpp"
-#include "abstractchatservice.hpp"
+#include "chatservice.hpp"
 #include <QSettings>
 #include <QWebSocket>
 #include <QTimer>
 #include <QNetworkAccessManager>
 
-class Twitch : public AbstractChatService
+class Twitch : public ChatService
 {
     Q_OBJECT
     Q_PROPERTY(QUrl     requesGetAOuthTokenUrl      READ requesGetAOuthTokenUrl     CONSTANT)

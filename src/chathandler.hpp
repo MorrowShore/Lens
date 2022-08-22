@@ -2,9 +2,9 @@
 #define CHATMESSAGEHANDLER_HPP
 
 #include "types.hpp"
-#include "youtube.hpp"
-#include "twitch.hpp"
-#include "goodgame.h"
+#include "chat_services/youtube.hpp"
+#include "chat_services/twitch.hpp"
+#include "chat_services/goodgame.h"
 #include "authorqmlprovider.h"
 #include <QSettings>
 #include <QMap>
@@ -74,11 +74,11 @@ public:
 
     QNetworkProxy proxy() const;
 
-    Q_INVOKABLE int getQMLServicesCount() const;
-    Q_INVOKABLE int getQMLServiceTypeAtIndex(int index) const;
-    Q_INVOKABLE QString getQMLServiceLocalizedName(const int serviceType) const;
-    Q_INVOKABLE QUrl getQMLServiceIconUrl(const int serviceType) const;
-    Q_INVOKABLE AbstractChatService* getQMLServiceAtIndex(int index) const;
+    Q_INVOKABLE int getServicesCount() const;
+    Q_INVOKABLE ChatService* getServiceAtIndex(int index) const;
+    Q_INVOKABLE ChatService* getServiceByType(int type) const;
+    Q_INVOKABLE QUrl getServiceIconUrl(int serviceType) const;
+    Q_INVOKABLE QUrl getServiceNameLocalized(int serviceType) const;
 
 signals:
     void connectedCountChanged();
@@ -109,17 +109,17 @@ private slots:
 
 private:
     void updateProxy();
-    void addService(AbstractChatService& service);
+    void addService(ChatService& service);
 
     ChatMessagesModel messagesModel;
 
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    YouTube* youtube                       = nullptr;
-    Twitch* twitch                         = nullptr;
-    GoodGame* goodGame                     = nullptr;
-    QList<AbstractChatService*> services;
+    YouTube* youTube = nullptr;
+    Twitch* twitch = nullptr;
+    GoodGame* goodGame = nullptr;
+    QList<ChatService*> services;
 
 #ifndef AXELCHAT_LIBRARY
     OutputToFile outputToFile;

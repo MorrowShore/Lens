@@ -8,7 +8,7 @@
 #include <QNetworkAccessManager>
 
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : AbstractChatService(AbstractChatService::ServiceType::GoodGame, parent)
+    : ChatService(ChatService::ServiceType::GoodGame, parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)
@@ -24,6 +24,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
         {
             _info.connected = false;
             emit stateChanged();
+            emit connected(_lastConnectedChannelName);
         }
     });
 
@@ -33,8 +34,8 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
         if (_info.connected)
         {
             _info.connected = false;
-            emit disconnected(_lastConnectedChannelName);
             emit stateChanged();
+            emit disconnected(_lastConnectedChannelName);
         }
     });
 
@@ -53,9 +54,9 @@ GoodGame::~GoodGame()
     _socket.close();
 }
 
-AbstractChatService::ConnectionStateType GoodGame::connectionStateType() const
+ChatService::ConnectionStateType GoodGame::connectionStateType() const
 {
-    return AbstractChatService::ConnectionStateType::NotConnected;
+    return ChatService::ConnectionStateType::NotConnected;
 }
 
 QString GoodGame::stateDescription() const
@@ -149,7 +150,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QDateTime publishedAt = QDateTime::fromMSecsSinceEpoch(qint64(jsonMessage.value("timestamp").toDouble()));
             const QString text = jsonMessage.value("text").toString();
 
-            const ChatAuthor author(AbstractChatService::ServiceType::GoodGame,
+            const ChatAuthor author(ChatService::ServiceType::GoodGame,
                                     userName,
                                     userId);
             const ChatMessage message(text,

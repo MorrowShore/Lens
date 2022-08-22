@@ -261,7 +261,7 @@ const ChatAuthor &ChatMessagesModel::softwareAuthor()
     const QString authorId = "____SOFTWARE____";
     if (!_authorsById.contains(authorId))
     {
-        ChatAuthor* author = new ChatAuthor(AbstractChatService::ServiceType::Software,
+        ChatAuthor* author = new ChatAuthor(ChatService::ServiceType::Software,
                                             QCoreApplication::applicationName(),
                                             authorId);
         _authorsById.insert(authorId, author);
@@ -435,7 +435,7 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
         return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);
 
     case AuthorServiceType:
-        return (int)(author ? author->getServiceType() : AbstractChatService::ServiceType::Unknown);
+        return (int)(author ? author->getServiceType() : ChatService::ServiceType::Unknown);
     case AuthorId:
         return author ? author->getId() : QString();
     case AuthorPageUrl:

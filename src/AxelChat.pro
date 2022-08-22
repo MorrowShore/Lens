@@ -1,6 +1,6 @@
 QT += widgets gui quick multimedia websockets network svg
 
-CONFIG += c++11
+CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -14,7 +14,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    abstractchatservice.hpp \
+    chat_services/chatservice.hpp \
     applicationinfo.hpp \
     authorqmlprovider.h \
     botaction.hpp \
@@ -27,16 +27,16 @@ HEADERS += \
     models/chatmessage.h \
     models/chatmessagesmodle.hpp \
     githubapi.hpp \
-    goodgame.h \
+    chat_services/goodgame.h \
     i18n.hpp \
     outputtofile.hpp \
     qmlutils.hpp \
     setting.h \
     tray.h \
-    twitch.hpp \
+    chat_services/twitch.hpp \
     types.hpp \
     utils_axelchat.hpp \
-    youtube.hpp
+    chat_services/youtube.hpp
 
 SOURCES += \
         authorqmlprovider.cpp \
@@ -50,14 +50,14 @@ SOURCES += \
         models/chatmessage.cpp \
         models/chatmessagesmodle.cpp \
         githubapi.cpp \
-        goodgame.cpp \
+        chat_services/goodgame.cpp \
         i18n.cpp \
         main.cpp \
         outputtofile.cpp \
         qmlutils.cpp \
         tray.cpp \
-        twitch.cpp \
-        youtube.cpp
+        chat_services/twitch.cpp \
+        chat_services/youtube.cpp
 
 RESOURCES += qml.qrc \
     resources.qrc

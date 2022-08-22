@@ -1,6 +1,6 @@
 #include "chatauthor.h"
 
-ChatAuthor::ChatAuthor(AbstractChatService::ServiceType serviceType_,
+ChatAuthor::ChatAuthor(ChatService::ServiceType serviceType_,
                        const QString &name_,
                        const QString &authorId_,
                        const QUrl &avatarUrl_,

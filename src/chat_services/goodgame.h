@@ -1,7 +1,7 @@
 #ifndef GOODGAME_H
 #define GOODGAME_H
 
-#include "abstractchatservice.hpp"
+#include "chatservice.hpp"
 #include "types.hpp"
 #include <QObject>
 #include <QWebSocket>
@@ -9,7 +9,7 @@
 #include <QJsonDocument>
 #include <QSettings>
 
-class GoodGame : public AbstractChatService
+class GoodGame : public ChatService
 {
     Q_OBJECT
 public:

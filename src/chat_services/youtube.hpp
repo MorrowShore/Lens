@@ -1,13 +1,13 @@
 #ifndef YOUTUBEINTERCEPTOR_HPP
 #define YOUTUBEINTERCEPTOR_HPP
 
-#include "abstractchatservice.hpp"
+#include "chatservice.hpp"
 #include <QSettings>
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <memory>
 
-class YouTube : public AbstractChatService
+class YouTube : public ChatService
 {
     Q_OBJECT
     Q_PROPERTY(QString userSpecifiedLink                    READ userSpecifiedLink WRITE setLink    NOTIFY stateChanged)

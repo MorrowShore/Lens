@@ -4,7 +4,7 @@ import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import AxelChat.ChatHandler 1.0
 import AxelChat.UpdateChecker 1.0
-import AxelChat.AbstractChatService 1.0
+import AxelChat.ChatService 1.0
 import AxelChat.Tray 1.0
 import QtQuick.Window 2.15
 import "my_components" as MyComponents
@@ -541,7 +541,7 @@ ApplicationWindow {
 
                         if (Global.windowChatMessageShowPlatformIcon && authorServiceType !== Global._SoftwareServiceType)
                         {
-                            prefix += createImgHtmlTag(chatHandler.getQMLServiceIconUrl(authorServiceType), badgePixelSize) + " "
+                            prefix += createImgHtmlTag(chatHandler.getServiceIconUrl(authorServiceType), badgePixelSize) + " "
                         }
 
                         var i;
@@ -567,7 +567,7 @@ ApplicationWindow {
                         }
 
                         if (name.length === 0 && messageIsServiceMessage) {
-                            name = chatHandler.getQMLServiceLocalizedName(authorServiceType)
+                            name = chatHandler.getServiceNameLocalized(authorServiceType)
                         }
 
                         return prefix + name + postfix
@@ -624,7 +624,7 @@ ApplicationWindow {
                         return authorAvatarUrl;
                     }
 
-                    return chatHandler.getQMLServiceIconUrl(authorServiceType)
+                    return chatHandler.getServiceIconUrl(authorServiceType)
                 }
 
                 MouseArea {
@@ -832,9 +832,9 @@ ApplicationWindow {
 
                 var text = ""
 
-                for (var i = 0; i < chatHandler.getQMLServicesCount(); ++i)
+                for (var i = 0; i < chatHandler.getServicesCount(); ++i)
                 {
-                    var service = chatHandler.getQMLServiceAtIndex(i)
+                    var service = chatHandler.getServiceAtIndex(i)
 
                     if (service.connectionStateType === Global._ConnectedConnectionStateType)
                     {
@@ -867,16 +867,17 @@ ApplicationWindow {
                     return ""
                 }
 
-                var t = ""
-                var size = 18
+                var text = ""
+                var size = 20
 
-                t += "<img align=\"middle\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\" src=\"qrc:/resources/images/viewer.svg\">: "
+                text += createImgHtmlTag("qrc:/resources/images/viewer.svg", 20)
+
                 if (chatHandler.viewersTotalCount !== -1)
-                    t += String("%1   ").arg(chatHandler.viewersTotalCount)
+                    text += String("%1   ").arg(chatHandler.viewersTotalCount)
                 else
-                    t += "?"
+                    text += "?"
 
-                return t
+                return text
             }
         }
     }

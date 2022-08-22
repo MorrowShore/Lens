@@ -1,7 +1,7 @@
 #include "outputtofile.hpp"
 #include "models/chatauthor.h"
 #include "models/chatmessage.h"
-#include "youtube.hpp"
+#include "chat_services/youtube.hpp"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>
@@ -170,9 +170,9 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
             continue;
         }
 
-        const AbstractChatService::ServiceType type = author->getServiceType();
+        const ChatService::ServiceType type = author->getServiceType();
 
-        if (type == AbstractChatService::ServiceType::Unknown)
+        if (type == ChatService::ServiceType::Unknown)
         {
             continue;
         }
@@ -183,11 +183,11 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         tags.append(QPair<QString, QString>("author_id", authorId));
         tags.append(QPair<QString, QString>("message", message.getText()));
         tags.append(QPair<QString, QString>("time", timeToString(message.getPublishedAt())));
-        tags.append(QPair<QString, QString>("service", AbstractChatService::getServiceTypeId(type)));
+        tags.append(QPair<QString, QString>("service", ChatService::getServiceTypeId(type)));
 
         writeMessage(tags);
 
-        if (author->getServiceType() == AbstractChatService::ServiceType::YouTube)
+        if (author->getServiceType() == ChatService::ServiceType::YouTube)
         {
             const QString id = message.getId();
             if (!id.isEmpty())
@@ -198,14 +198,14 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         switch (type)
         {
-        case AbstractChatService::ServiceType::GoodGame:
-        case AbstractChatService::ServiceType::YouTube:
-        case AbstractChatService::ServiceType::Twitch:
+        case ChatService::ServiceType::GoodGame:
+        case ChatService::ServiceType::YouTube:
+        case ChatService::ServiceType::Twitch:
             downloadAvatar(authorId, author->getAvatarUrl(), type);
             break;
 
-        case AbstractChatService::ServiceType::Unknown:
-        case AbstractChatService::ServiceType::Software:
+        case ChatService::ServiceType::Unknown:
+        case ChatService::ServiceType::Software:
             break;
         }
     }
@@ -221,10 +221,10 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + outputDirectory.get()));
 }
 
-void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, const AbstractChatService::ServiceType service)
+void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, const ChatService::ServiceType service)
 {
     QUrl url = url_;
-    if (service == AbstractChatService::ServiceType::YouTube)
+    if (service == ChatService::ServiceType::YouTube)
     {
         url = YouTube::createResizedAvatarUrl(url, avatarHeight);
     }
@@ -247,7 +247,7 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
     avatarName = removePostfix(avatarName, ".jpg", Qt::CaseSensitivity::CaseInsensitive);
     avatarName = removePostfix(avatarName, ".jpeg", Qt::CaseSensitivity::CaseInsensitive);
 
-    if (service == AbstractChatService::ServiceType::Twitch)
+    if (service == ChatService::ServiceType::Twitch)
     {
         avatarName = removePostfix(avatarName, "-300x300", Qt::CaseSensitivity::CaseInsensitive);
     }
@@ -471,9 +471,9 @@ QByteArray OutputToFile::prepare(const QString &text_)
     return text.toUtf8();
 }
 
-QString OutputToFile::getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString &authorId) const
+QString OutputToFile::getAuthorDirectory(const ChatService::ServiceType serviceType, const QString &authorId) const
 {
-    return outputDirectory.get() + "/authors/" + AbstractChatService::getServiceTypeId(serviceType) + "/" + authorId;
+    return outputDirectory.get() + "/authors/" + ChatService::getServiceTypeId(serviceType) + "/" + authorId;
 }
 
 void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
@@ -511,7 +511,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             file.write("[info]\n");
             file.write("name=" + prepare(author->getName()) + "\n");
             file.write("id=" + prepare(author->getId()) + "\n");
-            file.write("service=" + prepare(AbstractChatService::getServiceTypeId(author->getServiceType())) + "\n");
+            file.write("service=" + prepare(ChatService::getServiceTypeId(author->getServiceType())) + "\n");
             file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
             file.write("avatar_name=" + prepare(avatarName) + "\n");
             file.write("page_url=" + prepare(author->getPageUrl().toString()) + "\n");

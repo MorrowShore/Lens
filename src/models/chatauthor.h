@@ -1,7 +1,7 @@
 #ifndef CHATAUTHOR_H
 #define CHATAUTHOR_H
 
-#include "abstractchatservice.hpp"
+#include "chat_services/chatservice.hpp"
 #include <QString>
 #include <QUrl>
 #include <QColor>
@@ -20,7 +20,7 @@ public:
     Q_ENUM(Flags)
 
     ChatAuthor() { };
-    ChatAuthor(AbstractChatService::ServiceType serviceType,
+    ChatAuthor(ChatService::ServiceType serviceType,
                const QString& name,
                const QString& authorId,
                const QUrl& avatarUrl = QUrl(),
@@ -62,7 +62,7 @@ public:
     {
         return customNicknameColor;
     }
-    inline AbstractChatService::ServiceType getServiceType() const
+    inline ChatService::ServiceType getServiceType() const
     {
         return serviceType;
     }
@@ -82,7 +82,7 @@ public:
     static QString flagToString(const Flags flag);
 
 private:
-    AbstractChatService::ServiceType serviceType = AbstractChatService::ServiceType::Unknown;
+    ChatService::ServiceType serviceType = ChatService::ServiceType::Unknown;
     QString name;
     QString authorId;
     QUrl avatarUrl;

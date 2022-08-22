@@ -5,7 +5,7 @@
 #include <QSettings>
 #include "models/chatmessagesmodle.hpp"
 #include "types.hpp"
-#include "abstractchatservice.hpp"
+#include "chat_services/chatservice.hpp"
 #include "setting.h"
 
 class OutputToFile : public QObject
@@ -42,9 +42,9 @@ public:
     void setOutputFolder(const QString& outputDirectory);
     void writeMessages(const QList<ChatMessage>& messages);
     Q_INVOKABLE void showInExplorer();
-    void downloadAvatar(const QString& authorId, const QUrl &url, const AbstractChatService::ServiceType serviceType);
+    void downloadAvatar(const QString& authorId, const QUrl &url, const ChatService::ServiceType serviceType);
     void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, bool ignoreIfExists);
-    QString getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString& authorId) const;
+    QString getAuthorDirectory(const ChatService::ServiceType serviceType, const QString& authorId) const;
     void writeAuthors(const QList<ChatAuthor*>& authors);
 
 signals:
