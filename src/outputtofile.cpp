@@ -269,25 +269,15 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
     }
 
     const QString fileName = avatarsDirectory + "/" + avatarName + "." + ImageFileFormat;
-
-    if (QFile(fileName).exists())
-    {
-        needIgnoreDownloadFileNames.insert(fileName);
-    }
-
-    if (needIgnoreDownloadFileNames.contains(fileName))
-    {
-        return;
-    }
-
     downloadImage(url, fileName, ImageFileFormat, true);
 }
 
 void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const QString& imageFormat, bool ignoreIfExists)
 {
-    if (ignoreIfExists && QFile(fileName).exists())
+    if ((ignoreIfExists && QFile(fileName).exists()) || needIgnoreDownloadFileNames.contains(fileName))
     {
         //qDebug() << "Ignore download image, file" << fileName << "already exists";
+        needIgnoreDownloadFileNames.insert(fileName);
         return;
     }
 
@@ -328,6 +318,10 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
             if (image.save(fileName, format))
             {
                 qDebug() << "Downloaded image" << fileName;
+                if (ignoreIfExists)
+                {
+                    needIgnoreDownloadFileNames.insert(fileName);
+                }
             }
             else
             {
