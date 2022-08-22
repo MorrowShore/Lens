@@ -45,6 +45,16 @@ QString timeToString(const QDateTime& dateTime)
     return dateTime.toTimeZone(QTimeZone::systemTimeZone()).toString(Qt::DateFormat::ISODateWithMs);
 }
 
+QString removePostfix(const QString& string, const QString& postfix, const Qt::CaseSensitivity caseSensitivity)
+{
+    if (!string.endsWith(postfix, caseSensitivity))
+    {
+        return string;
+    }
+
+    return string.left(string.length() - postfix.length());
+}
+
 }
 
 OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, QObject *parent)
@@ -233,7 +243,16 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
         return;
     }
 
-    const QString avatarName = urlStr.mid(urlStr.lastIndexOf('/') + 1);
+    QString avatarName = urlStr.mid(urlStr.lastIndexOf('/') + 1);
+
+    avatarName = removePostfix(avatarName, ".png", Qt::CaseSensitivity::CaseInsensitive);
+    avatarName = removePostfix(avatarName, ".jpg", Qt::CaseSensitivity::CaseInsensitive);
+    avatarName = removePostfix(avatarName, ".jpeg", Qt::CaseSensitivity::CaseInsensitive);
+
+    if (service == AbstractChatService::ServiceType::Twitch)
+    {
+        avatarName = removePostfix(avatarName, "-300x300", Qt::CaseSensitivity::CaseInsensitive);
+    }
 
     static const QString ImageFileFormat = "png";
 
@@ -249,12 +268,7 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
         }
     }
 
-    QString fileName = avatarsDirectory + "/" + avatarName;
-
-    if (!avatarName.endsWith("." + ImageFileFormat, Qt::CaseSensitivity::CaseInsensitive))
-    {
-        fileName += "." + ImageFileFormat;
-    }
+    const QString fileName = avatarsDirectory + "/" + avatarName + "." + ImageFileFormat;
 
     if (needIgnoreDownloadFileNames.contains(fileName))
     {
