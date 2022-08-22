@@ -608,7 +608,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
     QList<ChatMessage> messages;
     QList<ChatAuthor> authors;
 
-    foreach (const QJsonValue& actionJson, array)
+    for (const QJsonValue& actionJson : array)
     {
         bool valid = false;
         bool isDeleter = false;
@@ -636,8 +636,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         {
             //Message
 
-            const QJsonObject& addChatItemAction = actionObject.value("addChatItemAction").toObject();
-            const QJsonObject& item = addChatItemAction.value("item").toObject();
+            const QJsonObject& item = actionObject.value("addChatItemAction").toObject().value("item").toObject();
 
             QJsonObject itemRenderer;
 
@@ -1083,7 +1082,7 @@ QString YouTube::parseText(const QJsonObject &message) const
 
         const QJsonArray& runs = message.value("runs").toArray();
 
-        foreach (const QJsonValue& run, runs)
+        for (const QJsonValue& run : runs)
         {
             const QJsonObject& runObject = run.toObject();
             if (runObject.contains("navigationEndpoint"))
@@ -1132,6 +1131,7 @@ QString YouTube::parseText(const QJsonObject &message) const
                     const QString empjiUrl = thumbnails.first().toObject().value("url").toString();
                     if (!empjiUrl.isEmpty())
                     {
+                        //qDebug() << empjiUrl;
                         result += QString(" <img align=\"top\" height=\"%1\" width=\"%1\" src=\"%2\"> ").arg(_emojiPixelSize).arg(empjiUrl);
                     }
                     else

@@ -20,10 +20,7 @@
 namespace
 {
 
-static const QString SK_Enabled                     = "enabled";
-static const QString SK_OutputFolder                = "output_folder";
 static const QString SK_Codec                       = "codec";
-static const QString SK_YouTubeLastMessageSavedId   = "youtube_last_saved_message_id";
 
 static const QString DateTimeFileNameFormat = "yyyy-MM-ddThh-mm-ss.zzz";
 static const QString MessagesFileName = "messages.ini";
@@ -53,25 +50,21 @@ QString timeToString(const QDateTime& dateTime)
 
 }
 
-OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, QObject *parent)
+OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, QObject *parent)
     : QObject(parent)
-    , settings(settings_)
-    , SettingsGroupPath(settingsGroupPath)
     , network(network_)
     , messagesModel(messagesModel_)
+    , enabled(settings, settingsGroupPath + "/enabled", false)
+    , outputDirectory(settings, settingsGroupPath + "/output_folder", standardOutputFolder())
+    , youTubeLastMessageId(settings, settingsGroupPath + "/youtube_last_saved_message_id")
+    , codec(settings, settingsGroupPath + "/codec", OutputToFileCodec::UTF8Codec)
 {
     reinit(true);
-
-    setEnabled(settings.value(SettingsGroupPath + "/" + SK_Enabled, false).toBool());
-
-    setOutputFolder(settings.value(SettingsGroupPath + "/" + SK_OutputFolder, standardOutputFolder()).toString());
-
-    setCodecOption(settings.value(SettingsGroupPath + "/" + SK_Codec, _codec).toInt(), true);
 }
 
 OutputToFile::~OutputToFile()
 {
-    if (_enabled)
+    if (enabled.get())
     {
         if (_iniCurrentInfo)
         {
@@ -90,22 +83,16 @@ OutputToFile::~OutputToFile()
     }
 }
 
-bool OutputToFile::enabled() const
+bool OutputToFile::isEnabled() const
 {
-    return _enabled;
+    return enabled.get();
 }
 
-void OutputToFile::setEnabled(bool enabled)
+void OutputToFile::setEnabled(bool enabled_)
 {
-    if (_enabled != enabled)
+    if (enabled.set(enabled_))
     {
-        _enabled = enabled;
-
-        settings.setValue(SettingsGroupPath + "/" + SK_Enabled, enabled);
-
-        //qDebug(QString("OutputToFile: %1").arg(_enabled ? "enabled" : "disabled").toUtf8());
-
-        if (_enabled)
+        if (enabled.get())
         {
             reinit(false);
         }
@@ -119,25 +106,16 @@ QString OutputToFile::standardOutputFolder() const
     return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/" + QGuiApplication::applicationName() + "/output";
 }
 
-QString OutputToFile::outputFolder() const
+QString OutputToFile::getOutputFolder() const
 {
-    return _outputFolder;
+    return outputDirectory.get();
 }
 
-void OutputToFile::setOutputFolder(QString outputFolder)
+void OutputToFile::setOutputFolder(const QString& outputDirectory_)
 {
-    outputFolder = outputFolder.trimmed();
-
-    if (_outputFolder != outputFolder)
+    if (outputDirectory.set(outputDirectory_.trimmed()))
     {
-        _outputFolder = outputFolder;
-
-        settings.setValue(SettingsGroupPath + "/" + SK_OutputFolder, outputFolder);
-
         reinit(true);
-
-        //qDebug(QString("OutputToFile: outputFolder: \"%1\"").arg(_outputFolder).toUtf8());
-
         emit outputFolderChanged();
     }
 }
@@ -149,24 +127,24 @@ void OutputToFile::resetSettings()
 
 void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 {
-    if (!_enabled)
+    if (!enabled.get())
     {
         return;
     }
 
     int firstValidMessage = 0;
 
-    if (!_youTubeLastMessageId.isEmpty())
+    if (!youTubeLastMessageId.get().isEmpty())
     {
         for (int i = 0; i < messages.count(); ++i)
         {
             const ChatMessage& message = messages[i];
 
-            if (message.id() == _youTubeLastMessageId)
+            if (message.id() == youTubeLastMessageId.get())
             {
                 qDebug() << "found youtube message with id" << message.id() << ", ignore saving messages before it, index =" << i;
-                firstValidMessage = i;
-                _youTubeLastMessageId.clear();
+                firstValidMessage = i + 1;
+                youTubeLastMessageId.set(QString());
                 break;
             }
         }
@@ -230,13 +208,13 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
     if (!currentLastYouTubeMessageId.isEmpty())
     {
-        settings.setValue(SettingsGroupPath + "/" + SK_YouTubeLastMessageSavedId, currentLastYouTubeMessageId);
+        youTubeLastMessageId.set(currentLastYouTubeMessageId);
     }
 }
 
 void OutputToFile::showInExplorer()
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + _outputFolder));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + outputDirectory.get()));
 }
 
 void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, const AbstractChatService::ServiceType service)
@@ -247,7 +225,7 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
         url = YouTube::createResizedAvatarUrl(url, youTubeAvatarSize);
     }
 
-    if (url.isEmpty() || downloadedAvatarsAuthorId.contains(authorId) || !_enabled)
+    if (url.isEmpty() || downloadedAvatarsAuthorId.contains(authorId) || !enabled.get())
     {
         return;
     }
@@ -331,7 +309,7 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
 
 bool OutputToFile::setCodecOption(int option, bool applyWithoutReset)
 {
-    if (option == _codec)
+    if (option == (int)codec.get())
     {
         return false;
     }
@@ -340,13 +318,13 @@ bool OutputToFile::setCodecOption(int option, bool applyWithoutReset)
     {
         switch (option) {
         case 0:
-            _codec = OutputToFileCodec::UTF8Codec;
+            codec.set(OutputToFileCodec::UTF8Codec);
             break;
         case 100:
-            _codec = OutputToFileCodec::ANSICodec;
+            codec.set(OutputToFileCodec::ANSICodec);
             break;
         case 200:
-            _codec = OutputToFileCodec::ANSIWithUTF8Codec;
+            codec.set(OutputToFileCodec::ANSIWithUTF8Codec);
             break;
         default:
             qCritical() << "unknown codec option" << option << ", ignore";
@@ -356,14 +334,12 @@ bool OutputToFile::setCodecOption(int option, bool applyWithoutReset)
         reinit(true);
     }
 
-    settings.setValue(SettingsGroupPath + "/" + SK_Codec, option);
-
     return true;
 }
 
 int OutputToFile::codecOption() const
 {
-    return _codec;
+    return (int)codec.get();
 }
 
 void OutputToFile::writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/)
@@ -441,21 +417,23 @@ QByteArray OutputToFile::prepare(const QString &text_)
 {
     QString text = text_;
 
-    if (_codec != OutputToFileCodec::ANSIWithUTF8Codec)
+    const OutputToFileCodec codec_ = codec.get();
+
+    if (codec_ != OutputToFileCodec::ANSIWithUTF8Codec)
     {
         text.replace('\n', "\\n");
         text.replace('\r', "\\r");
     }
 
-    if (_codec == OutputToFileCodec::UTF8Codec)
+    if (codec_ == OutputToFileCodec::UTF8Codec)
     {
         return text.toUtf8();
     }
-    else if (_codec == OutputToFileCodec::ANSICodec)
+    else if (codec_ == OutputToFileCodec::ANSICodec)
     {
         return text.toLocal8Bit();
     }
-    else if (_codec == OutputToFileCodec::ANSIWithUTF8Codec)
+    else if (codec_ == OutputToFileCodec::ANSIWithUTF8Codec)
     {
         return convertANSIWithUtf8Numbers(text);
     }
@@ -467,12 +445,12 @@ QByteArray OutputToFile::prepare(const QString &text_)
 
 QString OutputToFile::getAuthorDirectory(const AbstractChatService::ServiceType serviceType, const QString &authorId) const
 {
-    return _outputFolder + "/authors/" + AbstractChatService::serviceTypeToString(serviceType) + "/" + authorId;
+    return outputDirectory.get() + "/authors/" + AbstractChatService::serviceTypeToString(serviceType) + "/" + authorId;
 }
 
 void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
 {
-    if (!_enabled)
+    if (!enabled.get())
     {
         return;
     }
@@ -601,10 +579,10 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
 
     if (forceUpdateOutputFolder || _sessionFolder.isEmpty())
     {
-        _sessionFolder = _outputFolder + "/sessions/" + _startupDateTime.toString(DateTimeFileNameFormat);
+        _sessionFolder = outputDirectory.get() + "/sessions/" + _startupDateTime.toString(DateTimeFileNameFormat);
     }
 
-    if (_enabled)
+    if (enabled.get())
     {
         QDir dir;
 
@@ -626,13 +604,11 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
         _iniCurrentInfo = nullptr;
     }
 
-    _iniCurrentInfo = new QSettings(_outputFolder + "/current.ini", QSettings::IniFormat, this);
+    _iniCurrentInfo = new QSettings(outputDirectory.get() + "/current.ini", QSettings::IniFormat, this);
     _iniCurrentInfo->setIniCodec("UTF-8");
 
-    if (_enabled)
+    if (enabled.get())
     {
-        _youTubeLastMessageId = settings.value(SettingsGroupPath + "/" + SK_YouTubeLastMessageSavedId).toString();
-
         _iniCurrentInfo->setValue("software/started", true);
     }
 
@@ -642,7 +618,7 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
 
 void OutputToFile::writeStartupInfo(const QString& messagesFolder)
 {
-    if (_enabled)
+    if (enabled.get())
     {
         _iniCurrentInfo->setValue("software/version",                   QCoreApplication::applicationVersion());
 
@@ -654,24 +630,26 @@ void OutputToFile::writeStartupInfo(const QString& messagesFolder)
 
 void OutputToFile::writeInfo()
 {
-    if (_enabled)
+    if (!enabled.get())
     {
-        _iniCurrentInfo->setValue("youtube/broadcast_connected", _youTubeInfo.broadcastConnected);
-        _iniCurrentInfo->setValue("youtube/broadcast_id", _youTubeInfo.broadcastId);
-        _iniCurrentInfo->setValue("youtube/broadcast_user_specified", _youTubeInfo.userSpecified);
-        _iniCurrentInfo->setValue("youtube/broadcast_url", _youTubeInfo.broadcastLongUrl.toString());
-        _iniCurrentInfo->setValue("youtube/broadcast_chat_url", _youTubeInfo.broadcastChatUrl.toString());
-        _iniCurrentInfo->setValue("youtube/broadcast_control_panel_url", _youTubeInfo.controlPanelUrl.toString());
-        _iniCurrentInfo->setValue("youtube/viewers_count", _youTubeInfo.viewers);
-
-        _iniCurrentInfo->setValue("twitch/broadcast_connected", _twitchInfo.connected);
-        _iniCurrentInfo->setValue("twitch/channel_name", _twitchInfo.channelLogin);
-        _iniCurrentInfo->setValue("twitch/user_specified", _twitchInfo.userSpecifiedChannel);
-        _iniCurrentInfo->setValue("twitch/channel_url", _twitchInfo.channelUrl.toString());
-        _iniCurrentInfo->setValue("twitch/chat_url", _twitchInfo.chatUrl.toString());
-        _iniCurrentInfo->setValue("twitch/control_panel_url", _twitchInfo.controlPanelUrl.toString());
-        _iniCurrentInfo->setValue("twitch/viewers_count", _twitchInfo.viewers);
+        return;
     }
+
+    _iniCurrentInfo->setValue("youtube/broadcast_connected", _youTubeInfo.broadcastConnected);
+    _iniCurrentInfo->setValue("youtube/broadcast_id", _youTubeInfo.broadcastId);
+    _iniCurrentInfo->setValue("youtube/broadcast_user_specified", _youTubeInfo.userSpecified);
+    _iniCurrentInfo->setValue("youtube/broadcast_url", _youTubeInfo.broadcastLongUrl.toString());
+    _iniCurrentInfo->setValue("youtube/broadcast_chat_url", _youTubeInfo.broadcastChatUrl.toString());
+    _iniCurrentInfo->setValue("youtube/broadcast_control_panel_url", _youTubeInfo.controlPanelUrl.toString());
+    _iniCurrentInfo->setValue("youtube/viewers_count", _youTubeInfo.viewers);
+
+    _iniCurrentInfo->setValue("twitch/broadcast_connected", _twitchInfo.connected);
+    _iniCurrentInfo->setValue("twitch/channel_name", _twitchInfo.channelLogin);
+    _iniCurrentInfo->setValue("twitch/user_specified", _twitchInfo.userSpecifiedChannel);
+    _iniCurrentInfo->setValue("twitch/channel_url", _twitchInfo.channelUrl.toString());
+    _iniCurrentInfo->setValue("twitch/chat_url", _twitchInfo.chatUrl.toString());
+    _iniCurrentInfo->setValue("twitch/control_panel_url", _twitchInfo.controlPanelUrl.toString());
+    _iniCurrentInfo->setValue("twitch/viewers_count", _twitchInfo.viewers);
 }
 
 void OutputToFile::setYouTubeInfo(const AxelChat::YouTubeInfo &youTubeCurrent)

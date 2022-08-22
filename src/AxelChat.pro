@@ -1,6 +1,6 @@
 QT += widgets gui quick multimedia websockets network svg
 
-CONFIG += c++11
+CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -31,6 +31,7 @@ HEADERS += \
     i18n.hpp \
     outputtofile.hpp \
     qmlutils.hpp \
+    setting.h \
     tray.h \
     twitch.hpp \
     types.hpp \
