@@ -147,9 +147,9 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         {
             const ChatMessage& message = messages[i];
 
-            if (message.id() == youTubeLastMessageId.get())
+            if (message.getMessageId() == youTubeLastMessageId.get())
             {
-                qDebug() << "found youtube message with id" << message.id() << ", ignore saving messages before it, index =" << i;
+                qDebug() << "found youtube message with id" << message.getMessageId() << ", ignore saving messages before it, index =" << i;
                 firstValidMessage = i + 1;
                 break;
             }
@@ -162,11 +162,11 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
     {
         const ChatMessage& message = messages[i];
 
-        const QString authorId = message.authorId();
+        const QString authorId = message.getAuthorId();
         const ChatAuthor* author = messagesModel.getAuthor(authorId);
         if (!author)
         {
-            qWarning() << "Not found author id" << message.authorId();
+            qWarning() << "Not found author id" << message.getAuthorId();
             continue;
         }
 
@@ -182,15 +182,15 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         tags.append(QPair<QString, QString>("author", author->name()));
         tags.append(QPair<QString, QString>("author_id", authorId));
-        tags.append(QPair<QString, QString>("message", message.text()));
-        tags.append(QPair<QString, QString>("time", timeToString(message.publishedAt())));
+        tags.append(QPair<QString, QString>("message", message.getText()));
+        tags.append(QPair<QString, QString>("time", timeToString(message.getPublishedAt())));
         tags.append(QPair<QString, QString>("service", AbstractChatService::serviceTypeToString(type)));
 
         writeMessage(tags);
 
         if (author->getServiceType() == AbstractChatService::ServiceType::YouTube)
         {
-            const QString id = message.id();
+            const QString id = message.getMessageId();
             if (!id.isEmpty())
             {
                 currentLastYouTubeMessageId = id;

@@ -66,7 +66,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
     for (int i = 0; i < messages.count(); ++i)
     {
         ChatMessage&& message = std::move(messages[i]);
-        if (messagesModel.contains(message.id()) && !message.isDeleterItem())
+        if (messagesModel.contains(message.getMessageId()) && !message.isDeleterItem())
         {
             continue;
         }
@@ -123,7 +123,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         ChatMessage&& message = std::move(messagesValidToAdd[i]);
 
 #ifndef AXELCHAT_LIBRARY
-        if (message.authorId() != messagesModel.softwareAuthor().authorId())
+        if (message.getAuthorId() != messagesModel.softwareAuthor().authorId())
         {
             bot.processMessage(message);
         }
@@ -146,15 +146,8 @@ void ChatHandler::sendTestMessage(const QString &text)
     QList<ChatAuthor> authors;
     authors.append(author);
 
-    const QString authorId = author.authorId();
-    ChatMessage message(text,
-                        authorId + "/" + QUuid::createUuid().toString(QUuid::Id128),
-                        QDateTime::currentDateTime(),
-                        QDateTime::currentDateTime(),
-                        authorId,
-                        {}, {});
     QList<ChatMessage> messages;
-    messages.append(message);
+    messages.append(ChatMessage(text, author.authorId()));
 
     onReadyRead(messages, authors);
 }
@@ -165,15 +158,8 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
     QList<ChatAuthor> authors;
     authors.append(author);
 
-    const QString authorId = author.authorId();
-    ChatMessage message(text,
-                        authorId + "/" + QUuid::createUuid().toString(QUuid::Id128),
-                        QDateTime::currentDateTime(),
-                        QDateTime::currentDateTime(),
-                        authorId,
-                        {}, {});
     QList<ChatMessage> messages;
-    messages.append(message);
+    messages.append(ChatMessage(text, author.authorId()));
 
     onReadyRead(messages, authors);
 }

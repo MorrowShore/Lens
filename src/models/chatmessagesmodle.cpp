@@ -47,14 +47,14 @@ void ChatMessagesModel::append(ChatMessage&& message)
 {
     //ToDo: добавить сортировку сообщений по времени
 
-    if (message.id().isEmpty())
+    if (message.getMessageId().isEmpty())
     {
         message.printMessageInfo("Ignore message with empty id");
         return;
     }
 
 
-    if (message.id().isEmpty())
+    if (message.getMessageId().isEmpty())
     {
         //message.printMessageInfo(QString("%1: Ignore message with empty id:").arg(Q_FUNC_INFO));
         return;
@@ -62,7 +62,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
     if (!message.isDeleterItem())
     {
-        if (!_dataById.contains(message.id()))
+        if (!_dataById.contains(message.getMessageId()))
         {
             //Normal message
 
@@ -75,12 +75,12 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
             messageData->setValue(message);
 
-            _idByData.insert(messageData, message.id());
-            _dataById.insert(message.id(), messageData);
+            _idByData.insert(messageData, message.getMessageId());
+            _dataById.insert(message.getMessageId(), messageData);
             _dataByIdNum.insert(message._idNum, messageData);
             _idNumByData.insert(messageData, message._idNum);
 
-            const ChatAuthor* author = getAuthor(message.authorId());
+            const ChatAuthor* author = getAuthor(message.getAuthorId());
             if (author && !author->avatarUrl().isValid())
             {
                 const QString& authorId = author->authorId();
@@ -104,7 +104,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
             qDebug(QString("%1: ignore message because this id already exists")
                    .arg(Q_FUNC_INFO).toUtf8());
 
-            const QVariant* data = _dataById.value(message.id());
+            const QVariant* data = _dataById.value(message.getMessageId());
             if (data)
             {
                 const ChatMessage& oldMessage = qvariant_cast<ChatMessage>(*data);
@@ -125,8 +125,8 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
         //ToDo: Если пришёл делетер, а сообщение ещё нет, то когда это сообщение придёт не будет удалено
 
-        QVariant* data = _dataById[message.id()];
-        if (_dataById.contains(message.id()) && data)
+        QVariant* data = _dataById[message.getMessageId()];
+        if (_dataById.contains(message.getMessageId()) && data)
         {
             const QModelIndex& index = createIndexByPtr(data);
             if (index.isValid())
@@ -139,7 +139,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
                     message.printMessageInfo("Raw message:");
                 }
 
-                if (!setData(index, message.text(), ChatMessageRoles::MessageText))
+                if (!setData(index, message.getText(), ChatMessageRoles::MessageText))
                 {
                     qDebug(QString("%1: failed to set data with role ChatMessageRoles::MessageText")
                            .arg(Q_FUNC_INFO).toUtf8());
@@ -180,8 +180,8 @@ bool ChatMessagesModel::removeRows(int position, int rows, const QModelIndex &pa
 
         const ChatMessage& message = qvariant_cast<ChatMessage>(*messageData);
 
-        const QString& id = message.id();
-        const uint64_t& idNum = message.idNum();
+        const QString& id = message.getMessageId();
+        const uint64_t& idNum = message.getIdNum();
 
         _dataById.remove(id);
         _idByData.remove(messageData);
@@ -437,17 +437,17 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
 
     switch (role) {
     case MessageId:
-        return message.id();
+        return message.getMessageId();
     case MessageText:
-        return message.text();
+        return message.getText();
     case MessagePublishedAt:
-        return message.publishedAt();
+        return message.getPublishedAt();
     case MessageReceivedAt:
-        return message.receivedAt();
+        return message.getReceivedAt();
     case MessageIsBotCommand:
         return message.isBotCommand();
     case MessageMarkedAsDeleted:
-        return message.markedAsDeleted();
+        return message.isMarkedAsDeleted();
 
     case MessageIsDonateSimple:
         return message._flags.contains(ChatMessage::Flags::DonateSimple);
@@ -466,7 +466,7 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
         return message._flags.contains(ChatMessage::Flags::TwitchAction);
 
     case MessageBodyBackgroundForcedColor:
-        return message.forcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);
+        return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);
 
     case AuthorServiceType:
         return (int)(author ? author->getServiceType() : AbstractChatService::ServiceType::Unknown);

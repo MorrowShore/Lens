@@ -7,6 +7,7 @@
 #include <QSet>
 #include <QDateTime>
 #include <QUrl>
+#include <QMap>
 
 class ChatMessage{
     Q_GADGET
@@ -29,38 +30,22 @@ public:
     friend class ChatMessagesModel;
     ChatMessage() { }
     ChatMessage(const QString& text,
-                const QString& id,
-                const QDateTime& publishedAt,
-                const QDateTime& receivedAt,
                 const QString& authorId,
-                const QSet<Flags>& flags,
-                const QHash<ForcedColorRoles, QColor>& forcedColors);
+                const QDateTime& publishedAt = QDateTime::currentDateTime(),
+                const QDateTime& receivedAt = QDateTime::currentDateTime(),
+                const QString& messageId = QString(),
+                const QMap<QUrl, QList<int>>& images = {},
+                const QSet<Flags>& flags = {},
+                const QHash<ForcedColorRoles, QColor>& forcedColors = {});
 
-    static ChatMessage createFromYouTube(const QString& text,
-                              const QString& id,
-                              const QDateTime& publishedAt,
-                              const QDateTime& receivedAt,
-                              const QString& authorId,
-                              const QSet<Flags>& flags,
-                              const QHash<ForcedColorRoles, QColor>& forcedColors);
+    static ChatMessage createYouTubeDeleter(const QString& text,
+                                            const QString& id);
 
-    static ChatMessage createFromTwitch(const QString& text,
-                              const QDateTime& receivedAt,
-                              const QString& authorId,
-                              const QSet<Flags>& flags);
-
-    static ChatMessage createFromGoodGame(const QString& text,
-                              const QDateTime& timestamp,
-                              const QString& authorId);
-
-    static ChatMessage createDeleterFromYouTube(const QString& text,
-                                                const QString& id);
-
-    inline const QString& id() const
+    inline const QString& getMessageId() const
     {
-        return _id;
+        return _messageId;
     }
-    inline const QString& text() const
+    inline const QString& getText() const
     {
         return _text;
     }
@@ -72,15 +57,15 @@ public:
     {
         return _isDeleterItem;
     }
-    inline const QDateTime& publishedAt() const
+    inline const QDateTime& getPublishedAt() const
     {
         return _publishedAt;
     }
-    inline const QDateTime& receivedAt() const
+    inline const QDateTime& getReceivedAt() const
     {
         return _receivedAt;
     }
-    inline const QString& authorId() const
+    inline const QString& getAuthorId() const
     {
         return _authorId;
     }
@@ -88,29 +73,30 @@ public:
     {
         _isBotCommand = isBotCommand;
     }
-    inline uint64_t idNum() const
+    inline uint64_t getIdNum() const
     {
         return _idNum;
     }
-    inline bool markedAsDeleted() const
+    inline bool isMarkedAsDeleted() const
     {
         return _markedAsDeleted;
     }
 
     void printMessageInfo(const QString& prefix, const int& row = -1) const;
 
-    QString forcedColorRoleToQMLString(const ForcedColorRoles& role) const;
+    QString getForcedColorRoleToQMLString(const ForcedColorRoles& role) const;
 
-    static void trimCustom(QString& text);
+    static void trimText(QString& text);
 
 private:
     QString _text;
-    QString _id;
+    QString _messageId;
     QDateTime _publishedAt;
     QDateTime _receivedAt;
     QString _authorId;
     QSet<Flags> _flags;
     QHash<ForcedColorRoles, QColor> _forcedColors;
+    QMap<QUrl, QList<int>> images; // <image url, [image poses]>
 
     bool _markedAsDeleted = false;
 

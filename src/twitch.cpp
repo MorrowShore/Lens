@@ -656,7 +656,13 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
         }
 
-        const ChatMessage message = ChatMessage::createFromTwitch(messageText, QDateTime::currentDateTime(), channelLogin, flags);
+        const ChatMessage message = ChatMessage(messageText,
+                                                channelLogin,
+                                                QDateTime::currentDateTime(),
+                                                QDateTime::currentDateTime(),
+                                                QString(),
+                                                {},
+                                                flags);
         messages.append(message);
         authors.append(author);
 

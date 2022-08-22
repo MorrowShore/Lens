@@ -886,13 +886,13 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             AxelChat::saveDebugDataToFile(FolderLogs, "unknown_action_structure.json", doc.toJson());
         }
 
-        ChatMessage::trimCustom(messageText);
+        ChatMessage::trimText(messageText);
 
         if (valid)
         {
             if (isDeleter)
             {
-                const ChatMessage& message = ChatMessage::createDeleterFromYouTube(messageText, messageId);
+                const ChatMessage& message = ChatMessage::createYouTubeDeleter(messageText, messageId);
                 messages.append(message);
                 authors.append(ChatAuthor());
             }
@@ -908,12 +908,13 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                             authorIsChatSponsor,
                             authorIsChatModerator);
 
-                const ChatMessage& message = ChatMessage::createFromYouTube(
+                const ChatMessage message(
                             messageText,
-                            messageId,
+                            authorChannelId,
                             publishedAt,
                             receivedAt,
-                            authorChannelId,
+                            messageId,
+                            {},
                             flags,
                             forcedColors);
 
@@ -1039,7 +1040,7 @@ void YouTube::tryAppedToText(QString &text, const QJsonObject &jsonObject, const
     }
 
     QString newText = parseText(jsonObject.value(varName).toObject());
-    ChatMessage::trimCustom(newText);
+    ChatMessage::trimText(newText);
     if (newText.isEmpty())
     {
         return;

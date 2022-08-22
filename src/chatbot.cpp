@@ -168,7 +168,7 @@ void ChatBot::processMessage(const ChatMessage &message)
 
 bool ChatBot::canExecute(BotAction& action, const ChatMessage &message)
 {
-    const QString& trimmed = message.text().trimmed();
+    const QString& trimmed = message.getText().trimmed();
     const QString& lowered = trimmed.toLower();
 
     if (action.caseSensitive())
