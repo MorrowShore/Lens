@@ -29,12 +29,13 @@ const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArr
     {AuthorName ,             "authorName"},
     {AuthorNicknameColor ,    "authorNicknameColor"},
     {AuthorAvatarUrl ,        "authorAvatarUrl"},
-    {AuthorCustomBadgeUrl ,   "authorCustomBadgeUrl"},
-    {AuthorTwitchBadgesUrls,  "authorTwitchBadgesUrls"},
+    {AuthorLeftBadgesUrls ,   "authorLeftBadgesUrls"},
+    {AuthorRightBadgesUrls,   "authorRightBadgesUrls"},
+
     {AuthorIsVerified ,       "authorIsVerified"},
     {AuthorIsChatOwner ,      "authorIsChatOwner"},
-    {AuthorChatSponsor ,      "authorChatSponsor"},
-    {AuthorChatModerator ,    "authorChatModerator"}
+    {AuthorIsSponsor ,        "authorIsSponsor"},
+    {AuthorIsModerator ,      "authorIsModerator"}
 };
 
 
@@ -47,14 +48,14 @@ void ChatMessagesModel::append(ChatMessage&& message)
 {
     //ToDo: добавить сортировку сообщений по времени
 
-    if (message.getMessageId().isEmpty())
+    if (message.getId().isEmpty())
     {
         message.printMessageInfo("Ignore message with empty id");
         return;
     }
 
 
-    if (message.getMessageId().isEmpty())
+    if (message.getId().isEmpty())
     {
         //message.printMessageInfo(QString("%1: Ignore message with empty id:").arg(Q_FUNC_INFO));
         return;
@@ -62,7 +63,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
     if (!message.isDeleterItem())
     {
-        if (!_dataById.contains(message.getMessageId()))
+        if (!_dataById.contains(message.getId()))
         {
             //Normal message
 
@@ -75,15 +76,15 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
             messageData->setValue(message);
 
-            _idByData.insert(messageData, message.getMessageId());
-            _dataById.insert(message.getMessageId(), messageData);
+            _idByData.insert(messageData, message.getId());
+            _dataById.insert(message.getId(), messageData);
             _dataByIdNum.insert(message.getIdNum(), messageData);
             _idNumByData.insert(messageData, message.getIdNum());
 
             const ChatAuthor* author = getAuthor(message.getAuthorId());
-            if (author && !author->avatarUrl().isValid())
+            if (author && !author->getAvatarUrl().isValid())
             {
-                const QString& authorId = author->authorId();
+                const QString& authorId = author->getId();
                 if (!_needUpdateAvatarMessages.contains(authorId))
                 {
                     _needUpdateAvatarMessages.insert(authorId, QSet<uint64_t>());
@@ -104,7 +105,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
             qDebug(QString("%1: ignore message because this id already exists")
                    .arg(Q_FUNC_INFO).toUtf8());
 
-            const QVariant* data = _dataById.value(message.getMessageId());
+            const QVariant* data = _dataById.value(message.getId());
             if (data)
             {
                 const ChatMessage& oldMessage = qvariant_cast<ChatMessage>(*data);
@@ -125,8 +126,8 @@ void ChatMessagesModel::append(ChatMessage&& message)
 
         //ToDo: Если пришёл делетер, а сообщение ещё нет, то когда это сообщение придёт не будет удалено
 
-        QVariant* data = _dataById[message.getMessageId()];
-        if (_dataById.contains(message.getMessageId()) && data)
+        QVariant* data = _dataById[message.getId()];
+        if (_dataById.contains(message.getId()) && data)
         {
             const QModelIndex& index = createIndexByPtr(data);
             if (index.isValid())
@@ -180,7 +181,7 @@ bool ChatMessagesModel::removeRows(int position, int rows, const QModelIndex &pa
 
         const ChatMessage& message = qvariant_cast<ChatMessage>(*messageData);
 
-        const QString& id = message.getMessageId();
+        const QString& id = message.getId();
         const uint64_t& idNum = message.getIdNum();
 
         _dataById.remove(id);
@@ -260,13 +261,12 @@ void ChatMessagesModel::applyAvatar(const QString &channelId, const QUrl &url)
 
 const ChatAuthor &ChatMessagesModel::softwareAuthor()
 {
-    const QString authorId = "____" + QCoreApplication::applicationName() + "____";
+    const QString authorId = "____SOFTWARE____";
     if (!_authorsById.contains(authorId))
     {
-        ChatAuthor* author = new ChatAuthor();
-        author->_serviceType = AbstractChatService::ServiceType::Software;
-        author->_authorId = authorId;
-        author->_name = QCoreApplication::applicationName();
+        ChatAuthor* author = new ChatAuthor(AbstractChatService::ServiceType::Software,
+                                            QCoreApplication::applicationName(),
+                                            authorId);
         _authorsById.insert(authorId, author);
     }
 
@@ -275,13 +275,12 @@ const ChatAuthor &ChatMessagesModel::softwareAuthor()
 
 const ChatAuthor &ChatMessagesModel::testAuthor()
 {
-    const QString authorId = "____TEST_MESSAGE____";
+    const QString authorId = "____TEST____";
     if (!_authorsById.contains(authorId))
     {
-        ChatAuthor* author = new ChatAuthor();
-        author->_serviceType = AbstractChatService::ServiceType::Test;
-        author->_authorId = authorId;
-        author->_name = QTranslator::tr("Test Message");
+        ChatAuthor* author = new ChatAuthor(AbstractChatService::ServiceType::Test,
+                                            QTranslator::tr("Test"),
+                                            authorId);
         _authorsById.insert(authorId, author);
     }
 
@@ -295,7 +294,7 @@ void ChatMessagesModel::addAuthor(ChatAuthor* author)
         return;
     }
 
-    _authorsById.insert(author->authorId(), author);
+    _authorsById.insert(author->getId(), author);
 }
 
 bool ChatMessagesModel::contains(const QString &id)
@@ -381,7 +380,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
             ChatAuthor* author = getAuthor(message.getAuthorId());
             if (author)
             {
-                author->_avatarUrl = value.toUrl();
+                author->setAvatarUrl(value.toUrl());
             }
         }
         else
@@ -389,15 +388,17 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
         break;
-    case AuthorCustomBadgeUrl:
+    case AuthorLeftBadgesUrls:
+        return false;
+    case AuthorRightBadgesUrls:
         return false;
     case AuthorIsVerified:
         return false;
     case AuthorIsChatOwner:
         return false;
-    case AuthorChatSponsor:
+    case AuthorIsSponsor:
         return false;
-    case AuthorChatModerator:
+    case AuthorIsModerator:
         return false;
     default:
         return false;
@@ -415,7 +416,7 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
 
     switch (role) {
     case MessageId:
-        return message.getMessageId();
+        return message.getId();
     case MessageText:
         return message.getText();
     case MessagePublishedAt:
@@ -428,20 +429,20 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
         return message.isMarkedAsDeleted();
 
     case MessageIsDonateSimple:
-        return message.getFlags().contains(ChatMessage::Flags::DonateSimple);
+        return message.isHasFlag(ChatMessage::Flags::DonateSimple);
     case MessageIsDonateWithText:
-        return message.getFlags().contains(ChatMessage::Flags::DonateWithText);
+        return message.isHasFlag(ChatMessage::Flags::DonateWithText);
     case MessageIsDonateWithImage:
-        return message.getFlags().contains(ChatMessage::Flags::DonateWithImage);
+        return message.isHasFlag(ChatMessage::Flags::DonateWithImage);
 
     case MessageIsPlatformGeneric:
-        return message.getFlags().contains(ChatMessage::Flags::PlatformGeneric);
+        return message.isHasFlag(ChatMessage::Flags::PlatformGeneric);
 
     case MessageIsYouTubeChatMembership:
-        return message.getFlags().contains(ChatMessage::Flags::YouTubeChatMembership);
+        return message.isHasFlag(ChatMessage::Flags::YouTubeChatMembership);
 
     case MessageIsTwitchAction:
-        return message.getFlags().contains(ChatMessage::Flags::TwitchAction);
+        return message.isHasFlag(ChatMessage::Flags::TwitchAction);
 
     case MessageBodyBackgroundForcedColor:
         return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);
@@ -449,27 +450,28 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
     case AuthorServiceType:
         return (int)(author ? author->getServiceType() : AbstractChatService::ServiceType::Unknown);
     case AuthorId:
-        return author ? author->authorId() : QString();
+        return author ? author->getId() : QString();
     case AuthorPageUrl:
-        return author ? author->pageUrl() : QUrl();
+        return author ? author->getPageUrl() : QUrl();
     case AuthorName:
-        return author ? author->name() : QString();
+        return author ? author->getName() : QString();
     case AuthorNicknameColor:
-        return author ? author->nicknameColor() : QColor();
+        return author ? author->getCustomNicknameColor() : QColor();
     case AuthorAvatarUrl:
-        return author ? author->avatarUrl() : QUrl();
-    case AuthorCustomBadgeUrl:
-        return author ? author->customBadgeUrl() : QUrl();
-    case AuthorTwitchBadgesUrls:
-        return author ? author->twitchBadgesUrls() : QStringList();
+        return author ? author->getAvatarUrl() : QUrl();
+    case AuthorLeftBadgesUrls:
+        return author ? author->getLeftBadgesUrls() : QStringList();
+    case AuthorRightBadgesUrls:
+        return author ? author->getRightBadgesUrls() : QStringList();
+
     case AuthorIsVerified:
-        return author ? author->isVerified() : false;
+        return author ? author->isHasFlag(ChatAuthor::Flags::Verified) : false;
     case AuthorIsChatOwner:
-        return author ? author->isChatOwner() : false;
-    case AuthorChatSponsor:
-        return author ? author->isChatSponsor() : false;
-    case AuthorChatModerator:
-        return author ? author->isChatModerator() : false;
+        return author ? author->isHasFlag(ChatAuthor::Flags::ChatOwner) : false;
+    case AuthorIsSponsor:
+        return author ? author->isHasFlag(ChatAuthor::Flags::Sponsor) : false;
+    case AuthorIsModerator:
+        return author ? author->isHasFlag(ChatAuthor::Flags::Moderator) : false;
     }
     return QVariant();
 }

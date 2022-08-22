@@ -35,12 +35,13 @@ public:
         AuthorName,
         AuthorNicknameColor,
         AuthorAvatarUrl,
-        AuthorCustomBadgeUrl,
-        AuthorTwitchBadgesUrls,
+        AuthorLeftBadgesUrls,
+        AuthorRightBadgesUrls,
+
         AuthorIsVerified,
         AuthorIsChatOwner,
-        AuthorChatSponsor,
-        AuthorChatModerator
+        AuthorIsSponsor,
+        AuthorIsModerator
     };
 
     QHash<int, QByteArray> roleNames() const override {

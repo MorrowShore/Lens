@@ -5,108 +5,93 @@
 #include <QString>
 #include <QUrl>
 #include <QColor>
+#include <set>
 
 class ChatAuthor
 {
     Q_GADGET
 public:
+    enum class Flags {
+        ChatOwner,
+        Moderator,
+        Sponsor,
+        Verified,
+    };
+
     friend class ChatHandler;
     friend class ChatMessagesModel;
 
     ChatAuthor() { };
+    ChatAuthor(AbstractChatService::ServiceType serviceType,
+               const QString& name,
+               const QString& authorId,
+               const QUrl& avatarUrl = QUrl(),
+               const QUrl& pageUrl = QUrl(),
+               const QStringList& leftBadgesUrls = {},
+               const QStringList& rightBadgesUrls = {},
+               const std::set<Flags>& flags = {},
+               const QColor& customNicknameColor = QColor());
 
-    inline const QString& authorId() const
+    inline const QString& getId() const
     {
-        return _authorId;
+        return authorId;
     }
-    inline const QString& name() const
+    inline const QString& getName() const
     {
-        return _name;
+        return name;
     }
-    inline const QUrl& avatarUrl() const
+    inline const QUrl& getAvatarUrl() const
     {
-        return _avatarUrl;
+        return avatarUrl;
     }
-    inline bool isVerified() const
+    inline void setAvatarUrl(const QUrl& url)
     {
-        return _isVerified;
+        avatarUrl = url;
     }
-    inline bool isChatOwner() const
+    inline const QUrl& getPageUrl() const
     {
-        return _isChatOwner;
+        return pageUrl;
     }
-    inline bool isChatSponsor() const
+    inline int getMessagesCount() const
     {
-        return _isChatSponsor;
+        return messagesCount;
     }
-    inline bool isChatModerator() const
+    inline void setMessagesCount(int count)
     {
-        return _isChatModerator;
+        messagesCount = count;
     }
-    inline const QUrl& customBadgeUrl() const
+    inline const QColor& getCustomNicknameColor() const
     {
-        return _customBadgeUrl;
+        return customNicknameColor;
     }
-    inline const QStringList& twitchBadgesUrls() const
-    {
-        return _twitchBadgesUrls;
-    }
-    inline const QUrl& pageUrl() const
-    {
-        return _pageUrl;
-    }
-
-    inline int messagesCount() const
-    {
-        return _messagesCount;
-    }
-
-    inline const QColor& nicknameColor() const
-    {
-        return _nicknameColor;
-    }
-
     inline AbstractChatService::ServiceType getServiceType() const
     {
-        return _serviceType;
+        return serviceType;
+    }
+    inline const QStringList& getLeftBadgesUrls() const
+    {
+        return leftBadgesUrls;
+    }
+    inline const QStringList& getRightBadgesUrls() const
+    {
+        return rightBadgesUrls;
+    }
+    inline bool isHasFlag(const Flags flag) const
+    {
+        return flags.find(flag) != flags.end();
     }
 
-    static ChatAuthor createFromYouTube(const QString& name,
-                                           const QString& channelId,
-                                           const QUrl& avatarUrl,
-                                           const QUrl badgeUrl,
-                                           const bool isVerified,
-                                           const bool isChatOwner,
-                                           const bool isChatSponsor,
-                                           const bool isChatModerator);
-
-    static ChatAuthor createFromTwitch(const QString& name,
-                                          const QString& channelId,
-                                          const QUrl& avatarUrl,
-                                          const QColor& nicknameColor,
-                                          const QMap<QString, QString>& badges);
-
-    static ChatAuthor createFromGoodGame(const QString& name,
-                                          const QString& userId,
-                                          const int userGroup);
-
 private:
-    friend class ChatMessage;
-
-    QString _authorId;
-    QString _name;
-    QColor _nicknameColor;
-    QStringList _twitchBadgesUrls;
-    QUrl _pageUrl;
-    QUrl _avatarUrl;
-    QUrl _customBadgeUrl;
-    bool _isVerified      = false;
-    bool _isChatOwner     = false;
-    bool _isChatSponsor   = false;
-    bool _isChatModerator = false;
-    bool _isDonation      = false;
-    int _messagesCount = 0;
-    AbstractChatService::ServiceType _serviceType = AbstractChatService::ServiceType::Unknown;
+    AbstractChatService::ServiceType serviceType = AbstractChatService::ServiceType::Unknown;
+    QString name;
+    QString authorId;
+    QUrl avatarUrl;
+    QUrl pageUrl;
+    QStringList leftBadgesUrls;
+    QStringList rightBadgesUrls;
+    std::set<Flags> flags;
+    QColor customNicknameColor;
+    int messagesCount = 0;
 };
 
 #endif // CHATAUTHOR_H

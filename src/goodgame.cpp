@@ -149,7 +149,9 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QDateTime publishedAt = QDateTime::fromMSecsSinceEpoch(qint64(jsonMessage.value("timestamp").toDouble()));
             const QString text = jsonMessage.value("text").toString();
 
-            const ChatAuthor author = ChatAuthor::createFromGoodGame(userName, userId, userGroup);
+            const ChatAuthor author(AbstractChatService::ServiceType::GoodGame,
+                                    userName,
+                                    userId);
             const ChatMessage message(text,
                                       userId,
                                       publishedAt);

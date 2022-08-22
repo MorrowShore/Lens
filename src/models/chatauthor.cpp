@@ -1,6 +1,28 @@
 #include "chatauthor.h"
 
-ChatAuthor ChatAuthor::createFromYouTube(
+ChatAuthor::ChatAuthor(AbstractChatService::ServiceType serviceType_,
+                       const QString &name_,
+                       const QString &authorId_,
+                       const QUrl &avatarUrl_,
+                       const QUrl &pageUrl_,
+                       const QStringList &leftBadgesUrls_,
+                       const QStringList &rightBadgesUrls_,
+                       const std::set<Flags> &flags_,
+                       const QColor &customNicknameColor_)
+    : serviceType(serviceType_)
+    , name(name_)
+    , authorId(authorId_)
+    , avatarUrl(avatarUrl_)
+    , pageUrl(pageUrl_)
+    , leftBadgesUrls(leftBadgesUrls_)
+    , rightBadgesUrls(rightBadgesUrls_)
+    , flags(flags_)
+    , customNicknameColor(customNicknameColor_)
+{
+
+}
+
+/*ChatAuthor ChatAuthor::createFromYouTube(
         const QString &name,
         const QString &channelId,
         const QUrl &avatarUrl,
@@ -60,4 +82,4 @@ ChatAuthor ChatAuthor::createFromGoodGame(const QString &name, const QString &us
     author._serviceType = AbstractChatService::ServiceType::GoodGame;
 
     return author;
-}
+}*/

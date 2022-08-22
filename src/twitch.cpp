@@ -387,7 +387,7 @@ void Twitch::onIRCMessage(const QString &rawData)
     const QVector<QStringRef> rawMessages = rawData.splitRef("\r\n");
     for (const QStringRef& raw : rawMessages)
     {
-        QSet<ChatMessage::Flags> flags;
+        std::set<ChatMessage::Flags> messageFlags;
 
         QString rawMessage = raw.trimmed().toString();
         if (rawMessage.isEmpty())
@@ -439,7 +439,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             rawMessageText = rawMessageText.mid(7);
             rawMessageText = rawMessageText.left(rawMessageText.length() - 1);
             rawMessageText = rawMessageText.trimmed();
-            flags.insert(ChatMessage::Flags::TwitchAction);
+            messageFlags.insert(ChatMessage::Flags::TwitchAction);
         }
 
         if (needIgnoreMessage(rawMessageText))
@@ -617,7 +617,32 @@ void Twitch::onIRCMessage(const QString &rawData)
             displayName = channelLogin;
         }
 
-        const ChatAuthor author = ChatAuthor::createFromTwitch(displayName, channelLogin, avatar, nicknameColor, badges);
+        std::set<ChatAuthor::Flags> authorFlags;
+
+        if (badges.contains("partner/1"))
+        {
+            authorFlags.insert(ChatAuthor::Flags::Verified);
+        }
+
+        if (badges.contains("broadcaster/1"))
+        {
+            authorFlags.insert(ChatAuthor::Flags::ChatOwner);
+        }
+
+        if (badges.contains("moderator/1"))
+        {
+            authorFlags.insert(ChatAuthor::Flags::Moderator);
+        }
+
+        const ChatAuthor author(AbstractChatService::ServiceType::Twitch,
+                                displayName,
+                                channelLogin,
+                                avatar,
+                                QUrl(QString("https://www.twitch.tv/%1").arg(channelLogin)),
+                                badges.values(),
+                                {},
+                                authorFlags,
+                                nicknameColor);
 
         QString messageText;
         if (emotesInfo.isEmpty())
@@ -662,7 +687,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                                                 QDateTime::currentDateTime(),
                                                 QString(),
                                                 {},
-                                                flags);
+                                                messageFlags);
         messages.append(message);
         authors.append(author);
 

@@ -66,7 +66,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
     for (int i = 0; i < messages.count(); ++i)
     {
         ChatMessage&& message = std::move(messages[i]);
-        if (messagesModel.contains(message.getMessageId()) && !message.isDeleterItem())
+        if (messagesModel.contains(message.getId()) && !message.isDeleterItem())
         {
             continue;
         }
@@ -74,19 +74,19 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         ChatAuthor&& author = std::move(authors[i]);
 
         ChatAuthor* resultAuthor = nullptr;
-        ChatAuthor* prevAuthor = messagesModel.getAuthor(author.authorId());
+        ChatAuthor* prevAuthor = messagesModel.getAuthor(author.getId());
         if (prevAuthor)
         {
-            const auto prevMessagesCount = prevAuthor->_messagesCount;
+            const auto prevMessagesCount = prevAuthor->getMessagesCount();
             *prevAuthor = author;
-            prevAuthor->_messagesCount = prevMessagesCount + 1;
+            prevAuthor->setMessagesCount(prevMessagesCount + 1);
             resultAuthor = prevAuthor;
         }
         else
         {
             ChatAuthor* newAuthor = new ChatAuthor();
             *newAuthor = author;
-            newAuthor->_messagesCount = 1;
+            newAuthor->setMessagesCount(1);
             messagesModel.addAuthor(newAuthor);
             resultAuthor = newAuthor;
         }
@@ -123,7 +123,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         ChatMessage&& message = std::move(messagesValidToAdd[i]);
 
 #ifndef AXELCHAT_LIBRARY
-        if (message.getAuthorId() != messagesModel.softwareAuthor().authorId())
+        if (message.getAuthorId() != messagesModel.softwareAuthor().getId())
         {
             bot.processMessage(message);
         }
@@ -147,7 +147,7 @@ void ChatHandler::sendTestMessage(const QString &text)
     authors.append(author);
 
     QList<ChatMessage> messages;
-    messages.append(ChatMessage(text, author.authorId()));
+    messages.append(ChatMessage(text, author.getId()));
 
     onReadyRead(messages, authors);
 }
@@ -159,7 +159,7 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
     authors.append(author);
 
     QList<ChatMessage> messages;
-    messages.append(ChatMessage(text, author.authorId()));
+    messages.append(ChatMessage(text, author.getId()));
 
     onReadyRead(messages, authors);
 }

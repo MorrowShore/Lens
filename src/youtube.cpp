@@ -621,13 +621,11 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
         QString authorName;
         QString authorChannelId;
-        QUrl authorBadgeUrl;
+        QStringList rightBadges;
         QUrl authorAvatarUrl;
-        bool authorIsVerified      = false;
-        bool authorIsChatOwner     = false;
-        bool authorIsChatSponsor   = false;
-        bool authorIsChatModerator = false;
-        QSet<ChatMessage::Flags> flags;
+        std::set<ChatMessage::Flags> messageFlags;
+        std::set<ChatAuthor::Flags> authorFlags;
+
         QHash<ChatMessage::ForcedColorRoles, QColor> forcedColors;
 
         const QJsonObject& actionObject = actionJson.toObject();
@@ -650,7 +648,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 itemRenderer = item.value("liveChatPaidMessageRenderer").toObject();
 
-                flags.insert(ChatMessage::Flags::DonateWithText);
+                messageFlags.insert(ChatMessage::Flags::DonateWithText);
 
                 valid = true;
             }
@@ -659,7 +657,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 //ToDo:
                 itemRenderer = item.value("liveChatPaidStickerRenderer").toObject();
 
-                flags.insert(ChatMessage::Flags::DonateWithImage);
+                messageFlags.insert(ChatMessage::Flags::DonateWithImage);
 
                 valid = true;
             }
@@ -667,7 +665,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 itemRenderer = item.value("liveChatMembershipItemRenderer").toObject();
 
-                flags.insert(ChatMessage::Flags::YouTubeChatMembership);
+                messageFlags.insert(ChatMessage::Flags::YouTubeChatMembership);
 
                 valid = true;
             }
@@ -678,7 +676,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 if (iconType == "POLL")
                 {
                     itemRenderer = std::move(itemRenderer_);
-                    flags.insert(ChatMessage::Flags::PlatformGeneric);
+                    messageFlags.insert(ChatMessage::Flags::PlatformGeneric);
                     valid = true;
                 }
                 else if (iconType == "YOUTUBE_ROUND")
@@ -740,7 +738,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 const QJsonArray& authorBadges = itemRenderer.value("authorBadges").toArray();
 
-                foreach (const QJsonValue& badge, authorBadges)
+                for (const QJsonValue& badge : authorBadges)
                 {
                     const QJsonObject& liveChatAuthorBadgeRenderer = badge.toObject().value("liveChatAuthorBadgeRenderer").toObject();
 
@@ -753,19 +751,22 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
                         if (iconType.toLower() == "owner")
                         {
-                            authorIsChatOwner = true;
+                            authorFlags.insert(ChatAuthor::Flags::ChatOwner);
+                            rightBadges.append("qrc:/resources/images/king.svg");
                             foundIconType = true;
                         }
 
                         if (iconType.toLower() == "moderator")
                         {
-                            authorIsChatModerator = true;
+                            authorFlags.insert(ChatAuthor::Flags::Moderator);
+                            rightBadges.append("qrc:/resources/images/youtube-moderator-icon.svg");
                             foundIconType = true;
                         }
 
                         if (iconType.toLower() == "verified")
                         {
-                            authorIsVerified = true;
+                            authorFlags.insert(ChatAuthor::Flags::Verified);
+                            rightBadges.append("qrc:/resources/images/youtube-verified-icon.svg");
                             foundIconType = true;
                         }
 
@@ -776,21 +777,14 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                     }
                     else if (liveChatAuthorBadgeRenderer.contains("customThumbnail"))
                     {
-                        authorIsChatSponsor = true;//ToDo: is not a fact
+                        authorFlags.insert(ChatAuthor::Flags::Sponsor);
 
                         const QJsonArray& thumbnails = liveChatAuthorBadgeRenderer.value("customThumbnail").toObject()
                                 .value("thumbnails").toArray();
 
-                        foreach (const QJsonValue& thumbnailJson, thumbnails)
+                        if (!thumbnails.isEmpty())
                         {
-                            if (authorBadgeUrl.isEmpty())
-                            {
-                                authorBadgeUrl = createResizedAvatarUrl(QUrl(thumbnailJson.toObject().value("url").toString()), _badgePixelSize);
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            rightBadges.append(createResizedAvatarUrl(QUrl(thumbnails.first().toObject().value("url").toString()), _badgePixelSize).toString());
                         }
                     }
                     else
@@ -898,15 +892,14 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             }
             else
             {
-                const ChatAuthor& author = ChatAuthor::createFromYouTube(
-                            authorName,
-                            authorChannelId,
-                            authorAvatarUrl,
-                            authorBadgeUrl,
-                            authorIsVerified,
-                            authorIsChatOwner,
-                            authorIsChatSponsor,
-                            authorIsChatModerator);
+                const ChatAuthor author(AbstractChatService::ServiceType::YouTube,
+                                        authorName,
+                                        authorChannelId,
+                                        authorAvatarUrl,
+                                        QUrl(QString("https://www.youtube.com/channel/%1").arg(authorChannelId)),
+                                        {},
+                                        rightBadges,
+                                        authorFlags);
 
                 const ChatMessage message(
                             messageText,
@@ -915,7 +908,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                             receivedAt,
                             messageId,
                             {},
-                            flags,
+                            messageFlags,
                             forcedColors);
 
                 messages.append(message);

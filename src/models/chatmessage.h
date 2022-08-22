@@ -8,11 +8,12 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QMap>
+#include <set>
 
 class ChatMessage{
     Q_GADGET
 public:
-    enum Flags {
+    enum class Flags {
         DonateSimple,
         DonateWithText,
         DonateWithImage,
@@ -34,13 +35,13 @@ public:
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
                 const QString& messageId = QString(),
                 const QMap<QUrl, QList<int>>& images = {},
-                const QSet<Flags>& flags = {},
+                const std::set<Flags>& flags = {},
                 const QHash<ForcedColorRoles, QColor>& forcedColors = {});
 
     static ChatMessage createYouTubeDeleter(const QString& text,
                                             const QString& id);
 
-    inline const QString& getMessageId() const
+    inline const QString& getId() const
     {
         return messageId;
     }
@@ -96,11 +97,12 @@ public:
     inline void setText(const QString& text_)
     {
         text = text_;
+        updateHtml();
     }
 
-    inline const QSet<Flags>& getFlags() const
+    inline bool isHasFlag(const Flags flag) const
     {
-        return flags;
+        return flags.find(flag) != flags.end();
     }
 
     void printMessageInfo(const QString& prefix, const int& row = -1) const;
@@ -110,13 +112,15 @@ public:
     static void trimText(QString& text);
 
 private:
+    void updateHtml();
+
     QString text;
     QString html;
     QString messageId;
     QDateTime publishedAt;
     QDateTime receivedAt;
     QString authorId;
-    QSet<Flags> flags;
+    std::set<Flags> flags;
     QHash<ForcedColorRoles, QColor> forcedColors;
     QMap<QUrl, QList<int>> images; // <image url, [image poses]>
 

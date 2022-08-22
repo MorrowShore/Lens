@@ -147,9 +147,9 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         {
             const ChatMessage& message = messages[i];
 
-            if (message.getMessageId() == youTubeLastMessageId.get())
+            if (message.getId() == youTubeLastMessageId.get())
             {
-                qDebug() << "found youtube message with id" << message.getMessageId() << ", ignore saving messages before it, index =" << i;
+                qDebug() << "found youtube message with id" << message.getId() << ", ignore saving messages before it, index =" << i;
                 firstValidMessage = i + 1;
                 break;
             }
@@ -180,7 +180,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         QList<QPair<QString, QString>> tags;
 
-        tags.append(QPair<QString, QString>("author", author->name()));
+        tags.append(QPair<QString, QString>("author", author->getName()));
         tags.append(QPair<QString, QString>("author_id", authorId));
         tags.append(QPair<QString, QString>("message", message.getText()));
         tags.append(QPair<QString, QString>("time", timeToString(message.getPublishedAt())));
@@ -190,7 +190,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         if (author->getServiceType() == AbstractChatService::ServiceType::YouTube)
         {
-            const QString id = message.getMessageId();
+            const QString id = message.getId();
             if (!id.isEmpty())
             {
                 currentLastYouTubeMessageId = id;
@@ -202,7 +202,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         case AbstractChatService::ServiceType::GoodGame:
         case AbstractChatService::ServiceType::YouTube:
         case AbstractChatService::ServiceType::Twitch:
-            downloadAvatar(authorId, author->avatarUrl(), type);
+            downloadAvatar(authorId, author->getAvatarUrl(), type);
             break;
 
         case AbstractChatService::ServiceType::Unknown:
@@ -487,7 +487,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
 
     for (const ChatAuthor* author : authors)
     {
-        const QString pathDir = getAuthorDirectory(author->getServiceType(), author->authorId());
+        const QString pathDir = getAuthorDirectory(author->getServiceType(), author->getId());
         if (!QDir(pathDir).exists())
         {
             QDir().mkpath(pathDir);
@@ -502,21 +502,21 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
                 continue;
             }
 
-            const QString avatarUrlStr = author->avatarUrl().toString();
+            const QString avatarUrlStr = author->getAvatarUrl().toString();
             if (!avatarUrlStr.contains('/'))
             {
-                qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->authorId() << author->name();
+                qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->getId() << author->getName();
             }
 
             const QString avatarName = avatarUrlStr.mid(avatarUrlStr.lastIndexOf('/') + 1);
 
             file.write("[info]\n");
-            file.write("name=" + prepare(author->name()) + "\n");
-            file.write("id=" + prepare(author->authorId()) + "\n");
+            file.write("name=" + prepare(author->getName()) + "\n");
+            file.write("id=" + prepare(author->getId()) + "\n");
             file.write("service=" + prepare(AbstractChatService::serviceTypeToString(author->getServiceType())) + "\n");
             file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
             file.write("avatar_name=" + prepare(avatarName) + "\n");
-            file.write("page_url=" + prepare(author->pageUrl().toString()) + "\n");
+            file.write("page_url=" + prepare(author->getPageUrl().toString()) + "\n");
             //ToDo: file.write("last_message_at=" +  + "\n");
 
             file.flush();
@@ -524,7 +524,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
         }
 
         {
-            const QByteArray newName = prepare(author->name());
+            const QByteArray newName = prepare(author->getName());
 
             bool needAddName = false;
 
@@ -555,7 +555,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
                 {
                     if (!prevName.isEmpty())
                     {
-                        qDebug() << "Author" << author->authorId() << "changed name" << prevName << "to" << newName;
+                        qDebug() << "Author" << author->getId() << "changed name" << prevName << "to" << newName;
 
                         emit authorNameChanged(*author, prevName, newName);
                     }

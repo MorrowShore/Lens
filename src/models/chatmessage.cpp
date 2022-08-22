@@ -7,7 +7,7 @@ ChatMessage::ChatMessage(const QString &text_,
                          const QDateTime &receivedAt_,
                          const QString &messageId_,
                          const QMap<QUrl, QList<int>>& images_,
-                         const QSet<Flags> &flags_,
+                         const std::set<Flags> &flags_,
                          const QHash<ForcedColorRoles, QColor> &forcedColors_)
     : text(text_)
     , messageId(messageId_)
@@ -22,6 +22,8 @@ ChatMessage::ChatMessage(const QString &text_,
     {
         messageId = authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
     }
+
+    updateHtml();
 }
 
 ChatMessage ChatMessage::createYouTubeDeleter(const QString& text,const QString& id)
@@ -57,7 +59,7 @@ void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
 
     resultString += "\nAuthor Id: \"" + getAuthorId() + "\"";
     resultString += "\nMessage Text: \"" + getHtml() + "\"";
-    resultString += "\nMessage Id: \"" + getMessageId() + "\"";
+    resultString += "\nMessage Id: \"" + getId() + "\"";
     resultString += QString("\nMessage Id Num: %1").arg(getIdNum());
 
     if (row != -1)
@@ -127,4 +129,9 @@ void ChatMessage::trimText(QString &text)
     }
 
     text = text.mid(left, text.length() - left - right);
+}
+
+void ChatMessage::updateHtml()
+{
+    //TODO
 }

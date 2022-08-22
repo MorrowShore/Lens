@@ -496,11 +496,11 @@ ApplicationWindow {
                             {
                                 return "#F48FB1";
                             }
-                            else if (authorChatModerator)
+                            else if (authorIsModerator)
                             {
                                 return "#5F84F1";
                             }
-                            else if (authorChatSponsor)
+                            else if (authorIsSponsor)
                             {
                                 return "#107516";
                             }
@@ -516,12 +516,6 @@ ApplicationWindow {
                         return "#03A9F4";
                     }
                     font.bold: true
-                        /*authorChatModerator |
-                        authorIsChatOwner   |
-                        authorChatSponsor   |
-                        authorIsVerified    |
-                        authorServiceType == ChatMessage.SoftwareNotification |
-                        authorServiceType == ChatMessage.TestMessage*/
                     font.pointSize: Global.windowChatMessageAuthorNameFontSize
                     //font.hintingPreference: Font.PreferFullHinting
                     //style: Text.Outline;
@@ -565,35 +559,16 @@ ApplicationWindow {
                             prefix += createImgTag(getPlatformIcon(authorServiceType), badgePixelSize) + " "
                         }
 
-                        if (authorServiceType === Global._YouTubeServiceType)
+                        var i;
+
+                        for (i = 0; i < authorLeftBadgesUrls.length; i++)
                         {
-                            if (authorIsChatOwner)
-                            {
-                                postfix += " " + createImgTag("qrc:/resources/images/king.svg", badgePixelSize)
-                            }
-
-                            if (authorIsVerified)
-                            {
-                                postfix += " " + createImgTag("qrc:/resources/images/youtube-verified-icon.svg", badgePixelSize)
-                            }
-
-                            if (authorChatModerator)
-                            {
-                                postfix += " " + createImgTag("qrc:/resources/images/youtube-moderator-icon.svg", badgePixelSize)
-                            }
-
-
-                            if (authorCustomBadgeUrl !== "undefined")
-                            {
-                                postfix += " " + createImgTag(authorCustomBadgeUrl, badgePixelSize)
-                            }
+                            prefix += createImgTag(authorLeftBadgesUrls[i], badgePixelSize) + " "
                         }
-                        else if (authorServiceType === Global._TwitchServiceType)
+
+                        for (i = 0; i < authorRightBadgesUrls.length; i++)
                         {
-                            for (var i = 0; i < authorTwitchBadgesUrls.length; i++)
-                            {
-                                prefix += createImgTag(authorTwitchBadgesUrls[i], badgePixelSize) + " "
-                            }
+                            postfix += createImgTag(authorRightBadgesUrls[i], badgePixelSize) + " "
                         }
 
                         return prefix + authorName + postfix

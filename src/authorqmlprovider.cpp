@@ -36,7 +36,7 @@ QString AuthorQMLProvider::getName() const
         return QString();
     }
 
-    return author->name();
+    return author->getName();
 }
 
 int AuthorQMLProvider::getServiceType() const
@@ -58,7 +58,7 @@ QUrl AuthorQMLProvider::getAvatarUrl() const
         return QUrl();
     }
 
-    return author->avatarUrl();
+    return author->getAvatarUrl();
 }
 
 int AuthorQMLProvider::getMessagesCount() const
@@ -69,7 +69,7 @@ int AuthorQMLProvider::getMessagesCount() const
         return -1;
     }
 
-    return author->messagesCount();
+    return author->getMessagesCount();
 }
 
 bool AuthorQMLProvider::openAvatar() const
@@ -80,11 +80,11 @@ bool AuthorQMLProvider::openAvatar() const
         return false;
     }
 
-    QUrl url = author->avatarUrl();
+    QUrl url = author->getAvatarUrl();
 
     if (author->getServiceType() == AbstractChatService::ServiceType::YouTube)
     {
-        const QUrl url_ = YouTube::createResizedAvatarUrl(author->avatarUrl(), YouTubeAvatarSize);
+        const QUrl url_ = YouTube::createResizedAvatarUrl(author->getAvatarUrl(), YouTubeAvatarSize);
         if (url_.isValid())
         {
             url = url_;
@@ -102,7 +102,7 @@ bool AuthorQMLProvider::openPage() const
         return false;
     }
 
-    return QDesktopServices::openUrl(author->pageUrl());
+    return QDesktopServices::openUrl(author->getPageUrl());
 }
 
 bool AuthorQMLProvider::openFolder() const
@@ -113,6 +113,6 @@ bool AuthorQMLProvider::openFolder() const
         return false;
     }
 
-    return QDesktopServices::openUrl(QUrl::fromLocalFile(outputToFile.getAuthorDirectory(author->getServiceType(), author->authorId())));
+    return QDesktopServices::openUrl(QUrl::fromLocalFile(outputToFile.getAuthorDirectory(author->getServiceType(), author->getId())));
 }
 
