@@ -6,12 +6,14 @@
 #include <QUuid>
 
 const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArray>{
-    {MessageId ,              "messageId"},
-    {MessageText ,            "messageText"},
-    {MessagePublishedAt ,     "messagePublishedAt"},
-    {MessageReceivedAt ,      "messageReceivedAt"},
-    {MessageIsBotCommand ,    "messageIsBotCommand"},
-    {MessageMarkedAsDeleted , "messageMarkedAsDeleted"},
+    {MessageId ,                    "messageId"},
+    {MessageText ,                  "messageText"},
+    {MessagePublishedAt ,           "messagePublishedAt"},
+    {MessageReceivedAt ,            "messageReceivedAt"},
+    {MessageIsBotCommand ,          "messageIsBotCommand"},
+    {MessageMarkedAsDeleted ,       "messageMarkedAsDeleted"},
+    {MessageCustomAuthorAvatarUrl,  "messageCustomAuthorAvatarUrl"},
+    {MessageCustomAuthorName,       "messageCustomAuthorName"},
 
     {MessageIsDonateSimple,   "messageIsDonateSimple"},
     {MessageIsDonateWithText, "messageIsDonateWithText"},
@@ -39,11 +41,6 @@ const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArr
 };
 
 
-ChatMessagesModel::ChatMessagesModel(QObject *parent) : QAbstractListModel(parent)
-{
-
-}
-
 void ChatMessagesModel::append(ChatMessage&& message)
 {
     //ToDo: добавить сортировку сообщений по времени
@@ -61,7 +58,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
         return;
     }
 
-    if (!message.isDeleterItem())
+    if (!message.isHasFlag(ChatMessage::Flags::DeleterItem))
     {
         if (!_dataById.contains(message.getId()))
         {
@@ -273,20 +270,6 @@ const ChatAuthor &ChatMessagesModel::softwareAuthor()
     return *_authorsById.value(authorId);
 }
 
-const ChatAuthor &ChatMessagesModel::testAuthor()
-{
-    const QString authorId = "____TEST____";
-    if (!_authorsById.contains(authorId))
-    {
-        ChatAuthor* author = new ChatAuthor(AbstractChatService::ServiceType::Test,
-                                            QTranslator::tr("Test"),
-                                            authorId);
-        _authorsById.insert(authorId, author);
-    }
-
-    return *_authorsById.value(authorId);
-}
-
 void ChatMessagesModel::addAuthor(ChatAuthor* author)
 {
     if (!author)
@@ -360,7 +343,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     case MessageMarkedAsDeleted:
         if (value.canConvert(QMetaType::Bool))
         {
-            message.setMarkedAsDeleted(value.toBool());
+            message.setFlag(ChatMessage::Flags::MarkedAsDeleted, value.toBool());
         }
         else
         {
@@ -424,9 +407,13 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
     case MessageReceivedAt:
         return message.getReceivedAt();
     case MessageIsBotCommand:
-        return message.isBotCommand();
+        return message.isHasFlag(ChatMessage::Flags::BotCommand);
     case MessageMarkedAsDeleted:
-        return message.isMarkedAsDeleted();
+        return message.isHasFlag(ChatMessage::Flags::MarkedAsDeleted);
+    case MessageCustomAuthorAvatarUrl:
+        return message.getCustomAuthorAvatarUrl();
+    case MessageCustomAuthorName:
+        return message.getCustomAuthorName();
 
     case MessageIsDonateSimple:
         return message.isHasFlag(ChatMessage::Flags::DonateSimple);

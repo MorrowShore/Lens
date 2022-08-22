@@ -20,7 +20,6 @@ public:
         Unknown = -1,
 
         Software = 10,
-        Test = 11,
 
         YouTube = 100,
         Twitch = 101,
@@ -33,7 +32,6 @@ public:
         {
         case AbstractChatService::ServiceType::Unknown: return "unknown";
         case AbstractChatService::ServiceType::Software: return "software";
-        case AbstractChatService::ServiceType::Test: return "test";
 
         case AbstractChatService::ServiceType::YouTube: return "youtube";
         case AbstractChatService::ServiceType::Twitch: return "twitch";
@@ -49,7 +47,6 @@ public:
         {
         case AbstractChatService::ServiceType::Unknown: return tr("Unknown");
         case AbstractChatService::ServiceType::Software: return QCoreApplication::applicationName();
-        case AbstractChatService::ServiceType::Test: return tr("Test");
 
         case AbstractChatService::ServiceType::YouTube: return tr("YouTube");
         case AbstractChatService::ServiceType::Twitch: return tr("Twitch");
@@ -70,6 +67,7 @@ public:
     Q_PROPERTY(QUrl                 broadcastUrl                 READ broadcastUrl                    NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 chatUrl                      READ chatUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 controlPanelUrl              READ controlPanelUrl                 NOTIFY stateChanged)
+    Q_PROPERTY(QUrl                 iconUrl                      READ getIconUrl                      CONSTANT)
 
     Q_PROPERTY(ConnectionStateType  connectionStateType          READ connectionStateType             NOTIFY stateChanged)
     Q_PROPERTY(QString              stateDescription             READ stateDescription                NOTIFY stateChanged)
@@ -87,6 +85,7 @@ public:
     virtual QUrl chatUrl() const { return QString(); }
     virtual QUrl controlPanelUrl() const { return QString(); }
     virtual QUrl broadcastUrl() const { return QString(); }
+    virtual QUrl getIconUrl() const = 0;
 
     virtual ConnectionStateType connectionStateType() const = 0;
     virtual QString stateDescription() const  = 0;

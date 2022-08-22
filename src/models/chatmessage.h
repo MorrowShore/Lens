@@ -14,6 +14,11 @@ class ChatMessage{
     Q_GADGET
 public:
     enum class Flags {
+        MarkedAsDeleted,
+        DeleterItem,
+        BotCommand,
+        IgnoreBotCommand,
+
         DonateSimple,
         DonateWithText,
         DonateWithImage,
@@ -23,6 +28,7 @@ public:
         YouTubeChatMembership,
         TwitchAction,
     };
+    Q_ENUM(Flags)
 
     enum ForcedColorRoles {
         BodyBackgroundForcedColorRole
@@ -53,14 +59,6 @@ public:
     {
         return html;
     }
-    inline bool isBotCommand() const
-    {
-        return _isBotCommand;
-    }
-    inline bool isDeleterItem() const
-    {
-        return _isDeleterItem;
-    }
     inline const QDateTime& getPublishedAt() const
     {
         return publishedAt;
@@ -73,22 +71,25 @@ public:
     {
         return authorId;
     }
+    inline const QUrl& getCustomAuthorAvatarUrl() const
+    {
+        return customAuthorAvatarUrl;
+    }
+    inline void setCustomAuthorAvatarUrl(const QUrl& customAuthorAvatarUrl_)
+    {
+        customAuthorAvatarUrl = customAuthorAvatarUrl_;
+    }
+    inline const QString& getCustomAuthorName() const
+    {
+        return customAuthorName;
+    }
+    inline void setCustomAuthorName(const QString& name)
+    {
+        customAuthorName = name;
+    }
     inline uint64_t getIdNum() const
     {
         return idNum;
-    }
-    inline bool isMarkedAsDeleted() const
-    {
-        return _isMarkedAsDeleted;
-    }
-
-    inline void setIsBotCommand(bool isBotCommand_)
-    {
-        _isBotCommand = isBotCommand_;
-    }
-    inline void setMarkedAsDeleted(bool markedAsDeleted_)
-    {
-        _isMarkedAsDeleted = markedAsDeleted_;
     }
     inline void setIdNum(uint64_t idNum_)
     {
@@ -99,17 +100,19 @@ public:
         text = text_;
         updateHtml();
     }
-
     inline bool isHasFlag(const Flags flag) const
     {
         return flags.find(flag) != flags.end();
     }
+
+    void setFlag(const Flags flag, bool enable);
 
     void printMessageInfo(const QString& prefix, const int& row = -1) const;
 
     QString getForcedColorRoleToQMLString(const ForcedColorRoles& role) const;
 
     static void trimText(QString& text);
+    static QString flagToString(const Flags flag);
 
 private:
     void updateHtml();
@@ -123,12 +126,10 @@ private:
     std::set<Flags> flags;
     QHash<ForcedColorRoles, QColor> forcedColors;
     QMap<QUrl, QList<int>> images; // <image url, [image poses]>
+    QUrl customAuthorAvatarUrl;
+    QString customAuthorName;
 
     uint64_t idNum = 0;
-
-    bool _isMarkedAsDeleted = false;
-    bool _isBotCommand = false;
-    bool _isDeleterItem = false;
 };
 
 #endif // CHATMESSAGE_H

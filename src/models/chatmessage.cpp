@@ -1,5 +1,6 @@
 #include "chatmessage.h"
 #include <QUuid>
+#include <QMetaEnum>
 
 ChatMessage::ChatMessage(const QString &text_,
                          const QString &authorId_,
@@ -30,11 +31,23 @@ ChatMessage ChatMessage::createYouTubeDeleter(const QString& text,const QString&
 {
     ChatMessage message = ChatMessage();
 
-    message.text          = text;
+    message.text         = text;
     message.messageId    = id;
-    message._isDeleterItem = true;
+    message.flags.insert(ChatMessage::Flags::DeleterItem);
 
     return message;
+}
+
+void ChatMessage::setFlag(const Flags flag, bool enable)
+{
+    if (enable)
+    {
+        flags.insert(flag);
+    }
+    else
+    {
+        flags.erase(flag);
+    }
 }
 
 QString boolToString(const bool& value)
@@ -71,11 +84,14 @@ void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
         resultString += "\nMessage Row: failed to retrieve";
     }
 
-    resultString += "\nMessage Is Bot Command: " + boolToString(isBotCommand());
-    resultString += "\nMessage Is Marked as Deleted: " + boolToString(isMarkedAsDeleted());
-    resultString += "\nMessage Is Deleter: " + boolToString(isDeleterItem());
-    //ToDo: message._type message._receivedAt message._publishedAt
-    //ToDo: other author data
+    resultString += "\nMessage Flags: ";
+
+    for (const Flags& flag : flags)
+    {
+        resultString += flagToString(flag) + ", ";
+    }
+
+    resultString += "\n";
 
     resultString += "\n===========================";
     qDebug(resultString.toUtf8());
@@ -129,6 +145,12 @@ void ChatMessage::trimText(QString &text)
     }
 
     text = text.mid(left, text.length() - left - right);
+}
+
+QString ChatMessage::flagToString(const Flags flag)
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<Flags>();
+    return metaEnum.valueToKey((int)flag);
 }
 
 void ChatMessage::updateHtml()

@@ -174,6 +174,11 @@ QUrl YouTube::controlPanelUrl() const
     return _info.controlPanelUrl;
 }
 
+QUrl YouTube::getIconUrl() const
+{
+    return QUrl("qrc:/resources/images/youtube-icon.svg");
+}
+
 QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeight)
 {
     //qDebug("Source URL: " + sourceAvatarUrl.toString().toUtf8());

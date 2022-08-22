@@ -385,12 +385,11 @@ ApplicationWindow {
     {
         switch (platform)
         {
-        case Global._YouTubeServiceType:                return "qrc:/resources/images/youtube-icon.svg"
-        case Global._TwitchServiceType:                 return "qrc:/resources/images/twitch-icon.svg"
-        case Global._GoodGameServiceType:               return "qrc:/resources/images/goodgame-icon.svg"
+        case Global._YouTubeServiceType:                return youTube.iconUrl
+        case Global._TwitchServiceType:                 return twitch.iconUrl
+        case Global._GoodGameServiceType:               return goodGame.iconUrl
 
         case Global._SoftwareServiceType:               return "qrc:/resources/images/axelchat-rounded.svg"
-        case Global._TestServiceType:                   return "qrc:/resources/images/flask2.svg"
 
         case Global._UnknownServiceType:                return ""
         }
@@ -523,9 +522,7 @@ ApplicationWindow {
 
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled: authorServiceType !== Global._SoftwareServiceType &&
-                                      authorServiceType !== Global._TestServiceType &&
-                                      !messageIsPlatformGeneric;
+                        hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsPlatformGeneric;
                         cursorShape: {
                             if (hoverEnabled)
                                 return Qt.PointingHandCursor;
@@ -552,9 +549,7 @@ ApplicationWindow {
                         var prefix = "";
                         var postfix = "";
 
-                        if (Global.windowChatMessageShowPlatformIcon &&
-                                authorServiceType !== Global._SoftwareServiceType &&
-                                authorServiceType !== Global._TestServiceType)
+                        if (Global.windowChatMessageShowPlatformIcon && authorServiceType !== Global._SoftwareServiceType)
                         {
                             prefix += createImgTag(getPlatformIcon(authorServiceType), badgePixelSize) + " "
                         }
@@ -571,7 +566,9 @@ ApplicationWindow {
                             postfix += createImgTag(authorRightBadgesUrls[i], badgePixelSize) + " "
                         }
 
-                        return prefix + authorName + postfix
+                        var name = messageCustomAuthorName.length === 0 ? authorName : messageCustomAuthorName
+
+                        return prefix + name + postfix
                     }
 
                     function createImgTag(imgurl, size)
@@ -600,8 +597,8 @@ ApplicationWindow {
                 //cache: false // TODO: need check
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
-                         authorServiceType !== Global._TestServiceType &&
-                         !messageIsPlatformGeneric;
+                         !messageIsPlatformGeneric &&
+                         messageCustomAuthorAvatarUrl.toString() === "";
 
                 width: Global.windowChatMessageAvatarSize
                 height: Global.windowChatMessageAvatarSize
@@ -615,8 +612,14 @@ ApplicationWindow {
 
                 asynchronous: true
                 source: {
-                    if (!Global.windowChatMessageShowAvatar) {
+                    if (!Global.windowChatMessageShowAvatar)
+                    {
                         return "" // Potentialy optimization
+                    }
+
+                    if (messageCustomAuthorAvatarUrl.toString() !== "")
+                    {
+                        return messageCustomAuthorAvatarUrl;
                     }
 
                     if (authorAvatarUrl.toString() !== "")
@@ -629,9 +632,7 @@ ApplicationWindow {
 
                 MouseArea {
                     anchors.fill: parent;
-                    hoverEnabled: authorServiceType !== Global._SoftwareServiceType &&
-                                  authorServiceType !== Global._TestServiceType &&
-                                  !messageIsPlatformGeneric;
+                    hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsPlatformGeneric;
                     acceptedButtons: Qt.LeftButton;
                     cursorShape: {
                         if (hoverEnabled)

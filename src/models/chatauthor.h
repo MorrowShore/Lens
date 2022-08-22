@@ -17,6 +17,7 @@ public:
         Sponsor,
         Verified,
     };
+    Q_ENUM(Flags)
 
     ChatAuthor() { };
     ChatAuthor(AbstractChatService::ServiceType serviceType,
@@ -77,6 +78,8 @@ public:
     {
         return flags.find(flag) != flags.end();
     }
+
+    static QString flagToString(const Flags flag);
 
 private:
     AbstractChatService::ServiceType serviceType = AbstractChatService::ServiceType::Unknown;

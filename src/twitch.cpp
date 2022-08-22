@@ -276,6 +276,12 @@ QUrl Twitch::broadcastUrl() const
     return _info.channelUrl;
 }
 
+QUrl Twitch::getIconUrl() const
+{
+    return QUrl("qrc:/resources/images/twitch-icon.svg");
+}
+
+
 bool Twitch::isChannelNameUserSpecified() const
 {
     return _info.userSpecifiedChannel.trimmed() == _info.channelLogin.trimmed() && !_info.userSpecifiedChannel.isEmpty();

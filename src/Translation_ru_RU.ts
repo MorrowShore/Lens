@@ -4,28 +4,27 @@
 <context>
     <name>AbstractChatService</name>
     <message>
-        <location filename="abstractchatservice.hpp" line="50"/>
-        <location filename="abstractchatservice.hpp" line="59"/>
+        <location filename="abstractchatservice.hpp" line="48"/>
+        <location filename="abstractchatservice.hpp" line="56"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="abstractchatservice.hpp" line="52"/>
         <source>Test</source>
-        <translation>Тест</translation>
+        <translation type="vanished">Тест</translation>
     </message>
     <message>
-        <location filename="abstractchatservice.hpp" line="54"/>
+        <location filename="abstractchatservice.hpp" line="51"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="abstractchatservice.hpp" line="55"/>
+        <location filename="abstractchatservice.hpp" line="52"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="abstractchatservice.hpp" line="56"/>
+        <location filename="abstractchatservice.hpp" line="53"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
@@ -55,8 +54,9 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
+        <location filename="chathandler.cpp" line="149"/>
         <source>Test Message</source>
-        <translation type="vanished">Тестовое сообщение</translation>
+        <translation>Тестовое сообщение</translation>
     </message>
     <message>
         <source>YouTube connected: %1</source>
@@ -92,17 +92,17 @@
         <translation type="vanished">Twitch отключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="244"/>
+        <location filename="chathandler.cpp" line="239"/>
         <source>%1 connected: %2</source>
         <translation>%1 подключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="257"/>
+        <location filename="chathandler.cpp" line="252"/>
         <source>%1 disconnected: %2</source>
         <translation>%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="271"/>
+        <location filename="chathandler.cpp" line="266"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -398,9 +398,8 @@
 <context>
     <name>QTranslator</name>
     <message>
-        <location filename="models/chatmessagesmodle.cpp" line="306"/>
         <source>Test Message</source>
-        <translation>Тестовое сообщение</translation>
+        <translation type="vanished">Тестовое сообщение</translation>
     </message>
     <message>
         <location filename="tray.cpp" line="12"/>
@@ -472,27 +471,27 @@
 <context>
     <name>YouTube</name>
     <message>
-        <location filename="youtube.cpp" line="298"/>
+        <location filename="youtube.cpp" line="303"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="303"/>
+        <location filename="youtube.cpp" line="308"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="306"/>
+        <location filename="youtube.cpp" line="311"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="309"/>
+        <location filename="youtube.cpp" line="314"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="312"/>
+        <location filename="youtube.cpp" line="317"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -509,22 +508,22 @@
         <translation type="vanished">ID трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="401"/>
+        <location filename="youtube.cpp" line="406"/>
         <source>Broadcast Short URL: %1</source>
         <translation>Короткий URL трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="402"/>
+        <location filename="youtube.cpp" line="407"/>
         <source>Broadcast Long URL: %1</source>
         <translation>Длинный URL трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="403"/>
+        <location filename="youtube.cpp" line="408"/>
         <source>Chat URL: %1</source>
         <translation>URL чата: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="404"/>
+        <location filename="youtube.cpp" line="409"/>
         <source>Control Panel URL: %1</source>
         <translation>URL панели управления: %1</translation>
     </message>
@@ -883,7 +882,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прокси</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="216"/>
+        <location filename="setting_pages/common.qml" line="211"/>
         <source>Host name...</source>
         <translation>Имя хоста...</translation>
     </message>
@@ -892,7 +891,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Сервер...</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="237"/>
+        <location filename="setting_pages/common.qml" line="232"/>
         <source>Port...</source>
         <translation>Порт...</translation>
     </message>
@@ -905,42 +904,42 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Порт</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="105"/>
+        <location filename="setting_pages/common.qml" line="100"/>
         <source>Mouse clicks will be ignored by the chat window. You can return to the previous state through the tray icon</source>
         <translation>Клики мыши будут игнорироваться окном чата. Вернуться в предыдущее состояние можно через иконку в трее</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="89"/>
+        <location filename="setting_pages/common.qml" line="84"/>
         <source>Click-through window</source>
         <translation>Пропускать клики мыши</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="111"/>
+        <location filename="setting_pages/common.qml" line="106"/>
         <source>Clear Messages on Link Change</source>
         <translation>Очистить сообщения при смене ссылки</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="123"/>
+        <location filename="setting_pages/common.qml" line="118"/>
         <source>Enabled Hardware Graphics Accelerator</source>
         <translation>Включить аппаратный ускоритель графики</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="139"/>
+        <location filename="setting_pages/common.qml" line="134"/>
         <source>Enabled HighDpi scaling</source>
         <translation>Включить HighDpi масштабирование</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="175"/>
+        <location filename="setting_pages/common.qml" line="170"/>
         <source>Show when author changes name</source>
         <translation>Показывать, когда автор меняет имя</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="192"/>
+        <location filename="setting_pages/common.qml" line="187"/>
         <source>Works only when output to file is enabled</source>
         <translation>Работает только при включенном выводе в файл</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="268"/>
+        <location filename="setting_pages/common.qml" line="263"/>
         <source>Program folder</source>
         <translation>Папка программы</translation>
     </message>
@@ -949,7 +948,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="155"/>
+        <location filename="setting_pages/common.qml" line="150"/>
         <source>Enable Sound when New Message Received</source>
         <translation>Включить звук при получении нового сообщения</translation>
     </message>
@@ -963,12 +962,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Не обрабатывать ввод</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="201"/>
+        <location filename="setting_pages/common.qml" line="196"/>
         <source>Proxy (SOCKS5)</source>
         <translation>Прокси (SOCKS5)</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="75"/>
+        <location filename="setting_pages/common.qml" line="70"/>
         <source>Stay on Top Window</source>
         <translation>Поверх всех окон</translation>
     </message>
@@ -1032,12 +1031,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="804"/>
+        <location filename="main.qml" line="787"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="808"/>
+        <location filename="main.qml" line="791"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>

@@ -66,7 +66,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
     for (int i = 0; i < messages.count(); ++i)
     {
         ChatMessage&& message = std::move(messages[i]);
-        if (messagesModel.contains(message.getId()) && !message.isDeleterItem())
+        if (messagesModel.contains(message.getId()) && !message.isHasFlag(ChatMessage::Flags::DeleterItem))
         {
             continue;
         }
@@ -91,13 +91,12 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
             resultAuthor = newAuthor;
         }
 
-        if (resultAuthor && !message.isDeleterItem())
+        if (resultAuthor && !message.isHasFlag(ChatMessage::Flags::DeleterItem))
         {
             switch (resultAuthor->getServiceType())
             {
             case AbstractChatService::ServiceType::Unknown:
             case AbstractChatService::ServiceType::Software:
-            case AbstractChatService::ServiceType::Test:
                 break;
 
             default:
@@ -123,7 +122,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         ChatMessage&& message = std::move(messagesValidToAdd[i]);
 
 #ifndef AXELCHAT_LIBRARY
-        if (message.getAuthorId() != messagesModel.softwareAuthor().getId())
+        if (!message.isHasFlag(ChatMessage::Flags::IgnoreBotCommand))
         {
             bot.processMessage(message);
         }
@@ -142,12 +141,16 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
 
 void ChatHandler::sendTestMessage(const QString &text)
 {
-    ChatAuthor author = messagesModel.testAuthor();
+    ChatAuthor author = messagesModel.softwareAuthor();
     QList<ChatAuthor> authors;
     authors.append(author);
 
+    ChatMessage message(text, author.getId());
+    message.setCustomAuthorName(tr("Test Message"));
+    message.setCustomAuthorAvatarUrl(QUrl("qrc:/resources/images/flask2.svg"));
+
     QList<ChatMessage> messages;
-    messages.append(ChatMessage(text, author.getId()));
+    messages.append(message);
 
     onReadyRead(messages, authors);
 }
@@ -159,7 +162,13 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
     authors.append(author);
 
     QList<ChatMessage> messages;
-    messages.append(ChatMessage(text, author.getId()));
+    messages.append(ChatMessage(text,
+                                author.getId(),
+                                QDateTime::currentDateTime(),
+                                QDateTime::currentDateTime(),
+                                QString(),
+                                {},
+                                {}));
 
     onReadyRead(messages, authors);
 }

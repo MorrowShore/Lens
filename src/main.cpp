@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("chatHandler",        &chatHandler);
     engine.rootContext()->setContextProperty("youTube",            &chatHandler.getYoutube());
     engine.rootContext()->setContextProperty("twitch",             &chatHandler.getTwitch());
+    engine.rootContext()->setContextProperty("goodGame",           &chatHandler.getGoodGame());
     engine.rootContext()->setContextProperty("outputToFile",       &chatHandler.getOutputToFile());
     engine.rootContext()->setContextProperty("chatBot",            &chatHandler.getBot());
     engine.rootContext()->setContextProperty("authorQMLProvider",  &chatHandler.getAuthorQMLProvider());

@@ -7,7 +7,7 @@ class ChatMessagesModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    ChatMessagesModel(QObject *parent = 0);
+    ChatMessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
 
     enum ChatMessageRoles {
         MessageId = Qt::UserRole + 1,
@@ -16,6 +16,8 @@ public:
         MessageReceivedAt,
         MessageIsBotCommand,
         MessageMarkedAsDeleted,
+        MessageCustomAuthorAvatarUrl,
+        MessageCustomAuthorName,
 
         MessageIsDonateSimple,
         MessageIsDonateWithText,
@@ -63,7 +65,6 @@ public:
     void applyAvatar(const QString& channelId, const QUrl& url);
 
     const ChatAuthor& softwareAuthor();
-    const ChatAuthor& testAuthor();
 
     const ChatAuthor* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     ChatAuthor* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }

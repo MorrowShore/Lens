@@ -124,6 +124,11 @@ void GoodGame::reconnect()
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
 }
 
+QUrl GoodGame::getIconUrl() const
+{
+    return QUrl("qrc:/resources/images/goodgame-icon.svg");
+}
+
 void GoodGame::onWebSocketReceived(const QString &rawData)
 {
     const QJsonDocument document = QJsonDocument::fromJson(rawData.toUtf8());

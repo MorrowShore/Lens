@@ -22,6 +22,12 @@ ChatAuthor::ChatAuthor(AbstractChatService::ServiceType serviceType_,
 
 }
 
+QString ChatAuthor::flagToString(const Flags flag)
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<Flags>();
+    return metaEnum.valueToKey((int)flag);
+}
+
 /*ChatAuthor ChatAuthor::createFromYouTube(
         const QString &name,
         const QString &channelId,

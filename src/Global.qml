@@ -6,7 +6,6 @@ QtObject {
 
     readonly property int _UnknownServiceType: -1
     readonly property int _SoftwareServiceType: 10
-    readonly property int _TestServiceType: 11
     readonly property int _YouTubeServiceType: 100
     readonly property int _TwitchServiceType: 101
     readonly property int _GoodGameServiceType: 102

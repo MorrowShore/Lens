@@ -172,8 +172,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         const AbstractChatService::ServiceType type = author->getServiceType();
 
-        if (type == AbstractChatService::ServiceType::Unknown ||
-            type == AbstractChatService::ServiceType::Test)
+        if (type == AbstractChatService::ServiceType::Unknown)
         {
             continue;
         }
@@ -207,7 +206,6 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         case AbstractChatService::ServiceType::Unknown:
         case AbstractChatService::ServiceType::Software:
-        case AbstractChatService::ServiceType::Test:
             break;
         }
     }
