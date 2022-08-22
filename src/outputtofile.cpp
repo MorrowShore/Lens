@@ -222,10 +222,10 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
     QUrl url = url_;
     if (service == AbstractChatService::ServiceType::YouTube)
     {
-        url = YouTube::createResizedAvatarUrl(url, youTubeAvatarSize);
+        url = YouTube::createResizedAvatarUrl(url, avatarHeight);
     }
 
-    if (url.isEmpty() || downloadedAvatarsAuthorId.contains(authorId) || !enabled.get())
+    if (url.isEmpty() || !enabled.get())
     {
         return;
     }
@@ -239,14 +239,47 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
 
     const QString avatarName = urlStr.mid(urlStr.lastIndexOf('/') + 1);
 
+    static const QString ImageFileFormat = "png";
+
+    const QString authorDirectory = getAuthorDirectory(service, authorId);
+
+    const QString avatarsDirectory = authorDirectory + "/avatars";
+    QDir dir(avatarsDirectory);
+    if (!dir.exists())
+    {
+        if (!dir.mkpath(avatarsDirectory))
+        {
+            qDebug() << "Failed to make path" << avatarsDirectory;
+        }
+    }
+
+    QString fileName = avatarsDirectory + "/" + avatarName;
+
+    if (!avatarName.endsWith("." + ImageFileFormat, Qt::CaseSensitivity::CaseInsensitive))
+    {
+        fileName += "." + ImageFileFormat;
+    }
+
+    if (needIgnoreDownloadFileNames.contains(fileName))
+    {
+        return;
+    }
+
+    if (QFile(fileName).exists())
+    {
+        qDebug() << fileName << "already exists";
+        needIgnoreDownloadFileNames.insert(fileName);
+        return;
+    }
+
     //qDebug() << "Load avatar " << avatarName << "from" << urlStr;
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, service, authorId, avatarName]()
+    connect(reply, &QNetworkReply::finished, this, [this, fileName]()
     {
-        if (downloadedAvatarsAuthorId.contains(authorId))
+        if (needIgnoreDownloadFileNames.contains(fileName))
         {
             return;
         }
@@ -259,35 +292,16 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
 
         if (reply->bytesAvailable() <= 0)
         {
-            qDebug() << "Failed download, reply is empty, status code =" << reply->errorString() << " avatar =" << avatarName;
+            qDebug() << "Failed download, reply is empty, status code =" << reply->errorString() << " image =" << fileName;
             return;
         }
 
-        const QString authorDirectory = getAuthorDirectory(service, authorId);
-
-        const QString avatarsDirectory = authorDirectory + "/avatars";
-        QDir dir(avatarsDirectory);
-        if (!dir.exists())
+        QImage rawImage;
+        if (rawImage.loadFromData(reply->readAll()))
         {
-            if (!dir.mkpath(avatarsDirectory))
-            {
-                qDebug() << "Failed to make path" << avatarsDirectory;
-            }
-        }
+            const QImage scaled = rawImage.scaledToHeight(avatarHeight, Qt::TransformationMode::SmoothTransformation);
 
-        static const QString ImageFileFormat = "png";
-
-        QString fileName = avatarsDirectory + "/" + avatarName;
-
-        if (!avatarName.endsWith("." + ImageFileFormat, Qt::CaseSensitivity::CaseInsensitive))
-        {
-            fileName += "." + ImageFileFormat;
-        }
-
-        QImage image;
-        if (image.loadFromData(reply->readAll()))
-        {
-            if (image.save(fileName, ImageFileFormat.toStdString().c_str()))
+            if (scaled.save(fileName, ImageFileFormat.toStdString().c_str()))
             {
                 qDebug() << "Saved downloaded image" << fileName;
             }
@@ -296,11 +310,11 @@ void OutputToFile::tryDownloadAvatar(const QString& authorId, const QUrl& url_, 
                 qWarning() << "Failed to save downloaded image" << fileName;
             }
 
-            downloadedAvatarsAuthorId.insert(authorId);
+            needIgnoreDownloadFileNames.insert(fileName);
         }
         else
         {
-            qWarning() << "Failed to open downloaded image" << avatarName;
+            qWarning() << "Failed to open downloaded image" << fileName;
         }
 
         reply->deleteLater();
