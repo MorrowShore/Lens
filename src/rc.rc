@@ -36,6 +36,6 @@ BEGIN
         /* supports English language (0x409) in the Windows ANSI codepage (1252). */
 
         /* VALUE "Translation", 0x409, 1252 */
-        VALUE "Translation", APP_INFO_RC_TRANSLATION
+        VALUE "Translation", 0x0, 0
     END
 END

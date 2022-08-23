@@ -18,5 +18,3 @@
 #define APP_INFO_ORIGINALFILENAME_STR   "AxelChat.exe"
 
 #define APP_INFO_COMPANYDOMAIN_STR      "https://www.youtube.com/channel/UCujkj8ZgVkscm34GA1Z8wTQ"
-
-#define APP_INFO_RC_TRANSLATION 0, 0
