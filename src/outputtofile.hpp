@@ -43,8 +43,8 @@ public:
     void writeMessages(const QList<ChatMessage>& messages);
     Q_INVOKABLE void showInExplorer();
     void downloadAvatar(const QString& authorId, const QUrl &url, const ChatService::ServiceType serviceType);
-    void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, bool ignoreIfExists);
     QString getAuthorDirectory(const ChatService::ServiceType serviceType, const QString& authorId) const;
+    QString getServiceDirectory(const ChatService::ServiceType serviceType) const;
     void writeAuthors(const QList<ChatAuthor*>& authors);
 
 signals:
@@ -54,6 +54,10 @@ signals:
     void authorNameChanged(const ChatAuthor& author, const QString& prevName, const QString& newName);
 
 private:
+    QString convertUrlForFileName(const QUrl& url) const;
+    void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, const int height, bool ignoreIfExists);
+    void downloadEmoji(const QUrl &url, const QString& imageFormat, const int height, const ChatService::ServiceType serviceType);
+
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
     QByteArray prepare(const QString& text);
 

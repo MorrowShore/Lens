@@ -155,7 +155,7 @@ void ChatMessage::updateHtml()
 
     for (const Content* content : qAsConst(contents))
     {
-        switch (content->getType())
+        switch (content->getContentType())
         {
         case Content::Type::Unknown:
             qWarning() << "Unknown content type";

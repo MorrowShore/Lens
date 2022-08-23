@@ -45,6 +45,16 @@ QString timeToString(const QDateTime& dateTime)
     return dateTime.toTimeZone(QTimeZone::systemTimeZone()).toString(Qt::DateFormat::ISODateWithMs);
 }
 
+QString removePrefix(const QString& string, const QString& postfix, const Qt::CaseSensitivity caseSensitivity)
+{
+    if (!string.startsWith(postfix, caseSensitivity))
+    {
+        return string;
+    }
+
+    return string.mid(postfix.length());
+}
+
 QString removePostfix(const QString& string, const QString& postfix, const Qt::CaseSensitivity caseSensitivity)
 {
     if (!string.endsWith(postfix, caseSensitivity))
@@ -208,6 +218,16 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         case ChatService::ServiceType::Software:
             break;
         }
+
+        for (const ChatMessage::Content* content : message.getContents())
+        {
+            if (content->getContentType() == ChatMessage::Content::Type::Image)
+            {
+                static const int ImageHeight = 24;
+                const ChatMessage::Image* image = static_cast<const ChatMessage::Image*>(content);
+                downloadEmoji(image->getUrl(), "png", ImageHeight, author->getServiceType());
+            }
+        }
     }
 
     if (!currentLastYouTubeMessageId.isEmpty())
@@ -234,22 +254,22 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
         return;
     }
 
-    const QString urlStr = url.toString();
-    if (!urlStr.contains('/'))
+    QString fileName = convertUrlForFileName(url);
+    if (fileName.isEmpty())
     {
-        qWarning() << "Url not contains '/', url =" << urlStr;
         return;
     }
 
-    QString avatarName = urlStr.mid(urlStr.lastIndexOf('/') + 1);
+    fileName = fileName.mid(fileName.lastIndexOf('/') + 1);
 
-    avatarName = removePostfix(avatarName, ".png", Qt::CaseSensitivity::CaseInsensitive);
-    avatarName = removePostfix(avatarName, ".jpg", Qt::CaseSensitivity::CaseInsensitive);
-    avatarName = removePostfix(avatarName, ".jpeg", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePostfix(fileName, ".png", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePostfix(fileName, ".jpg", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePostfix(fileName, ".jpeg", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePostfix(fileName, ".svg", Qt::CaseSensitivity::CaseInsensitive);
 
     if (service == ChatService::ServiceType::Twitch)
     {
-        avatarName = removePostfix(avatarName, "-300x300", Qt::CaseSensitivity::CaseInsensitive);
+        fileName = removePostfix(fileName, "-300x300", Qt::CaseSensitivity::CaseInsensitive);
     }
 
     static const QString ImageFileFormat = "png";
@@ -266,12 +286,14 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
         }
     }
 
-    const QString fileName = avatarsDirectory + "/" + avatarName + "." + ImageFileFormat;
-    downloadImage(url, fileName, ImageFileFormat, true);
+    fileName = avatarsDirectory + "/" + fileName + "." + ImageFileFormat;
+    downloadImage(url, fileName, ImageFileFormat, avatarHeight, true);
 }
 
-void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const QString& imageFormat, bool ignoreIfExists)
+void OutputToFile::downloadImage(const QUrl &url, const QString &fileName_, const QString& imageFormat, const int height, bool ignoreIfExists)
 {
+    QString fileName = fileName_;
+
     if ((ignoreIfExists && QFile(fileName).exists()) || needIgnoreDownloadFileNames.contains(fileName))
     {
         //qDebug() << "Ignore download image, file" << fileName << "already exists";
@@ -282,7 +304,7 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, fileName, imageFormat, ignoreIfExists]()
+    connect(reply, &QNetworkReply::finished, this, [this, fileName, imageFormat, height, ignoreIfExists]()
     {
         if (ignoreIfExists && QFile(fileName).exists())
         {
@@ -298,14 +320,14 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
 
         if (reply->bytesAvailable() <= 0)
         {
-            qDebug() << "Failed download image, reply is empty, status code =" << reply->errorString() << ", file name =" << fileName;
+            qDebug() << "Failed download image, reply is empty, error =" << reply->errorString() << ", file name =" << fileName;
             return;
         }
 
         QImage rawImage;
         if (rawImage.loadFromData(reply->readAll()))
         {
-            QImage image = rawImage.scaledToHeight(avatarHeight, Qt::TransformationMode::SmoothTransformation);
+            QImage image = rawImage.scaledToHeight(height, Qt::TransformationMode::SmoothTransformation);
 
             const char* format = nullptr;
             if (!imageFormat.isEmpty())
@@ -315,7 +337,7 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
 
             if (image.save(fileName, format))
             {
-                qDebug() << "Downloaded image" << fileName;
+                //qDebug() << "Downloaded image" << fileName;
                 if (ignoreIfExists)
                 {
                     needIgnoreDownloadFileNames.insert(fileName);
@@ -333,6 +355,46 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
 
         reply->deleteLater();
     });
+}
+
+void OutputToFile::downloadEmoji(const QUrl &url, const QString &imageFormat, const int height, const ChatService::ServiceType serviceType)
+{
+    switch (serviceType)
+    {
+    case ChatService::ServiceType::Unknown:
+    case ChatService::ServiceType::Software:
+        return;
+
+    case ChatService::ServiceType::YouTube:
+    case ChatService::ServiceType::Twitch:
+    case ChatService::ServiceType::GoodGame:
+        break;
+    }
+
+    const QString emojiDirectory = getServiceDirectory(serviceType) + "/emoji";
+
+    const QDir dir(emojiDirectory);
+    if (!dir.exists())
+    {
+        dir.mkpath(emojiDirectory);
+    }
+
+    QString fileName = convertUrlForFileName(url);
+    if (fileName.isEmpty())
+    {
+        return;
+    }
+
+    fileName = removePostfix(fileName, ".png", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePostfix(fileName, ".jpg", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePostfix(fileName, ".jpeg", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePostfix(fileName, ".svg", Qt::CaseSensitivity::CaseInsensitive);
+
+    fileName = emojiDirectory + "/" + fileName + "." + imageFormat;
+
+    qDebug() << "Download from" << url << "to" << fileName;
+
+    downloadImage(url, fileName, imageFormat, height, true);
 }
 
 bool OutputToFile::setCodecOption(int option, bool applyWithoutReset)
@@ -473,7 +535,12 @@ QByteArray OutputToFile::prepare(const QString &text_)
 
 QString OutputToFile::getAuthorDirectory(const ChatService::ServiceType serviceType, const QString &authorId) const
 {
-    return outputDirectory.get() + "/authors/" + ChatService::getServiceTypeId(serviceType) + "/" + authorId;
+    return getServiceDirectory(serviceType) + "/authors/" + authorId;
+}
+
+QString OutputToFile::getServiceDirectory(const ChatService::ServiceType serviceType) const
+{
+    return outputDirectory.get() + "/services/" + ChatService::getServiceTypeId(serviceType);
 }
 
 void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
@@ -586,6 +653,34 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             }
         }
     }
+}
+
+QString OutputToFile::convertUrlForFileName(const QUrl &url) const
+{
+    QString fileName = url.toString();
+
+    fileName = removePrefix(fileName, "https://", Qt::CaseSensitivity::CaseInsensitive);
+    fileName = removePrefix(fileName, "http://", Qt::CaseSensitivity::CaseInsensitive);
+
+    if (!fileName.contains('/'))
+    {
+        qWarning() << "Url not contains '/', url =" << url;
+        return QString();
+    }
+
+    fileName = fileName.mid(fileName.indexOf('/') + 1);
+
+    fileName = fileName.replace('/', '-');
+    fileName = fileName.replace('\\', '-');
+    fileName = fileName.replace(':', '-');
+    fileName = fileName.replace('*', '-');
+    fileName = fileName.replace('?', '-');
+    fileName = fileName.replace('\"', '-');
+    fileName = fileName.replace('<', '-');
+    fileName = fileName.replace('>', '-');
+    fileName = fileName.replace('|', '-');
+
+    return fileName;
 }
 
 void OutputToFile::reinit(bool forceUpdateOutputFolder)

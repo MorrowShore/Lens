@@ -39,7 +39,7 @@ public:
     public:
         enum class Type { Unknown, Text, Image , Hyperlink };
 
-        Type getType() const
+        Type getContentType() const
         {
             return type;
         }
@@ -208,6 +208,11 @@ public:
     void printMessageInfo(const QString& prefix, const int& row = -1) const;
 
     QString getForcedColorRoleToQMLString(const ForcedColorRoles& role) const;
+
+    const QList<Content*>& getContents() const
+    {
+        return contents;
+    }
 
     static QString flagToString(const Flags flag);
 

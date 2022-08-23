@@ -717,7 +717,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             tryAppedToText(authorNameContent, itemRenderer, "authorName", false);
             if (!authorNameContent.isEmpty())
             {
-                if (const ChatMessage::Content* content = authorNameContent.first(); content->getType() == ChatMessage::Content::Type::Text)
+                if (const ChatMessage::Content* content = authorNameContent.first(); content->getContentType() == ChatMessage::Content::Type::Text)
                 {
                     authorName = static_cast<const ChatMessage::Text*>(content)->getText();
                 }
@@ -810,7 +810,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 const QString stickerUrl = createResizedAvatarUrl(stickerThumbnails.first().toObject().value("url").toString(), _stickerSize).toString();
 
-                if (!contents.isEmpty() && contents.last()->getType() == ChatMessage::Content::Type::Text)
+                if (!contents.isEmpty() && contents.last()->getContentType() == ChatMessage::Content::Type::Text)
                 {
                     contents.append(new ChatMessage::Text("\n"));
                 }
@@ -1049,7 +1049,7 @@ void YouTube::tryAppedToText(QList<ChatMessage::Content*>& contents, const QJson
 
     if (!contents.isEmpty() && !newContents.isEmpty())
     {
-        if (contents.last()->getType() == ChatMessage::Content::Type::Text && contents.last()->getType() == newContents.first()->getType())
+        if (contents.last()->getContentType() == ChatMessage::Content::Type::Text && contents.last()->getContentType() == newContents.first()->getContentType())
         {
             contents.append(new ChatMessage::Text("\n"));
         }
@@ -1057,7 +1057,7 @@ void YouTube::tryAppedToText(QList<ChatMessage::Content*>& contents, const QJson
 
     for (ChatMessage::Content* content : newContents)
     {
-        if (content->getType() == ChatMessage::Content::Type::Text)
+        if (content->getContentType() == ChatMessage::Content::Type::Text)
         {
             static_cast<ChatMessage::Text*>(content)->getStyle().bold = bold;
         }
