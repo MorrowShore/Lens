@@ -162,7 +162,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     const QString token = QString::fromUtf8(QByteArray::fromBase64(settings.value(SettingsGroupPath + "/" + SettingsKeyOAuthToken).toByteArray()));
     setOAuthToken(token);
 
-    setUserSpecifiedChannel(settings.value(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedChannel).toString());
+    setBroadcastLink(settings.value(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedChannel).toString());
 
     QFile fileBadges(":/resources/twitch-global-badges-20210728.json");
     if (fileBadges.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text))
@@ -228,11 +228,6 @@ QString Twitch::stateDescription() const
     return "<unknown_state>";
 }
 
-QString Twitch::detailedInformation() const
-{
-    return _info.detailedInformation;
-}
-
 int Twitch::viewersCount() const
 {
     return _info.viewers;
@@ -276,19 +271,9 @@ QUrl Twitch::broadcastUrl() const
     return _info.channelUrl;
 }
 
-bool Twitch::isChannelNameUserSpecified() const
+void Twitch::setBroadcastLink(const QString &link)
 {
-    return _info.userSpecifiedChannel.trimmed() == _info.channelLogin.trimmed() && !_info.userSpecifiedChannel.isEmpty();
-}
-
-AxelChat::TwitchInfo Twitch::getInfo() const
-{
-    return _info;
-}
-
-void Twitch::setUserSpecifiedChannel(QString userChannel)
-{
-    userChannel = userChannel.trimmed();
+    QString userChannel = link.trimmed();
 
     if (_info.userSpecifiedChannel != userChannel)
     {
@@ -300,6 +285,16 @@ void Twitch::setUserSpecifiedChannel(QString userChannel)
 
         emit stateChanged();
     }
+}
+
+QString Twitch::getBroadcastLink() const
+{
+    return _info.userSpecifiedChannel;
+}
+
+AxelChat::TwitchInfo Twitch::getInfo() const
+{
+    return _info;
 }
 
 void Twitch::setOAuthToken(QString token)

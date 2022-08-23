@@ -49,7 +49,7 @@ YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetwor
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)
 {
-    setLink(settings.value(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedLink).toString());
+    setBroadcastLink(settings.value(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedLink).toString());
 
     QObject::connect(&_timerRequestChat, &QTimer::timeout, this, &YouTube::onTimeoutRequestChat);
     _timerRequestChat.start(RequestChatInterval);
@@ -242,36 +242,16 @@ AxelChat::YouTubeInfo YouTube::getInfo() const
     return _info;
 }
 
-QUrl YouTube::broadcastLongUrl() const
-{
-    return _info.broadcastLongUrl;
-}
-
-QString YouTube::userSpecifiedLink() const
-{
-    return _info.userSpecified;
-}
-
 QUrl YouTube::broadcastUrl() const
 {
     return _info.broadcastShortUrl;
 }
 
-QString YouTube::broadcastId() const
-{
-    return _info.broadcastId;
-}
-
-bool YouTube::isBroadcastIdUserSpecified() const
-{
-    return _info.userSpecified.trimmed() == _info.broadcastId.trimmed() && !_info.userSpecified.isEmpty();
-}
-
 void YouTube::reconnect()
 {
     const QString link = _info.userSpecified;
-    setLink(QString());
-    setLink(link);
+    setBroadcastLink(QString());
+    setBroadcastLink(link);
 }
 
 ChatService::ConnectionStateType YouTube::connectionStateType() const
@@ -315,11 +295,6 @@ QString YouTube::stateDescription() const
     return "<unknown_state>";
 }
 
-QString YouTube::detailedInformation() const
-{
-    return _info.detailedInformation;
-}
-
 int YouTube::viewersCount() const
 {
     return _info.viewers;
@@ -330,9 +305,9 @@ int YouTube::messagesReceived() const
     return _messagesReceived;
 }
 
-void YouTube::setLink(QString link)
+void YouTube::setBroadcastLink(const QString &link_)
 {
-    link = link.trimmed();
+    QString link = link_.trimmed();
 
     const QString simplified = AxelChat::simplifyUrl(link);
 
@@ -396,19 +371,17 @@ void YouTube::setLink(QString link)
         {
             emit disconnected(preBroadcastId);
         }
-
-        _info.detailedInformation += tr("Broadcast Short URL: %1").arg(_info.broadcastShortUrl.toString()) + "\n";
-        _info.detailedInformation += tr("Broadcast Long URL: %1").arg(_info.broadcastLongUrl.toString()) + "\n";
-        _info.detailedInformation += tr("Chat URL: %1").arg(_info.broadcastChatUrl.toString()) + "\n";
-        _info.detailedInformation += tr("Control Panel URL: %1").arg(_info.broadcastChatUrl.toString()) + "\n";
-
-        emit detailedInformationChanged();
     }
 
     emit stateChanged();
 
     onTimeoutRequestChat();
     onTimeoutRequestStreamPage();
+}
+
+QString YouTube::getBroadcastLink() const
+{
+    return _info.userSpecified;
 }
 
 void YouTube::onTimeoutRequestChat()
@@ -1019,7 +992,7 @@ void YouTube::processBadChatReply()
 
             emit disconnected(preBroadcastId);
 
-            setLink(preUserSpecified);
+            setBroadcastLink(preUserSpecified);
         }
     }
 }

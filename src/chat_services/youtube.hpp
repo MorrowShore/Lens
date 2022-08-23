@@ -11,37 +11,25 @@
 class YouTube : public ChatService
 {
     Q_OBJECT
-    Q_PROPERTY(QString userSpecifiedLink                    READ userSpecifiedLink WRITE setLink    NOTIFY stateChanged)
-    Q_PROPERTY(QString broadcastId                          READ broadcastId                        NOTIFY stateChanged)
-    Q_PROPERTY(QUrl    broadcastLongUrl                     READ broadcastLongUrl                   NOTIFY stateChanged)
-    Q_PROPERTY(bool    isBroadcastIdUserSpecified           READ isBroadcastIdUserSpecified         CONSTANT)
-
 public:
     explicit YouTube(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
     ~YouTube();
     int messagesReceived() const;
 
-    QString broadcastId() const;
-    QString userSpecifiedLink() const;
-    bool isBroadcastIdUserSpecified() const;
+    void setBroadcastLink(const QString &link) override;
+    QString getBroadcastLink() const override;
+
     void reconnect() override;
 
     ConnectionStateType connectionStateType() const override;
     QString stateDescription() const override;
-    QString detailedInformation() const override;
     int viewersCount() const override;
     QUrl broadcastUrl() const override;
-    QUrl broadcastLongUrl() const;
     QUrl chatUrl() const override;
     QUrl controlPanelUrl() const override;
     Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
 
-    qint64 traffic() const override { return _traffic; }
-
     AxelChat::YouTubeInfo getInfo() const;
-
-public slots:
-    void setLink(QString link);
 
 private slots:
     void onTimeoutRequestChat();
@@ -82,8 +70,6 @@ private:
     const int _emojiPixelSize = 24;
     const int _stickerSize = 80;
     const int _badgePixelSize = 64;
-
-    qint64 _traffic = 0;
 };
 
 #endif // YOUTUBEINTERCEPTOR_HPP

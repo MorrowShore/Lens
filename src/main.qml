@@ -3,8 +3,8 @@ import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import AxelChat.ChatHandler 1.0
-import AxelChat.UpdateChecker 1.0
 import AxelChat.ChatService 1.0
+import AxelChat.UpdateChecker 1.0
 import AxelChat.Tray 1.0
 import QtQuick.Window 2.15
 import "my_components" as MyComponents
@@ -838,7 +838,7 @@ ApplicationWindow {
 
                     if (service.connectionStateType === Global._ConnectedConnectionStateType)
                     {
-                        text += createImgHtmlTag(service.iconUrl, 20)
+                        text += createImgHtmlTag(service.getIconUrl(), 20)
 
                         if (service.viewersCount !== -1)
                             text += String("%1   ").arg(service.viewersCount)

@@ -17,6 +17,8 @@ QtObject {
     property var windowChat
     property var windowSettings
 
+    property int windowSettingsServiceIndex: 0
+
     property bool windowChatTransparentForInput : false
 
     property bool windowChatShowViewersCount : true

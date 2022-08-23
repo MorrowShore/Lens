@@ -21,5 +21,6 @@
         <file>my_components/MyTextArea.qml</file>
         <file>setting_pages/twitch.qml</file>
         <file>font_settings.qml</file>
+        <file>setting_pages/service.qml</file>
     </qresource>
 </RCC>

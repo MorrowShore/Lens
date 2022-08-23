@@ -64,11 +64,6 @@ QString GoodGame::stateDescription() const
     return "unknown";
 }
 
-QString GoodGame::detailedInformation() const
-{
-    return "<empty>";
-}
-
 int GoodGame::viewersCount() const
 {
     //ToDo:
@@ -123,6 +118,16 @@ void GoodGame::reconnect()
     _socket.setProxy(network.proxy());
 
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
+}
+
+void GoodGame::setBroadcastLink(const QString &link)
+{
+    // TODO
+}
+
+QString GoodGame::getBroadcastLink() const
+{
+    return QString(); // TODO
 }
 
 void GoodGame::onWebSocketReceived(const QString &rawData)

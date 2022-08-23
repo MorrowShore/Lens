@@ -18,9 +18,10 @@ public:
 
     ConnectionStateType connectionStateType() const override;
     QString stateDescription() const override;
-    QString detailedInformation() const override;
     int viewersCount() const override;
     void reconnect() override;
+    void setBroadcastLink(const QString &link) override;
+    QString getBroadcastLink() const override;
 
 signals:
 

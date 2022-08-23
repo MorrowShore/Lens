@@ -3,7 +3,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import QtQuick.Window 2.15
 import AxelChat.ChatHandler 1.0
-import AxelChat.YouTube 1.0
 import AxelChat.OutputToFile 1.0
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
@@ -148,15 +147,19 @@ Window {
                 focus: true
                 ScrollBar.vertical: ScrollBar { }
 
+                Component.onCompleted: {
+                    for (var i = chatHandler.getServicesCount() - 1; i >= 0; --i) {
+                        var service = chatHandler.getServiceAtIndex(i)
+                        model.insert(0, {
+                                         name: service.getNameLocalized(),
+                                         category: "service"
+                                     })
+                    }
+
+                    currentIndex = 0
+                }
+
                 model: ListModel {
-                    ListElement {
-                        name: qsTr("YouTube")
-                        category: "youtube"
-                    }
-                    ListElement {
-                        name: qsTr("Twitch")
-                        category: "twitch"
-                    }
                     ListElement {
                         name: qsTr("Common")
                         category: "common"
@@ -227,13 +230,10 @@ Window {
                 }
 
                 onCurrentItemChanged: {
-                    if (currentItem.category === "youtube")
+                    if (currentItem.category === "service")
                     {
-                        stackViewCategories.replace("setting_pages/youtube.qml")
-                    }
-                    else if (currentItem.category === "twitch")
-                    {
-                        stackViewCategories.replace("setting_pages/twitch.qml");
+                        Global.windowSettingsServiceIndex = currentIndex
+                        stackViewCategories.replace("setting_pages/service.qml")
                     }
                     else if (currentItem.category === "common")
                     {
@@ -269,7 +269,7 @@ Window {
         x: categories.width
         width: parent.width - x
         height: parent.height
-        initialItem: "setting_pages/youtube.qml"
+        initialItem: "setting_pages/common.qml"
 
         replaceExit: Transition {
             OpacityAnimator {

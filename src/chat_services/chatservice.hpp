@@ -18,15 +18,11 @@ public:
     Q_PROPERTY(QUrl                 broadcastUrl                 READ broadcastUrl                    NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 chatUrl                      READ chatUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 controlPanelUrl              READ controlPanelUrl                 NOTIFY stateChanged)
-    Q_PROPERTY(QUrl                 iconUrl                      READ getIconUrl                      CONSTANT)
 
     Q_PROPERTY(ConnectionStateType  connectionStateType          READ connectionStateType             NOTIFY stateChanged)
     Q_PROPERTY(QString              stateDescription             READ stateDescription                NOTIFY stateChanged)
-    Q_PROPERTY(QString              detailedInformation          READ detailedInformation             NOTIFY detailedInformationChanged)
 
     Q_PROPERTY(int                  viewersCount                 READ viewersCount                    NOTIFY stateChanged)
-
-    Q_PROPERTY(qint64               traffic                      READ traffic                         NOTIFY stateChanged)
 
     enum class ServiceType
     {
@@ -103,28 +99,27 @@ public:
 
     virtual ConnectionStateType connectionStateType() const = 0;
     virtual QString stateDescription() const  = 0;
-    virtual QString detailedInformation() const = 0;
     virtual ServiceType getServiceType() const { return serviceType; }
 
     virtual int viewersCount() const = 0;
 
-    virtual qint64 traffic() const { return -1; }
-
     virtual void reconnect() = 0;
 
-    QString getNameLocalized() const
+    Q_INVOKABLE QString getNameLocalized() const
     {
         return getNameLocalized(serviceType);
     }
 
-    QUrl getIconUrl() const
+    Q_INVOKABLE QUrl getIconUrl() const
     {
         return getIconUrl(serviceType);
     }
 
+    Q_INVOKABLE virtual void setBroadcastLink(const QString& link) = 0;
+    Q_INVOKABLE virtual QString getBroadcastLink() const = 0;
+
 signals:
     void stateChanged();
-    void detailedInformationChanged();
     void readyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors);
     void connected(QString name);
     void disconnected(QString name);

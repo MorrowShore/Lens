@@ -22,7 +22,6 @@ struct YouTubeInfo {
     QUrl controlPanelUrl;
     QString broadcastId;
     QString userSpecified;
-    QString detailedInformation;
     bool broadcastConnected = false;
     int viewers = -1;
 };
@@ -35,7 +34,6 @@ struct TwitchInfo {
     QUrl chatUrl;
     QUrl controlPanelUrl;
     QString oauthToken;
-    QString detailedInformation;
     bool connected = false;
     int viewers = -1;
 };

@@ -13,24 +13,21 @@ class Twitch : public ChatService
     Q_OBJECT
     Q_PROPERTY(QUrl     requesGetAOuthTokenUrl      READ requesGetAOuthTokenUrl     CONSTANT)
     Q_PROPERTY(QString  oauthToken                  READ oauthToken                 WRITE setOAuthToken                 NOTIFY stateChanged)
-    Q_PROPERTY(QString  userSpecifiedChannel        READ userSpecifiedChannel       WRITE setUserSpecifiedChannel       NOTIFY stateChanged)
-    Q_PROPERTY(bool     isChannelNameUserSpecified  READ isChannelNameUserSpecified CONSTANT)
 
 public:
     explicit Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
     ~Twitch();
     ConnectionStateType connectionStateType() const override;
     QString stateDescription() const override;
-    QString detailedInformation() const override;
     int viewersCount() const override;
     QUrl requesGetAOuthTokenUrl() const;
     QUrl chatUrl() const override;
     QUrl controlPanelUrl() const override;
     QUrl broadcastUrl() const override;
+    void setBroadcastLink(const QString &link) override;
+    QString getBroadcastLink() const override;
 
-    bool isChannelNameUserSpecified() const;
     QString oauthToken() const { return _info.oauthToken; }
-    QString userSpecifiedChannel() const { return _info.userSpecifiedChannel; }
 
     AxelChat::TwitchInfo getInfo() const;
 
@@ -39,7 +36,6 @@ public:
 signals:
 
 public slots:
-    void setUserSpecifiedChannel(QString userChannel);
     void setOAuthToken(QString token);
 
 private slots:
