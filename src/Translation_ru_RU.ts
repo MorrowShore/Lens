@@ -94,23 +94,23 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="65"/>
-        <location filename="chat_services/chatservice.hpp" line="73"/>
+        <location filename="chat_services/chatservice.hpp" line="67"/>
+        <location filename="chat_services/chatservice.hpp" line="75"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="68"/>
+        <location filename="chat_services/chatservice.hpp" line="70"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="69"/>
+        <location filename="chat_services/chatservice.hpp" line="71"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="70"/>
+        <location filename="chat_services/chatservice.hpp" line="72"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
@@ -401,6 +401,21 @@
         <source>Messages:</source>
         <translation type="vanished">Сообщения:</translation>
     </message>
+    <message>
+        <location filename="outputtofile.cpp" line="74"/>
+        <source>Enabled</source>
+        <translation>Включено</translation>
+    </message>
+    <message>
+        <location filename="outputtofile.cpp" line="75"/>
+        <source>Output folder</source>
+        <translation>Выходная папка</translation>
+    </message>
+    <message>
+        <location filename="outputtofile.cpp" line="77"/>
+        <source>Codec</source>
+        <translation>Кодировка</translation>
+    </message>
 </context>
 <context>
     <name>QTranslator</name>
@@ -445,32 +460,37 @@
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="chat_services/twitch.cpp" line="139"/>
+        <location filename="chat_services/twitch.cpp" line="78"/>
+        <source>Token</source>
+        <translation>Токен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="141"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="225"/>
+        <location filename="chat_services/twitch.cpp" line="227"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="230"/>
+        <location filename="chat_services/twitch.cpp" line="232"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="233"/>
+        <location filename="chat_services/twitch.cpp" line="235"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="236"/>
+        <location filename="chat_services/twitch.cpp" line="238"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="239"/>
+        <location filename="chat_services/twitch.cpp" line="241"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -795,33 +815,33 @@ Latest version available: %2</oldsource>
         <translation>Информация об участнике</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="91"/>
+        <location filename="author_window.qml" line="87"/>
         <source>Messages: %1</source>
         <translation>Сообщения: %1</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="95"/>
+        <location filename="author_window.qml" line="91"/>
         <source>Folder</source>
         <translation>Папка</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="109"/>
+        <location filename="author_window.qml" line="105"/>
         <source>The folder does not exist or an error occurred</source>
         <translation>Папка не существует или произошла ошибка</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="116"/>
+        <location filename="author_window.qml" line="112"/>
         <source>Avatar</source>
         <translation>Аватар</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="130"/>
-        <location filename="author_window.qml" line="150"/>
+        <location filename="author_window.qml" line="126"/>
+        <location filename="author_window.qml" line="146"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="137"/>
+        <location filename="author_window.qml" line="133"/>
         <source>Page</source>
         <translation>Страница</translation>
     </message>
@@ -1153,32 +1173,32 @@ Latest version available: %2</oldsource>
 <context>
     <name>service</name>
     <message>
-        <location filename="setting_pages/service.qml" line="85"/>
+        <location filename="setting_pages/service.qml" line="86"/>
         <source>Broadcast:</source>
         <translation>Трансляция:</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="93"/>
+        <location filename="setting_pages/service.qml" line="94"/>
         <source>Link...</source>
         <translation>Ссылка...</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="109"/>
+        <location filename="setting_pages/service.qml" line="110"/>
         <source>Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="127"/>
+        <location filename="setting_pages/service.qml" line="128"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="137"/>
+        <location filename="setting_pages/service.qml" line="138"/>
         <source>Broadcast</source>
         <translation>Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="146"/>
+        <location filename="setting_pages/service.qml" line="147"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

@@ -10,9 +10,10 @@ template<typename T>
 class Setting
 {
 public:
-    Setting(QSettings& settings_, const QString& key_, const T& defaultValue = T())
+    Setting(QSettings& settings_, const QString& key_, const QString& name_ = QString(), const T& defaultValue = T())
         : settings(settings_)
         , key(key_)
+        , name(name_)
         , value(defaultValue)
     {
         bool loaded = false;
@@ -55,9 +56,15 @@ public:
         return true;
     }
 
+    inline const QString& getName() const
+    {
+        return name;
+    }
+
 private:
     QSettings& settings;
     const QString key;
+    const QString name;
     T value;
 };
 

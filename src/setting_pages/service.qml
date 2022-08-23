@@ -3,7 +3,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import AxelChat.ChatHandler 1.0
 import AxelChat.ChatService 1.0
-import AxelChat.ChatServiceParameter 1.0
 import "../my_components" as MyComponents
 import "../"
 
@@ -151,6 +150,28 @@ ScrollView {
                 onClicked: {
                     Qt.openUrlExternally(chatService.chatUrl)
                 }
+            }
+        }
+
+        Component.onCompleted: {
+            for (var i = 0; i < chatService.getParametersCount(); ++i)
+            {
+                var row = Qt.createQmlObject("import QtQuick 2.0; Row { spacing: 6 }", column)
+
+                Qt.createQmlObject("
+                    import QtQuick 2.0
+                    import QtQuick.Controls 2.15
+                    import QtQuick.Controls.Material 2.12
+
+                    Label {
+                        text: \"" + chatService.getParameterName(i) + ":\"
+                        font.pixelSize: 25
+                        anchors.verticalCenter: parent.verticalCenter
+                    }", row)
+
+                var component = Qt.createComponent("../my_components/MyTextField.qml");
+                var field = component.createObject(row);
+                field.width = 400
             }
         }
     }

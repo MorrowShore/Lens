@@ -57,9 +57,6 @@ int main(int argc, char *argv[])
     ChatHandler::declareQml();
     ChatHandler chatHandler(settings, network);
 
-    qRegisterMetaType<size_t>("size_t");
-    qRegisterMetaType<std::shared_ptr<QByteArray>>("std::shared_ptr<QByteArray>");
-
     GitHubApi::declareQml();
     GitHubApi github(settings, "update_checker", network);
 

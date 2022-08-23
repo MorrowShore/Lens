@@ -75,6 +75,8 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
   , SettingsGroupPath(settingsGroupPath)
   , network(network_)
 {
+    parameters.append(Setting<QString>(settings, settingsGroupPath + "/token", tr("Token")));
+
     QObject::connect(&_socket, &QWebSocket::stateChanged, this, [=](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
         //qDebug() << "Twitch: WebSocket state changed:" << state;

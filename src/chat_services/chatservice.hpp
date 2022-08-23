@@ -2,6 +2,8 @@
 #define CHATSERVICE_H
 
 #include "types.hpp"
+#include "setting.h"
+#include <QSettings>
 #include <QObject>
 #include <QQmlEngine>
 #include <QCoreApplication>
@@ -9,11 +11,6 @@
 class ChatHandler;
 class ChatAuthor;
 class ChatMessage;
-
-class ChatServiceParameter
-{
-    Q_GADGET
-};
 
 class ChatService : public QObject
 {
@@ -123,14 +120,31 @@ public:
     Q_INVOKABLE virtual void setBroadcastLink(const QString& link) = 0;
     Q_INVOKABLE virtual QString getBroadcastLink() const = 0;
 
-    Q_INVOKABLE virtual int getParametersCount() { return 0; }
-    Q_INVOKABLE virtual ChatServiceParameter* getParameterAtIndex(int index) { return nullptr; }
+    Q_INVOKABLE int getParametersCount() const { return parameters.count(); }
+    Q_INVOKABLE QString getParameterName(int index) const
+    {
+        if (index < parameters.count())
+        {
+            return parameters[index].getName();
+        }
+
+        return QString();
+    }
+
+    Q_INVOKABLE QString getParameterValue(int index) const
+    {
+        if (index < parameters.count())
+        {
+            return parameters[index].get();
+        }
+
+        return QString();
+    }
 
 #ifdef QT_QUICK_LIB
     static void declareQml()
     {
         qmlRegisterUncreatableType<ChatService> ("AxelChat.ChatService", 1, 0, "ChatService", "Type cannot be created in QML");
-        qmlRegisterUncreatableType<ChatServiceParameter> ("AxelChat.ChatServiceParameter", 1, 0, "ChatServiceParameter", "Type cannot be created in QML");
     }
 #endif
 
@@ -142,6 +156,7 @@ signals:
     void avatarDiscovered(const QString& channelId, const QUrl& url);
 
 protected:
+    QList<Setting<QString>> parameters;
     const ServiceType serviceType;
 };
 
