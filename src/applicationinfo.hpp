@@ -2,8 +2,8 @@
 
 // https://docs.microsoft.com/ru-ru/windows/win32/menurc/versioninfo-resource?redirectedfrom=MSDN
 
-#define APP_INFO_PRODUCTVERSION         0,18,2,0
-#define APP_INFO_PRODUCTVERSION_STR     "0.18.2"
+#define APP_INFO_PRODUCTVERSION         0,18,3,0
+#define APP_INFO_PRODUCTVERSION_STR     "0.18.3"
 
 #define APP_INFO_FILEVERSION            APP_INFO_PRODUCTVERSION
 #define APP_INFO_FILEVERSION_STR        APP_INFO_PRODUCTVERSION_STR
