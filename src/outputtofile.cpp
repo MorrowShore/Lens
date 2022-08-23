@@ -571,6 +571,11 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             }
 
             const QString avatarUrlStr = author->getAvatarUrl().toString();
+            if (avatarUrlStr.isEmpty())
+            {
+                continue;
+            }
+
             if (!avatarUrlStr.contains('/'))
             {
                 qWarning() << "Url not contains '/', url =" << avatarUrlStr << ", authorId =" << author->getId() << ", name =" << author->getName();
@@ -667,7 +672,6 @@ QString OutputToFile::convertUrlForFileName(const QUrl &url) const
     if (!fileName.contains('/'))
     {
         qWarning() << "Url not contains '/', url =" << url;
-        return QString();
     }
 
     fileName = fileName.mid(fileName.indexOf('/') + 1);
