@@ -567,7 +567,7 @@ ApplicationWindow {
                         }
 
                         if (name.length === 0 && messageIsServiceMessage) {
-                            name = chatHandler.getServiceNameLocalized(authorServiceType)
+                            name = chatHandler.getServiceName(authorServiceType)
                         }
 
                         return prefix + name + postfix

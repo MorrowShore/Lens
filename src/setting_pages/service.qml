@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import AxelChat.ChatHandler 1.0
 import AxelChat.ChatService 1.0
+import AxelChat.ChatServiceParameter 1.0
 import "../my_components" as MyComponents
 import "../"
 

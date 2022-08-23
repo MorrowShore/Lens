@@ -323,8 +323,7 @@ void ChatHandler::declareQml()
     qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
                                               1, 0, "OutputToFile", "Type cannot be created in QML");
 
-    qmlRegisterUncreatableType<ChatService> ("AxelChat.ChatService",
-                                              1, 0, "ChatService", "Type cannot be created in QML");
+    ChatService::declareQml();
 
     AuthorQMLProvider::declareQML();
     ChatBot::declareQml();
@@ -486,7 +485,7 @@ QUrl ChatHandler::getServiceIconUrl(int serviceType) const
     return ChatService::getIconUrl((ChatService::ServiceType)serviceType);
 }
 
-QUrl ChatHandler::getServiceNameLocalized(int serviceType) const
+QUrl ChatHandler::getServiceName(int serviceType) const
 {
     return ChatService::getName((ChatService::ServiceType)serviceType);
 }

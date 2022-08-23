@@ -10,6 +10,11 @@ class ChatHandler;
 class ChatAuthor;
 class ChatMessage;
 
+class ChatServiceParameter
+{
+    Q_GADGET
+};
+
 class ChatService : public QObject
 {
     Q_OBJECT
@@ -117,6 +122,17 @@ public:
 
     Q_INVOKABLE virtual void setBroadcastLink(const QString& link) = 0;
     Q_INVOKABLE virtual QString getBroadcastLink() const = 0;
+
+    Q_INVOKABLE virtual int getParametersCount() { return 0; }
+    Q_INVOKABLE virtual ChatServiceParameter* getParameterAtIndex(int index) { return nullptr; }
+
+#ifdef QT_QUICK_LIB
+    static void declareQml()
+    {
+        qmlRegisterUncreatableType<ChatService> ("AxelChat.ChatService", 1, 0, "ChatService", "Type cannot be created in QML");
+        qmlRegisterUncreatableType<ChatServiceParameter> ("AxelChat.ChatServiceParameter", 1, 0, "ChatServiceParameter", "Type cannot be created in QML");
+    }
+#endif
 
 signals:
     void stateChanged();
