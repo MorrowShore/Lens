@@ -41,30 +41,13 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
 
-    youTube = new YouTube(settings, SettingsGroupPath + "/youtube", network, this);
-    addService(*youTube);
+    addService(new YouTube(settings, SettingsGroupPath + "/youtube", network, this));
 
-    twitch = new Twitch(settings, SettingsGroupPath + "/twitch", network, this);
+    Twitch* twitch = new Twitch(settings, SettingsGroupPath + "/twitch", network, this);
     connect(twitch, &Twitch::avatarDiscovered, this, &ChatHandler::onAvatarDiscovered);
-    addService(*twitch);
+    addService(twitch);
 
-    goodGame = new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this);
-    addService(*goodGame);
-}
-
-YouTube &ChatHandler::getYoutube()
-{
-    return *youTube;
-}
-
-Twitch &ChatHandler::getTwitch() const
-{
-    return *twitch;
-}
-
-GoodGame &ChatHandler::getGoodGame() const
-{
-    return *goodGame;
+    addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
 }
 
 void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors)
@@ -228,7 +211,7 @@ void ChatHandler::onStateChanged()
     {
         outputToFile.setYouTubeInfo(youTube->getInfo());
     }
-    else if (qobject_cast<Twitch*>(sender()); twitch)
+    else if (Twitch* twitch = qobject_cast<Twitch*>(sender()); twitch)
     {
         outputToFile.setTwitchInfo(twitch->getInfo());
     }
@@ -304,14 +287,14 @@ void ChatHandler::updateProxy()
     emit proxyChanged();
 }
 
-void ChatHandler::addService(ChatService& service)
+void ChatHandler::addService(ChatService* service)
 {
-    services.append(&service);
+    services.append(service);
 
-    connect(&service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
-    connect(&service, &ChatService::connected, this, &ChatHandler::onConnected);
-    connect(&service, &ChatService::disconnected, this, &ChatHandler::onDisconnected);
-    connect(&service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
+    connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
+    connect(service, &ChatService::connected, this, &ChatHandler::onConnected);
+    connect(service, &ChatService::disconnected, this, &ChatHandler::onDisconnected);
+    connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
 }
 
 #ifndef AXELCHAT_LIBRARY
@@ -336,12 +319,6 @@ void ChatHandler::declareQml()
 {
     qmlRegisterUncreatableType<ChatHandler> ("AxelChat.ChatHandler",
                                              1, 0, "ChatHandler", "Type cannot be created in QML");
-
-    qmlRegisterUncreatableType<YouTube> ("AxelChat.YouTube",
-                                                    1, 0, "YouTube", "Type cannot be created in QML");
-
-    qmlRegisterUncreatableType<Twitch> ("AxelChat.Twitch",
-                                                    1, 0, "Twitch", "Type cannot be created in QML");
 
     qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
                                               1, 0, "OutputToFile", "Type cannot be created in QML");

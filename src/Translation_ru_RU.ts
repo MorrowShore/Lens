@@ -4,29 +4,12 @@
 <context>
     <name>AbstractChatService</name>
     <message>
-        <location filename="abstractchatservice.hpp" line="48"/>
-        <location filename="abstractchatservice.hpp" line="56"/>
         <source>Unknown</source>
-        <translation>Неизвестно</translation>
+        <translation type="vanished">Неизвестно</translation>
     </message>
     <message>
         <source>Test</source>
         <translation type="vanished">Тест</translation>
-    </message>
-    <message>
-        <location filename="abstractchatservice.hpp" line="51"/>
-        <source>YouTube</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="abstractchatservice.hpp" line="52"/>
-        <source>Twitch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="abstractchatservice.hpp" line="53"/>
-        <source>GoodGame</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -54,7 +37,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="149"/>
+        <location filename="chathandler.cpp" line="147"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -92,20 +75,44 @@
         <translation type="vanished">Twitch отключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="239"/>
+        <location filename="chathandler.cpp" line="237"/>
         <source>%1 connected: %2</source>
         <translation>%1 подключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="252"/>
+        <location filename="chathandler.cpp" line="250"/>
         <source>%1 disconnected: %2</source>
         <translation>%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="266"/>
+        <location filename="chathandler.cpp" line="264"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>ChatService</name>
+    <message>
+        <location filename="chat_services/chatservice.hpp" line="65"/>
+        <location filename="chat_services/chatservice.hpp" line="73"/>
+        <source>Unknown</source>
+        <translation>Неизвестно</translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.hpp" line="68"/>
+        <source>YouTube</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.hpp" line="69"/>
+        <source>Twitch</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.hpp" line="70"/>
+        <source>GoodGame</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -438,32 +445,32 @@
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="twitch.cpp" line="135"/>
+        <location filename="chat_services/twitch.cpp" line="139"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="210"/>
+        <location filename="chat_services/twitch.cpp" line="225"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="215"/>
+        <location filename="chat_services/twitch.cpp" line="230"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="218"/>
+        <location filename="chat_services/twitch.cpp" line="233"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="221"/>
+        <location filename="chat_services/twitch.cpp" line="236"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="twitch.cpp" line="224"/>
+        <location filename="chat_services/twitch.cpp" line="239"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -471,27 +478,27 @@
 <context>
     <name>YouTube</name>
     <message>
-        <location filename="youtube.cpp" line="303"/>
+        <location filename="chat_services/youtube.cpp" line="277"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="308"/>
+        <location filename="chat_services/youtube.cpp" line="282"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="311"/>
+        <location filename="chat_services/youtube.cpp" line="285"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="314"/>
+        <location filename="chat_services/youtube.cpp" line="288"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="317"/>
+        <location filename="chat_services/youtube.cpp" line="291"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -508,24 +515,20 @@
         <translation type="vanished">ID трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="406"/>
         <source>Broadcast Short URL: %1</source>
-        <translation>Короткий URL трансляции: %1</translation>
+        <translation type="vanished">Короткий URL трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="407"/>
         <source>Broadcast Long URL: %1</source>
-        <translation>Длинный URL трансляции: %1</translation>
+        <translation type="vanished">Длинный URL трансляции: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="408"/>
         <source>Chat URL: %1</source>
-        <translation>URL чата: %1</translation>
+        <translation type="vanished">URL чата: %1</translation>
     </message>
     <message>
-        <location filename="youtube.cpp" line="409"/>
         <source>Control Panel URL: %1</source>
-        <translation>URL панели управления: %1</translation>
+        <translation type="vanished">URL панели управления: %1</translation>
     </message>
 </context>
 <context>
@@ -981,43 +984,43 @@ Latest version available: %2</oldsource>
     <message>
         <location filename="font_settings.qml" line="11"/>
         <source>Font Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки шрифта</translation>
     </message>
     <message>
         <location filename="font_settings.qml" line="33"/>
         <location filename="font_settings.qml" line="129"/>
         <source>Text Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет текста</translation>
     </message>
     <message>
         <location filename="font_settings.qml" line="97"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт</translation>
     </message>
     <message>
         <location filename="font_settings.qml" line="113"/>
         <source>Font Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер шрифта</translation>
     </message>
     <message>
         <location filename="font_settings.qml" line="137"/>
         <source>Style Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет стиля</translation>
     </message>
     <message>
         <location filename="font_settings.qml" line="146"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Жирный шрифт</translation>
     </message>
     <message>
         <location filename="font_settings.qml" line="153"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Наклонный</translation>
     </message>
     <message>
         <location filename="font_settings.qml" line="160"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Подчёркнутый</translation>
     </message>
 </context>
 <context>
@@ -1031,12 +1034,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="787"/>
+        <location filename="main.qml" line="784"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="791"/>
+        <location filename="main.qml" line="788"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
@@ -1148,39 +1151,67 @@ Latest version available: %2</oldsource>
     </message>
 </context>
 <context>
+    <name>service</name>
+    <message>
+        <location filename="setting_pages/service.qml" line="85"/>
+        <source>Broadcast:</source>
+        <translation>Трансляция:</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/service.qml" line="93"/>
+        <source>Link...</source>
+        <translation>Ссылка...</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/service.qml" line="109"/>
+        <source>Paste</source>
+        <translation>Вставить</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/service.qml" line="127"/>
+        <source>Control Panel</source>
+        <translation>Панель управления</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/service.qml" line="137"/>
+        <source>Broadcast</source>
+        <translation>Трансляция</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/service.qml" line="146"/>
+        <source>Chat</source>
+        <translation>Чат</translation>
+    </message>
+</context>
+<context>
     <name>settings</name>
     <message>
-        <location filename="settings.qml" line="14"/>
+        <location filename="settings.qml" line="13"/>
         <source>AxelChat Settings</source>
         <translation>Настройки AxelChat</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="45"/>
+        <location filename="settings.qml" line="44"/>
         <source>Changes will take effect after restarting the program</source>
         <translation>Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="50"/>
+        <location filename="settings.qml" line="49"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="58"/>
+        <location filename="settings.qml" line="57"/>
         <source>Restart</source>
         <translation>Перезапуск</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="88"/>
+        <location filename="settings.qml" line="87"/>
         <source>Ok</source>
         <translation>Ок</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="153"/>
-        <source>YouTube</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="settings.qml" line="165"/>
+        <location filename="settings.qml" line="168"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -1189,22 +1220,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="157"/>
-        <source>Twitch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="settings.qml" line="161"/>
+        <location filename="settings.qml" line="164"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="173"/>
+        <location filename="settings.qml" line="176"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="177"/>
+        <location filename="settings.qml" line="180"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -1213,7 +1239,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="181"/>
+        <location filename="settings.qml" line="184"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
@@ -1396,32 +1422,32 @@ Latest version available: %2</oldsource>
 <context>
     <name>updatesnotification</name>
     <message>
-        <location filename="updatesnotification.qml" line="38"/>
+        <location filename="updatesnotification.qml" line="36"/>
         <source>Download</source>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="56"/>
+        <location filename="updatesnotification.qml" line="52"/>
         <source>More Details</source>
         <translation>Подробнее</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="72"/>
+        <location filename="updatesnotification.qml" line="68"/>
         <source>Skip This Version</source>
         <translation>Пропустить эту версию</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="83"/>
+        <location filename="updatesnotification.qml" line="79"/>
         <source>New Version Available %1</source>
         <translation>Доступна новая версия %1</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="100"/>
+        <location filename="updatesnotification.qml" line="96"/>
         <source>Current version: %1</source>
         <translation>Текущая версия: %1</translation>
     </message>
     <message>
-        <location filename="updatesnotification.qml" line="124"/>
+        <location filename="updatesnotification.qml" line="120"/>
         <source>Published: %1</source>
         <translation>Опубликовано: %1</translation>
     </message>

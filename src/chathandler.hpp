@@ -37,9 +37,6 @@ class ChatHandler : public QObject
 public:
     explicit ChatHandler(QSettings& settings, QNetworkAccessManager& network, QObject *parent = nullptr);
 
-    YouTube& getYoutube();
-    Twitch& getTwitch() const;
-    GoodGame& getGoodGame() const;
     ChatMessagesModel& getMessagesModel();
 
 #ifndef AXELCHAT_LIBRARY
@@ -109,16 +106,13 @@ private slots:
 
 private:
     void updateProxy();
-    void addService(ChatService& service);
+    void addService(ChatService* service);
 
     ChatMessagesModel messagesModel;
 
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    YouTube* youTube = nullptr;
-    Twitch* twitch = nullptr;
-    GoodGame* goodGame = nullptr;
     QList<ChatService*> services;
 
 #ifndef AXELCHAT_LIBRARY
