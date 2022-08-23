@@ -99,7 +99,7 @@ public:
 
     virtual ConnectionStateType connectionStateType() const = 0;
     virtual QString stateDescription() const  = 0;
-    virtual ServiceType getServiceType() const { return serviceType; }
+    ServiceType getServiceType() const { return serviceType; }
 
     virtual int viewersCount() const = 0;
 
@@ -124,14 +124,8 @@ signals:
     void connected(QString name);
     void disconnected(QString name);
     void avatarDiscovered(const QString& channelId, const QUrl& url);
-    void needSendNotification(const QString& text);
 
 protected:
-    void sendNotification(const QString& text)
-    {
-        emit needSendNotification(text);
-    }
-
     const ServiceType serviceType;
 };
 

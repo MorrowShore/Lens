@@ -64,8 +64,6 @@ public:
     int getRow(QVariant* data);
     void applyAvatar(const QString& channelId, const QUrl& url);
 
-    const ChatAuthor& softwareAuthor();
-
     const ChatAuthor* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     ChatAuthor* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
     void addAuthor(ChatAuthor* author);

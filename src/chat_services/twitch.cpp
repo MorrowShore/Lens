@@ -132,7 +132,22 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         {
             qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
 
-            sendNotification(tr("Ping timeout! Reconnection..."));
+            const ChatAuthor& author = ChatAuthor::getSoftwareAuthor();
+
+            QList<ChatMessage::Content*> contents;
+
+            ChatMessage::Text* text = new ChatMessage::Text(tr("Ping timeout! Reconnection..."));
+            contents.append(text);
+
+            ChatMessage message(contents, author.getId());
+
+            QList<ChatMessage> messages;
+            messages.append(message);
+
+            QList<ChatAuthor> authors;
+            authors.append(author);
+
+            emit readyRead(messages, authors);
 
             _info.connected = false;
 

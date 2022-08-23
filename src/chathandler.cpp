@@ -156,11 +156,9 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
 
 void ChatHandler::sendTestMessage(const QString &text)
 {
-    ChatAuthor author = messagesModel.softwareAuthor();
+    const ChatAuthor& author = ChatAuthor::getSoftwareAuthor();
     QList<ChatAuthor> authors;
     authors.append(author);
-
-
 
     ChatMessage message({new ChatMessage::Text(text)}, author.getId());
     message.setCustomAuthorName(tr("Test Message"));
@@ -174,7 +172,7 @@ void ChatHandler::sendTestMessage(const QString &text)
 
 void ChatHandler::sendSoftwareMessage(const QString &text)
 {
-    ChatAuthor author = messagesModel.softwareAuthor();
+    const ChatAuthor& author = ChatAuthor::getSoftwareAuthor();
     QList<ChatAuthor> authors;
     authors.append(author);
 
@@ -314,16 +312,6 @@ void ChatHandler::addService(ChatService& service)
     connect(&service, &ChatService::connected, this, &ChatHandler::onConnected);
     connect(&service, &ChatService::disconnected, this, &ChatHandler::onDisconnected);
     connect(&service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
-    connect(&service, &ChatService::needSendNotification, this, [this](const QString& text)
-    {
-        ChatService* service = qobject_cast<ChatService*>(sender());
-        if (!service)
-        {
-            return;
-        }
-
-        sendSoftwareMessage(service->getNameLocalized() + ": " + text);
-    });
 }
 
 #ifndef AXELCHAT_LIBRARY

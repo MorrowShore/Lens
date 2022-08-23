@@ -30,6 +30,8 @@ public:
                const std::set<Flags>& flags = {},
                const QColor& customNicknameColor = QColor());
 
+    static const ChatAuthor& getSoftwareAuthor();
+
     inline const QString& getId() const
     {
         return authorId;

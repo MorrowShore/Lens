@@ -256,20 +256,6 @@ void ChatMessagesModel::applyAvatar(const QString &channelId, const QUrl &url)
     _needUpdateAvatarMessages.remove(channelId);
 }
 
-const ChatAuthor &ChatMessagesModel::softwareAuthor()
-{
-    const QString authorId = "____SOFTWARE____";
-    if (!_authorsById.contains(authorId))
-    {
-        ChatAuthor* author = new ChatAuthor(ChatService::ServiceType::Software,
-                                            QCoreApplication::applicationName(),
-                                            authorId);
-        _authorsById.insert(authorId, author);
-    }
-
-    return *_authorsById.value(authorId);
-}
-
 void ChatMessagesModel::addAuthor(ChatAuthor* author)
 {
     if (!author)

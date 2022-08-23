@@ -22,6 +22,16 @@ ChatAuthor::ChatAuthor(ChatService::ServiceType serviceType_,
 
 }
 
+const ChatAuthor &ChatAuthor::getSoftwareAuthor()
+{
+    static const QString authorId = "____SOFTWARE____";
+    static const ChatAuthor author(ChatService::ServiceType::Software,
+                            QCoreApplication::applicationName(),
+                            authorId);
+
+    return author;
+}
+
 QString ChatAuthor::flagToString(const Flags flag)
 {
     QMetaEnum metaEnum = QMetaEnum::fromType<Flags>();
