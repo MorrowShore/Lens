@@ -16,9 +16,9 @@ public:
     explicit GoodGame(QSettings& settings, const QString& SettingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
     ~GoodGame();
 
-    ConnectionStateType connectionStateType() const override;
-    QString stateDescription() const override;
-    int viewersCount() const override;
+    ConnectionStateType getConnectionStateType() const override;
+    QString getStateDescription() const override;
+    int getViewersCount() const override;
     void reconnect() override;
     void setBroadcastLink(const QString &link) override;
     QString getBroadcastLink() const override;

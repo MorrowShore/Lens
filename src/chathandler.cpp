@@ -396,7 +396,7 @@ int ChatHandler::connectedCount() const
 
     for (ChatService* service : services)
     {
-        if (service->connectionStateType()  == ChatService::ConnectionStateType::Connected)
+        if (service->getConnectionStateType()  == ChatService::ConnectionStateType::Connected)
         {
             result++;
         }
@@ -411,9 +411,9 @@ int ChatHandler::viewersTotalCount() const
 
     for (ChatService* service : services)
     {
-        if (service->connectionStateType()  == ChatService::ConnectionStateType::Connected)
+        if (service->getConnectionStateType()  == ChatService::ConnectionStateType::Connected)
         {
-            const int count = service->viewersCount();
+            const int count = service->getViewersCount();
             if (count < 0)
             {
                 return -1;

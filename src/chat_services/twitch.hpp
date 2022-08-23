@@ -17,13 +17,13 @@ class Twitch : public ChatService
 public:
     explicit Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
     ~Twitch();
-    ConnectionStateType connectionStateType() const override;
-    QString stateDescription() const override;
-    int viewersCount() const override;
+    ConnectionStateType getConnectionStateType() const override;
+    QString getStateDescription() const override;
+    int getViewersCount() const override;
     QUrl requesGetAOuthTokenUrl() const;
-    QUrl chatUrl() const override;
-    QUrl controlPanelUrl() const override;
-    QUrl broadcastUrl() const override;
+    QUrl getChatUrl() const override;
+    QUrl getControlPanelUrl() const override;
+    QUrl getBroadcastUrl() const override;
     void setBroadcastLink(const QString &link) override;
     QString getBroadcastLink() const override;
 

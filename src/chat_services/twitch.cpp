@@ -202,7 +202,7 @@ Twitch::~Twitch()
     emit stateChanged();
 }
 
-ChatService::ConnectionStateType Twitch::connectionStateType() const
+ChatService::ConnectionStateType Twitch::getConnectionStateType() const
 {
     if (_info.connected)
     {
@@ -216,9 +216,9 @@ ChatService::ConnectionStateType Twitch::connectionStateType() const
     return ChatService::ConnectionStateType::NotConnected;
 }
 
-QString Twitch::stateDescription() const
+QString Twitch::getStateDescription() const
 {
-    switch (connectionStateType()) {
+    switch (getConnectionStateType()) {
     case ConnectionStateType::NotConnected:
         if (_info.channelLogin.isEmpty())
         {
@@ -243,7 +243,7 @@ QString Twitch::stateDescription() const
     return "<unknown_state>";
 }
 
-int Twitch::viewersCount() const
+int Twitch::getViewersCount() const
 {
     return _info.viewers;
 }
@@ -256,7 +256,7 @@ QUrl Twitch::requesGetAOuthTokenUrl() const
                         + "&scope=openid+chat:read");
 }
 
-QUrl Twitch::chatUrl() const
+QUrl Twitch::getChatUrl() const
 {
     if (_info.channelLogin.isEmpty())
     {
@@ -266,7 +266,7 @@ QUrl Twitch::chatUrl() const
     return _info.chatUrl;
 }
 
-QUrl Twitch::controlPanelUrl() const
+QUrl Twitch::getControlPanelUrl() const
 {
     if (_info.channelLogin.isEmpty())
     {
@@ -276,7 +276,7 @@ QUrl Twitch::controlPanelUrl() const
     return _info.controlPanelUrl;
 }
 
-QUrl Twitch::broadcastUrl() const
+QUrl Twitch::getBroadcastUrl() const
 {
     if (_info.channelLogin.isEmpty())
     {

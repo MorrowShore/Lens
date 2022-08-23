@@ -163,12 +163,12 @@ void YouTube::printData(const QString &tag, const QByteArray& data)
     qDebug() << "==============================================================================================================================";
 }
 
-QUrl YouTube::chatUrl() const
+QUrl YouTube::getChatUrl() const
 {
     return _info.broadcastChatUrl;
 }
 
-QUrl YouTube::controlPanelUrl() const
+QUrl YouTube::getControlPanelUrl() const
 {
     return _info.controlPanelUrl;
 }
@@ -242,7 +242,7 @@ AxelChat::YouTubeInfo YouTube::getInfo() const
     return _info;
 }
 
-QUrl YouTube::broadcastUrl() const
+QUrl YouTube::getBroadcastUrl() const
 {
     return _info.broadcastShortUrl;
 }
@@ -254,7 +254,7 @@ void YouTube::reconnect()
     setBroadcastLink(link);
 }
 
-ChatService::ConnectionStateType YouTube::connectionStateType() const
+ChatService::ConnectionStateType YouTube::getConnectionStateType() const
 {
     if (_info.broadcastConnected)
     {
@@ -268,9 +268,9 @@ ChatService::ConnectionStateType YouTube::connectionStateType() const
     return ChatService::ConnectionStateType::NotConnected;
 }
 
-QString YouTube::stateDescription() const
+QString YouTube::getStateDescription() const
 {
-    switch (connectionStateType()) {
+    switch (getConnectionStateType()) {
     case ConnectionStateType::NotConnected:
         if (_info.userSpecified.isEmpty())
         {
@@ -295,7 +295,7 @@ QString YouTube::stateDescription() const
     return "<unknown_state>";
 }
 
-int YouTube::viewersCount() const
+int YouTube::getViewersCount() const
 {
     return _info.viewers;
 }

@@ -102,6 +102,54 @@ ScrollView {
                     chatService.setBroadcastLink(text)
                 }
             }
+
+            Button {
+                anchors.verticalCenter: parent.verticalCenter
+                highlighted: true
+                text: qsTr("Paste")
+                display: AbstractButton.TextBesideIcon
+                icon.source: "qrc:/resources/images/clipboard-paste-button.svg"
+
+                onClicked: {
+                    if (clipboard.text.length !== 0)
+                    {
+                        textFieldUserSpecifiedLink.text = clipboard.text;
+                        textFieldUserSpecifiedLink.deselect();
+                    }
+                }
+            }
+        }
+
+        Row {
+            spacing: 6
+
+            Button {
+                text: qsTr("Control Panel")
+                anchors.verticalCenter: parent.verticalCenter
+                visible: chatService.controlPanelUrl.toString().length !== 0
+                icon.source: "qrc:/resources/images/youtube-control-panel.svg"
+                onClicked: {
+                    Qt.openUrlExternally(chatService.controlPanelUrl)
+                }
+            }
+
+            Button {
+                text: qsTr("Broadcast")
+                anchors.verticalCenter: parent.verticalCenter
+                visible: chatService.broadcastUrl.toString().length !== 0
+                onClicked: {
+                    Qt.openUrlExternally(chatService.broadcastUrl)
+                }
+            }
+
+            Button {
+                text: qsTr("Chat")
+                anchors.verticalCenter: parent.verticalCenter
+                visible: chatService.chatUrl.toString().length !== 0
+                onClicked: {
+                    Qt.openUrlExternally(chatService.chatUrl)
+                }
+            }
         }
     }
 }

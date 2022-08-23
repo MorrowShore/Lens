@@ -54,17 +54,17 @@ GoodGame::~GoodGame()
     _socket.close();
 }
 
-ChatService::ConnectionStateType GoodGame::connectionStateType() const
+ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
 {
     return ChatService::ConnectionStateType::NotConnected;
 }
 
-QString GoodGame::stateDescription() const
+QString GoodGame::getStateDescription() const
 {
     return "unknown";
 }
 
-int GoodGame::viewersCount() const
+int GoodGame::getViewersCount() const
 {
     //ToDo:
     return 0;

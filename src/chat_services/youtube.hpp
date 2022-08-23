@@ -21,12 +21,12 @@ public:
 
     void reconnect() override;
 
-    ConnectionStateType connectionStateType() const override;
-    QString stateDescription() const override;
-    int viewersCount() const override;
-    QUrl broadcastUrl() const override;
-    QUrl chatUrl() const override;
-    QUrl controlPanelUrl() const override;
+    ConnectionStateType getConnectionStateType() const override;
+    QString getStateDescription() const override;
+    int getViewersCount() const override;
+    QUrl getBroadcastUrl() const override;
+    QUrl getChatUrl() const override;
+    QUrl getControlPanelUrl() const override;
     Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
 
     AxelChat::YouTubeInfo getInfo() const;

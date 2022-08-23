@@ -15,14 +15,14 @@ class ChatService : public QObject
     Q_OBJECT
 
 public:
-    Q_PROPERTY(QUrl                 broadcastUrl                 READ broadcastUrl                    NOTIFY stateChanged)
-    Q_PROPERTY(QUrl                 chatUrl                      READ chatUrl                         NOTIFY stateChanged)
-    Q_PROPERTY(QUrl                 controlPanelUrl              READ controlPanelUrl                 NOTIFY stateChanged)
+    Q_PROPERTY(QUrl                 broadcastUrl                 READ getBroadcastUrl                    NOTIFY stateChanged)
+    Q_PROPERTY(QUrl                 chatUrl                      READ getChatUrl                         NOTIFY stateChanged)
+    Q_PROPERTY(QUrl                 controlPanelUrl              READ getControlPanelUrl                 NOTIFY stateChanged)
 
-    Q_PROPERTY(ConnectionStateType  connectionStateType          READ connectionStateType             NOTIFY stateChanged)
-    Q_PROPERTY(QString              stateDescription             READ stateDescription                NOTIFY stateChanged)
+    Q_PROPERTY(ConnectionStateType  connectionStateType          READ getConnectionStateType             NOTIFY stateChanged)
+    Q_PROPERTY(QString              stateDescription             READ getStateDescription                NOTIFY stateChanged)
 
-    Q_PROPERTY(int                  viewersCount                 READ viewersCount                    NOTIFY stateChanged)
+    Q_PROPERTY(int                  viewersCount                 READ getViewersCount                    NOTIFY stateChanged)
 
     enum class ServiceType
     {
@@ -93,15 +93,15 @@ public:
         , serviceType(serviceType_)
     { }
 
-    virtual QUrl chatUrl() const { return QString(); }
-    virtual QUrl controlPanelUrl() const { return QString(); }
-    virtual QUrl broadcastUrl() const { return QString(); }
+    virtual QUrl getChatUrl() const { return QString(); }
+    virtual QUrl getControlPanelUrl() const { return QString(); }
+    Q_INVOKABLE virtual QUrl getBroadcastUrl() const { return QString(); }
 
-    virtual ConnectionStateType connectionStateType() const = 0;
-    virtual QString stateDescription() const  = 0;
+    virtual ConnectionStateType getConnectionStateType() const = 0;
+    virtual QString getStateDescription() const  = 0;
     ServiceType getServiceType() const { return serviceType; }
 
-    virtual int viewersCount() const = 0;
+    virtual int getViewersCount() const = 0;
 
     virtual void reconnect() = 0;
 
