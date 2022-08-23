@@ -25,7 +25,7 @@ BEGIN
             VALUE "ProductVersion",     APP_INFO_PRODUCTVERSION_STR
         END
     END
-
+	
     BLOCK "VarFileInfo"
     BEGIN
         /* The following line should only be modified for localized versions.     */

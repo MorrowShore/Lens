@@ -72,7 +72,7 @@ TRANSLATIONS += \
 CONFIG += lrelease
 CONFIG += embed_translations
 
-RC_FILE = icon.rc
+RC_FILE = rc.rc
 
 FORMS += \
     commandseditor.ui \
