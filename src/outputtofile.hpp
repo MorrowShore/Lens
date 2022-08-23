@@ -54,9 +54,9 @@ signals:
     void authorNameChanged(const ChatAuthor& author, const QString& prevName, const QString& newName);
 
 private:
-    QString convertUrlForFileName(const QUrl& url) const;
+    QString convertUrlForFileName(const QUrl& url, const QString& imageFileFormat) const;
     void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, const int height, bool ignoreIfExists);
-    void downloadEmoji(const QUrl &url, const QString& imageFormat, const int height, const ChatService::ServiceType serviceType);
+    void downloadEmoji(const QUrl &url, const int height, const ChatService::ServiceType serviceType);
 
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
     QByteArray prepare(const QString& text);
@@ -86,6 +86,7 @@ private:
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
 
+    const QString ImageFileFormat = "png";
     const int avatarHeight = 72;
     QSet<QString> needIgnoreDownloadFileNames;
 };
