@@ -33,8 +33,6 @@ Window {
 
     Button {
         id: buttonDownload
-        x: 539
-        y: 424
         text: qsTr("Download")
         icon.source: "qrc:/resources/images/download-button.svg"
         anchors.bottom: parent.bottom
@@ -51,8 +49,6 @@ Window {
 
     Button {
         id: buttonDetailsBrowser
-        x: 421
-        y: 424
         text: qsTr("More Details")
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 8
@@ -110,16 +106,16 @@ Window {
     ScrollView {
         id: scrollView
         anchors.right: parent.right
-        anchors.rightMargin: 8
         anchors.left: parent.left
-        anchors.leftMargin: 8
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 62
-        anchors.top: parent.top
-        anchors.topMargin: 78
+        anchors.bottom: buttonDownload.top
+        anchors.top: labelVersion.bottom
+        anchors.margins: 8
+        clip: true
 
         MyComponents.MyTextArea {
             id: description
+            width: parent.width
+
             text: {
                 return qsTr("Published: %1")
                     .arg(updateChecker.lastVersionDate.toLocaleDateString(Qt.locale())) + "\n\n" +
@@ -131,13 +127,6 @@ Window {
             font.pointSize: 14
             wrapMode: Text.WordWrap
             textFormat: Text.MarkdownText
-
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.RightButton
-                hoverEnabled: true
-                cursorShape: Qt.IBeamCursor
-            }
         }
     }
 }
