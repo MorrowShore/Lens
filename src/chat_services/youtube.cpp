@@ -244,7 +244,7 @@ AxelChat::YouTubeInfo YouTube::getInfo() const
 
 QUrl YouTube::getBroadcastUrl() const
 {
-    return _info.broadcastShortUrl;
+    return _info.broadcastUrl;
 }
 
 void YouTube::reconnect()
@@ -352,17 +352,11 @@ void YouTube::setBroadcastLink(const QString &link_)
 
         if (!_info.broadcastId.isEmpty())
         {
-            _info.broadcastChatUrl = QUrl(QString("https://www.youtube.com/live_chat?v=%1")
-                    .arg(_info.broadcastId));
+            _info.broadcastChatUrl = QUrl(QString("https://www.youtube.com/live_chat?v=%1").arg(_info.broadcastId));
 
-            _info.broadcastShortUrl = QUrl(QString("https://youtu.be/%1")
-                                 .arg(_info.broadcastId));
+            _info.broadcastUrl = QUrl(QString("https://www.youtube.com/watch?v=%1").arg(_info.broadcastId));
 
-            _info.broadcastLongUrl = QUrl(QString("https://www.youtube.com/watch?v=%1")
-                                 .arg(_info.broadcastId));
-
-            _info.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming")
-                                                         .arg(_info.broadcastId));
+            _info.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(_info.broadcastId));
         }
 
         settings.setValue(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedLink, _info.userSpecified);
@@ -514,12 +508,12 @@ void YouTube::onReplyChannelLivePage()
 void YouTube::onTimeoutRequestStreamPage()
 {
     //return;//ToDo:
-    if (_info.broadcastLongUrl.isEmpty())
+    if (_info.broadcastUrl.isEmpty())
     {
         return;
     }
 
-    QNetworkRequest request(_info.broadcastLongUrl);
+    QNetworkRequest request(_info.broadcastUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("accept-language", AcceptLanguageNetworkHeaderName);
 

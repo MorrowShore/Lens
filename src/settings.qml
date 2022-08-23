@@ -151,7 +151,7 @@ Window {
                     for (var i = chatHandler.getServicesCount() - 1; i >= 0; --i) {
                         var service = chatHandler.getServiceAtIndex(i)
                         model.insert(0, {
-                                         name: service.getNameLocalized(),
+                                         name: service.getName(),
                                          category: "service"
                                      })
                     }

@@ -234,7 +234,7 @@ void ChatHandler::onConnected(QString name)
         return;
     }
 
-    sendSoftwareMessage(tr("%1 connected: %2").arg(service->getNameLocalized()).arg(name));
+    sendSoftwareMessage(tr("%1 connected: %2").arg(service->getName()).arg(name));
 
     emit connectedCountChanged();
 }
@@ -247,7 +247,7 @@ void ChatHandler::onDisconnected(QString name)
         return;
     }
 
-    sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getNameLocalized()).arg(name));
+    sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getName()).arg(name));
 
     if (_enabledClearMessagesOnLinkChange)
     {
@@ -262,7 +262,7 @@ void ChatHandler::onAuthorNameChanged(const ChatAuthor& author, const QString &p
     if (_enableShowAuthorNameChanged)
     {
         sendSoftwareMessage(tr("%1: \"%2\" changed name to \"%3\"")
-                            .arg(ChatService::getNameLocalized(author.getServiceType()))
+                            .arg(ChatService::getName(author.getServiceType()))
                             .arg(prevName)
                             .arg(newName));
     }
@@ -488,5 +488,5 @@ QUrl ChatHandler::getServiceIconUrl(int serviceType) const
 
 QUrl ChatHandler::getServiceNameLocalized(int serviceType) const
 {
-    return ChatService::getNameLocalized((ChatService::ServiceType)serviceType);
+    return ChatService::getName((ChatService::ServiceType)serviceType);
 }

@@ -58,7 +58,7 @@ public:
         return "unknown";
     }
 
-    static QString getNameLocalized(const ChatService::ServiceType serviceType)
+    static QString getName(const ChatService::ServiceType serviceType)
     {
         switch (serviceType)
         {
@@ -105,9 +105,9 @@ public:
 
     virtual void reconnect() = 0;
 
-    Q_INVOKABLE QString getNameLocalized() const
+    Q_INVOKABLE QString getName() const
     {
-        return getNameLocalized(serviceType);
+        return getName(serviceType);
     }
 
     Q_INVOKABLE QUrl getIconUrl() const

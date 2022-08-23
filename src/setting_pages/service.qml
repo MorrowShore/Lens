@@ -9,7 +9,8 @@ import "../"
 ScrollView {
     id: root
     clip: true
-    padding: 6
+    horizontalPadding: 10
+    verticalPadding: 6
     contentHeight: column.implicitHeight
     contentWidth: column.implicitWidth
 
@@ -32,7 +33,7 @@ ScrollView {
             }
 
             Label {
-                text: chatService.getNameLocalized()
+                text: chatService.getName()
                 font.bold: true
                 font.pixelSize: 25
                 color: Material.foreground

@@ -53,10 +53,6 @@ Window {
                     width:  height
                     mipmap: true
                     source: {
-                        if (authorQMLProvider.serviceType === Global._YouTubeServiceType) {
-                            return typeof(authorQMLProvider.avatarUrl) == "object" ? youTube.createResizedAvatarUrl(authorQMLProvider.avatarUrl, height) : ""
-                        }
-
                         return authorQMLProvider.avatarUrl
                     }
                 }

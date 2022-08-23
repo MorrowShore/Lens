@@ -16,8 +16,7 @@ struct YouTubeInfo {
     QString channelId;
     QString broadcastName;
     QString broadcastDescription;
-    QUrl broadcastLongUrl;
-    QUrl broadcastShortUrl;
+    QUrl broadcastUrl;
     QUrl broadcastChatUrl;
     QUrl controlPanelUrl;
     QString broadcastId;

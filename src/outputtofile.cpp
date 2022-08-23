@@ -781,7 +781,7 @@ void OutputToFile::writeInfo()
     _iniCurrentInfo->setValue("youtube/broadcast_connected", _youTubeInfo.broadcastConnected);
     _iniCurrentInfo->setValue("youtube/broadcast_id", _youTubeInfo.broadcastId);
     _iniCurrentInfo->setValue("youtube/broadcast_user_specified", _youTubeInfo.userSpecified);
-    _iniCurrentInfo->setValue("youtube/broadcast_url", _youTubeInfo.broadcastLongUrl.toString());
+    _iniCurrentInfo->setValue("youtube/broadcast_url", _youTubeInfo.broadcastUrl.toString());
     _iniCurrentInfo->setValue("youtube/broadcast_chat_url", _youTubeInfo.broadcastChatUrl.toString());
     _iniCurrentInfo->setValue("youtube/broadcast_control_panel_url", _youTubeInfo.controlPanelUrl.toString());
     _iniCurrentInfo->setValue("youtube/viewers_count", _youTubeInfo.viewers);
