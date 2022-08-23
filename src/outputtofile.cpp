@@ -288,12 +288,17 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
 
     fileName = avatarsDirectory + "/" + fileName + "." + ImageFileFormat;
     downloadImage(url, fileName, ImageFileFormat, avatarHeight, true);
+
+    QFile file(authorDirectory + "/avatar.txt");
+    if (file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
+    {
+        file.write(fileName.toUtf8());
+        file.close();
+    }
 }
 
-void OutputToFile::downloadImage(const QUrl &url, const QString &fileName_, const QString& imageFormat, const int height, bool ignoreIfExists)
+void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const QString& imageFormat, const int height, bool ignoreIfExists)
 {
-    QString fileName = fileName_;
-
     if ((ignoreIfExists && QFile(fileName).exists()) || needIgnoreDownloadFileNames.contains(fileName))
     {
         //qDebug() << "Ignore download image, file" << fileName << "already exists";
@@ -391,8 +396,6 @@ void OutputToFile::downloadEmoji(const QUrl &url, const QString &imageFormat, co
     fileName = removePostfix(fileName, ".svg", Qt::CaseSensitivity::CaseInsensitive);
 
     fileName = emojiDirectory + "/" + fileName + "." + imageFormat;
-
-    qDebug() << "Download from" << url << "to" << fileName;
 
     downloadImage(url, fileName, imageFormat, height, true);
 }
@@ -579,8 +582,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             file.write("name=" + prepare(author->getName()) + "\n");
             file.write("id=" + prepare(author->getId()) + "\n");
             file.write("service=" + prepare(ChatService::getServiceTypeId(author->getServiceType())) + "\n");
-            file.write("avatar_url=" + prepare(avatarUrlStr) + "\n");
-            file.write("avatar_name=" + prepare(avatarName) + "\n");
+            file.write("avatar_url=" + prepare(convertUrlForFileName(author->getAvatarUrl())) + "\n");
             file.write("page_url=" + prepare(author->getPageUrl().toString()) + "\n");
             //ToDo: file.write("last_message_at=" +  + "\n");
 
