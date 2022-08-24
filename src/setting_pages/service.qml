@@ -172,6 +172,7 @@ ScrollView {
                 var component = Qt.createComponent("../my_components/MyTextField.qml");
                 var field = component.createObject(row);
                 field.width = 400
+                field.text = chatService.getParameterValue(i)
             }
         }
     }
