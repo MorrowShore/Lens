@@ -165,8 +165,10 @@ ScrollView {
 
                     Label {
                         text: \"" + chatService.getParameterName(i) + ":\"
-                        font.pixelSize: 25
+                        font.pixelSize: 20
                         anchors.verticalCenter: parent.verticalCenter
+                        font.bold: true
+                        color: \"" + Material.accentColor + "\"
                     }", row)
 
                 var component = Qt.createComponent("../my_components/MyTextField.qml");

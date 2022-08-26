@@ -75,7 +75,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
   , SettingsGroupPath(settingsGroupPath)
   , network(network_)
 {
-    parameters.append(Setting<QString>(settings, settingsGroupPath + "/oauth_token", tr("OAuth Token")));
+    parameters.append(Setting<QString>(settings, settingsGroupPath + "/oauth_token", tr("OAuth token")));
 
     QObject::connect(&_socket, &QWebSocket::stateChanged, this, [=](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
