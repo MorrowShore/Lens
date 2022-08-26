@@ -160,7 +160,7 @@ ScrollView {
 
                 var type = chatService.getParameterType(i)
                 if (type === Global._StringParameterType)
-                {
+                {//isParameterHasFlag _PasswordEchoParameterFlag
                     Qt.createQmlObject("
                         import QtQuick 2.0
                         import QtQuick.Controls 2.15
@@ -184,6 +184,7 @@ ScrollView {
                         MyComponents.MyTextField {
                             width: 400
                             anchors.verticalCenter: parent.verticalCenter
+                            echoMode: chatService.isParameterHasFlag(" + String("%1").arg(i) + ", " + String("%1").arg(Global._PasswordEchoParameterFlag) + ") ? TextInput.Password : TextInput.Normal
 
                             Component.onCompleted: {
                                 text = chatService.getParameterValue(" + String("%1").arg(i) + ")

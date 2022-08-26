@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QCoreApplication>
+#include <set>
 
 class ChatHandler;
 class ChatAuthor;
@@ -157,6 +158,20 @@ public:
         return (int)Parameter::Type::Unknown;
     }
 
+    Q_INVOKABLE bool isParameterHasFlag(int index, int flag) const
+    {
+        if (index < parameters.count())
+        {
+            const std::set<Parameter::Flag>& flags = parameters[index].flags;
+
+            return flags.find((Parameter::Flag)flag) != flags.end();
+        }
+
+        qWarning() << "parameter index" << index << "not valid";
+
+        return false;
+    }
+
     Q_INVOKABLE void setParameterValue(int index, const QString& value)
     {
         if (index < parameters.count())
@@ -196,15 +211,22 @@ protected:
             ButtonUrl = 20,
         };
 
-        Parameter(Setting<QString>* setting_, const QString& name_, const Type type_)
+        enum class Flag
+        {
+            PasswordEcho = 10
+        };
+
+        Parameter(Setting<QString>* setting_, const QString& name_, const Type type_, const std::set<Flag> flags_)
             : setting(setting_)
             , name(name_)
             , type(type_)
+            , flags(flags_)
         {}
 
         Setting<QString>* setting;
         const QString name;
         const Type type;
+        const std::set<Flag> flags;
     };
 
     virtual void onParameterChanged(Parameter& parameter)
