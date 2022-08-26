@@ -12,7 +12,6 @@ class Twitch : public ChatService
 {
     Q_OBJECT
     Q_PROPERTY(QUrl     requesGetAOuthTokenUrl      READ requesGetAOuthTokenUrl     CONSTANT)
-    Q_PROPERTY(QString  oauthToken                  READ oauthToken                 WRITE setOAuthToken                 NOTIFY stateChanged)
 
 public:
     explicit Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
@@ -27,8 +26,6 @@ public:
     void setBroadcastLink(const QString &link) override;
     QString getBroadcastLink() const override;
 
-    QString oauthToken() const { return _info.oauthToken; }
-
     AxelChat::TwitchInfo getInfo() const;
 
     void reconnect() override;
@@ -36,7 +33,9 @@ public:
 signals:
 
 public slots:
-    void setOAuthToken(QString token);
+
+protected:
+    void onParameterChanged(Parameter& parameter) override;
 
 private slots:
     void sendIRCMessage(const QString& message);
@@ -74,6 +73,8 @@ private:
     QNetworkAccessManager& network;
 
     QWebSocket _socket;
+
+    Setting<QString> oauthToken;
 
     AxelChat::TwitchInfo _info;
     QString _lastConnectedChannelName;

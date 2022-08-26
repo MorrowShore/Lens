@@ -125,7 +125,7 @@ public:
     {
         if (index < parameters.count())
         {
-            return parameters[index].getName();
+            return parameters[index].name;
         }
 
         qWarning() << "parameter index" << index << "not valid";
@@ -137,7 +137,7 @@ public:
     {
         if (index < parameters.count())
         {
-            return parameters[index].get();
+            return parameters[index].setting->get();
         }
 
         qWarning() << "parameter index" << index << "not valid";
@@ -145,12 +145,27 @@ public:
         return QString();
     }
 
+    Q_INVOKABLE int getParameterType(int index) const
+    {
+        if (index < parameters.count())
+        {
+            return (int)parameters[index].type;
+        }
+
+        qWarning() << "parameter index" << index << "not valid";
+
+        return (int)Parameter::Type::Unknown;
+    }
+
     Q_INVOKABLE void setParameterValue(int index, const QString& value)
     {
         if (index < parameters.count())
         {
-            parameters[index].set(value);
-            emit parameterChanged(index);
+            if (parameters[index].setting->set(value))
+            {
+                onParameterChanged(parameters[index]);
+                emit stateChanged();
+            }
         }
         else
         {
@@ -171,10 +186,33 @@ signals:
     void connected(QString name);
     void disconnected(QString name);
     void avatarDiscovered(const QString& channelId, const QUrl& url);
-    void parameterChanged(int index);
 
 protected:
-    QList<Setting<QString>> parameters;
+    struct Parameter {
+        enum class Type
+        {
+            Unknown = -1,
+            String = 10,
+            ButtonUrl = 20,
+        };
+
+        Parameter(Setting<QString>* setting_, const QString& name_, const Type type_)
+            : setting(setting_)
+            , name(name_)
+            , type(type_)
+        {}
+
+        Setting<QString>* setting;
+        const QString name;
+        const Type type;
+    };
+
+    virtual void onParameterChanged(Parameter& parameter)
+    {
+        Q_UNUSED(parameter)
+    }
+
+    QList<Parameter> parameters;
     const ServiceType serviceType;
 };
 

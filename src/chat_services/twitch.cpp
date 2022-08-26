@@ -20,7 +20,6 @@ static const QString ApplicationClientID = "cx5rgsivc62io2kk79yf6eivhhwiui";
 static const QString RedirectUri = "https://twitchapps.com/tmi/";//"https://localhost";
 static const QString TwitchIRCHost = "tmi.twitch.tv";
 
-static const QString SettingsKeyOAuthToken = "oauth_token";
 static const QString SettingsKeyUserSpecifiedChannel = "user_specified_channel";
 
 static const QString FolderLogs = "logs_twitch";
@@ -74,8 +73,10 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
   , settings(settings_)
   , SettingsGroupPath(settingsGroupPath)
   , network(network_)
+  , oauthToken(Setting<QString>(settings, SettingsGroupPath + "/oauth_token"))
 {
-    parameters.append(Setting<QString>(settings, settingsGroupPath + "/oauth_token", tr("OAuth token")));
+    parameters.append(Parameter(&oauthToken, tr("OAuth token"), Parameter::Type::String));
+    parameters.append(Parameter(new Setting<QString>(settings, QString(), requesGetAOuthTokenUrl().toString()), tr("Get token"), Parameter::Type::ButtonUrl));
 
     QObject::connect(&_socket, &QWebSocket::stateChanged, this, [=](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
@@ -95,7 +96,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
         sendIRCMessage("CAP REQ :twitch.tv/tags");
         //sendIRCMessage("CAP REQ :twitch.tv/commands");
-        sendIRCMessage(QString("PASS oauth:") + _info.oauthToken);
+        sendIRCMessage(QString("PASS oauth:") + oauthToken.get());
         sendIRCMessage(QString("NICK ") + _info.channelLogin);
         sendIRCMessage(QString("JOIN #") + _info.channelLogin);
         sendIRCMessage(QString("PING :") + TwitchIRCHost);
@@ -122,7 +123,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     reconnect();
 
     QObject::connect(&_timerReconnect, &QTimer::timeout, this, [&](){
-        if (!_info.connected && !_info.oauthToken.isEmpty())
+        if (!_info.connected && !oauthToken.get().isEmpty())
         {
             reconnect();
         }
@@ -176,9 +177,6 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     });
     _timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
-    const QString token = QString::fromUtf8(QByteArray::fromBase64(settings.value(SettingsGroupPath + "/" + SettingsKeyOAuthToken).toByteArray()));
-    setOAuthToken(token);
-
     setBroadcastLink(settings.value(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedChannel).toString());
 
     QFile fileBadges(":/resources/twitch-global-badges-20210728.json");
@@ -210,7 +208,7 @@ ChatService::ConnectionStateType Twitch::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!_info.oauthToken.isEmpty() && !_info.channelLogin.isEmpty())
+    else if (!oauthToken.get().isEmpty() && !_info.channelLogin.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -227,7 +225,7 @@ QString Twitch::getStateDescription() const
             return tr("Channel not specified");
         }
 
-        if (_info.oauthToken.isEmpty())
+        if (oauthToken.get().isEmpty())
         {
             return tr("OAuth token not specified");
         }
@@ -314,23 +312,23 @@ AxelChat::TwitchInfo Twitch::getInfo() const
     return _info;
 }
 
-void Twitch::setOAuthToken(QString token)
+void Twitch::onParameterChanged(Parameter& parameter)
 {
-    if (token.startsWith("oauth:", Qt::CaseSensitivity::CaseInsensitive))
-    {
-        token = token.mid(6);
-    }
+    Setting<QString>& setting = *parameter.setting;
 
-    if (_info.oauthToken != token)
+    if (&setting == &oauthToken)
     {
-        _info.oauthToken = token;
-
-        settings.setValue(SettingsGroupPath + "/" + SettingsKeyOAuthToken, _info.oauthToken.toUtf8().toBase64());
+        QString token = parameter.setting->get();
+        if (token.startsWith("oauth:", Qt::CaseSensitivity::CaseInsensitive))
+        {
+            token = token.mid(6);
+            setting.set(token);
+        }
 
         reconnect();
-
-        emit stateChanged();
     }
+
+    emit stateChanged();
 }
 
 void Twitch::sendIRCMessage(const QString &message)
@@ -894,7 +892,7 @@ void Twitch::requestUserInfo(const QString& login)
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
     request.setRawHeader("Client-ID", ApplicationClientID.toUtf8());
-    request.setRawHeader("Authorization", QByteArray("Bearer ") + _info.oauthToken.toUtf8());
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + oauthToken.get().toUtf8());
     QNetworkReply* reply = network.get(request);
     if (!reply)
     {
@@ -950,7 +948,7 @@ void Twitch::requestStreamInfo(const QString &login)
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
     request.setRawHeader("Client-ID", ApplicationClientID.toUtf8());
-    request.setRawHeader("Authorization", QByteArray("Bearer ") + _info.oauthToken.toUtf8());
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + oauthToken.get().toUtf8());
     QNetworkReply* reply = network.get(request);
     if (!reply)
     {

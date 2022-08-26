@@ -10,15 +10,14 @@ template<typename T>
 class Setting
 {
 public:
-    Setting(QSettings& settings_, const QString& key_, const QString& name_ = QString(), const T& defaultValue = T())
+    Setting(QSettings& settings_, const QString& key_, const T& defaultValue = T())
         : settings(settings_)
         , key(key_)
-        , name(name_)
         , value(defaultValue)
     {
         bool loaded = false;
 
-        if (settings.contains(key))
+        if (!key.isEmpty() && settings.contains(key))
         {
             const QVariant variant = settings.value(key);
             if (variant.canConvert<T>())
@@ -45,6 +44,11 @@ public:
 
     bool set(const T& value_)
     {
+        if (key.isEmpty())
+        {
+            return false;
+        }
+
         if (value_ == value)
         {
             return false;
@@ -56,15 +60,14 @@ public:
         return true;
     }
 
-    inline const QString& getName() const
+    inline const QString& getKey() const
     {
-        return name;
+        return key;
     }
 
 private:
     QSettings& settings;
     const QString key;
-    const QString name;
     T value;
 };
 

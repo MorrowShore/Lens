@@ -71,10 +71,10 @@ OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath
     : QObject(parent)
     , network(network_)
     , messagesModel(messagesModel_)
-    , enabled(settings, settingsGroupPath + "/enabled", tr("Enabled"), false)
-    , outputDirectory(settings, settingsGroupPath + "/output_folder", tr("Output folder"), standardOutputFolder())
+    , enabled(settings, settingsGroupPath + "/enabled", false)
+    , outputDirectory(settings, settingsGroupPath + "/output_folder", standardOutputFolder())
     , youTubeLastMessageId(settings, settingsGroupPath + "/youtube_last_saved_message_id")
-    , codec(settings, settingsGroupPath + "/codec", tr("Codec"), OutputToFileCodec::UTF8Codec)
+    , codec(settings, settingsGroupPath + "/codec", OutputToFileCodec::UTF8Codec)
 {
     reinit(true);
 }

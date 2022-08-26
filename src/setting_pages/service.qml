@@ -158,45 +158,64 @@ ScrollView {
             {
                 var row = Qt.createQmlObject("import QtQuick 2.0; Row { spacing: 6 }", column)
 
-                Qt.createQmlObject("
-                    import QtQuick 2.0
-                    import QtQuick.Controls 2.15
-                    import QtQuick.Controls.Material 2.12
+                var type = chatService.getParameterType(i)
+                if (type === Global._StringParameterType)
+                {
+                    Qt.createQmlObject("
+                        import QtQuick 2.0
+                        import QtQuick.Controls 2.15
+                        import QtQuick.Controls.Material 2.12
 
-                    Label {
-                        text: \"" + chatService.getParameterName(i) + ":\"
-                        font.pixelSize: 20
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.bold: true
-                        color: \"" + Material.accentColor + "\"
-                    }", row)
+                        Label {
+                            text: chatService.getParameterName(" + String("%1").arg(i) + ") + \":\"
+                            font.pixelSize: 20
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.bold: true
+                            color: \"" + Material.accentColor + "\"
+                        }", row)
 
-                Qt.createQmlObject("
-                    import QtQuick 2.0
-                    import QtQuick.Controls 2.15
-                    import QtQuick.Controls.Material 2.12
-                    import AxelChat.ChatService 1.0
-                    import \"../my_components\" as MyComponents
+                    Qt.createQmlObject("
+                        import QtQuick 2.0
+                        import QtQuick.Controls 2.15
+                        import QtQuick.Controls.Material 2.12
+                        import AxelChat.ChatService 1.0
+                        import \"../my_components\" as MyComponents
 
-                    MyComponents.MyTextField {
-                        width: 400
+                        MyComponents.MyTextField {
+                            width: 400
+                            anchors.verticalCenter: parent.verticalCenter
 
-                        Component.onCompleted: {
-                            text = chatService.getParameterValue(" + String("%1").arg(i) + ")
+                            Component.onCompleted: {
+                                text = chatService.getParameterValue(" + String("%1").arg(i) + ")
+                            }
+
+                            onTextChanged: {
+                                chatService.setParameterValue(" + String("%1").arg(i) + ", text)
+                            }
                         }
+                        ", row)
+                }
+                else if (type === Global._ButtonUrlParameterType)
+                {
+                    Qt.createQmlObject("
+                        import QtQuick 2.0
+                        import QtQuick.Controls 2.15
+                        import QtQuick.Controls.Material 2.12
 
-                        onTextChanged: {
-                            chatService.setParameterValue(" + String("%1").arg(i) + ", text)
-                        }
-                    }
-                    ", row)
+                        Button {
+                            text: chatService.getParameterName(" + String("%1").arg(i) + ")
+                            anchors.verticalCenter: parent.verticalCenter
+                            display: AbstractButton.TextBesideIcon
 
-                /*var component = Qt.createComponent("../my_components/MyTextField.qml");
-                var field = component.createObject(row);
-                field.width = 400
-                field.text = chatService.getParameterValue(i)*/
-
-
+                            onClicked: {
+                                Qt.openUrlExternally(chatService.getParameterValue(" + String("%1").arg(i) + "))
+                            }
+                        }", row)
+                }
+                else
+                {
+                    console.log("Unknown parameter type ", type)
+                }
             }
         }
     }
