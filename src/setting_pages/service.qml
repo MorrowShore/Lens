@@ -171,10 +171,32 @@ ScrollView {
                         color: \"" + Material.accentColor + "\"
                     }", row)
 
-                var component = Qt.createComponent("../my_components/MyTextField.qml");
+                Qt.createQmlObject("
+                    import QtQuick 2.0
+                    import QtQuick.Controls 2.15
+                    import QtQuick.Controls.Material 2.12
+                    import AxelChat.ChatService 1.0
+                    import \"../my_components\" as MyComponents
+
+                    MyComponents.MyTextField {
+                        width: 400
+
+                        Component.onCompleted: {
+                            text = chatService.getParameterValue(" + String("%1").arg(i) + ")
+                        }
+
+                        onTextChanged: {
+                            chatService.setParameterValue(" + String("%1").arg(i) + ", text)
+                        }
+                    }
+                    ", row)
+
+                /*var component = Qt.createComponent("../my_components/MyTextField.qml");
                 var field = component.createObject(row);
                 field.width = 400
-                field.text = chatService.getParameterValue(i)
+                field.text = chatService.getParameterValue(i)*/
+
+
             }
         }
     }

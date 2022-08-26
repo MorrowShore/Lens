@@ -461,8 +461,9 @@
     <name>Twitch</name>
     <message>
         <location filename="chat_services/twitch.cpp" line="78"/>
-        <source>Token</source>
-        <translation>Токен</translation>
+        <source>OAuth token</source>
+        <oldsource>Token</oldsource>
+        <translation>OAuth-токен</translation>
     </message>
     <message>
         <location filename="chat_services/twitch.cpp" line="141"/>

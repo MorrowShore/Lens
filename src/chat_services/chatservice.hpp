@@ -128,6 +128,8 @@ public:
             return parameters[index].getName();
         }
 
+        qWarning() << "parameter index" << index << "not valid";
+
         return QString();
     }
 
@@ -138,7 +140,22 @@ public:
             return parameters[index].get();
         }
 
+        qWarning() << "parameter index" << index << "not valid";
+
         return QString();
+    }
+
+    Q_INVOKABLE void setParameterValue(int index, const QString& value)
+    {
+        if (index < parameters.count())
+        {
+            parameters[index].set(value);
+            emit parameterChanged(index);
+        }
+        else
+        {
+            qWarning() << "parameter index" << index << "not valid";
+        }
     }
 
 #ifdef QT_QUICK_LIB
@@ -154,6 +171,7 @@ signals:
     void connected(QString name);
     void disconnected(QString name);
     void avatarDiscovered(const QString& channelId, const QUrl& url);
+    void parameterChanged(int index);
 
 protected:
     QList<Setting<QString>> parameters;
