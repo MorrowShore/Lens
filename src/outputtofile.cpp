@@ -2,6 +2,8 @@
 #include "models/chatauthor.h"
 #include "models/chatmessage.h"
 #include "chat_services/youtube.hpp"
+#include "chat_services/twitch.hpp"
+#include "chat_services/goodgame.h"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>
@@ -795,23 +797,25 @@ void OutputToFile::writeInfo()
     _iniCurrentInfo->setValue("twitch/viewers_count", _twitchInfo.viewers);
 }
 
-void OutputToFile::setYouTubeInfo(const AxelChat::YouTubeInfo &youTubeCurrent)
+void OutputToFile::updateServiceInfo(ChatService *service)
 {
-    _youTubeInfo = youTubeCurrent;
+    switch (service->getServiceType())
+    {
+    case ChatService::ServiceType::Unknown:
+    case ChatService::ServiceType::Software:
+        break;
 
-    reinit(false);
-}
+    case ChatService::ServiceType::YouTube:
+        _youTubeInfo = qobject_cast<YouTube*>(service)->getInfo();
+        break;
 
-void OutputToFile::setTwitchInfo(const AxelChat::TwitchInfo &twitchCurrent)
-{
-    _twitchInfo = twitchCurrent;
-
-    reinit(false);
-}
-
-void OutputToFile::setGoodGameInfo(const AxelChat::GoodGameInfo &goodGameCurrent)
-{
-    _goodGameInfo = goodGameCurrent;
+    case ChatService::ServiceType::Twitch:
+        _twitchInfo = qobject_cast<Twitch*>(service)->getInfo();
+        break;
+    case ChatService::ServiceType::GoodGame:
+        _goodGameInfo = qobject_cast<GoodGame*>(service)->getInfo();
+        break;
+    }
 
     reinit(false);
 }

@@ -207,13 +207,10 @@ void ChatHandler::clearMessages()
 
 void ChatHandler::onStateChanged()
 {
-    if (YouTube* youTube = qobject_cast<YouTube*>(sender()); youTube)
+    ChatService* service = qobject_cast<ChatService*>(sender());
+    if (service)
     {
-        outputToFile.setYouTubeInfo(youTube->getInfo());
-    }
-    else if (Twitch* twitch = qobject_cast<Twitch*>(sender()); twitch)
-    {
-        outputToFile.setTwitchInfo(twitch->getInfo());
+        outputToFile.updateServiceInfo(service);
     }
 
     emit viewersTotalCountChanged();

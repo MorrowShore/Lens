@@ -314,11 +314,11 @@ AxelChat::TwitchInfo Twitch::getInfo() const
 
 void Twitch::onParameterChanged(Parameter& parameter)
 {
-    Setting<QString>& setting = *parameter.setting;
+    Setting<QString>& setting = *parameter.getSetting();
 
     if (&setting == &oauthToken)
     {
-        QString token = parameter.setting->get();
+        QString token = parameter.getSetting()->get();
         if (token.startsWith("oauth:", Qt::CaseSensitivity::CaseInsensitive))
         {
             token = token.mid(6);

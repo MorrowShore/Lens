@@ -13,6 +13,14 @@ class GoodGame : public ChatService
 {
     Q_OBJECT
 public:
+    struct Info {
+        bool connected = false;
+        double protocolVersion = 0;
+
+        QString channelName;
+        uint64_t channelId = 0;
+    };
+
     explicit GoodGame(QSettings& settings, const QString& SettingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
     ~GoodGame();
 
@@ -22,6 +30,7 @@ public:
     void reconnect() override;
     void setBroadcastLink(const QString &link) override;
     QString getBroadcastLink() const override;
+    const Info& getInfo() const { return _info; }
 
 signals:
 
@@ -41,7 +50,7 @@ private:
     const QString SettingsGroupPath;
     QNetworkAccessManager& network;
 
-    AxelChat::GoodGameInfo _info;
+    Info _info;
     QString _lastConnectedChannelName;
 
     QTimer _timerReconnect;

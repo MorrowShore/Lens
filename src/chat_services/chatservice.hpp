@@ -126,7 +126,7 @@ public:
     {
         if (index < parameters.count())
         {
-            return parameters[index].name;
+            return parameters[index].getName();
         }
 
         qWarning() << "parameter index" << index << "not valid";
@@ -138,7 +138,7 @@ public:
     {
         if (index < parameters.count())
         {
-            return parameters[index].setting->get();
+            return parameters[index].getSetting()->get();
         }
 
         qWarning() << "parameter index" << index << "not valid";
@@ -150,7 +150,7 @@ public:
     {
         if (index < parameters.count())
         {
-            return (int)parameters[index].type;
+            return (int)parameters[index].getType();
         }
 
         qWarning() << "parameter index" << index << "not valid";
@@ -162,7 +162,7 @@ public:
     {
         if (index < parameters.count())
         {
-            const std::set<Parameter::Flag>& flags = parameters[index].flags;
+            const std::set<Parameter::Flag>& flags = parameters[index].getFlags();
 
             return flags.find((Parameter::Flag)flag) != flags.end();
         }
@@ -176,7 +176,7 @@ public:
     {
         if (index < parameters.count())
         {
-            if (parameters[index].setting->set(value))
+            if (parameters[index].getSetting()->set(value))
             {
                 onParameterChanged(parameters[index]);
                 emit stateChanged();
@@ -223,10 +223,16 @@ protected:
             , flags(flags_)
         {}
 
+        Setting<QString>* getSetting() const { return setting; }
+        QString getName() const { return name; }
+        Type getType() const { return type; }
+        const std::set<Flag>& getFlags() const { return flags; }
+
+    private:
         Setting<QString>* setting;
-        const QString name;
-        const Type type;
-        const std::set<Flag> flags;
+        QString name;
+        Type type;
+        std::set<Flag> flags;
     };
 
     virtual void onParameterChanged(Parameter& parameter)

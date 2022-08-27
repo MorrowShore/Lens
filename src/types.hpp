@@ -36,12 +36,6 @@ struct TwitchInfo {
     int viewers = -1;
 };
 
-struct GoodGameInfo {
-    bool connected = false;
-    QString channelId;
-    double protocolVersion = 0;
-};
-
 static QString simplifyUrl(const QString& url)
 {
     QString withoutHttpsWWW = url;

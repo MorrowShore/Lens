@@ -7,6 +7,7 @@
 #include "types.hpp"
 #include "chat_services/chatservice.hpp"
 #include "setting.h"
+#include "chat_services/goodgame.h"
 
 class OutputToFile : public QObject
 {
@@ -32,9 +33,7 @@ public:
     QString getOutputFolder() const;
     void resetSettings();
 
-    void setYouTubeInfo(const AxelChat::YouTubeInfo& youTubeCurrent);
-    void setTwitchInfo(const AxelChat::TwitchInfo& twitchCurrent);
-    void setGoodGameInfo(const AxelChat::GoodGameInfo& goodGameCurrent);
+    void updateServiceInfo(ChatService* service);
 
     Q_INVOKABLE bool setCodecOption(int option, bool applyWithoutReset); // return true if need restart
     Q_INVOKABLE int codecOption() const;
@@ -82,7 +81,7 @@ private:
 
     AxelChat::YouTubeInfo _youTubeInfo;
     AxelChat::TwitchInfo _twitchInfo;
-    AxelChat::GoodGameInfo _goodGameInfo;
+    GoodGame::Info _goodGameInfo;
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
 
