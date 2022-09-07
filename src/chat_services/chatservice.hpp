@@ -148,7 +148,7 @@ public:
             return parameters[index].getName();
         }
 
-        qWarning() << "parameter index" << index << "not valid";
+        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
 
         return QString();
     }
@@ -160,7 +160,7 @@ public:
             return parameters[index].getSetting()->get();
         }
 
-        qWarning() << "parameter index" << index << "not valid";
+        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
 
         return QString();
     }
@@ -172,7 +172,7 @@ public:
             return (int)parameters[index].getType();
         }
 
-        qWarning() << "parameter index" << index << "not valid";
+        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
 
         return (int)Parameter::Type::Unknown;
     }
@@ -186,7 +186,7 @@ public:
             return flags.find((Parameter::Flag)flag) != flags.end();
         }
 
-        qWarning() << "parameter index" << index << "not valid";
+        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
 
         return false;
     }
@@ -203,7 +203,7 @@ public:
         }
         else
         {
-            qWarning() << "parameter index" << index << "not valid";
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
         }
     }
 

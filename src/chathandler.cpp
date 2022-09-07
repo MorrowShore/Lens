@@ -47,7 +47,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     connect(twitch, &Twitch::avatarDiscovered, this, &ChatHandler::onAvatarDiscovered);
     addService(twitch);
 
-    addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
+    //addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
 }
 
 void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors)

@@ -89,7 +89,6 @@ ScrollView {
         }
 
         Row {
-            visible: chatService.enabled
             spacing: 6
 
             Label {
@@ -133,7 +132,6 @@ ScrollView {
         }
 
         Row {
-            visible: chatService.enabled
             spacing: 6
 
             Button {
