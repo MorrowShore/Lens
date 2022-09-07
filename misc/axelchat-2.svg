@@ -9,6 +9,9 @@
    id="svg8"
    sodipodi:docname="axelchat-2.svg"
    inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   inkscape:export-filename="D:\Projects\AxelChat\src\resources\images\axelchat-2.png"
+   inkscape:export-xdpi="99.089447"
+   inkscape:export-ydpi="99.089447"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -25,25 +28,25 @@
        x="-0.022111371"
        y="7.9948163">
       <meshrow
-         id="meshrow5132">
+         id="meshrow13775">
         <meshpatch
-           id="meshpatch5134">
+           id="meshpatch13777">
           <stop
              path="c 82.6617,0  165.323,0  247.985,0"
              style="stop-color:#2844ba;stop-opacity:1"
-             id="stop5136" />
+             id="stop13779" />
           <stop
-             path="c 0,82.6728  0,165.346  0,248.018"
-             style="stop-color:#2ed3ff;stop-opacity:1"
-             id="stop5138" />
+             path="c -2.84217e-14,82.6728  0.0370998,165.333  0.0371067,248.005"
+             style="stop-color:#4900df;stop-opacity:1"
+             id="stop13781" />
           <stop
-             path="c -82.6617,0  -165.323,0  -247.985,0"
+             path="c -82.6617,-0.025874  -165.36,-0.0155134  -248.022,-0.0155134"
              style="stop-color:#d344ba;stop-opacity:1"
-             id="stop5140" />
+             id="stop13783" />
           <stop
-             path="c 0,-82.6728  0,-165.346  0,-248.018"
+             path="c 0,-82.6728  0,-165.346  -0.0001067,-247.99"
              style="stop-color:#2800ba;stop-opacity:1"
-             id="stop5142" />
+             id="stop13785" />
         </meshpatch>
       </meshrow>
     </meshgradient>
@@ -55,9 +58,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="205"
-     inkscape:cy="-11.785714"
+     inkscape:zoom="1.979899"
+     inkscape:cx="85.610428"
+     inkscape:cy="83.085047"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -96,8 +99,9 @@
        id="path1370"
        clip-path="none"
        style="fill:url(#meshgradient5130);fill-opacity:1;stroke:none;stroke-width:4.85669;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 127.45117 7.9960938 C 93.03671 8.144397 59.091733 21.201248 35.632812 45.931641 C -2.8628631 86.513789 -0.80901868 145.55504 39.746094 183.99805 C 40.81443 185.01073 -1.1217337 255.0166 0 256 C 2.3825747 256.90478 84.964507 210.86862 87.376953 211.62891 C 142.44065 228.9828 204.4047 208.96424 233.03516 163.56641 C 262.91997 116.1796 246.67901 56.691808 195.53906 26.216797 C 174.76346 13.836324 150.99791 7.8946231 127.45117 7.9960938 z M 104 72 L 176 112 L 104 152 L 104 72 z "
-       transform="matrix(0.26458333,0,0,0.26458333,0,229.26668)" />
+       d="M 127.45117,7.9960938 C 93.03671,8.144397 59.091733,21.201248 35.632812,45.931641 -2.8628631,86.513789 -0.80901868,145.55504 39.746094,183.99805 40.81443,185.01073 -1.1217337,255.0166 0,256 2.3825747,256.90478 84.964507,210.86862 87.376953,211.62891 142.44065,228.9828 204.4047,208.96424 233.03516,163.56641 262.91997,116.1796 246.67901,56.691808 195.53906,26.216797 174.76346,13.836324 150.99791,7.8946231 127.45117,7.9960938 Z M 104,71.999997 176,112 104,152 Z"
+       transform="matrix(0.26458333,0,0,0.26458333,0,229.26668)"
+       sodipodi:nodetypes="sssccssscccc" />
   </g>
   <script
      id="mesh_polyfill"
