@@ -207,6 +207,12 @@ void ChatHandler::clearMessages()
 
 void ChatHandler::onStateChanged()
 {
+    ChatService* service = dynamic_cast<ChatService*>(sender());
+    if (service)
+    {
+        outputToFile.writeServiceState(service);
+    }
+
     emit viewersTotalCountChanged();
 }
 

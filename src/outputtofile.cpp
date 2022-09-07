@@ -84,7 +84,7 @@ OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath
 
 OutputToFile::~OutputToFile()
 {
-    writeSoftwareState(false);
+    writeApplicationState(false);
 
     if (_fileMessages && _fileMessages->isOpen())
     {
@@ -736,15 +736,10 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
     _fileMessages               = new QFile(_sessionFolder + "/" + MessagesFileName,       this);
     _fileMessagesCount          = new QFile(_sessionFolder + "/" + MessagesCountFileName,  this);
 
-    writeSoftwareState(true);
-
-    for (const ChatService* service : services)
-    {
-        writeServiceState(service);
-    }
+    writeApplicationState(true);
 }
 
-void OutputToFile::writeSoftwareState(const bool started) const
+void OutputToFile::writeApplicationState(const bool started) const
 {
     if (!enabled.get())
     {
@@ -769,11 +764,15 @@ void OutputToFile::writeSoftwareState(const bool started) const
         return;
     }
 
-    file.write("[software]\n");
+    file.write("[application]\n");
     file.write(QString("started=%1\n").arg(started ? "true" : "false").toUtf8());
     file.write(QString("version=%1\n").arg(QCoreApplication::applicationVersion()).toUtf8());
     file.write(QString("session_directory=%1\n").arg(_sessionFolder).toUtf8());
 
+    for (const ChatService* service : services)
+    {
+        writeServiceState(service);
+    }
 }
 
 void OutputToFile::writeServiceState(const ChatService* service) const

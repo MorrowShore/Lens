@@ -42,6 +42,7 @@ public:
     QString getAuthorDirectory(const ChatService::ServiceType serviceType, const QString& authorId) const;
     QString getServiceDirectory(const ChatService::ServiceType serviceType) const;
     void writeAuthors(const QList<ChatAuthor*>& authors);
+    void writeServiceState(const ChatService* service) const;
 
 signals:
     void outputFolderChanged();
@@ -59,8 +60,7 @@ private:
 
     void reinit(bool forceUpdateOutputFolder);
 
-    void writeSoftwareState(const bool started) const;
-    void writeServiceState(const ChatService* service) const;
+    void writeApplicationState(const bool started) const;
 
     QNetworkAccessManager& network;
     const ChatMessagesModel& messagesModel;
