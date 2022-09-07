@@ -1,13 +1,12 @@
 #ifndef OUTPUTTOFILE_HPP
 #define OUTPUTTOFILE_HPP
 
+#include "types.hpp"
+#include "setting.h"
+#include "models/chatmessagesmodle.hpp"
+#include "chat_services/chatservice.hpp"
 #include <QObject>
 #include <QSettings>
-#include "models/chatmessagesmodle.hpp"
-#include "types.hpp"
-#include "chat_services/chatservice.hpp"
-#include "setting.h"
-#include "chat_services/goodgame.h"
 
 class OutputToFile : public QObject
 {
@@ -32,8 +31,6 @@ public:
     QString standardOutputFolder() const;
     QString getOutputFolder() const;
     void resetSettings();
-
-    void updateServiceInfo(ChatService* service);
 
     Q_INVOKABLE bool setCodecOption(int option, bool applyWithoutReset); // return true if need restart
     Q_INVOKABLE int codecOption() const;
@@ -79,10 +76,6 @@ private:
     Setting<QString> youTubeLastMessageId;
 
     Setting<OutputToFileCodec> codec;
-
-    AxelChat::YouTubeInfo _youTubeInfo;
-    AxelChat::TwitchInfo _twitchInfo;
-    GoodGame::Info _goodGameInfo;
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
 

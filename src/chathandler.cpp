@@ -207,12 +207,6 @@ void ChatHandler::clearMessages()
 
 void ChatHandler::onStateChanged()
 {
-    ChatService* service = qobject_cast<ChatService*>(sender());
-    if (service)
-    {
-        outputToFile.updateServiceInfo(service);
-    }
-
     emit viewersTotalCountChanged();
 }
 

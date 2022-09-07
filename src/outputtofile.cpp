@@ -827,26 +827,3 @@ void OutputToFile::writeServiceState(const ChatService* service) const
         break;
     }
 }
-
-void OutputToFile::updateServiceInfo(ChatService *service)
-{
-    switch (service->getServiceType())
-    {
-    case ChatService::ServiceType::Unknown:
-    case ChatService::ServiceType::Software:
-        break;
-
-    case ChatService::ServiceType::YouTube:
-        _youTubeInfo = qobject_cast<YouTube*>(service)->getInfo();
-        break;
-
-    case ChatService::ServiceType::Twitch:
-        _twitchInfo = qobject_cast<Twitch*>(service)->getInfo();
-        break;
-    case ChatService::ServiceType::GoodGame:
-        _goodGameInfo = qobject_cast<GoodGame*>(service)->getInfo();
-        break;
-    }
-
-    reinit(false);
-}
