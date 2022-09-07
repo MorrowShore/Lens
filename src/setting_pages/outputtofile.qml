@@ -12,12 +12,15 @@ ScrollView {
     contentHeight: column.implicitHeight
     contentWidth: column.implicitWidth
 
-    function urlToFilename(url) { // ToDo: is running too slowly
-        var path = url.toString();
-        // remove prefixed "file:///"
-        path = path.replace(/^(file:\/{3})/,"");
-        // unescape html codes like '%23' for '#'
-        return decodeURIComponent(path);
+    function urlToFilename(url)
+    {
+        var path = url.toString()
+        if (path.startsWith("file:///"))
+        {
+            path = path.substring(8)
+        }
+
+        return path;
     }
 
     Column {

@@ -302,8 +302,8 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
         }
     }
 
-    fileName = avatarsDirectory + "/" + fileName;
-    downloadImage(url, fileName, ImageFileFormat, avatarHeight, true);
+    const QString fullFileName = avatarsDirectory + "/" + fileName;
+    downloadImage(url, fullFileName, ImageFileFormat, avatarHeight, true);
 
     QFile file(authorDirectory + "/avatar.txt");
     if (file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
@@ -585,7 +585,7 @@ void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
             file.write("name=" + prepare(author->getName()) + "\n");
             file.write("id=" + prepare(author->getId()) + "\n");
             file.write("service=" + prepare(ChatService::getServiceTypeId(author->getServiceType())) + "\n");
-            file.write("avatar_url=" + prepare(convertUrlForFileName(author->getAvatarUrl(), ImageFileFormat)) + "\n");
+            file.write("avatar_url=" + prepare(author->getAvatarUrl().toString()) + "\n");
             file.write("page_url=" + prepare(author->getPageUrl().toString()) + "\n");
             //ToDo: file.write("last_message_at=" +  + "\n");
 
