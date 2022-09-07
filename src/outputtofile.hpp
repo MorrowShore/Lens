@@ -24,7 +24,7 @@ public:
         ANSIWithUTF8Codec = 200
     };
 
-    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const ChatMessagesModel& messages, QObject *parent = nullptr);
+    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const ChatMessagesModel& messages, const QList<ChatService*>& services, QObject *parent = nullptr);
     ~OutputToFile();
 
     bool isEnabled() const;
@@ -61,11 +61,13 @@ private:
     QByteArray prepare(const QString& text);
 
     void reinit(bool forceUpdateOutputFolder);
-    void writeStartupInfo(const QString& messagesFolder);
-    void writeInfo();
+
+    void writeSoftwareState(const bool started) const;
+    void writeServiceState(const ChatService* service) const;
 
     QNetworkAccessManager& network;
     const ChatMessagesModel& messagesModel;
+    const QList<ChatService*>& services;
 
     Setting<bool> enabled;
     Setting<QString> outputDirectory;
@@ -73,7 +75,6 @@ private:
 
     QFile* _fileMessagesCount           = nullptr;
     QFile* _fileMessages                = nullptr;
-    QSettings* _iniCurrentInfo          = nullptr;
 
     Setting<QString> youTubeLastMessageId;
 

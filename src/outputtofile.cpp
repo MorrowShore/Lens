@@ -69,10 +69,11 @@ QString removePostfix(const QString& string, const QString& postfix, const Qt::C
 
 }
 
-OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, QObject *parent)
+OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, const QList<ChatService*>& services_, QObject *parent)
     : QObject(parent)
     , network(network_)
     , messagesModel(messagesModel_)
+    , services(services_)
     , enabled(settings, settingsGroupPath + "/enabled", false)
     , outputDirectory(settings, settingsGroupPath + "/output_folder", standardOutputFolder())
     , youTubeLastMessageId(settings, settingsGroupPath + "/youtube_last_saved_message_id")
@@ -83,13 +84,7 @@ OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath
 
 OutputToFile::~OutputToFile()
 {
-    if (enabled.get())
-    {
-        if (_iniCurrentInfo)
-        {
-            _iniCurrentInfo->setValue("software/started", false);
-        }
-    }
+    writeSoftwareState(false);
 
     if (_fileMessages && _fileMessages->isOpen())
     {
@@ -741,60 +736,96 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
     _fileMessages               = new QFile(_sessionFolder + "/" + MessagesFileName,       this);
     _fileMessagesCount          = new QFile(_sessionFolder + "/" + MessagesCountFileName,  this);
 
-    //Current
-    if (_iniCurrentInfo)
+    writeSoftwareState(true);
+
+    for (const ChatService* service : services)
     {
-        _iniCurrentInfo->sync();
-        _iniCurrentInfo->deleteLater();
-        _iniCurrentInfo = nullptr;
-    }
-
-    _iniCurrentInfo = new QSettings(outputDirectory.get() + "/current.ini", QSettings::IniFormat, this);
-    _iniCurrentInfo->setIniCodec("UTF-8");
-
-    if (enabled.get())
-    {
-        _iniCurrentInfo->setValue("software/started", true);
-    }
-
-    writeStartupInfo(_sessionFolder);
-    writeInfo();
-}
-
-void OutputToFile::writeStartupInfo(const QString& messagesFolder)
-{
-    if (enabled.get())
-    {
-        _iniCurrentInfo->setValue("software/version",                   QCoreApplication::applicationVersion());
-
-        _iniCurrentInfo->setValue("software/current_messages_folder",   messagesFolder);
-
-        _iniCurrentInfo->setValue("software/startup_time",              timeToString(_startupDateTime));
+        writeServiceState(service);
     }
 }
 
-void OutputToFile::writeInfo()
+void OutputToFile::writeSoftwareState(const bool started) const
 {
     if (!enabled.get())
     {
         return;
     }
 
-    _iniCurrentInfo->setValue("youtube/broadcast_connected", _youTubeInfo.broadcastConnected);
-    _iniCurrentInfo->setValue("youtube/broadcast_id", _youTubeInfo.broadcastId);
-    _iniCurrentInfo->setValue("youtube/broadcast_user_specified", _youTubeInfo.userSpecified);
-    _iniCurrentInfo->setValue("youtube/broadcast_url", _youTubeInfo.broadcastUrl.toString());
-    _iniCurrentInfo->setValue("youtube/broadcast_chat_url", _youTubeInfo.broadcastChatUrl.toString());
-    _iniCurrentInfo->setValue("youtube/broadcast_control_panel_url", _youTubeInfo.controlPanelUrl.toString());
-    _iniCurrentInfo->setValue("youtube/viewers_count", _youTubeInfo.viewers);
+    const QString pathDir = outputDirectory.get();
 
-    _iniCurrentInfo->setValue("twitch/broadcast_connected", _twitchInfo.connected);
-    _iniCurrentInfo->setValue("twitch/channel_name", _twitchInfo.channelLogin);
-    _iniCurrentInfo->setValue("twitch/user_specified", _twitchInfo.userSpecifiedChannel);
-    _iniCurrentInfo->setValue("twitch/channel_url", _twitchInfo.channelUrl.toString());
-    _iniCurrentInfo->setValue("twitch/chat_url", _twitchInfo.chatUrl.toString());
-    _iniCurrentInfo->setValue("twitch/control_panel_url", _twitchInfo.controlPanelUrl.toString());
-    _iniCurrentInfo->setValue("twitch/viewers_count", _twitchInfo.viewers);
+    QDir dir(pathDir);
+    if (!dir.exists())
+    {
+        if (!dir.mkpath(pathDir))
+        {
+            qCritical() << Q_FUNC_INFO << ": failed to make path" << pathDir;
+        }
+    }
+
+    QFile file(pathDir + "/state.ini");
+    if (!file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
+    {
+        qCritical() << Q_FUNC_INFO << ": failed to save file" << file.fileName();
+        return;
+    }
+
+    file.write("[software]\n");
+    file.write(QString("started=%1\n").arg(started ? "true" : "false").toUtf8());
+    file.write(QString("version=%1\n").arg(QCoreApplication::applicationVersion()).toUtf8());
+    file.write(QString("session_directory=%1\n").arg(_sessionFolder).toUtf8());
+
+}
+
+void OutputToFile::writeServiceState(const ChatService* service) const
+{
+    if (!enabled.get())
+    {
+        return;
+    }
+
+    const QString pathDir = getServiceDirectory(service->getServiceType());
+
+    QDir dir(pathDir);
+    if (!dir.exists())
+    {
+        if (!dir.mkpath(pathDir))
+        {
+            qCritical() << Q_FUNC_INFO << ": failed to make path" << pathDir;
+        }
+    }
+
+    QFile file(pathDir + "/state.ini");
+    if (!file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
+    {
+        qCritical() << Q_FUNC_INFO << ": failed to save file" << file.fileName();
+        return;
+    }
+
+    file.write("[service]\n");
+    file.write(QString("service_type_id=%1\n").arg(ChatService::getServiceTypeId(service->getServiceType())).toUtf8());
+    file.write(QString("connected=%1\n").arg(service->getConnectionStateType() == ChatService::ConnectionStateType::Connected ? "true" : "false").toUtf8());
+    file.write(QString("stream_url=%1\n").arg(service->getBroadcastUrl().toString()).toUtf8());
+    file.write(QString("chat_url=%1\n").arg(service->getChatUrl().toString()).toUtf8());
+    file.write(QString("panel_url=%1\n").arg(service->getControlPanelUrl().toString()).toUtf8());
+    file.write(QString("viewers_count=%1\n").arg(service->getViewersCount()).toUtf8());
+
+    switch (service->getServiceType())
+    {
+    case ChatService::ServiceType::Unknown:
+    case ChatService::ServiceType::Software:
+        break;
+
+    case ChatService::ServiceType::YouTube:
+        file.write(QString("youtube_broadcast_id=%1\n").arg(static_cast<const YouTube*>(service)->getInfo().broadcastId).toUtf8());
+        break;
+
+    case ChatService::ServiceType::Twitch:
+        file.write(QString("twitch_channel=%1\n").arg(static_cast<const Twitch*>(service)->getInfo().channelLogin).toUtf8());
+        break;
+
+    case ChatService::ServiceType::GoodGame:
+        break;
+    }
 }
 
 void OutputToFile::updateServiceInfo(ChatService *service)

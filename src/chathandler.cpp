@@ -25,7 +25,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     : QObject(parent)
     , settings(settings_)
     , network(network_)
-    , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel)
+    , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, services)
     , bot(settings, SettingsGroupPath + "/chat_bot")
     , authorQMLProvider(*this, messagesModel, outputToFile)
 {
