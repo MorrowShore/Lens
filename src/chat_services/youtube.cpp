@@ -44,7 +44,7 @@ QByteArray extractDigitsOnly(const QByteArray& data)
 }
 
 YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(ChatService::ServiceType::YouTube, parent)
+    : ChatService(ChatService::ServiceType::YouTube, settings_, settingsGroupPath, parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)
@@ -380,6 +380,11 @@ QString YouTube::getBroadcastLink() const
 
 void YouTube::onTimeoutRequestChat()
 {
+    if (!enabled.get())
+    {
+        return;
+    }
+
     if (_info.broadcastChatUrl.isEmpty())
     {
         return;
@@ -400,6 +405,11 @@ void YouTube::onTimeoutRequestChat()
 
 void YouTube::onReplyChatPage()
 {
+    if (!enabled.get())
+    {
+        return;
+    }
+
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
     {
@@ -468,6 +478,11 @@ void YouTube::onReplyChatPage()
 
 void YouTube::onReplyChannelLivePage()
 {
+    if (!enabled.get())
+    {
+        return;
+    }
+
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
     {

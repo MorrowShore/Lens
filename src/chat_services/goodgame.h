@@ -41,6 +41,7 @@ private slots:
 
     void requestAuth();
     void requestGetChannelHistory();
+    void requestChannelId();
 
 private:
 

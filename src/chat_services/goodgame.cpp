@@ -9,7 +9,7 @@
 #include <QNetworkReply>
 
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(ChatService::ServiceType::GoodGame, parent)
+    : ChatService(ChatService::ServiceType::GoodGame, settings_, settingsGroupPath, parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)
@@ -102,29 +102,16 @@ void GoodGame::requestGetChannelHistory()
     root.insert("type", "get_channel_history");
 
     QJsonObject data;
-    data.insert("channel_id", "191540");
+    data.insert("channel_id", QString("%1").arg(_info.channelId));
 
     root.insert("data", data);
     document.setObject(root);
     sendToWebSocket(document);
 }
 
-void GoodGame::reconnect()
+void GoodGame::requestChannelId()
 {
-    _socket.close();
-
-    //https://goodgame.ru/chat/26624
-
-    _socket.setProxy(network.proxy());
-
-    _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
-}
-
-void GoodGame::setBroadcastLink(const QString &link)
-{
-    // https://goodgame.ru/api/getchannelstatus?id=lepestqchek&fmt=json
-
-    const QString channelName = link.toLower();
+    const QString channelName = _info.channelName;
 
     QNetworkRequest request(QUrl("https://goodgame.ru/api/getchannelstatus?fmt=json&id=" + channelName));
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
@@ -154,9 +141,29 @@ void GoodGame::setBroadcastLink(const QString &link)
 
         if (found)
         {
-
+            _info.channelId = id;
+            requestGetChannelHistory();
         }
     });
+}
+
+void GoodGame::reconnect()
+{
+    _socket.close();
+
+    //https://goodgame.ru/chat/26624
+
+    _socket.setProxy(network.proxy());
+
+    _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
+}
+
+void GoodGame::setBroadcastLink(const QString &link)
+{
+    // https://goodgame.ru/api/getchannelstatus?id=lepestqchek&fmt=json
+
+    const QString channelName = link.toLower(); // TODO
+    _info.channelName = channelName;
 }
 
 QString GoodGame::getBroadcastLink() const
@@ -176,6 +183,12 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
     if (type == "channel_history")
     {
+        if (!_info.connected)
+        {
+            _info.connected = true;
+            emit connected(_info.channelName);
+        }
+
         QList<ChatMessage> messages;
         QList<ChatAuthor> authors;
 
@@ -226,7 +239,9 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     }
     else if (type == "success_auth")
     {
-        _info.channelName = "<123>";
+        requestChannelId();
+
+        /*_info.channelName = "<123>";
         _info.connected = true;
         _lastConnectedChannelName = _info.channelId;
         emit connected(_info.channelName);
@@ -234,7 +249,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
         requestGetChannelHistory();
 
-        qDebug() << "GoodGame connected" << _info.channelId;
+        qDebug() << "GoodGame connected" << _info.channelId;*/
     }
     else
     {
