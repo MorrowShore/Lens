@@ -1,5 +1,5 @@
 #include "youtube.hpp"
-#include "types.hpp"
+#include "utils.hpp"
 #include "models/chatmessagesmodle.hpp"
 #include "models/chatauthor.h"
 #include <QDebug>
@@ -60,8 +60,8 @@ YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetwor
 
 YouTube::~YouTube()
 {
-    _info.broadcastConnected = false;
-    emit disconnected(_info.broadcastId);
+    state.connected = false;
+    emit disconnected(state.streamId);
     emit stateChanged();
 }
 
@@ -163,16 +163,6 @@ void YouTube::printData(const QString &tag, const QByteArray& data)
     qDebug() << "==============================================================================================================================";
 }
 
-QUrl YouTube::getChatUrl() const
-{
-    return _info.broadcastChatUrl;
-}
-
-QUrl YouTube::getControlPanelUrl() const
-{
-    return _info.controlPanelUrl;
-}
-
 QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeight)
 {
     //qDebug("Source URL: " + sourceAvatarUrl.toString().toUtf8());
@@ -237,16 +227,6 @@ QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeigh
     return sourceAvatarUrl;
 }
 
-AxelChat::YouTubeInfo YouTube::getInfo() const
-{
-    return _info;
-}
-
-QUrl YouTube::getBroadcastUrl() const
-{
-    return _info.broadcastUrl;
-}
-
 void YouTube::reconnect()
 {
     const QString link = _info.userSpecified;
@@ -256,11 +236,11 @@ void YouTube::reconnect()
 
 ChatService::ConnectionStateType YouTube::getConnectionStateType() const
 {
-    if (_info.broadcastConnected)
+    if (state.connected)
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!_info.broadcastId.isEmpty())
+    else if (!state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -277,7 +257,7 @@ QString YouTube::getStateDescription() const
             return tr("Broadcast not specified");
         }
 
-        if (_info.broadcastId.isEmpty())
+        if (state.streamId.isEmpty())
         {
             return tr("The broadcast is not correct");
         }
@@ -295,11 +275,6 @@ QString YouTube::getStateDescription() const
     return "<unknown_state>";
 }
 
-int YouTube::getViewersCount() const
-{
-    return _info.viewers;
-}
-
 int YouTube::messagesReceived() const
 {
     return _messagesReceived;
@@ -313,15 +288,15 @@ void YouTube::setBroadcastLink(const QString &link_)
 
     if (_info.userSpecified != link)
     {
-        const bool preConnected = _info.broadcastConnected;
-        const QString preBroadcastId = _info.broadcastId;
+        const bool preConnected = state.connected;
+        const QString preBroadcastId = state.streamId;
 
-        _info = AxelChat::YouTubeInfo();
+        _info = Info();
 
         _badChatReplies = 0;
         _badLivePageReplies = 0;
 
-        _info.broadcastConnected = false;
+        state.connected = false;
 
         _info.userSpecified = link;
 
@@ -347,16 +322,16 @@ void YouTube::setBroadcastLink(const QString &link_)
         }
         else
         {
-            _info.broadcastId = extractBroadcastId(link);
+            state.streamId = extractBroadcastId(link);
         }
 
-        if (!_info.broadcastId.isEmpty())
+        if (!state.streamId.isEmpty())
         {
-            _info.broadcastChatUrl = QUrl(QString("https://www.youtube.com/live_chat?v=%1").arg(_info.broadcastId));
+            state.chatUrl = QUrl(QString("https://www.youtube.com/live_chat?v=%1").arg(state.streamId));
 
-            _info.broadcastUrl = QUrl(QString("https://www.youtube.com/watch?v=%1").arg(_info.broadcastId));
+            state.streamUrl = QUrl(QString("https://www.youtube.com/watch?v=%1").arg(state.streamId));
 
-            _info.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(_info.broadcastId));
+            state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
         }
 
         settings.setValue(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedLink, _info.userSpecified);
@@ -380,12 +355,12 @@ QString YouTube::getBroadcastLink() const
 
 void YouTube::onTimeoutRequestChat()
 {
-    if (_info.broadcastChatUrl.isEmpty())
+    if (state.chatUrl.isEmpty())
     {
         return;
     }
 
-    QNetworkRequest request(_info.broadcastChatUrl);
+    QNetworkRequest request(state.chatUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("accept-language", AcceptLanguageNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
@@ -508,12 +483,12 @@ void YouTube::onReplyChannelLivePage()
 void YouTube::onTimeoutRequestStreamPage()
 {
     //return;//ToDo:
-    if (_info.broadcastUrl.isEmpty())
+    if (state.streamUrl.isEmpty())
     {
         return;
     }
 
-    QNetworkRequest request(_info.broadcastUrl);
+    QNetworkRequest request(state.streamUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("accept-language", AcceptLanguageNetworkHeaderName);
 
@@ -563,11 +538,11 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 {
     //AxelChat::saveDebugDataToFile(FolderLogs, "debug.json", data);
 
-    if (!_info.broadcastConnected && !_info.broadcastId.isEmpty())
+    if (!state.connected && !state.streamId.isEmpty())
     {
-        _info.broadcastConnected = true;
+        state.connected = true;
 
-        emit connected(_info.broadcastId);
+        emit connected(state.streamId);
         emit stateChanged();
     }
 
@@ -911,7 +886,7 @@ bool YouTube::parseViews(const QByteArray &rawData)
     {
         if (rawData.contains("videoViewCountRenderer\":{\"viewCount\":{}"))
         {
-            _info.viewers = 0;
+            state.viewersCount = 0;
             emit stateChanged();
             return false;
         }
@@ -960,7 +935,7 @@ bool YouTube::parseViews(const QByteArray &rawData)
         return false;
     }
 
-    _info.viewers = viewers;
+    state.viewersCount = viewers;
 
     emit stateChanged();
 
@@ -973,16 +948,16 @@ void YouTube::processBadChatReply()
 
     if (_badChatReplies >= MaxBadChatReplies)
     {
-        if (_info.broadcastConnected && !_info.broadcastId.isEmpty())
+        if (state.connected && !state.streamId.isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "too many bad chat replies! Disonnecting...";
 
-            const QString preBroadcastId = _info.broadcastId;
+            const QString preBroadcastId = state.streamId;
             const QString preUserSpecified = _info.userSpecified;
 
-            _info = AxelChat::YouTubeInfo();
+            _info = Info();
 
-            _info.broadcastConnected = false;
+            state.connected = false;
 
             emit disconnected(preBroadcastId);
 
@@ -998,7 +973,7 @@ void YouTube::processBadLivePageReply()
     if (_badLivePageReplies >= MaxBadLivePageReplies)
     {
         qWarning() << Q_FUNC_INFO << "too many bad live page replies!";
-        _info.viewers = -1;
+        state.viewersCount = -1;
 
         emit stateChanged();
     }

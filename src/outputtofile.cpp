@@ -2,8 +2,6 @@
 #include "models/chatauthor.h"
 #include "models/chatmessage.h"
 #include "chat_services/youtube.hpp"
-#include "chat_services/twitch.hpp"
-#include "chat_services/goodgame.h"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>
@@ -802,27 +800,10 @@ void OutputToFile::writeServiceState(const ChatService* service) const
 
     file.write("[service]\n");
     file.write(QString("service_type_id=%1\n").arg(ChatService::getServiceTypeId(service->getServiceType())).toUtf8());
+    file.write(QString("stream_id=%1\n").arg(service->getState().streamId).toUtf8());
     file.write(QString("connected=%1\n").arg(service->getConnectionStateType() == ChatService::ConnectionStateType::Connected ? "true" : "false").toUtf8());
     file.write(QString("stream_url=%1\n").arg(service->getBroadcastUrl().toString()).toUtf8());
     file.write(QString("chat_url=%1\n").arg(service->getChatUrl().toString()).toUtf8());
     file.write(QString("panel_url=%1\n").arg(service->getControlPanelUrl().toString()).toUtf8());
     file.write(QString("viewers_count=%1\n").arg(service->getViewersCount()).toUtf8());
-
-    switch (service->getServiceType())
-    {
-    case ChatService::ServiceType::Unknown:
-    case ChatService::ServiceType::Software:
-        break;
-
-    case ChatService::ServiceType::YouTube:
-        file.write(QString("youtube_broadcast_id=%1\n").arg(static_cast<const YouTube*>(service)->getInfo().broadcastId).toUtf8());
-        break;
-
-    case ChatService::ServiceType::Twitch:
-        file.write(QString("twitch_channel=%1\n").arg(static_cast<const Twitch*>(service)->getInfo().channelLogin).toUtf8());
-        break;
-
-    case ChatService::ServiceType::GoodGame:
-        break;
-    }
 }

@@ -2,7 +2,7 @@
 #define GOODGAME_H
 
 #include "chatservice.hpp"
-#include "types.hpp"
+#include "utils.hpp"
 #include <QObject>
 #include <QWebSocket>
 #include <QTimer>
@@ -26,7 +26,6 @@ public:
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-    int getViewersCount() const override;
     void reconnect() override;
     void setBroadcastLink(const QString &link) override;
     QString getBroadcastLink() const override;

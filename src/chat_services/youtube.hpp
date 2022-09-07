@@ -23,13 +23,7 @@ public:
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-    int getViewersCount() const override;
-    QUrl getBroadcastUrl() const override;
-    QUrl getChatUrl() const override;
-    QUrl getControlPanelUrl() const override;
     Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
-
-    AxelChat::YouTubeInfo getInfo() const;
 
 private slots:
     void onTimeoutRequestChat();
@@ -40,6 +34,12 @@ private slots:
     void onReplyStreamPage();
 
 private:
+    struct Info
+    {
+        QString channelId;
+        QString userSpecified;
+    };
+
     QString extractBroadcastId(const QString& link) const;
     void parseActionsArray(const QJsonArray& array, const QByteArray& data);
     bool parseViews(const QByteArray& rawData);
@@ -63,7 +63,7 @@ private:
     int _badChatReplies = 0;
     int _badLivePageReplies = 0;
 
-    AxelChat::YouTubeInfo _info;
+    Info _info;
 
     static void printData(const QString& tag, const QByteArray& data);
 

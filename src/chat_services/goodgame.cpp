@@ -65,12 +65,6 @@ QString GoodGame::getStateDescription() const
     return "unknown";
 }
 
-int GoodGame::getViewersCount() const
-{
-    //ToDo:
-    return 0;
-}
-
 void GoodGame::timeoutReconnect()
 {
     if (!_info.connected /*&& !_info.oauthToken.isEmpty()*/)

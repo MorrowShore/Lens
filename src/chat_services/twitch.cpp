@@ -86,34 +86,34 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     QObject::connect(&_socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
 
     QObject::connect(&_socket, &QWebSocket::connected, this, [=]() {
-        if (_info.connected)
+        if (state.connected)
         {
-            _info.connected = false;
+            state.connected = false;
             emit stateChanged();
         }
 
-        _info.viewers = -1;
+        state.viewersCount = -1;
 
         sendIRCMessage("CAP REQ :twitch.tv/tags");
         //sendIRCMessage("CAP REQ :twitch.tv/commands");
         sendIRCMessage(QString("PASS oauth:") + oauthToken.get());
-        sendIRCMessage(QString("NICK ") + _info.channelLogin);
-        sendIRCMessage(QString("JOIN #") + _info.channelLogin);
+        sendIRCMessage(QString("NICK ") + state.streamId);
+        sendIRCMessage(QString("JOIN #") + state.streamId);
         sendIRCMessage(QString("PING :") + TwitchIRCHost);
 
-        requestUserInfo(_info.channelLogin);
-        requestStreamInfo(_info.channelLogin);
+        requestUserInfo(state.streamId);
+        requestStreamInfo(state.streamId);
     });
 
     QObject::connect(&_socket, &QWebSocket::disconnected, this, [=](){
-        if (_info.connected)
+        if (state.connected)
         {
-            _info.connected = false;
+            state.connected = false;
             emit disconnected(_lastConnectedChannelName);
             emit stateChanged();
         }
 
-        _info.viewers = -1;
+        state.viewersCount = -1;
     });
 
     QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [=](QAbstractSocket::SocketError error_){
@@ -123,7 +123,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     reconnect();
 
     QObject::connect(&_timerReconnect, &QTimer::timeout, this, [&](){
-        if (!_info.connected && !oauthToken.get().isEmpty())
+        if (!state.connected && !oauthToken.get().isEmpty())
         {
             reconnect();
         }
@@ -131,7 +131,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     _timerReconnect.start(ReconncectPeriod);
 
     QObject::connect(&_timerCheckPong, &QTimer::timeout, this, [&]{
-        if (_info.connected)
+        if (state.connected)
         {
             qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
 
@@ -152,7 +152,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
             emit readyRead(messages, authors);
 
-            _info.connected = false;
+            state.connected = false;
 
             emit disconnected(_lastConnectedChannelName);
             emit stateChanged();
@@ -161,7 +161,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     });
 
     QObject::connect(&_timerPing, &QTimer::timeout, this, [&]{
-        if (_info.connected)
+        if (state.connected)
         {
             sendIRCMessage(QString("PING :") + TwitchIRCHost);
             _timerCheckPong.start(PongTimeout);
@@ -170,9 +170,9 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     _timerPing.start(PingPeriod);
 
     QObject::connect(&_timerUpdaetStreamInfo, &QTimer::timeout, this, [&]{
-        if (_info.connected)
+        if (state.connected)
         {
-            requestStreamInfo(_info.channelLogin);
+            requestStreamInfo(state.streamId);
         }
     });
     _timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
@@ -197,18 +197,18 @@ Twitch::~Twitch()
 {
     _socket.close();
 
-    _info.connected = false;
+    state.connected = false;
     emit disconnected(_lastConnectedChannelName);
     emit stateChanged();
 }
 
 ChatService::ConnectionStateType Twitch::getConnectionStateType() const
 {
-    if (_info.connected)
+    if (state.connected)
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!oauthToken.get().isEmpty() && !_info.channelLogin.isEmpty())
+    else if (!oauthToken.get().isEmpty() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -220,7 +220,7 @@ QString Twitch::getStateDescription() const
 {
     switch (getConnectionStateType()) {
     case ConnectionStateType::NotConnected:
-        if (_info.channelLogin.isEmpty())
+        if (state.streamId.isEmpty())
         {
             return tr("Channel not specified");
         }
@@ -243,47 +243,12 @@ QString Twitch::getStateDescription() const
     return "<unknown_state>";
 }
 
-int Twitch::getViewersCount() const
-{
-    return _info.viewers;
-}
-
 QUrl Twitch::requesGetAOuthTokenUrl() const
 {
     return QUrl("https://id.twitch.tv/oauth2/authorize?client_id=" + ApplicationClientID
                         + "&redirect_uri=" + RedirectUri
                         + "&response_type=token"
                         + "&scope=openid+chat:read");
-}
-
-QUrl Twitch::getChatUrl() const
-{
-    if (_info.channelLogin.isEmpty())
-    {
-        return QUrl();
-    }
-
-    return _info.chatUrl;
-}
-
-QUrl Twitch::getControlPanelUrl() const
-{
-    if (_info.channelLogin.isEmpty())
-    {
-        return QUrl();
-    }
-
-    return _info.controlPanelUrl;
-}
-
-QUrl Twitch::getBroadcastUrl() const
-{
-    if (_info.channelLogin.isEmpty())
-    {
-        return QUrl();
-    }
-
-    return _info.channelUrl;
 }
 
 void Twitch::setBroadcastLink(const QString &link)
@@ -305,11 +270,6 @@ void Twitch::setBroadcastLink(const QString &link)
 QString Twitch::getBroadcastLink() const
 {
     return _info.userSpecifiedChannel;
-}
-
-AxelChat::TwitchInfo Twitch::getInfo() const
-{
-    return _info;
 }
 
 void Twitch::onParameterChanged(Parameter& parameter)
@@ -344,38 +304,38 @@ void Twitch::reconnect()
     QRegExp rx;
 
     // user channel
-    _info.channelLogin.clear();
+    state.streamId.clear();
     const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(_info.userSpecifiedChannel);
     rx = QRegExp("^twitch.tv/([^/]*)$", Qt::CaseInsensitive);
     if (rx.indexIn(simpleUserSpecifiedUserChannel) != -1)
     {
-        _info.channelLogin = rx.cap(1);
+        state.streamId = rx.cap(1);
     }
 
-    if (_info.channelLogin.isEmpty())
+    if (state.streamId.isEmpty())
     {
         rx = QRegExp("^[a-zA-Z0-9_]+$", Qt::CaseInsensitive);
         if (rx.indexIn(_info.userSpecifiedChannel) != -1)
         {
-            _info.channelLogin = _info.userSpecifiedChannel;
+            state.streamId = _info.userSpecifiedChannel;
         }
     }
 
-    _info.chatUrl = QUrl(QString("https://www.twitch.tv/popout/%1/chat").arg(_info.channelLogin));
+    state.chatUrl = QUrl(QString("https://www.twitch.tv/popout/%1/chat").arg(state.streamId));
 
-    _info.channelUrl = QUrl(QString("https://www.twitch.tv/%1").arg(_info.channelLogin));
+    state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
 
-    _info.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(_info.channelLogin));
+    state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(state.streamId));
 
     _socket.close();
 
-    if (_info.connected)
+    if (state.connected)
     {
-        _info.connected = false;
+        state.connected = false;
         emit stateChanged();
     }
 
-    if (!_info.channelLogin.isEmpty())
+    if (!state.streamId.isEmpty())
     {
         _socket.setProxy(network.proxy());
 
@@ -412,11 +372,11 @@ void Twitch::onIRCMessage(const QString &rawData)
             sendIRCMessage(QString("PONG :") + TwitchIRCHost);
         }
 
-        if (!_info.connected && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
+        if (!state.connected && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
         {
-            _info.connected = true;
-            _lastConnectedChannelName = _info.channelLogin;
-            emit connected(_info.channelLogin);
+            state.connected = true;
+            _lastConnectedChannelName = state.streamId;
+            emit connected(state.streamId);
             emit stateChanged();
         }
 
@@ -934,7 +894,7 @@ void Twitch::onReplyUserInfo()
             emit avatarDiscovered(channelLogin, profileImageUrl);
         }
 
-        if (channelLogin == _info.channelLogin)
+        if (channelLogin == state.streamId)
         {
             _info.broadcasterId = broadcasterId;
             requestForChannelBadges(broadcasterId);
@@ -985,9 +945,9 @@ void Twitch::onReplyStreamInfo()
             continue;
         }
 
-        if (channelLogin == _info.channelLogin)
+        if (channelLogin == state.streamId)
         {
-            _info.viewers = viewers;
+            state.viewersCount = viewers;
             found = true;
             emit stateChanged();
         }
@@ -995,7 +955,7 @@ void Twitch::onReplyStreamInfo()
 
     if (!found)
     {
-        _info.viewers = -1;
+        state.viewersCount = -1;
         emit stateChanged();
     }
 }

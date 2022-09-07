@@ -1,7 +1,7 @@
 #ifndef CHATSERVICE_H
 #define CHATSERVICE_H
 
-#include "types.hpp"
+#include "utils.hpp"
 #include "setting.h"
 #include <QSettings>
 #include <QObject>
@@ -45,6 +45,16 @@ public:
         Connected = 30
     };
     Q_ENUM(ConnectionStateType)
+
+    struct State
+    {
+        bool connected = false;
+        QString streamId;
+        QUrl streamUrl;
+        QUrl chatUrl;
+        QUrl controlPanelUrl;
+        int viewersCount = -1;
+    };
 
     static QString getServiceTypeId(const ChatService::ServiceType serviceType)
     {
@@ -96,17 +106,19 @@ public:
         , serviceType(serviceType_)
     { }
 
-    virtual QUrl getChatUrl() const { return QString(); }
-    virtual QUrl getControlPanelUrl() const { return QString(); }
-    Q_INVOKABLE virtual QUrl getBroadcastUrl() const { return QString(); }
+    QUrl getChatUrl() const { return state.chatUrl; }
+    QUrl getControlPanelUrl() const { return state.controlPanelUrl; }
+    Q_INVOKABLE QUrl getBroadcastUrl() const { return state.streamUrl; }
 
     virtual ConnectionStateType getConnectionStateType() const = 0;
     virtual QString getStateDescription() const  = 0;
     ServiceType getServiceType() const { return serviceType; }
 
-    virtual int getViewersCount() const = 0;
+    int getViewersCount() const { return state.viewersCount; }
 
     virtual void reconnect() = 0;
+
+    const State& getState() const { return state; }
 
     Q_INVOKABLE QString getName() const
     {
@@ -242,6 +254,7 @@ protected:
 
     QList<Parameter> parameters;
     const ServiceType serviceType;
+    State state;
 };
 
 #endif // CHATSERVICE_H

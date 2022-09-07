@@ -34,7 +34,7 @@ HEADERS += \
     setting.h \
     tray.h \
     chat_services/twitch.hpp \
-    types.hpp \
+    utils.hpp \
     utils_axelchat.hpp \
     chat_services/youtube.hpp
 

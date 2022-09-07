@@ -1,7 +1,7 @@
 #ifndef TWITCH_HPP
 #define TWITCH_HPP
 
-#include "types.hpp"
+#include "utils.hpp"
 #include "chatservice.hpp"
 #include <QSettings>
 #include <QWebSocket>
@@ -18,15 +18,9 @@ public:
     ~Twitch();
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-    int getViewersCount() const override;
     QUrl requesGetAOuthTokenUrl() const;
-    QUrl getChatUrl() const override;
-    QUrl getControlPanelUrl() const override;
-    QUrl getBroadcastUrl() const override;
     void setBroadcastLink(const QString &link) override;
     QString getBroadcastLink() const override;
-
-    AxelChat::TwitchInfo getInfo() const;
 
     void reconnect() override;
 
@@ -55,6 +49,12 @@ private slots:
     void onReplyStreamInfo();
 
 private:
+    struct Info
+    {
+        QString broadcasterId;
+        QString userSpecifiedChannel;
+    };
+
     void parseBadgesJson(const QByteArray& data);
 
     struct MessageEmoteInfo
@@ -76,7 +76,7 @@ private:
 
     Setting<QString> oauthToken;
 
-    AxelChat::TwitchInfo _info;
+    Info _info;
     QString _lastConnectedChannelName;
 
     QTimer _timerReconnect;

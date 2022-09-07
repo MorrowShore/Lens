@@ -12,30 +12,6 @@ namespace AxelChat
 
 static const QByteArray UserAgentNetworkHeaderName = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36";
 
-struct YouTubeInfo {
-    QString channelId;
-    QString broadcastName;
-    QString broadcastDescription;
-    QUrl broadcastUrl;
-    QUrl broadcastChatUrl;
-    QUrl controlPanelUrl;
-    QString broadcastId;
-    QString userSpecified;
-    bool broadcastConnected = false;
-    int viewers = -1;
-};
-
-struct TwitchInfo {
-    QString channelLogin;
-    QString broadcasterId;
-    QString userSpecifiedChannel;
-    QUrl channelUrl;
-    QUrl chatUrl;
-    QUrl controlPanelUrl;
-    bool connected = false;
-    int viewers = -1;
-};
-
 static QString simplifyUrl(const QString& url)
 {
     QString withoutHttpsWWW = url;

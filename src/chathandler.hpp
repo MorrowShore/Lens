@@ -1,7 +1,7 @@
 #ifndef CHATMESSAGEHANDLER_HPP
 #define CHATMESSAGEHANDLER_HPP
 
-#include "types.hpp"
+#include "utils.hpp"
 #include "chat_services/youtube.hpp"
 #include "chat_services/twitch.hpp"
 #include "chat_services/goodgame.h"
