@@ -9,7 +9,7 @@
 #include <QNetworkReply>
 
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(ChatService::ServiceType::GoodGame, settings_, settingsGroupPath, parent)
+    : ChatService(ChatService::ServiceType::GoodGame, parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroupPath)
     , network(network_)

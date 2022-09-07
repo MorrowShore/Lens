@@ -10,7 +10,6 @@
         <file>setting_pages/appearance.qml</file>
         <file>setting_pages/chatcommands.qml</file>
         <file>setting_pages/outputtofile.qml</file>
-        <file>setting_pages/youtube.qml</file>
         <file>setting_pages/common.qml</file>
         <file>my_components/RoundMouseArea.qml</file>
         <file>author_window.qml</file>
@@ -19,7 +18,6 @@
         <file>qmldir</file>
         <file>my_components/SliderRow.qml</file>
         <file>my_components/MyTextArea.qml</file>
-        <file>setting_pages/twitch.qml</file>
         <file>font_settings.qml</file>
         <file>setting_pages/service.qml</file>
     </qresource>

@@ -18,7 +18,6 @@ class ChatService : public QObject
     Q_OBJECT
 
 public:
-    Q_PROPERTY(bool                 enabled                      READ isEnabled     WRITE setEnabled     NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 broadcastUrl                 READ getBroadcastUrl                    NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 chatUrl                      READ getChatUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 controlPanelUrl              READ getControlPanelUrl                 NOTIFY stateChanged)
@@ -92,28 +91,10 @@ public:
         return QUrl();
     }
 
-    explicit ChatService(ServiceType serviceType_, QSettings& settings, const QString& settingsGroupName, QObject *parent = nullptr)
+    explicit ChatService(ServiceType serviceType_, QObject *parent = nullptr)
         : QObject(parent)
         , serviceType(serviceType_)
-        , enabled(settings, settingsGroupName + "/enabled", false)
     { }
-
-    Q_INVOKABLE bool isEnabled() const { return enabled.get(); }
-    Q_INVOKABLE void setEnabled(const bool enabled_)
-    {
-        if (enabled.set(enabled_))
-        {
-            if (enabled.get())
-            {
-                reconnect();
-            }
-            else
-            {
-                emit disconnected("TODO 123");
-                emit stateChanged();
-            }
-        }
-    }
 
     virtual QUrl getChatUrl() const { return QString(); }
     virtual QUrl getControlPanelUrl() const { return QString(); }
@@ -261,7 +242,6 @@ protected:
 
     QList<Parameter> parameters;
     const ServiceType serviceType;
-    Setting<bool> enabled;
 };
 
 #endif // CHATSERVICE_H

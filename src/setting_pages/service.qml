@@ -23,16 +23,6 @@ ScrollView {
         Row {
             spacing: 12
 
-            Switch {
-                Component.onCompleted: {
-                    checked = chatService.enabled
-                }
-
-                onCheckedChanged: {
-                    chatService.enabled = checked
-                }
-            }
-
             Image {
                 mipmap: true
                 height: 40

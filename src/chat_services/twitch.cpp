@@ -69,7 +69,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 }
 
 Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-  : ChatService(ChatService::ServiceType::Twitch, settings_, settingsGroupPath, parent)
+  : ChatService(ChatService::ServiceType::Twitch, parent)
   , settings(settings_)
   , SettingsGroupPath(settingsGroupPath)
   , network(network_)
