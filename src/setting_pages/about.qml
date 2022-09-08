@@ -82,6 +82,7 @@ ScrollView {
             height: 48
             text: qsTr("YouTube Channel")
             anchors.horizontalCenterOffset: 0
+            icon.color: "transparent"
             icon.source: "qrc:/resources/images/youtube-icon.svg"
             anchors.horizontalCenter: parent.horizontalCenter
 
