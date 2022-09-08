@@ -183,7 +183,7 @@ Button {
             Button {
                 text: qsTr("Control Panel")
                 anchors.verticalCenter: parent.verticalCenter
-                enabled: chatService.controlPanelUrl.toString().length !== 0
+                visible: chatService.controlPanelUrl.toString().length !== 0
                 icon.source: "qrc:/resources/images/youtube-control-panel.svg"
                 onClicked: {
                     Qt.openUrlExternally(chatService.controlPanelUrl)
@@ -193,7 +193,7 @@ Button {
             Button {
                 text: qsTr("Stream")
                 anchors.verticalCenter: parent.verticalCenter
-                enabled: chatService.streamUrl.toString().length !== 0
+                visible: chatService.streamUrl.toString().length !== 0
                 onClicked: {
                     Qt.openUrlExternally(chatService.streamUrl)
                 }
@@ -202,7 +202,7 @@ Button {
             Button {
                 text: qsTr("Chat")
                 anchors.verticalCenter: parent.verticalCenter
-                enabled: chatService.chatUrl.toString().length !== 0
+                visible: chatService.chatUrl.toString().length !== 0
                 onClicked: {
                     Qt.openUrlExternally(chatService.chatUrl)
                 }
