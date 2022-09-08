@@ -41,6 +41,8 @@ private:
 
     int64_t channelId = -1;
     QString _lastConnectedChannelName;
+
+    QTimer timerUpdateMessages;
 };
 
 #endif // GOODGAME_H

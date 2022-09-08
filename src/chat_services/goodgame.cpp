@@ -8,6 +8,13 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
+namespace
+{
+
+static const int RequestChatInterval = 2000;
+
+}
+
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
     : ChatService(settings_, settingsGroupPath, ChatService::ServiceType::GoodGame, parent)
     , settings(settings_)
@@ -50,6 +57,19 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
     });
 
     reconnect();
+
+    timerUpdateMessages.setInterval(RequestChatInterval);
+    connect(&timerUpdateMessages, &QTimer::timeout, this, [this]()
+    {
+        if (!state.connected)
+        {
+            return;
+        }
+
+        requestGetChannelHistory();
+    });
+
+    timerUpdateMessages.start();
 }
 
 ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
@@ -185,8 +205,6 @@ void GoodGame::reconnect()
         emit stateChanged();
         return;
     }
-
-    //https://goodgame.ru/chat/26624
 
     _socket.setProxy(network.proxy());
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
