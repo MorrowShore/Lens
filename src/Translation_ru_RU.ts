@@ -75,17 +75,17 @@
         <translation type="vanished">Twitch отключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="234"/>
+        <location filename="chathandler.cpp" line="236"/>
         <source>%1 connected: %2</source>
         <translation>%1 подключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="247"/>
+        <location filename="chathandler.cpp" line="240"/>
         <source>%1 disconnected: %2</source>
         <translation>%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="261"/>
+        <location filename="chathandler.cpp" line="255"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -484,27 +484,27 @@
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="226"/>
+        <location filename="chat_services/twitch.cpp" line="206"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="231"/>
+        <location filename="chat_services/twitch.cpp" line="211"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="234"/>
+        <location filename="chat_services/twitch.cpp" line="214"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="237"/>
+        <location filename="chat_services/twitch.cpp" line="217"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="240"/>
+        <location filename="chat_services/twitch.cpp" line="220"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -517,27 +517,27 @@
         <translation>Ссылка или ID трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="284"/>
+        <location filename="chat_services/youtube.cpp" line="277"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="289"/>
+        <location filename="chat_services/youtube.cpp" line="282"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="292"/>
+        <location filename="chat_services/youtube.cpp" line="285"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="295"/>
+        <location filename="chat_services/youtube.cpp" line="288"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="298"/>
+        <location filename="chat_services/youtube.cpp" line="291"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1200,16 +1200,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка...</translation>
     </message>
     <message>
+        <location filename="setting_pages/service.qml" line="144"/>
         <source>Paste</source>
-        <translation type="vanished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="85"/>
+        <location filename="setting_pages/service.qml" line="189"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="95"/>
+        <location filename="setting_pages/service.qml" line="199"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1218,7 +1219,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="104"/>
+        <location filename="setting_pages/service.qml" line="208"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

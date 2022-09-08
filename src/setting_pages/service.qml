@@ -91,58 +91,84 @@ ScrollView {
                 var type = chatService.getParameterType(i)
                 if (type === Global._StringParameterType)
                 {//isParameterHasFlag _PasswordEchoParameterFlag
-                    Qt.createQmlObject("
-                        import QtQuick 2.0
-                        import QtQuick.Controls 2.15
-                        import QtQuick.Controls.Material 2.12
+                    Qt.createQmlObject(
+"
+import QtQuick 2.0
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.12
 
-                        Label {
-                            text: chatService.getParameterName(" + String("%1").arg(i) + ") + \":\"
-                            font.pixelSize: 20
-                            anchors.verticalCenter: parent.verticalCenter
-                            font.bold: true
-                            color: \"" + Material.accentColor + "\"
-                        }", row)
+Label {
+    text: chatService.getParameterName(" + String("%1").arg(i) + ") + ':'
+    font.pixelSize: 20
+    anchors.verticalCenter: parent.verticalCenter
+    font.bold: true
+    color: '" + Material.accentColor + "'
+}
+", row)
 
-                    Qt.createQmlObject("
-                        import QtQuick 2.0
-                        import QtQuick.Controls 2.15
-                        import QtQuick.Controls.Material 2.12
-                        import AxelChat.ChatService 1.0
-                        import \"../my_components\" as MyComponents
+                    Qt.createQmlObject(
+"
+import QtQuick 2.0
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.12
+import AxelChat.ChatService 1.0
+import '../my_components' as MyComponents
 
-                        MyComponents.MyTextField {
-                            width: 400
-                            anchors.verticalCenter: parent.verticalCenter
-                            echoMode: chatService.isParameterHasFlag(" + String("%1").arg(i) + ", " + String("%1").arg(Global._PasswordEchoParameterFlag) + ") ? TextInput.Password : TextInput.Normal
+Row {
+    spacing: 6
 
-                            Component.onCompleted: {
-                                text = chatService.getParameterValue(" + String("%1").arg(i) + ")
-                                placeholderText = chatService.getParameterPlaceholder(" + String("%1").arg(i) + ")
-                            }
+    MyComponents.MyTextField {
+        id: textField
+        width: 400
+        anchors.verticalCenter: parent.verticalCenter
+        echoMode: chatService.isParameterHasFlag(" + String("%1").arg(i) + ", " + String("%1").arg(Global._PasswordEchoParameterFlag) + ") ? TextInput.Password : TextInput.Normal
 
-                            onTextChanged: {
-                                chatService.setParameterValue(" + String("%1").arg(i) + ", text)
-                            }
-                        }
-                        ", row)
+        Component.onCompleted: {
+            text = chatService.getParameterValue(" + String("%1").arg(i) + ")
+            placeholderText = chatService.getParameterPlaceholder(" + String("%1").arg(i) + ")
+        }
+
+        onTextChanged: {
+            chatService.setParameterValue(" + String("%1").arg(i) + ", text)
+        }
+    }
+
+    Button {
+        highlighted: " + (i == 0 ? "true" : "false") + "
+        anchors.verticalCenter: parent.verticalCenter
+        display: AbstractButton.TextBesideIcon
+        icon.source: 'qrc:/resources/images/clipboard-paste-button.svg'
+        text: '" + qsTr("Paste") + "'
+
+        onClicked: {
+            if (clipboard.text.length !== 0)
+            {
+                textField.text = clipboard.text;
+                textField.deselect();
+            }
+        }
+    }
+}
+", row)
                 }
                 else if (type === Global._ButtonUrlParameterType)
                 {
-                    Qt.createQmlObject("
-                        import QtQuick 2.0
-                        import QtQuick.Controls 2.15
-                        import QtQuick.Controls.Material 2.12
+                    Qt.createQmlObject(
+"
+import QtQuick 2.0
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.12
 
-                        Button {
-                            text: chatService.getParameterName(" + String("%1").arg(i) + ")
-                            anchors.verticalCenter: parent.verticalCenter
-                            display: AbstractButton.TextBesideIcon
+Button {
+    text: chatService.getParameterName(" + String("%1").arg(i) + ")
+    anchors.verticalCenter: parent.verticalCenter
+    display: AbstractButton.TextBesideIcon
 
-                            onClicked: {
-                                Qt.openUrlExternally(chatService.getParameterValue(" + String("%1").arg(i) + "))
-                            }
-                        }", row)
+    onClicked: {
+        Qt.openUrlExternally(chatService.getParameterValue(" + String("%1").arg(i) + "))
+    }
+}
+", row)
                 }
                 else
                 {
