@@ -109,14 +109,6 @@ QString GoodGame::getStateDescription() const
     return "<unknown_state>";
 }
 
-void GoodGame::timeoutReconnect()
-{
-    if (!state.connected)
-    {
-        reconnect();
-    }
-}
-
 void GoodGame::requestAuth()
 {
     QJsonDocument document;
@@ -194,13 +186,35 @@ void GoodGame::requestChannelId()
     });
 }
 
+QString GoodGame::getStreamId(const QString &stream)
+{
+    QString streamId = stream.trimmed().toLower();
+    if (streamId.contains("goodgame.ru"))
+    {
+        streamId = AxelChat::simplifyUrl(streamId);
+
+        if (!AxelChat::removeFromStart(streamId, "goodgame.ru/channel/", Qt::CaseSensitivity::CaseInsensitive))
+        {
+            return QString();
+        }
+
+        AxelChat::removeFromEnd(streamId, "/", Qt::CaseSensitivity::CaseInsensitive);
+        AxelChat::removeFromEnd(streamId, "#autoplay", Qt::CaseSensitivity::CaseInsensitive);
+        AxelChat::removeFromEnd(streamId, "/", Qt::CaseSensitivity::CaseInsensitive);
+    }
+
+    return streamId;
+}
+
 void GoodGame::reconnect()
 {
     _socket.close();
 
     state = State();
 
-    if (stream.get().trimmed().isEmpty())
+    state.streamId = getStreamId(stream.get());
+
+    if (state.streamId.isEmpty())
     {
         emit stateChanged();
         return;
@@ -208,8 +222,6 @@ void GoodGame::reconnect()
 
     _socket.setProxy(network.proxy());
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
-
-    state.streamId = stream.get().trimmed().toLower();
 
     emit stateChanged();
 }
@@ -220,7 +232,7 @@ void GoodGame::onParameterChanged(Parameter &parameter)
 
     if (&setting == &stream)
     {
-        stream.set(stream.get().trimmed().toLower());
+        stream.set(stream.get().trimmed());
         reconnect();
     }
 }

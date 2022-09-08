@@ -73,4 +73,47 @@ static void saveDebugDataToFile(const QString& folder, const QString& fileName, 
 #endif
 }
 
+static QByteArray convertANSIWithUtf8Numbers(const QString& string)
+{
+    const QVector<uint>& ucs4str = string.toUcs4();
+    QByteArray ba;
+    ba.reserve(ucs4str.count() * 4);
+
+    for (const uint& c : ucs4str)
+    {
+        if (c >= 32u && c <= 126u && c!= 35u && c!= 60u && c!= 62u)
+        {
+            ba += (char)c;
+        }
+        else
+        {
+            ba += "<" + QByteArray::number(c) + ">";
+        }
+    }
+
+    return ba;
+}
+
+static bool removeFromStart(QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity)
+{
+    if (!string.startsWith(subString, caseSensitivity))
+    {
+        return false;
+    }
+
+    string = string.mid(subString.length());
+    return true;
+}
+
+static bool removeFromEnd(QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity)
+{
+    if (!string.endsWith(subString, caseSensitivity))
+    {
+        return false;
+    }
+
+    string = string.left(string.lastIndexOf(subString, -1, caseSensitivity));
+    return true;
+}
+
 }

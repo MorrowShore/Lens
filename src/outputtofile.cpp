@@ -15,7 +15,6 @@
 #include <QNetworkReply>
 #include <QImage>
 #include <QImageReader>
-#include "utils_axelchat.hpp"
 
 namespace
 {
@@ -532,7 +531,7 @@ QByteArray OutputToFile::prepare(const QString &text_)
     }
     else if (codec_ == OutputToFileCodec::ANSIWithUTF8Codec)
     {
-        return convertANSIWithUtf8Numbers(text);
+        return AxelChat::convertANSIWithUtf8Numbers(text);
     }
 
     qWarning() << Q_FUNC_INFO << "unknown codec";

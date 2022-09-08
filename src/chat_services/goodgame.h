@@ -27,13 +27,14 @@ protected:
 private slots:
     void onWebSocketReceived(const QString& rawData);
     void sendToWebSocket(const QJsonDocument& data);
-    void timeoutReconnect();
 
     void requestAuth();
     void requestGetChannelHistory();
     void requestChannelId();
 
 private:
+    static QString getStreamId(const QString& stream);
+
     QWebSocket _socket;
 
     QSettings& settings;

@@ -35,7 +35,6 @@ HEADERS += \
     tray.h \
     chat_services/twitch.hpp \
     utils.hpp \
-    utils_axelchat.hpp \
     chat_services/youtube.hpp
 
 SOURCES += \
