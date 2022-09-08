@@ -193,6 +193,7 @@ Window {
 
                     contentItem: Item {
                         anchors.fill: parent
+
                         Text {
                             anchors.fill: parent
                             anchors.margins: {
@@ -211,14 +212,19 @@ Window {
 
                         Rectangle {
                             visible: categoryDelegate.highlighted
-                            x: 0
-                            y: 0
                             width: 4
                             height: categoryDelegate.height
                             color: categoryDelegate.Material.accentColor
                         }
-                    }
 
+                        Rectangle {
+                            visible: category === "common"
+                            width: categoryDelegate.width
+                            height: 1
+                            color: Material.foreground
+                            opacity: 0.25
+                        }
+                    }
 
                     property string category: model.category
                     highlighted: ListView.isCurrentItem
