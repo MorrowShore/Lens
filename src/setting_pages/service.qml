@@ -78,42 +78,15 @@ ScrollView {
             }
         }
 
-        Row {
+        Column {
+            id: parametersColumn
             spacing: 6
-
-            Button {
-                text: qsTr("Control Panel")
-                anchors.verticalCenter: parent.verticalCenter
-                visible: chatService.controlPanelUrl.toString().length !== 0
-                icon.source: "qrc:/resources/images/youtube-control-panel.svg"
-                onClicked: {
-                    Qt.openUrlExternally(chatService.controlPanelUrl)
-                }
-            }
-
-            Button {
-                text: qsTr("Stream")
-                anchors.verticalCenter: parent.verticalCenter
-                visible: chatService.streamUrl.toString().length !== 0
-                onClicked: {
-                    Qt.openUrlExternally(chatService.streamUrl)
-                }
-            }
-
-            Button {
-                text: qsTr("Chat")
-                anchors.verticalCenter: parent.verticalCenter
-                visible: chatService.chatUrl.toString().length !== 0
-                onClicked: {
-                    Qt.openUrlExternally(chatService.chatUrl)
-                }
-            }
         }
 
         Component.onCompleted: {
             for (var i = 0; i < chatService.getParametersCount(); ++i)
             {
-                var row = Qt.createQmlObject("import QtQuick 2.0; Row { spacing: 6 }", column)
+                var row = Qt.createQmlObject("import QtQuick 2.0; Row { spacing: 6 }", parametersColumn)
 
                 var type = chatService.getParameterType(i)
                 if (type === Global._StringParameterType)
@@ -174,6 +147,38 @@ ScrollView {
                 else
                 {
                     console.log("Unknown parameter type ", type)
+                }
+            }
+        }
+
+        Row {
+            spacing: 6
+
+            Button {
+                text: qsTr("Control Panel")
+                anchors.verticalCenter: parent.verticalCenter
+                visible: chatService.controlPanelUrl.toString().length !== 0
+                icon.source: "qrc:/resources/images/youtube-control-panel.svg"
+                onClicked: {
+                    Qt.openUrlExternally(chatService.controlPanelUrl)
+                }
+            }
+
+            Button {
+                text: qsTr("Stream")
+                anchors.verticalCenter: parent.verticalCenter
+                visible: chatService.streamUrl.toString().length !== 0
+                onClicked: {
+                    Qt.openUrlExternally(chatService.streamUrl)
+                }
+            }
+
+            Button {
+                text: qsTr("Chat")
+                anchors.verticalCenter: parent.verticalCenter
+                visible: chatService.chatUrl.toString().length !== 0
+                onClicked: {
+                    Qt.openUrlExternally(chatService.chatUrl)
                 }
             }
         }
