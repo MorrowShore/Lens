@@ -94,28 +94,28 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="77"/>
-        <location filename="chat_services/chatservice.hpp" line="85"/>
+        <location filename="chat_services/chatservice.hpp" line="78"/>
+        <location filename="chat_services/chatservice.hpp" line="86"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="80"/>
+        <location filename="chat_services/chatservice.hpp" line="81"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="81"/>
+        <location filename="chat_services/chatservice.hpp" line="82"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="82"/>
+        <location filename="chat_services/chatservice.hpp" line="83"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="108"/>
+        <location filename="chat_services/chatservice.hpp" line="109"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1204,16 +1204,23 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Вставить</translation>
     </message>
     <message>
+        <location filename="setting_pages/service.qml" line="85"/>
         <source>Control Panel</source>
-        <translation type="vanished">Панель управления</translation>
+        <translation>Панель управления</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/service.qml" line="95"/>
+        <source>Stream</source>
+        <translation>Стрим</translation>
     </message>
     <message>
         <source>Broadcast</source>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
+        <location filename="setting_pages/service.qml" line="104"/>
         <source>Chat</source>
-        <translation type="vanished">Чат</translation>
+        <translation>Чат</translation>
     </message>
 </context>
 <context>

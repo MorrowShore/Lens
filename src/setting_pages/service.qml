@@ -78,7 +78,7 @@ ScrollView {
             }
         }
 
-        /*Row {
+        Row {
             spacing: 6
 
             Button {
@@ -92,11 +92,11 @@ ScrollView {
             }
 
             Button {
-                text: qsTr("Broadcast")
+                text: qsTr("Stream")
                 anchors.verticalCenter: parent.verticalCenter
-                visible: chatService.broadcastUrl.toString().length !== 0
+                visible: chatService.streamUrl.toString().length !== 0
                 onClicked: {
-                    Qt.openUrlExternally(chatService.broadcastUrl)
+                    Qt.openUrlExternally(chatService.streamUrl)
                 }
             }
 
@@ -108,7 +108,7 @@ ScrollView {
                     Qt.openUrlExternally(chatService.chatUrl)
                 }
             }
-        }*/
+        }
 
         Component.onCompleted: {
             for (var i = 0; i < chatService.getParametersCount(); ++i)

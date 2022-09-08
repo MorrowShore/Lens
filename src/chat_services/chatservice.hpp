@@ -18,6 +18,7 @@ class ChatService : public QObject
     Q_OBJECT
 
 public:
+    Q_PROPERTY(QUrl                 streamUrl                    READ getStreamUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 chatUrl                      READ getChatUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 controlPanelUrl              READ getControlPanelUrl                 NOTIFY stateChanged)
 
@@ -110,7 +111,7 @@ public:
 
     QUrl getChatUrl() const { return state.chatUrl; }
     QUrl getControlPanelUrl() const { return state.controlPanelUrl; }
-    Q_INVOKABLE QUrl getBroadcastUrl() const { return state.streamUrl; }
+    Q_INVOKABLE QUrl getStreamUrl() const { return state.streamUrl; }
 
     virtual ConnectionStateType getConnectionStateType() const = 0;
     virtual QString getStateDescription() const  = 0;

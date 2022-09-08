@@ -179,17 +179,6 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     });
     _timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
-    QFile fileBadges(":/resources/twitch-global-badges-20210728.json");
-    if (fileBadges.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text))
-    {
-        parseBadgesJson(fileBadges.readAll());
-        fileBadges.close();
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << "failed to open file" << fileBadges;
-    }
-
     requestForGlobalBadges();
 }
 
