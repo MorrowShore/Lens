@@ -29,8 +29,8 @@ private slots:
     void sendToWebSocket(const QJsonDocument& data);
 
     void requestAuth();
-    void requestGetChannelHistory();
-    void requestChannelId();
+    void requestChannelHistory();
+    void requestChannelStatus();
 
 private:
     static QString getStreamId(const QString& stream);
@@ -44,6 +44,7 @@ private:
     QString _lastConnectedChannelName;
 
     QTimer timerUpdateMessages;
+    QTimer timerUpdateChannelStatus;
 };
 
 #endif // GOODGAME_H

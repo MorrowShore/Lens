@@ -13,6 +13,8 @@ namespace
 
 static const int RequestChatInterval = 2000;
 
+static const int RequestChannelStatus = 10000;
+
 }
 
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
@@ -37,7 +39,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
             emit connectedChanged(false, _lastConnectedChannelName);
         }
 
-        requestChannelId();
+        requestChannelStatus();
         emit stateChanged();
     });
 
@@ -66,10 +68,21 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
             return;
         }
 
-        requestGetChannelHistory();
+        requestChannelHistory();
     });
-
     timerUpdateMessages.start();
+
+    timerUpdateChannelStatus.setInterval(RequestChannelStatus);
+    connect(&timerUpdateChannelStatus, &QTimer::timeout, this, [this]()
+    {
+        if (!state.connected)
+        {
+            return;
+        }
+
+        requestChannelStatus();
+    });
+    timerUpdateChannelStatus.start();
 }
 
 ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
@@ -124,7 +137,7 @@ void GoodGame::requestAuth()
     sendToWebSocket(document);
 }
 
-void GoodGame::requestGetChannelHistory()
+void GoodGame::requestChannelHistory()
 {
     QJsonDocument document;
 
@@ -139,7 +152,7 @@ void GoodGame::requestGetChannelHistory()
     sendToWebSocket(document);
 }
 
-void GoodGame::requestChannelId()
+void GoodGame::requestChannelStatus()
 {
     channelId = -1;
 
@@ -156,15 +169,24 @@ void GoodGame::requestChannelId()
         uint64_t id = 0;
         bool found = false;
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
-        const QStringList keys = root.keys();
-        for (const QString& key : keys)
+        const QStringList idsKeys = root.keys();
+        for (const QString& channelObjKey : idsKeys)
         {
-            id = key.toULongLong(&found);
+            id = channelObjKey.toULongLong(&found);
             if (found)
             {
-                const QJsonObject channel = root.value(key).toObject();
+                const QJsonObject channel = root.value(channelObjKey).toObject();
                 if (channel.value("key").toString().trimmed().toLower() == channelName.trimmed().toLower())
                 {
+                    const QString viewers = channel.value("viewers").toString();
+                    bool ok = false;
+                    int viewersCount = viewers.toInt(&ok);
+                    if (!ok)
+                    {
+                        viewersCount = -1;
+                    }
+
+                    state.viewersCount = viewersCount;
                     break;
                 }
                 else
@@ -182,7 +204,7 @@ void GoodGame::requestChannelId()
 
             emit stateChanged();
 
-            requestGetChannelHistory();
+            requestChannelHistory();
         }
         else
         {
@@ -312,7 +334,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     }
     else if (type == "success_auth")
     {
-        requestChannelId();
+        requestChannelStatus();
     }
     else
     {
