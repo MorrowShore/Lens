@@ -14,10 +14,6 @@ class YouTube : public ChatService
 public:
     explicit YouTube(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
     ~YouTube();
-    int messagesReceived() const;
-
-    void setBroadcastLink(const QString &link) override;
-    QString getBroadcastLink() const override;
 
     void reconnect() override;
 
@@ -25,21 +21,17 @@ public:
     QString getStateDescription() const override;
     Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
 
+protected:
+    void onParameterChanged(Parameter &parameter) override;
+
 private slots:
     void onTimeoutRequestChat();
     void onReplyChatPage();
-    void onReplyChannelLivePage();
 
     void onTimeoutRequestStreamPage();
     void onReplyStreamPage();
 
 private:
-    struct Info
-    {
-        QString channelId;
-        QString userSpecified;
-    };
-
     QString extractBroadcastId(const QString& link) const;
     void parseActionsArray(const QJsonArray& array, const QByteArray& data);
     bool parseViews(const QByteArray& rawData);
@@ -52,18 +44,13 @@ private:
     QColor intToColor(quint64 rawColor) const;
 
     QSettings& settings;
-    const QString SettingsGroupPath;
     QNetworkAccessManager& network;
 
     QTimer _timerRequestChat;
     QTimer _timerRequestStreamPage;
 
-    int _messagesReceived = 0;
-
     int _badChatReplies = 0;
     int _badLivePageReplies = 0;
-
-    Info _info;
 
     static void printData(const QString& tag, const QByteArray& data);
 

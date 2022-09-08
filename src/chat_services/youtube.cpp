@@ -20,8 +20,6 @@ static const int RequestStreamInterval = 20000;
 
 static const QString FolderLogs = "logs_youtube";
 
-static const QString  SettingsKeyUserSpecifiedLink = "user_specified_link";
-
 static const QByteArray AcceptLanguageNetworkHeaderName = ""; // "en-US;q=0.5,en;q=0.3";
 
 static const int MaxBadChatReplies = 10;
@@ -44,18 +42,17 @@ QByteArray extractDigitsOnly(const QByteArray& data)
 }
 
 YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(ChatService::ServiceType::YouTube, parent)
+    : ChatService(settings_, settingsGroupPath, ChatService::ServiceType::YouTube, parent)
     , settings(settings_)
-    , SettingsGroupPath(settingsGroupPath)
     , network(network_)
 {
-    setBroadcastLink(settings.value(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedLink).toString());
-
     QObject::connect(&_timerRequestChat, &QTimer::timeout, this, &YouTube::onTimeoutRequestChat);
     _timerRequestChat.start(RequestChatInterval);
 
     QObject::connect(&_timerRequestStreamPage,&QTimer::timeout, this, &YouTube::onTimeoutRequestStreamPage);
     _timerRequestStreamPage.start(RequestStreamInterval);
+
+    reconnect();
 }
 
 YouTube::~YouTube()
@@ -229,9 +226,36 @@ QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeigh
 
 void YouTube::reconnect()
 {
-    const QString link = _info.userSpecified;
-    setBroadcastLink(QString());
-    setBroadcastLink(link);
+    const bool preConnected = state.connected;
+    const QString preBroadcastId = state.streamId;
+
+    state = State();
+
+    _badChatReplies = 0;
+    _badLivePageReplies = 0;
+
+    state.connected = false;
+
+    state.streamId = extractBroadcastId(stream.get().trimmed());
+
+    if (!state.streamId.isEmpty())
+    {
+        state.chatUrl = QUrl(QString("https://www.youtube.com/live_chat?v=%1").arg(state.streamId));
+
+        state.streamUrl = QUrl(QString("https://www.youtube.com/watch?v=%1").arg(state.streamId));
+
+        state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
+    }
+
+    if (preConnected && !preBroadcastId.isEmpty())
+    {
+        emit disconnected(preBroadcastId);
+    }
+
+    emit stateChanged();
+
+    onTimeoutRequestChat();
+    onTimeoutRequestStreamPage();
 }
 
 ChatService::ConnectionStateType YouTube::getConnectionStateType() const
@@ -250,9 +274,10 @@ ChatService::ConnectionStateType YouTube::getConnectionStateType() const
 
 QString YouTube::getStateDescription() const
 {
-    switch (getConnectionStateType()) {
+    switch (getConnectionStateType())
+    {
     case ConnectionStateType::NotConnected:
-        if (_info.userSpecified.isEmpty())
+        if (stream.get().isEmpty())
         {
             return tr("Broadcast not specified");
         }
@@ -273,84 +298,6 @@ QString YouTube::getStateDescription() const
     }
 
     return "<unknown_state>";
-}
-
-int YouTube::messagesReceived() const
-{
-    return _messagesReceived;
-}
-
-void YouTube::setBroadcastLink(const QString &link_)
-{
-    QString link = link_.trimmed();
-
-    const QString simplified = AxelChat::simplifyUrl(link);
-
-    if (_info.userSpecified != link)
-    {
-        const bool preConnected = state.connected;
-        const QString preBroadcastId = state.streamId;
-
-        _info = Info();
-
-        _badChatReplies = 0;
-        _badLivePageReplies = 0;
-
-        state.connected = false;
-
-        _info.userSpecified = link;
-
-        static const QRegExp rx = QRegExp("^youtube.com/channel/(.*)/?$", Qt::CaseInsensitive);
-        if (rx.indexIn(simplified) != -1)
-        {
-            const QString channelId = rx.cap(1);
-
-            _info.channelId = channelId;
-
-            QNetworkRequest request(QString("https://youtube.com/channel/%1/live").arg(channelId));
-            request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-            request.setRawHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-            request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-            QNetworkReply* reply = network.get(request);
-            if (!reply)
-            {
-                qDebug() << Q_FUNC_INFO << ": !reply";
-                return;
-            }
-
-            QObject::connect(reply, &QNetworkReply::finished, this, &YouTube::onReplyChannelLivePage);
-        }
-        else
-        {
-            state.streamId = extractBroadcastId(link);
-        }
-
-        if (!state.streamId.isEmpty())
-        {
-            state.chatUrl = QUrl(QString("https://www.youtube.com/live_chat?v=%1").arg(state.streamId));
-
-            state.streamUrl = QUrl(QString("https://www.youtube.com/watch?v=%1").arg(state.streamId));
-
-            state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
-        }
-
-        settings.setValue(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedLink, _info.userSpecified);
-
-        if (preConnected && !preBroadcastId.isEmpty())
-        {
-            emit disconnected(preBroadcastId);
-        }
-    }
-
-    emit stateChanged();
-
-    onTimeoutRequestChat();
-    onTimeoutRequestStreamPage();
-}
-
-QString YouTube::getBroadcastLink() const
-{
-    return _info.userSpecified;
 }
 
 void YouTube::onTimeoutRequestChat()
@@ -441,45 +388,6 @@ void YouTube::onReplyChatPage()
     }
 }
 
-void YouTube::onReplyChannelLivePage()
-{
-    QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-    if (!reply)
-    {
-        qDebug() << "!reply";
-        return;
-    }
-
-    //_traffic += reply->size();
-    emit stateChanged();
-
-    for (const QNetworkReply::RawHeaderPair& pair : reply->rawHeaderPairs())
-    {
-        qDebug() << pair.first << "=" << pair.second;
-    }
-
-    const QUrl possibleRedirectUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
-    if (possibleRedirectUrl.isValid())
-    {
-        qDebug() << possibleRedirectUrl;
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << "invalid redirect url";
-    }
-
-    const QByteArray rawData = reply->readAll();
-    reply->deleteLater();
-
-    if (rawData.isEmpty())
-    {
-        qDebug() << Q_FUNC_INFO << ":rawData is empty";
-        return;
-    }
-
-    qDebug() << rawData;
-}
-
 void YouTube::onTimeoutRequestStreamPage()
 {
     //return;//ToDo:
@@ -531,6 +439,17 @@ void YouTube::onReplyStreamPage()
     else
     {
         processBadLivePageReply();
+    }
+}
+
+void YouTube::onParameterChanged(Parameter &parameter)
+{
+    Setting<QString>& setting = *parameter.getSetting();
+
+    if (&setting == &stream)
+    {
+        stream.set(stream.get().trimmed());
+        reconnect();
     }
 }
 
@@ -867,8 +786,6 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
                 messages.append(message);
                 authors.append(author);
-
-                _messagesReceived++;
             }
         }
     }
@@ -953,15 +870,14 @@ void YouTube::processBadChatReply()
             qWarning() << Q_FUNC_INFO << "too many bad chat replies! Disonnecting...";
 
             const QString preBroadcastId = state.streamId;
-            const QString preUserSpecified = _info.userSpecified;
 
-            _info = Info();
+            state = State();
 
             state.connected = false;
 
             emit disconnected(preBroadcastId);
 
-            setBroadcastLink(preUserSpecified);
+            reconnect();
         }
     }
 }

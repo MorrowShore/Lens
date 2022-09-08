@@ -9,18 +9,17 @@
 #include <QNetworkReply>
 
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(ChatService::ServiceType::GoodGame, parent)
+    : ChatService(settings_, settingsGroupPath, ChatService::ServiceType::GoodGame, parent)
     , settings(settings_)
-    , SettingsGroupPath(settingsGroupPath)
     , network(network_)
 {
-    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [=](QAbstractSocket::SocketState state){
+    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [this](QAbstractSocket::SocketState state){
         //qDebug() << "GoodGame WebSocket state changed:" << state;
     });
 
     QObject::connect(&_socket, &QWebSocket::textMessageReceived, this, &GoodGame::onWebSocketReceived);
 
-    QObject::connect(&_socket, &QWebSocket::connected, this, [=]() {
+    QObject::connect(&_socket, &QWebSocket::connected, this, [this]() {
         if (_info.connected)
         {
             _info.connected = false;
@@ -29,7 +28,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
         }
     });
 
-    QObject::connect(&_socket, &QWebSocket::disconnected, this, [=](){
+    QObject::connect(&_socket, &QWebSocket::disconnected, this, [this](){
         qDebug() << "GoodGame disconnected";
 
         if (_info.connected)
@@ -40,7 +39,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
         }
     });
 
-    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [=](QAbstractSocket::SocketError error_){
+    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
         qDebug() << "GoodGame WebSocket error:" << error_;
     });
 
@@ -152,17 +151,9 @@ void GoodGame::reconnect()
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
 }
 
-void GoodGame::setBroadcastLink(const QString &link)
+void GoodGame::onParameterChanged(Parameter &parameter)
 {
-    // https://goodgame.ru/api/getchannelstatus?id=lepestqchek&fmt=json
 
-    const QString channelName = link.toLower(); // TODO
-    _info.channelName = channelName;
-}
-
-QString GoodGame::getBroadcastLink() const
-{
-    return QString(); // TODO
 }
 
 void GoodGame::onWebSocketReceived(const QString &rawData)

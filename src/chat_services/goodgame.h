@@ -13,25 +13,17 @@ class GoodGame : public ChatService
 {
     Q_OBJECT
 public:
-    struct Info {
-        bool connected = false;
-        double protocolVersion = 0;
-
-        QString channelName;
-        uint64_t channelId = 0;
-    };
-
     explicit GoodGame(QSettings& settings, const QString& SettingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
     ~GoodGame();
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
     void reconnect() override;
-    void setBroadcastLink(const QString &link) override;
-    QString getBroadcastLink() const override;
-    const Info& getInfo() const { return _info; }
 
 signals:
+
+protected:
+    void onParameterChanged(Parameter &parameter) override;
 
 private slots:
     void onWebSocketReceived(const QString& rawData);
@@ -43,11 +35,17 @@ private slots:
     void requestChannelId();
 
 private:
+    struct Info {
+        bool connected = false;
+        double protocolVersion = 0;
+
+        QString channelName;
+        uint64_t channelId = 0;
+    };
 
     QWebSocket _socket;
 
     QSettings& settings;
-    const QString SettingsGroupPath;
     QNetworkAccessManager& network;
 
     Info _info;

@@ -20,8 +20,6 @@ static const QString ApplicationClientID = "cx5rgsivc62io2kk79yf6eivhhwiui";
 static const QString RedirectUri = "https://twitchapps.com/tmi/";//"https://localhost";
 static const QString TwitchIRCHost = "tmi.twitch.tv";
 
-static const QString SettingsKeyUserSpecifiedChannel = "user_specified_channel";
-
 static const QString FolderLogs = "logs_twitch";
 
 static const int ReconncectPeriod = 2 * 1000;
@@ -69,23 +67,22 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 }
 
 Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-  : ChatService(ChatService::ServiceType::Twitch, parent)
+  : ChatService(settings_, settingsGroupPath, ChatService::ServiceType::Twitch, parent)
   , settings(settings_)
-  , SettingsGroupPath(settingsGroupPath)
   , network(network_)
-  , oauthToken(Setting<QString>(settings, SettingsGroupPath + "/oauth_token"))
+  , oauthToken(Setting<QString>(settings, settingsGroupPath + "/oauth_token"))
 {
     parameters.append(Parameter(&oauthToken, tr("OAuth token"), Parameter::Type::String, { Parameter::Flag::PasswordEcho }));
     parameters.append(Parameter(new Setting<QString>(settings, QString(), requesGetAOuthTokenUrl().toString()), tr("Get token"), Parameter::Type::ButtonUrl, {}));
 
-    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [=](QAbstractSocket::SocketState state){
+    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [this](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
         //qDebug() << "Twitch: WebSocket state changed:" << state;
     });
 
     QObject::connect(&_socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
 
-    QObject::connect(&_socket, &QWebSocket::connected, this, [=]() {
+    QObject::connect(&_socket, &QWebSocket::connected, this, [this]() {
         if (state.connected)
         {
             state.connected = false;
@@ -105,7 +102,8 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         requestStreamInfo(state.streamId);
     });
 
-    QObject::connect(&_socket, &QWebSocket::disconnected, this, [=](){
+    QObject::connect(&_socket, &QWebSocket::disconnected, this, [this]()
+    {
         if (state.connected)
         {
             state.connected = false;
@@ -116,21 +114,23 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         state.viewersCount = -1;
     });
 
-    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [=](QAbstractSocket::SocketError error_){
+    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
         qDebug() << "Twitch: WebSocket error:" << error_;
     });
 
     reconnect();
 
-    QObject::connect(&_timerReconnect, &QTimer::timeout, this, [&](){
+    QObject::connect(&_timerReconnect, &QTimer::timeout, this, [this]()
+    {
         if (!state.connected && !oauthToken.get().isEmpty())
         {
             reconnect();
         }
     });
+
     _timerReconnect.start(ReconncectPeriod);
 
-    QObject::connect(&_timerCheckPong, &QTimer::timeout, this, [&]{
+    QObject::connect(&_timerCheckPong, &QTimer::timeout, this, [this]{
         if (state.connected)
         {
             qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
@@ -160,7 +160,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         }
     });
 
-    QObject::connect(&_timerPing, &QTimer::timeout, this, [&]{
+    QObject::connect(&_timerPing, &QTimer::timeout, this, [this]{
         if (state.connected)
         {
             sendIRCMessage(QString("PING :") + TwitchIRCHost);
@@ -169,15 +169,13 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     });
     _timerPing.start(PingPeriod);
 
-    QObject::connect(&_timerUpdaetStreamInfo, &QTimer::timeout, this, [&]{
+    QObject::connect(&_timerUpdaetStreamInfo, &QTimer::timeout, this, [this]{
         if (state.connected)
         {
             requestStreamInfo(state.streamId);
         }
     });
     _timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
-
-    setBroadcastLink(settings.value(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedChannel).toString());
 
     QFile fileBadges(":/resources/twitch-global-badges-20210728.json");
     if (fileBadges.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text))
@@ -251,32 +249,16 @@ QUrl Twitch::requesGetAOuthTokenUrl() const
                         + "&scope=openid+chat:read");
 }
 
-void Twitch::setBroadcastLink(const QString &link)
-{
-    QString userChannel = link.trimmed();
-
-    if (_info.userSpecifiedChannel != userChannel)
-    {
-        _info.userSpecifiedChannel = userChannel;
-
-        settings.setValue(SettingsGroupPath + "/" + SettingsKeyUserSpecifiedChannel, _info.userSpecifiedChannel);
-
-        reconnect();
-
-        emit stateChanged();
-    }
-}
-
-QString Twitch::getBroadcastLink() const
-{
-    return _info.userSpecifiedChannel;
-}
-
 void Twitch::onParameterChanged(Parameter& parameter)
 {
     Setting<QString>& setting = *parameter.getSetting();
 
-    if (&setting == &oauthToken)
+    if (&setting == &stream)
+    {
+        setting.set(setting.get().trimmed().toLower());
+        reconnect();
+    }
+    else if (&setting == &oauthToken)
     {
         QString token = parameter.getSetting()->get();
         if (token.startsWith("oauth:", Qt::CaseSensitivity::CaseInsensitive))
@@ -299,13 +281,11 @@ void Twitch::sendIRCMessage(const QString &message)
 
 void Twitch::reconnect()
 {
-    _info.userSpecifiedChannel = _info.userSpecifiedChannel.trimmed().toLower();
-
     QRegExp rx;
 
     // user channel
     state.streamId.clear();
-    const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(_info.userSpecifiedChannel);
+    const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(stream.get());
     rx = QRegExp("^twitch.tv/([^/]*)$", Qt::CaseInsensitive);
     if (rx.indexIn(simpleUserSpecifiedUserChannel) != -1)
     {
@@ -315,9 +295,9 @@ void Twitch::reconnect()
     if (state.streamId.isEmpty())
     {
         rx = QRegExp("^[a-zA-Z0-9_]+$", Qt::CaseInsensitive);
-        if (rx.indexIn(_info.userSpecifiedChannel) != -1)
+        if (rx.indexIn(stream.get()) != -1)
         {
-            state.streamId = _info.userSpecifiedChannel;
+            state.streamId = stream.get();
         }
     }
 
@@ -332,7 +312,6 @@ void Twitch::reconnect()
     if (state.connected)
     {
         state.connected = false;
-        emit stateChanged();
     }
 
     if (!state.streamId.isEmpty())
@@ -342,6 +321,8 @@ void Twitch::reconnect()
         // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
         _socket.open(QUrl("ws://irc-ws.chat.twitch.tv:80"));
     }
+
+    emit stateChanged();
 }
 
 void Twitch::onIRCMessage(const QString &rawData)
@@ -896,7 +877,6 @@ void Twitch::onReplyUserInfo()
 
         if (channelLogin == state.streamId)
         {
-            _info.broadcasterId = broadcasterId;
             requestForChannelBadges(broadcasterId);
         }
     }

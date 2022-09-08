@@ -10,25 +10,25 @@ Tray::Tray(QObject *parent) : QObject(parent)
     QAction* action;
 
     action = new QAction(QIcon(":/resources/images/applications-system.png"), QTranslator::tr("Settings"), menu);
-    connect(action, &QAction::triggered, this, [&](){
+    connect(action, &QAction::triggered, this, [this](){
         emit triggered("settings");
     });
     menu->addAction(action);
 
     _ignoreMouseAction = new QAction(QIcon(":/resources/images/input-mouse-disable.png"), QTranslator::tr("Ignore Mouse"), menu);
-    connect(_ignoreMouseAction, &QAction::triggered, this, [&](){
+    connect(_ignoreMouseAction, &QAction::triggered, this, [this](){
         emit triggered("input_transparent_toggle");
     });
     menu->addAction(_ignoreMouseAction);
 
     action = new QAction(QIcon(""), QTranslator::tr("Clear Messages"), menu);
-    connect(action, &QAction::triggered, this, [&](){
+    connect(action, &QAction::triggered, this, [this](){
         emit triggered("clear_messages");
     });
     menu->addAction(action);
 
     action = new QAction(QIcon(":/resources/images/emblem-unreadable.png"), QTranslator::tr("Close"), menu);
-    connect(action, &QAction::triggered, this, [&](){
+    connect(action, &QAction::triggered, this, [this](){
         emit triggered("close_application");
     });
     menu->addAction(action);

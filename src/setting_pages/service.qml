@@ -78,50 +78,7 @@ ScrollView {
             }
         }
 
-        Row {
-            spacing: 6
-
-            Label {
-                color: Material.accentColor
-                text: qsTr("Broadcast:")
-                anchors.verticalCenter: parent.verticalCenter
-                font.bold: true
-                font.pixelSize: 20
-            }
-
-            MyComponents.MyTextField {
-                id: textFieldUserSpecifiedLink
-                placeholderText: qsTr("Link...")
-                anchors.verticalCenter: parent.verticalCenter
-                width: 400
-
-                Component.onCompleted: {
-                    text = chatService.getBroadcastLink()
-                }
-
-                onTextChanged: {
-                    chatService.setBroadcastLink(text)
-                }
-            }
-
-            Button {
-                anchors.verticalCenter: parent.verticalCenter
-                highlighted: true
-                text: qsTr("Paste")
-                display: AbstractButton.TextBesideIcon
-                icon.source: "qrc:/resources/images/clipboard-paste-button.svg"
-
-                onClicked: {
-                    if (clipboard.text.length !== 0)
-                    {
-                        textFieldUserSpecifiedLink.text = clipboard.text;
-                        textFieldUserSpecifiedLink.deselect();
-                    }
-                }
-            }
-        }
-
-        Row {
+        /*Row {
             spacing: 6
 
             Button {
@@ -151,7 +108,7 @@ ScrollView {
                     Qt.openUrlExternally(chatService.chatUrl)
                 }
             }
-        }
+        }*/
 
         Component.onCompleted: {
             for (var i = 0; i < chatService.getParametersCount(); ++i)

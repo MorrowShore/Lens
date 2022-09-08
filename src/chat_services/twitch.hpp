@@ -19,8 +19,6 @@ public:
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
     QUrl requesGetAOuthTokenUrl() const;
-    void setBroadcastLink(const QString &link) override;
-    QString getBroadcastLink() const override;
 
     void reconnect() override;
 
@@ -49,12 +47,6 @@ private slots:
     void onReplyStreamInfo();
 
 private:
-    struct Info
-    {
-        QString broadcasterId;
-        QString userSpecifiedChannel;
-    };
-
     void parseBadgesJson(const QByteArray& data);
 
     struct MessageEmoteInfo
@@ -69,14 +61,12 @@ private:
     };
 
     QSettings& settings;
-    const QString SettingsGroupPath;
     QNetworkAccessManager& network;
 
     QWebSocket _socket;
 
     Setting<QString> oauthToken;
 
-    Info _info;
     QString _lastConnectedChannelName;
 
     QTimer _timerReconnect;

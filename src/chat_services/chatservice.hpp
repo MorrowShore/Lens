@@ -18,7 +18,6 @@ class ChatService : public QObject
     Q_OBJECT
 
 public:
-    Q_PROPERTY(QUrl                 broadcastUrl                 READ getBroadcastUrl                    NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 chatUrl                      READ getChatUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 controlPanelUrl              READ getControlPanelUrl                 NOTIFY stateChanged)
 
@@ -101,10 +100,13 @@ public:
         return QUrl();
     }
 
-    explicit ChatService(ServiceType serviceType_, QObject *parent = nullptr)
+    explicit ChatService(QSettings& settings, const QString& settingsGroupPath, ServiceType serviceType_, QObject *parent = nullptr)
         : QObject(parent)
         , serviceType(serviceType_)
-    { }
+        , stream(settings, settingsGroupPath + "/stream")
+    {
+        parameters.append(Parameter(&stream, tr("Stream"), Parameter::Type::String, {}));
+    }
 
     QUrl getChatUrl() const { return state.chatUrl; }
     QUrl getControlPanelUrl() const { return state.controlPanelUrl; }
@@ -129,9 +131,6 @@ public:
     {
         return getIconUrl(serviceType);
     }
-
-    Q_INVOKABLE virtual void setBroadcastLink(const QString& link) = 0;
-    Q_INVOKABLE virtual QString getBroadcastLink() const = 0;
 
     Q_INVOKABLE int getParametersCount() const { return parameters.count(); }
     Q_INVOKABLE QString getParameterName(int index) const
@@ -247,14 +246,12 @@ protected:
         std::set<Flag> flags;
     };
 
-    virtual void onParameterChanged(Parameter& parameter)
-    {
-        Q_UNUSED(parameter)
-    }
+    virtual void onParameterChanged(Parameter& parameter) = 0;
 
     QList<Parameter> parameters;
     const ServiceType serviceType;
     State state;
+    Setting<QString> stream;
 };
 
 #endif // CHATSERVICE_H
