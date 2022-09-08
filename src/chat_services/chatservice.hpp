@@ -209,6 +209,8 @@ public:
         {
             qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
         }
+
+        return QString();
     }
 
 #ifdef QT_QUICK_LIB
