@@ -49,11 +49,6 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
     _timerReconnect.start(2000);
 }
 
-GoodGame::~GoodGame()
-{
-    _socket.close();
-}
-
 ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
 {
     return ChatService::ConnectionStateType::NotConnected;
@@ -144,10 +139,11 @@ void GoodGame::reconnect()
 {
     _socket.close();
 
+    state = State();
+
     //https://goodgame.ru/chat/26624
 
     _socket.setProxy(network.proxy());
-
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
 }
 

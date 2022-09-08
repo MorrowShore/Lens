@@ -157,7 +157,7 @@ ScrollView {
             Button {
                 text: qsTr("Control Panel")
                 anchors.verticalCenter: parent.verticalCenter
-                visible: chatService.controlPanelUrl.toString().length !== 0
+                enabled: chatService.controlPanelUrl.toString().length !== 0
                 icon.source: "qrc:/resources/images/youtube-control-panel.svg"
                 onClicked: {
                     Qt.openUrlExternally(chatService.controlPanelUrl)
@@ -167,7 +167,7 @@ ScrollView {
             Button {
                 text: qsTr("Stream")
                 anchors.verticalCenter: parent.verticalCenter
-                visible: chatService.streamUrl.toString().length !== 0
+                enabled: chatService.streamUrl.toString().length !== 0
                 onClicked: {
                     Qt.openUrlExternally(chatService.streamUrl)
                 }
@@ -176,7 +176,7 @@ ScrollView {
             Button {
                 text: qsTr("Chat")
                 anchors.verticalCenter: parent.verticalCenter
-                visible: chatService.chatUrl.toString().length !== 0
+                enabled: chatService.chatUrl.toString().length !== 0
                 onClicked: {
                     Qt.openUrlExternally(chatService.chatUrl)
                 }

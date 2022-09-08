@@ -57,13 +57,6 @@ YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetwor
     reconnect();
 }
 
-YouTube::~YouTube()
-{
-    state.connected = false;
-    emit disconnected(state.streamId);
-    emit stateChanged();
-}
-
 QString YouTube::extractBroadcastId(const QString &link) const
 {
     const QString simpleUrl = AxelChat::simplifyUrl(link);

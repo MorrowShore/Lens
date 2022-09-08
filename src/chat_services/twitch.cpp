@@ -182,15 +182,6 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     requestForGlobalBadges();
 }
 
-Twitch::~Twitch()
-{
-    _socket.close();
-
-    state.connected = false;
-    emit disconnected(_lastConnectedChannelName);
-    emit stateChanged();
-}
-
 ChatService::ConnectionStateType Twitch::getConnectionStateType() const
 {
     if (state.connected)
@@ -273,6 +264,10 @@ void Twitch::sendIRCMessage(const QString &message)
 
 void Twitch::reconnect()
 {
+    _socket.close();
+
+    state = State();
+
     QRegExp rx;
 
     // user channel
@@ -293,25 +288,14 @@ void Twitch::reconnect()
         }
     }
 
-    state.chatUrl = QUrl(QString("https://www.twitch.tv/popout/%1/chat").arg(state.streamId));
-
-    state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
-
-    state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(state.streamId));
-
-    _socket.close();
-
-    if (state.connected)
-    {
-        state.connected = false;
-    }
-
     if (!state.streamId.isEmpty())
     {
-        _socket.setProxy(network.proxy());
+        state.chatUrl = QUrl(QString("https://www.twitch.tv/popout/%1/chat").arg(state.streamId));
+        state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
+        state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(state.streamId));
 
-        // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
-        _socket.open(QUrl("ws://irc-ws.chat.twitch.tv:80"));
+        _socket.setProxy(network.proxy());
+        _socket.open(QUrl("ws://irc-ws.chat.twitch.tv:80")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
     }
 
     emit stateChanged();

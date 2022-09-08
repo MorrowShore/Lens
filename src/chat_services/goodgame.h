@@ -14,7 +14,6 @@ class GoodGame : public ChatService
     Q_OBJECT
 public:
     explicit GoodGame(QSettings& settings, const QString& SettingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
-    ~GoodGame();
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;

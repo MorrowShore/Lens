@@ -15,12 +15,12 @@ class Twitch : public ChatService
 
 public:
     explicit Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
-    ~Twitch();
+
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-    QUrl requesGetAOuthTokenUrl() const;
-
     void reconnect() override;
+
+    QUrl requesGetAOuthTokenUrl() const;
 
 signals:
 
