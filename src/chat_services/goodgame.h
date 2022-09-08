@@ -34,23 +34,13 @@ private slots:
     void requestChannelId();
 
 private:
-    struct Info {
-        bool connected = false;
-        double protocolVersion = 0;
-
-        QString channelName;
-        uint64_t channelId = 0;
-    };
-
     QWebSocket _socket;
 
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    Info _info;
+    int64_t channelId = -1;
     QString _lastConnectedChannelName;
-
-    QTimer _timerReconnect;
 };
 
 #endif // GOODGAME_H

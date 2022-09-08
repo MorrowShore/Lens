@@ -341,6 +341,27 @@
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
+    <message>
+        <location filename="chat_services/goodgame.cpp" line="79"/>
+        <source>Channel not specified</source>
+        <oldsource>Stream not specified</oldsource>
+        <translation>Канал не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/goodgame.cpp" line="82"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/goodgame.cpp" line="85"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/goodgame.cpp" line="88"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
+    </message>
 </context>
 <context>
     <name>MyTextArea</name>

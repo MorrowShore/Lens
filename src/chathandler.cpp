@@ -47,11 +47,16 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     connect(twitch, &Twitch::avatarDiscovered, this, &ChatHandler::onAvatarDiscovered);
     addService(twitch);
 
-    //addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
+    addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
 }
 
 void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors)
 {
+    if (messages.isEmpty() && authors.isEmpty())
+    {
+        return;
+    }
+
     if (messages.count() != authors.count())
     {
         qWarning() << "The number of messages is not equal to the number of authors";
@@ -143,7 +148,7 @@ void ChatHandler::sendTestMessage(const QString &text)
     QList<ChatAuthor> authors;
     authors.append(author);
 
-    ChatMessage message({new ChatMessage::Text(text)}, author.getId());
+    ChatMessage message({new ChatMessage::Text(text)}, author);
     message.setCustomAuthorName(tr("Test Message"));
     message.setCustomAuthorAvatarUrl(QUrl("qrc:/resources/images/flask2.svg"));
 
@@ -161,7 +166,7 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
 
     QList<ChatMessage> messages;
     messages.append(ChatMessage({new ChatMessage::Text(text)},
-                                author.getId(),
+                                author,
                                 QDateTime::currentDateTime(),
                                 QDateTime::currentDateTime(),
                                 QString(),

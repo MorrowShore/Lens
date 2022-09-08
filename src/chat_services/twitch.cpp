@@ -144,7 +144,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
             ChatMessage::Text* text = new ChatMessage::Text(tr("Ping timeout! Reconnection..."));
             contents.append(text);
 
-            ChatMessage message(contents, author.getId());
+            ChatMessage message(contents, author);
 
             QList<ChatMessage> messages;
             messages.append(message);
@@ -268,10 +268,16 @@ void Twitch::reconnect()
 
     state = State();
 
+    if (stream.get().trimmed().isEmpty())
+    {
+        emit stateChanged();
+        return;
+    }
+
     QRegExp rx;
 
     // user channel
-    state.streamId.clear();
+
     const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(stream.get());
     rx = QRegExp("^twitch.tv/([^/]*)$", Qt::CaseInsensitive);
     if (rx.indexIn(simpleUserSpecifiedUserChannel) != -1)
@@ -561,7 +567,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             authorFlags.insert(ChatAuthor::Flags::Moderator);
         }
 
-        const ChatAuthor author(ChatService::ServiceType::Twitch,
+        const ChatAuthor author(getServiceType(),
                                 displayName,
                                 channelLogin,
                                 avatar,
@@ -628,7 +634,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         }
 
         const ChatMessage message = ChatMessage(contents,
-                                                channelLogin,
+                                                author,
                                                 QDateTime::currentDateTime(),
                                                 QDateTime::currentDateTime(),
                                                 QString(),

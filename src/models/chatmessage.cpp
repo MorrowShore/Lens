@@ -1,10 +1,11 @@
 #include "chatmessage.h"
+#include "chatauthor.h"
 #include <QUuid>
 #include <QMetaEnum>
 #include <QDebug>
 
 ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
-                         const QString &authorId_,
+                         const ChatAuthor& author,
                          const QDateTime &publishedAt_,
                          const QDateTime &receivedAt_,
                          const QString &messageId_,
@@ -15,7 +16,7 @@ ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
     , messageId(messageId_)
     , publishedAt(publishedAt_)
     , receivedAt(receivedAt_)
-    , authorId(authorId_)
+    , authorId(author.getId())
     , flags(flags_)
     , forcedColors(forcedColors_)
     , images(images_)
@@ -24,6 +25,8 @@ ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
     {
         messageId = authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
     }
+
+    messageId = ChatService::getServiceTypeId(author.getServiceType()) + "/" + messageId;
 
     updateHtml();
 }

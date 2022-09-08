@@ -742,7 +742,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             if (isDeleter)
             {
                 messages.append(ChatMessage(contents,
-                                            QString(),
+                                            ChatAuthor(),
                                             QDateTime::currentDateTime(),
                                             QDateTime::currentDateTime(),
                                             messageId,
@@ -753,7 +753,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             }
             else
             {
-                const ChatAuthor author(ChatService::ServiceType::YouTube,
+                const ChatAuthor author(getServiceType(),
                                         authorName,
                                         authorChannelId,
                                         authorAvatarUrl,
@@ -764,7 +764,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
                 const ChatMessage message(
                             contents,
-                            authorChannelId,
+                            author,
                             publishedAt,
                             receivedAt,
                             messageId,
