@@ -224,8 +224,7 @@ public:
 signals:
     void stateChanged();
     void readyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors);
-    void connected(QString name);
-    void disconnected(QString name);
+    void connectedChanged(const bool connected, const QString& name);
     void avatarDiscovered(const QString& channelId, const QUrl& url);
 
 protected:

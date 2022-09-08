@@ -77,7 +77,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     parameters.append(Parameter(&oauthToken, tr("OAuth token"), Parameter::Type::String, { Parameter::Flag::PasswordEcho }));
     parameters.append(Parameter(new Setting<QString>(settings, QString(), requesGetAOuthTokenUrl().toString()), tr("Get token"), Parameter::Type::ButtonUrl, {}));
 
-    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [this](QAbstractSocket::SocketState state){
+    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
         //qDebug() << "Twitch: WebSocket state changed:" << state;
     });
@@ -109,14 +109,14 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         if (state.connected)
         {
             state.connected = false;
-            emit disconnected(_lastConnectedChannelName);
+            emit connectedChanged(false, _lastConnectedChannelName);
             emit stateChanged();
         }
 
         state.viewersCount = -1;
     });
 
-    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
+    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [](QAbstractSocket::SocketError error_){
         qDebug() << "Twitch: WebSocket error:" << error_;
     });
 
@@ -156,7 +156,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
             state.connected = false;
 
-            emit disconnected(_lastConnectedChannelName);
+            emit connectedChanged(false, _lastConnectedChannelName);
             emit stateChanged();
             reconnect();
         }
@@ -333,7 +333,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         {
             state.connected = true;
             _lastConnectedChannelName = state.streamId;
-            emit connected(state.streamId);
+            emit connectedChanged(true, state.streamId);
             emit stateChanged();
         }
 

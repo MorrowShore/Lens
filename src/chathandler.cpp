@@ -223,7 +223,7 @@ void ChatHandler::openProgramFolder()
 }
 #endif
 
-void ChatHandler::onConnected(QString name)
+void ChatHandler::onConnectedChanged(const bool connected, const QString& name)
 {
     ChatService* service = qobject_cast<ChatService*>(sender());
     if (!service)
@@ -231,24 +231,18 @@ void ChatHandler::onConnected(QString name)
         return;
     }
 
-    sendSoftwareMessage(tr("%1 connected: %2").arg(service->getName()).arg(name));
-
-    emit connectedCountChanged();
-}
-
-void ChatHandler::onDisconnected(QString name)
-{
-    ChatService* service = qobject_cast<ChatService*>(sender());
-    if (!service)
+    if (connected)
     {
-        return;
+        sendSoftwareMessage(tr("%1 connected: %2").arg(service->getName()).arg(name));
     }
-
-    sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getName()).arg(name));
-
-    if (_enabledClearMessagesOnLinkChange)
+    else
     {
-        clearMessages();
+        sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getName()).arg(name));
+
+        if (_enabledClearMessagesOnLinkChange)
+        {
+            clearMessages();
+        }
     }
 
     emit connectedCountChanged();
@@ -289,8 +283,7 @@ void ChatHandler::addService(ChatService* service)
     services.append(service);
 
     connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
-    connect(service, &ChatService::connected, this, &ChatHandler::onConnected);
-    connect(service, &ChatService::disconnected, this, &ChatHandler::onDisconnected);
+    connect(service, &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
     connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
 }
 

@@ -24,7 +24,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
         {
             _info.connected = false;
             emit stateChanged();
-            emit connected(_lastConnectedChannelName);
+            emit connectedChanged(true, _lastConnectedChannelName);
         }
     });
 
@@ -35,7 +35,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
         {
             _info.connected = false;
             emit stateChanged();
-            emit disconnected(_lastConnectedChannelName);
+            emit connectedChanged(false, _lastConnectedChannelName);
         }
     });
 
@@ -167,7 +167,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
         if (!_info.connected)
         {
             _info.connected = true;
-            emit connected(_info.channelName);
+            emit connectedChanged(true, _info.channelName);
         }
 
         QList<ChatMessage> messages;

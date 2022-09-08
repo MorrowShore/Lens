@@ -100,8 +100,7 @@ public slots:
 #endif
 
 private slots:
-    void onConnected(QString name);
-    void onDisconnected(QString name);
+    void onConnectedChanged(const bool connected, const QString& name);
     void onAuthorNameChanged(const ChatAuthor& author, const QString& prevName, const QString& newName);
 
 private:

@@ -244,7 +244,7 @@ void YouTube::reconnect()
 
     if (preConnected && !preBroadcastId.isEmpty())
     {
-        emit disconnected(preBroadcastId);
+        emit connectedChanged(false, preBroadcastId);
     }
 
     emit stateChanged();
@@ -323,10 +323,6 @@ void YouTube::onReplyChatPage()
         qDebug() << "!reply";
         return;
     }
-
-    //_traffic += reply->size();
-    //qDebug() << _traffic / 1024.0 / 1024.0 << "MB";
-    //emit stateChanged();
 
     const QByteArray rawData = reply->readAll();
     reply->deleteLater();
@@ -414,9 +410,6 @@ void YouTube::onReplyStreamPage()
         return;
     }
 
-    //_traffic += reply->size();
-    //emit stateChanged();
-
     const QByteArray rawData = reply->readAll();
     reply->deleteLater();
 
@@ -456,7 +449,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
     {
         state.connected = true;
 
-        emit connected(state.streamId);
+        emit connectedChanged(true, state.streamId);
         emit stateChanged();
     }
 
@@ -870,7 +863,7 @@ void YouTube::processBadChatReply()
 
             state.connected = false;
 
-            emit disconnected(preBroadcastId);
+            emit connectedChanged(false, preBroadcastId);
 
             reconnect();
         }
