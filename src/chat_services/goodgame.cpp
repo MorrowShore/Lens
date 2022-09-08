@@ -24,7 +24,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
 
     QObject::connect(&_socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState)
     {
-        //qDebug() << "GoodGame WebSocket state changed:" << state;
+        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
     });
 
     QObject::connect(&_socket, &QWebSocket::textMessageReceived, this, &GoodGame::onWebSocketReceived);
@@ -53,7 +53,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
 
     QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [](QAbstractSocket::SocketError error_)
     {
-        qDebug() << "GoodGame WebSocket error:" << error_;
+        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_;
     });
 
     reconnect();
@@ -156,7 +156,8 @@ void GoodGame::requestChannelId()
         uint64_t id = 0;
         bool found = false;
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
-        for (const QString& key : root.keys())
+        const QStringList keys = root.keys();
+        for (const QString& key : keys)
         {
             id = key.toULongLong(&found);
             if (found)
@@ -177,11 +178,15 @@ void GoodGame::requestChannelId()
         {
             channelId = id;
 
+            state.chatUrl = QString("https://goodgame.ru/chat/%1").arg(channelId);
+
+            emit stateChanged();
+
             requestGetChannelHistory();
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "channel id not found";
+            qWarning() << Q_FUNC_INFO << ": channel id not found";
         }
     });
 }
@@ -198,9 +203,12 @@ QString GoodGame::getStreamId(const QString &stream)
             return QString();
         }
 
-        AxelChat::removeFromEnd(streamId, "/", Qt::CaseSensitivity::CaseInsensitive);
-        AxelChat::removeFromEnd(streamId, "#autoplay", Qt::CaseSensitivity::CaseInsensitive);
-        AxelChat::removeFromEnd(streamId, "/", Qt::CaseSensitivity::CaseInsensitive);
+        if (streamId.contains('#'))
+        {
+            streamId = streamId.left(streamId.indexOf('#'));
+        }
+
+        streamId.remove('/');
     }
 
     return streamId;
@@ -219,6 +227,8 @@ void GoodGame::reconnect()
         emit stateChanged();
         return;
     }
+
+    state.streamUrl = "https://goodgame.ru/channel/" + state.streamId;
 
     _socket.setProxy(network.proxy());
     _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
@@ -291,12 +301,12 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
         const double protocolVersion = data.value("protocolVersion").toDouble();
         if (protocolVersion != 1.1)
         {
-            qWarning() << "GoodGame: unsupported protocol version" << protocolVersion;
+            qWarning() << Q_FUNC_INFO << ": unsupported protocol version" << protocolVersion;
         }
     }
     else if (type == "error")
     {
-        qWarning() << "GoodGame: client received error, channel id =" << channelId << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
+        qWarning() << Q_FUNC_INFO << ": client received error, channel id =" << channelId << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
     }
     else if (type == "success_auth")
     {
@@ -304,7 +314,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     }
     else
     {
-        qDebug() << "GoodGame: unknown message type" << type << ", data = \n" << rawData;
+        qWarning() << Q_FUNC_INFO << ": unknown message type" << type << ", data = \n" << rawData;
     }
 
 
