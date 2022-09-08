@@ -199,6 +199,18 @@ public:
         }
     }
 
+    Q_INVOKABLE QString getParameterPlaceholder(int index) const
+    {
+        if (index < parameters.count())
+        {
+            return parameters[index].getPlaceholder();
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+        }
+    }
+
 #ifdef QT_QUICK_LIB
     static void declareQml()
     {
@@ -234,19 +246,37 @@ protected:
             , flags(flags_)
         {}
 
-        Setting<QString>* getSetting() const { return setting; }
+        Setting<QString>* getSetting() { return setting; }
+        const Setting<QString>* getSetting() const { return setting; }
         QString getName() const { return name; }
         Type getType() const { return type; }
         const std::set<Flag>& getFlags() const { return flags; }
+
+        void setPlaceholder(const QString& placeHolder_) { placeHolder = placeHolder_; }
+        QString getPlaceholder() const { return placeHolder; }
 
     private:
         Setting<QString>* setting;
         QString name;
         Type type;
         std::set<Flag> flags;
+        QString placeHolder;
     };
 
     virtual void onParameterChanged(Parameter& parameter) = 0;
+
+    Parameter* getParameter(const Setting<QString>& setting)
+    {
+        for (Parameter& parameter : parameters)
+        {
+            if (parameter.getSetting() == &setting)
+            {
+                return &parameter;
+            }
+        }
+
+        return nullptr;
+    }
 
     QList<Parameter> parameters;
     const ServiceType serviceType;

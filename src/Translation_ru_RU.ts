@@ -463,43 +463,48 @@
     <name>Twitch</name>
     <message>
         <location filename="chat_services/twitch.cpp" line="75"/>
+        <source>Link or channel name...</source>
+        <translation>Ссылка или имя канала...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="77"/>
         <source>OAuth token</source>
         <oldsource>Token</oldsource>
         <translation>OAuth-токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="76"/>
+        <location filename="chat_services/twitch.cpp" line="78"/>
         <source>Get token</source>
         <oldsource>Get Token</oldsource>
         <translation>Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="139"/>
+        <location filename="chat_services/twitch.cpp" line="144"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="220"/>
+        <location filename="chat_services/twitch.cpp" line="226"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="225"/>
+        <location filename="chat_services/twitch.cpp" line="231"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="228"/>
+        <location filename="chat_services/twitch.cpp" line="234"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="231"/>
+        <location filename="chat_services/twitch.cpp" line="237"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="234"/>
+        <location filename="chat_services/twitch.cpp" line="240"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -507,27 +512,32 @@
 <context>
     <name>YouTube</name>
     <message>
-        <location filename="chat_services/youtube.cpp" line="306"/>
+        <location filename="chat_services/youtube.cpp" line="49"/>
+        <source>Link or broadcast ID...</source>
+        <translation>Ссылка или ID трансляции...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtube.cpp" line="284"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="311"/>
+        <location filename="chat_services/youtube.cpp" line="289"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="314"/>
+        <location filename="chat_services/youtube.cpp" line="292"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="317"/>
+        <location filename="chat_services/youtube.cpp" line="295"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="320"/>
+        <location filename="chat_services/youtube.cpp" line="298"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

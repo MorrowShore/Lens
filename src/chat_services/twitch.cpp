@@ -72,6 +72,8 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
   , network(network_)
   , oauthToken(Setting<QString>(settings, settingsGroupPath + "/oauth_token"))
 {
+    getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
+
     parameters.append(Parameter(&oauthToken, tr("OAuth token"), Parameter::Type::String, { Parameter::Flag::PasswordEcho }));
     parameters.append(Parameter(new Setting<QString>(settings, QString(), requesGetAOuthTokenUrl().toString()), tr("Get token"), Parameter::Type::ButtonUrl, {}));
 
@@ -216,7 +218,8 @@ ChatService::ConnectionStateType Twitch::getConnectionStateType() const
 
 QString Twitch::getStateDescription() const
 {
-    switch (getConnectionStateType()) {
+    switch (getConnectionStateType())
+    {
     case ConnectionStateType::NotConnected:
         if (state.streamId.isEmpty())
         {

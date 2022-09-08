@@ -145,6 +145,7 @@ ScrollView {
 
                             Component.onCompleted: {
                                 text = chatService.getParameterValue(" + String("%1").arg(i) + ")
+                                placeholderText = chatService.getParameterPlaceholder(" + String("%1").arg(i) + ")
                             }
 
                             onTextChanged: {
