@@ -154,8 +154,6 @@ void GoodGame::requestChannelHistory()
 
 void GoodGame::requestChannelStatus()
 {
-    channelId = -1;
-
     const QString channelName = state.streamId;
 
     QNetworkRequest request(QUrl("https://goodgame.ru/api/getchannelstatus?fmt=json&id=" + channelName));
@@ -164,8 +162,6 @@ void GoodGame::requestChannelStatus()
     QNetworkReply* reply = network.get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply, channelName]()
     {
-        channelId = -1;
-
         uint64_t id = 0;
         bool found = false;
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
@@ -334,13 +330,13 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     }
     else if (type == "success_auth")
     {
+        this->channelId = -1;
         requestChannelStatus();
     }
     else
     {
         qWarning() << Q_FUNC_INFO << ": unknown message type" << type << ", data = \n" << rawData;
     }
-
 
     if (!state.connected)
     {
