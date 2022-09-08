@@ -283,7 +283,9 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
             const ChatAuthor author(getServiceType(),
                                     authorName,
-                                    authorId);
+                                    authorId,
+                                    QUrl(),
+                                    QUrl("https://goodgame.ru/user/" + authorId));
 
             const ChatMessage message({ new ChatMessage::Text(text) }, author, publishedAt, QDateTime::currentDateTime(), messageId);
 
