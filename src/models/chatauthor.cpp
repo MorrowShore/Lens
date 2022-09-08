@@ -19,7 +19,6 @@ ChatAuthor::ChatAuthor(ChatService::ServiceType serviceType_,
     , flags(flags_)
     , customNicknameColor(customNicknameColor_)
 {
-
 }
 
 const ChatAuthor &ChatAuthor::getSoftwareAuthor()

@@ -36,8 +36,6 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
 
     QObject::connect(&_socket, &QWebSocket::disconnected, this, [this]()
     {
-        qDebug() << "GoodGame disconnected";
-
         if (state.connected)
         {
             state.connected = false;
@@ -211,7 +209,7 @@ void GoodGame::onParameterChanged(Parameter &parameter)
 
 void GoodGame::onWebSocketReceived(const QString &rawData)
 {
-    qDebug(rawData.toUtf8());
+    //qDebug(rawData.toUtf8());
 
     const QJsonDocument document = QJsonDocument::fromJson(rawData.toUtf8());
     const QJsonObject root = document.object();
@@ -237,7 +235,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
         {
             const QJsonObject jsonMessage = value.toObject();
 
-            const QString authorId = jsonMessage.value("user_id").toString();
+            const QString authorId = QString("%1").arg(jsonMessage.value("user_id").toVariant().toLongLong());
             const QString authorName = jsonMessage.value("user_name").toString();
             const QString messageId = jsonMessage.value("message_id").toString();
             const QDateTime publishedAt = QDateTime::fromMSecsSinceEpoch(qint64(jsonMessage.value("timestamp").toDouble()));
