@@ -237,8 +237,8 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
             const QString authorId = QString("%1").arg(jsonMessage.value("user_id").toVariant().toLongLong());
             const QString authorName = jsonMessage.value("user_name").toString();
-            const QString messageId = jsonMessage.value("message_id").toString();
-            const QDateTime publishedAt = QDateTime::fromMSecsSinceEpoch(qint64(jsonMessage.value("timestamp").toDouble()));
+            const QString messageId = QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
+            const QDateTime publishedAt = QDateTime::fromSecsSinceEpoch(jsonMessage.value("timestamp").toVariant().toLongLong());
             const QString text = jsonMessage.value("text").toString();
 
             const ChatAuthor author(getServiceType(),
