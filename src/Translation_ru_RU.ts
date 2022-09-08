@@ -335,6 +335,14 @@
     </message>
 </context>
 <context>
+    <name>GoodGame</name>
+    <message>
+        <location filename="chat_services/goodgame.cpp" line="16"/>
+        <source>Link or channel name...</source>
+        <translation>Ссылка или имя канала...</translation>
+    </message>
+</context>
+<context>
     <name>MyTextArea</name>
     <message>
         <location filename="my_components/MyTextArea.qml" line="35"/>
@@ -1021,45 +1029,36 @@ Latest version available: %2</oldsource>
 <context>
     <name>font_settings</name>
     <message>
-        <location filename="font_settings.qml" line="11"/>
         <source>Font Settings</source>
-        <translation>Настройки шрифта</translation>
+        <translation type="vanished">Настройки шрифта</translation>
     </message>
     <message>
-        <location filename="font_settings.qml" line="33"/>
-        <location filename="font_settings.qml" line="129"/>
         <source>Text Color</source>
-        <translation>Цвет текста</translation>
+        <translation type="vanished">Цвет текста</translation>
     </message>
     <message>
-        <location filename="font_settings.qml" line="97"/>
         <source>Font</source>
-        <translation>Шрифт</translation>
+        <translation type="vanished">Шрифт</translation>
     </message>
     <message>
-        <location filename="font_settings.qml" line="113"/>
         <source>Font Size</source>
-        <translation>Размер шрифта</translation>
+        <translation type="vanished">Размер шрифта</translation>
     </message>
     <message>
-        <location filename="font_settings.qml" line="137"/>
         <source>Style Color</source>
-        <translation>Цвет стиля</translation>
+        <translation type="vanished">Цвет стиля</translation>
     </message>
     <message>
-        <location filename="font_settings.qml" line="146"/>
         <source>Bold</source>
-        <translation>Жирный шрифт</translation>
+        <translation type="vanished">Жирный шрифт</translation>
     </message>
     <message>
-        <location filename="font_settings.qml" line="153"/>
         <source>Italic</source>
-        <translation>Наклонный</translation>
+        <translation type="vanished">Наклонный</translation>
     </message>
     <message>
-        <location filename="font_settings.qml" line="160"/>
         <source>Underline</source>
-        <translation>Подчёркнутый</translation>
+        <translation type="vanished">Подчёркнутый</translation>
     </message>
 </context>
 <context>
@@ -1205,12 +1204,12 @@ Latest version available: %2</oldsource>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="189"/>
+        <location filename="setting_pages/service.qml" line="188"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="199"/>
+        <location filename="setting_pages/service.qml" line="198"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1219,7 +1218,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="208"/>
+        <location filename="setting_pages/service.qml" line="207"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

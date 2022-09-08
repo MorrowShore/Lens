@@ -13,6 +13,8 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
     , settings(settings_)
     , network(network_)
 {
+    getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
+
     QObject::connect(&_socket, &QWebSocket::stateChanged, this, [this](QAbstractSocket::SocketState state){
         //qDebug() << "GoodGame WebSocket state changed:" << state;
     });
