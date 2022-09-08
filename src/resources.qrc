@@ -1,34 +1,21 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/images/youtube-icon.svg</file>
-        <file>resources/images/youtube-icon.png</file>
-        <file>resources/images/axelchat.png</file>
         <file>resources/images/axelchat.svg</file>
         <file>resources/images/axelchat-rounded.svg</file>
-        <file>resources/images/youtube-rounded.svg</file>
         <file>resources/images/king.svg</file>
-        <file>resources/images/tool.svg</file>
         <file>resources/images/download-button.svg</file>
         <file>icon.ico</file>
-        <file>resources/images/search.svg</file>
-        <file>resources/images/settings.svg</file>
-        <file>resources/images/user.svg</file>
-        <file>resources/images/flask.svg</file>
         <file>resources/images/flask2.svg</file>
         <file>resources/images/clipboard-paste-button.svg</file>
         <file>resources/images/copy-content.svg</file>
         <file>resources/images/cut-content-button.svg</file>
         <file>resources/images/alert1.svg</file>
-        <file>resources/images/alert2.svg</file>
         <file>resources/images/tick.svg</file>
-        <file>resources/images/forward-arrow.svg</file>
         <file>resources/sound/ui/beep1.wav</file>
         <file>resources/images/github.svg</file>
         <file>resources/images/feedback.svg</file>
         <file>resources/images/new-release.svg</file>
-        <file>resources/images/boxes.svg</file>
-        <file>resources/images/box-new.svg</file>
-        <file>resources/images/youtube-black.svg</file>
         <file>resources/images/refresh.svg</file>
         <file>resources/images/ic-add.png</file>
         <file>resources/images/ic-play.png</file>
@@ -39,19 +26,13 @@
         <file>resources/images/ic-trash.png</file>
         <file>resources/images/ic-write.png</file>
         <file>resources/images/ic-folder.png</file>
-        <file>resources/images/twitch-round.svg</file>
         <file>resources/images/sleeping_200_transparent.gif</file>
-        <file>resources/images/twitch-icon.png</file>
-        <file>resources/images/youtube-icon-32x32.png</file>
         <file>resources/images/youtube-moderator-icon.svg</file>
         <file>resources/images/youtube-verified-icon.svg</file>
         <file>resources/images/unknown-badge.png</file>
-        <file>resources/images/twitch-icon-18x18.png</file>
-        <file>resources/images/youtube-icon-18x18.png</file>
         <file>resources/images/refresh-button-1.svg</file>
         <file>resources/images/twitch-icon.svg</file>
         <file>resources/images/youtube-control-panel.svg</file>
-        <file>resources/images/twitch-control-panel.svg</file>
         <file>resources/images/help-round-button.svg</file>
         <file>resources/images/applications-system.png</file>
         <file>resources/images/emblem-unreadable.png</file>
