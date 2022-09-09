@@ -98,7 +98,7 @@ ScrollView {
             anchors.verticalCenterOffset: 0
             anchors.verticalCenter: textFieldTestMessage.verticalCenter
             highlighted: true
-            icon.source: "qrc:/resources/images/flask.svg"
+            icon.source: "qrc:/resources/images/flask2.svg"
 
             onClicked: {
                 sendTestMessage();

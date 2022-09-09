@@ -416,7 +416,16 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 {
                     if (foundColon)
                     {
-                        rawSmileId += c;
+                        if (SmilesValidSymbols.contains(c.toLower()))
+                        {
+                            rawSmileId += c;
+                        }
+                        else
+                        {
+                            text += ":" + rawSmileId + c;
+                            rawSmileId.clear();
+                            foundColon = false;
+                        }
                     }
                     else
                     {
@@ -427,7 +436,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
             if (!rawSmileId.isEmpty())
             {
-                text += rawSmileId;
+                text += ":" + rawSmileId;
             }
 
             if (!text.isEmpty())

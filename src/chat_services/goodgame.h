@@ -50,6 +50,7 @@ private:
 
     QSet<QString> requestedInfoUsers;
 
+    inline static const QString SmilesValidSymbols = "abcdefghijklmnopqrstuvwxyz_0123456789";
     QHash<QString, QUrl> smiles;
 };
 
