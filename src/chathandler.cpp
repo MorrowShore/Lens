@@ -191,7 +191,7 @@ void ChatHandler::onAuthorDataUpdated(const QString& authorId, const QMap<Author
         }
     }
 
-    messagesModel.setAuthorData(authorId, values);
+    messagesModel.setAuthorValues(authorId, values);
 }
 
 void ChatHandler::clearMessages()

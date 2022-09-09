@@ -26,11 +26,11 @@ public:
     uint64_t lastIdNum() const;
     QModelIndex createIndexByPtr(QVariant* data) const;
     int getRow(QVariant* data);
-    void setAuthorData(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
     const Author* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
     void insertAuthor(const Author& author);
+    void setAuthorValues(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
 private:
     static const QHash<int, QByteArray> _roleNames;

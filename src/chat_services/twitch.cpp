@@ -534,12 +534,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
         }
 
-        QUrl avatar;
-        if (avatarsUrls.contains(channelLogin))
-        {
-            avatar = avatarsUrls[channelLogin];
-        }
-        else
+        if (!usersInfoUpdated.contains(channelLogin))
         {
             requestUserInfo(channelLogin);
         }
@@ -569,7 +564,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         const Author author(getServiceType(),
                                 displayName,
                                 channelLogin,
-                                avatar,
+                                QUrl(),
                                 QUrl(QString("https://www.twitch.tv/%1").arg(channelLogin)),
                                 badges.values(),
                                 {},
@@ -763,9 +758,10 @@ void Twitch::onReplyUserInfo()
             continue;
         }
 
+        usersInfoUpdated.insert(channelLogin);
+
         if (!profileImageUrl.isEmpty())
         {
-            avatarsUrls.insert(channelLogin, profileImageUrl);
             emit authorDataUpdated(channelLogin, { {Author::Role::AvatarUrl, profileImageUrl} });
         }
 

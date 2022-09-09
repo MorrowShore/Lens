@@ -6,39 +6,40 @@
 #include <QUuid>
 #include <QDebug>
 
-const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>{
-    {(int)Message::Role::Id ,                     "messageId"},
-    {(int)Message::Role::Html ,                   "messageHtml"},
-    {(int)Message::Role::PublishedAt ,            "messagePublishedAt"},
-    {(int)Message::Role::ReceivedAt ,             "messageReceivedAt"},
-    {(int)Message::Role::IsBotCommand ,           "messageIsBotCommand"},
-    {(int)Message::Role::MarkedAsDeleted ,        "messageMarkedAsDeleted"},
-    {(int)Message::Role::CustomAuthorAvatarUrl,   "messageCustomAuthorAvatarUrl"},
-    {(int)Message::Role::CustomAuthorName,        "messageCustomAuthorName"},
+const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>
+{
+    {(int)Message::Role::Id ,                           "messageId"},
+    {(int)Message::Role::Html ,                         "messageHtml"},
+    {(int)Message::Role::PublishedAt ,                  "messagePublishedAt"},
+    {(int)Message::Role::ReceivedAt ,                   "messageReceivedAt"},
+    {(int)Message::Role::IsBotCommand ,                 "messageIsBotCommand"},
+    {(int)Message::Role::MarkedAsDeleted ,              "messageMarkedAsDeleted"},
+    {(int)Message::Role::CustomAuthorAvatarUrl,         "messageCustomAuthorAvatarUrl"},
+    {(int)Message::Role::CustomAuthorName,              "messageCustomAuthorName"},
 
-    {(int)Message::Role::IsDonateSimple,      "messageIsDonateSimple"},
-    {(int)Message::Role::IsDonateWithText,    "messageIsDonateWithText"},
-    {(int)Message::Role::IsDonateWithImage,   "messageIsDonateWithImage"},
+    {(int)Message::Role::IsDonateSimple,                "messageIsDonateSimple"},
+    {(int)Message::Role::IsDonateWithText,              "messageIsDonateWithText"},
+    {(int)Message::Role::IsDonateWithImage,             "messageIsDonateWithImage"},
 
-    {(int)Message::Role::IsServiceMessage,           "messageIsServiceMessage"},
-    {(int)Message::Role::IsYouTubeChatMembership,    "messageIsYouTubeChatMembership"},
-    {(int)Message::Role::IsTwitchAction,             "messageIsTwitchAction"},
+    {(int)Message::Role::IsServiceMessage,              "messageIsServiceMessage"},
+    {(int)Message::Role::IsYouTubeChatMembership,       "messageIsYouTubeChatMembership"},
+    {(int)Message::Role::IsTwitchAction,                "messageIsTwitchAction"},
 
-    {(int)Message::Role::BodyBackgroundForcedColor, "messageBodyBackgroundForcedColor"},
+    {(int)Message::Role::BodyBackgroundForcedColor,     "messageBodyBackgroundForcedColor"},
 
-    {(int)Author::Role::ServiceType ,      "authorServiceType"},
-    {(int)Author::Role::Id ,               "authorId"},
-    {(int)Author::Role::AuthorPageUrl ,          "authorPageUrl"},
-    {(int)Author::Role::Name ,             "authorName"},
-    {(int)Author::Role::NicknameColor ,    "authorNicknameColor"},
-    {(int)Author::Role::AvatarUrl ,        "authorAvatarUrl"},
-    {(int)Author::Role::LeftBadgesUrls ,   "authorLeftBadgesUrls"},
-    {(int)Author::Role::RightBadgesUrls,   "authorRightBadgesUrls"},
+    {(int)Author::Role::ServiceType ,       "authorServiceType"},
+    {(int)Author::Role::Id ,                "authorId"},
+    {(int)Author::Role::PageUrl ,           "authorPageUrl"},
+    {(int)Author::Role::Name ,              "authorName"},
+    {(int)Author::Role::NicknameColor ,     "authorNicknameColor"},
+    {(int)Author::Role::AvatarUrl ,         "authorAvatarUrl"},
+    {(int)Author::Role::LeftBadgesUrls ,    "authorLeftBadgesUrls"},
+    {(int)Author::Role::RightBadgesUrls,    "authorRightBadgesUrls"},
 
-    {(int)Author::Role::IsVerified ,       "authorIsVerified"},
-    {(int)Author::Role::IsChatOwner ,      "authorIsChatOwner"},
-    {(int)Author::Role::Sponsor ,        "authorIsSponsor"},
-    {(int)Author::Role::Moderator ,      "authorIsModerator"}
+    {(int)Author::Role::IsVerified ,        "authorIsVerified"},
+    {(int)Author::Role::IsChatOwner ,       "authorIsChatOwner"},
+    {(int)Author::Role::Sponsor ,           "authorIsSponsor"},
+    {(int)Author::Role::Moderator ,         "authorIsModerator"}
 };
 
 
@@ -197,6 +198,11 @@ uint64_t MessagesModel::lastIdNum() const
 
 QModelIndex MessagesModel::createIndexByPtr(QVariant *data) const
 {
+    if (!data)
+    {
+        return QModelIndex();
+    }
+
     if (_idNumByData.contains(data) && data != nullptr)
     {
         return createIndex(_idNumByData.value(data) - _removedRows, 0);
@@ -227,7 +233,7 @@ int MessagesModel::getRow(QVariant *data)
     }
 }
 
-void MessagesModel::setAuthorData(const QString& authorId, const QMap<Author::Role, QVariant>& values)
+void MessagesModel::setAuthorValues(const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     Author* author = _authorsById.value(authorId, nullptr);
     if (!author)
@@ -236,26 +242,19 @@ void MessagesModel::setAuthorData(const QString& authorId, const QMap<Author::Ro
         return;
     }
 
-    const std::set<uint64_t>& messagesIds = author->getMessagesIds();
-
-    for (const uint64_t& oldIdNum : messagesIds)
+    QVector<int> rolesInt;
+    const QList<Author::Role> roles = values.keys();
+    for (const Author::Role role : roles)
     {
-        if (_dataByIdNum.contains(oldIdNum))
-        {
-            QVariant* data = _dataByIdNum[oldIdNum];
-            if (data)
-            {
-                const QModelIndex& index = createIndexByPtr(data);
-                const QList<Author::Role> roles = values.keys();
-                for (const Author::Role role : roles)
-                {
-                    if (!setData(index, values[role], (int)role))
-                    {
-                        qCritical() << Q_FUNC_INFO << "failed to set author data, role =" << role << ", author id =" << authorId;
-                    }
-                }
-            }
-        }
+        author->setValue(role, values[role]);
+        rolesInt.append((int)role);
+    }
+
+    const std::set<uint64_t>& messagesIds = author->getMessagesIds();
+    for (const uint64_t id : messagesIds)
+    {
+        const QModelIndex index = createIndexByPtr(_dataByIdNum.value(id));
+        emit dataChanged(index, index, rolesInt);
     }
 }
 
@@ -265,15 +264,20 @@ void MessagesModel::insertAuthor(const Author& author)
     Author* prevAuthor = _authorsById.value(id, nullptr);
     if (prevAuthor)
     {
-        std::set<uint64_t> prevMssagesIds = prevAuthor->getMessagesIds();
+        std::set<uint64_t>& prevMssagesIds = prevAuthor->getMessagesIds();
         for (const uint64_t newMessageId : author.getMessagesIds())
         {
             prevMssagesIds.insert(newMessageId);
         }
 
-        *prevAuthor = author;
-        prevAuthor->getMessagesIds() = prevMssagesIds;
-        // TODO: update message data
+        QMap<Author::Role, QVariant> values;
+
+        for (const Author::Role role : Author::UpdateableRoles)
+        {
+            values.insert(role, author.getValue(role));
+        }
+
+        setAuthorValues(id, values);
     }
     else
     {
@@ -324,26 +328,6 @@ bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int
 
     switch ((Message::Role)role)
     {
-    case Message::Role::CustomAuthorAvatarUrl:
-        break;
-    case Message::Role::CustomAuthorName:
-        break;
-    case Message::Role::IsDonateSimple:
-        break;
-    case Message::Role::IsDonateWithText:
-        break;
-    case Message::Role::IsDonateWithImage:
-        break;
-    case Message::Role::IsServiceMessage:
-        break;
-    case Message::Role::BodyBackgroundForcedColor:
-        break;
-    case Message::Role::IsYouTubeChatMembership:
-        break;
-    case Message::Role::IsTwitchAction:
-        break;
-    case Message::Role::Id:
-        return false;
     case Message::Role::Html:
         if (value.canConvert(QMetaType::QString))
         {
@@ -354,12 +338,6 @@ bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int
             return false;
         }
         break;
-    case Message::Role::PublishedAt:
-        return false;
-    case Message::Role::ReceivedAt:
-        return false;
-    case Message::Role::IsBotCommand:
-        return false;
     case Message::Role::MarkedAsDeleted:
         if (value.canConvert(QMetaType::Bool))
         {
@@ -370,45 +348,9 @@ bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int
             return false;
         }
         break;
-    }
 
-    switch ((Author::Role)role)
-    {
-    case Author::Role::ServiceType:
-        break;
-    case Author::Role::NicknameColor:
-        break;
-    case Author::Role::Id:
-        return false;
-    case Author::Role::AuthorPageUrl:
-        return false;
-    case Author::Role::Name:
-        return false;
-    case Author::Role::AvatarUrl:
-        if (value.canConvert(QMetaType::QUrl))
-        {
-            Author* author = getAuthor(message.getAuthorId());
-            if (author)
-            {
-                author->setAvatarUrl(value.toUrl());
-            }
-        }
-        else
-        {
-            return false;
-        }
-        break;
-    case Author::Role::LeftBadgesUrls:
-        return false;
-    case Author::Role::RightBadgesUrls:
-        return false;
-    case Author::Role::IsVerified:
-        return false;
-    case Author::Role::IsChatOwner:
-        return false;
-    case Author::Role::Sponsor:
-        return false;
-    case Author::Role::Moderator:
+    default:
+        qCritical() << Q_FUNC_INFO << ": role not updatable";
         return false;
     }
 
@@ -465,36 +407,7 @@ QVariant MessagesModel::dataByRole(const Message &message, int role) const
         return QVariant();
     }
 
-    switch ((Author::Role)role)
-    {
-    case Author::Role::ServiceType:
-        return (int)author->getServiceType();
-    case Author::Role::Id:
-        return author->getId();
-    case Author::Role::AuthorPageUrl:
-        return author->getPageUrl();
-    case Author::Role::Name:
-        return author->getName();
-    case Author::Role::NicknameColor:
-        return author->getCustomNicknameColor();
-    case Author::Role::AvatarUrl:
-        return author->getAvatarUrl();
-    case Author::Role::LeftBadgesUrls:
-        return author->getLeftBadgesUrls();
-    case Author::Role::RightBadgesUrls:
-        return author->getRightBadgesUrls();
-
-    case Author::Role::IsVerified:
-        return author->isHasFlag(Author::Flag::Verified);
-    case Author::Role::IsChatOwner:
-        return author->isHasFlag(Author::Flag::ChatOwner);
-    case Author::Role::Sponsor:
-        return author->isHasFlag(Author::Flag::Sponsor);
-    case Author::Role::Moderator:
-        return author->isHasFlag(Author::Flag::Moderator);
-    }
-
-    return QVariant();
+    return author->getValue((Author::Role)role);
 }
 
 QVariant MessagesModel::dataByNumId(const uint64_t &idNum, int role)

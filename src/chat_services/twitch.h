@@ -72,8 +72,7 @@ private:
 
     QTimer _timerUpdaetStreamInfo;
 
-    QHash<QNetworkReply*, QString> repliesForAvatar; // <reply, channel_id>
-    QHash<QString, QUrl> avatarsUrls; // <channel_name, avatar_url>
+    QSet<QString> usersInfoUpdated;
     QHash<QString, QString> _badgesUrls;
 };
 

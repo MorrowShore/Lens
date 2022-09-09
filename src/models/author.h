@@ -13,7 +13,7 @@ public:
     enum class Role {
         ServiceType = Qt::UserRole + 1 + 1024,
         Id,
-        AuthorPageUrl,
+        PageUrl,
         Name,
         NicknameColor,
         AvatarUrl,
@@ -60,10 +60,7 @@ public:
     {
         return avatarUrl;
     }
-    inline void setAvatarUrl(const QUrl& url)
-    {
-        avatarUrl = url;
-    }
+
     inline const QUrl& getPageUrl() const
     {
         return pageUrl;
@@ -100,6 +97,25 @@ public:
     {
         return messagesIds;
     }
+
+    bool setValue(const Role role, const QVariant& value);
+
+    QVariant getValue(const Role role) const;
+
+    inline static const std::set<Role> UpdateableRoles =
+    {
+        Role::PageUrl,
+        Role::Name,
+        Role::NicknameColor,
+        Role::AvatarUrl,
+        Role::LeftBadgesUrls,
+        Role::RightBadgesUrls,
+
+        Role::IsVerified,
+        Role::IsChatOwner,
+        Role::Sponsor,
+        Role::Moderator
+    };
 
 private:
     AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
