@@ -395,7 +395,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                         }
                         else
                         {
-                            qWarning() << Q_FUNC_INFO << ": smile" << rawSmileId << "not found";
+                            //qWarning() << Q_FUNC_INFO << ": smile" << rawSmileId << "not found";
                             text += ":" + rawSmileId + ":";
                         }
 

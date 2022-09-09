@@ -66,15 +66,18 @@ QString removePostfix(const QString& string, const QString& postfix, const Qt::C
 
 }
 
-OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, QList<ChatService*>& services_, QObject *parent)
+OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath_, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, QList<ChatService*>& services_, QObject *parent)
     : QObject(parent)
+    , settings(settings_)
+    , settingsGroupPath(settingsGroupPath_)
     , network(network_)
     , messagesModel(messagesModel_)
     , services(services_)
     , enabled(settings, settingsGroupPath + "/enabled", false)
     , outputDirectory(settings, settingsGroupPath + "/output_folder", standardOutputFolder())
-    , codec(settings, settingsGroupPath + "/codec", Codec::UTF8)
 {
+    codec = (Codec)settings.value(settingsGroupPath + "/codec", (int)codec).toInt();
+
     reinit(true);
 }
 
@@ -403,31 +406,23 @@ void OutputToFile::downloadEmoji(const QUrl &url, const int height, const AxelCh
     downloadImage(url, fileName, ImageFileFormat, height, true);
 }
 
-bool OutputToFile::setCodecOption(int option, bool applyWithoutReset)
+bool OutputToFile::setCodecOption(int option)
 {
-    if (option == (int)codec.get())
+    if (option == (int)codec)
     {
         return false;
     }
 
-    if (applyWithoutReset)
-    {
-        switch (option) {
-        case 0:
-            codec.set(Codec::UTF8);
-            break;
-        case 100:
-            codec.set(Codec::ANSI);
-            break;
-        case 200:
-            codec.set(Codec::ANSIWithUTF8Codes);
-            break;
-        default:
-            qCritical() << "unknown codec option" << option << ", ignore";
-            return false;
-        }
+    switch (option) {
+    case 0:
+    case 100:
+    case 200:
+        settings.setValue(settingsGroupPath + "/codec", option);
+        break;
 
-        reinit(true);
+    default:
+        qCritical() << "unknown codec option" << option << ", ignore";
+        return false;
     }
 
     return true;
@@ -435,7 +430,7 @@ bool OutputToFile::setCodecOption(int option, bool applyWithoutReset)
 
 int OutputToFile::codecOption() const
 {
-    return (int)codec.get();
+    return (int)codec;
 }
 
 void OutputToFile::writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/)
@@ -513,23 +508,21 @@ QByteArray OutputToFile::prepare(const QString &text_)
 {
     QString text = text_;
 
-    const Codec codec_ = codec.get();
-
-    if (codec_ != Codec::ANSIWithUTF8Codes)
+    if (codec != Codec::ANSIWithUTF8Codes)
     {
         text.replace('\n', "\\n");
         text.replace('\r', "\\r");
     }
 
-    if (codec_ == Codec::UTF8)
+    if (codec == Codec::UTF8)
     {
         return text.toUtf8();
     }
-    else if (codec_ == Codec::ANSI)
+    else if (codec == Codec::ANSI)
     {
         return text.toLocal8Bit();
     }
-    else if (codec_ == Codec::ANSIWithUTF8Codes)
+    else if (codec == Codec::ANSIWithUTF8Codes)
     {
         return AxelChat::convertANSIWithUtf8Numbers(text);
     }

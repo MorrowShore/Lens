@@ -32,7 +32,7 @@ public:
     QString getOutputFolder() const;
     void resetSettings();
 
-    Q_INVOKABLE bool setCodecOption(int option, bool applyWithoutReset); // return true if need restart
+    Q_INVOKABLE bool setCodecOption(int option); // return true if need restart
     Q_INVOKABLE int codecOption() const;
 
     void setOutputFolder(const QString& outputDirectory);
@@ -62,6 +62,8 @@ private:
 
     void writeApplicationState(const bool started) const;
 
+    QSettings& settings;
+    const QString settingsGroupPath;
     QNetworkAccessManager& network;
     const MessagesModel& messagesModel;
     QList<ChatService*>& services;
@@ -73,7 +75,7 @@ private:
     QFile* _fileMessagesCount           = nullptr;
     QFile* _fileMessages                = nullptr;
 
-    Setting<Codec> codec;
+    Codec codec = Codec::UTF8;
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
 
@@ -81,7 +83,5 @@ private:
     const int avatarHeight = 72;
     QSet<QString> needIgnoreDownloadFileNames;
 };
-
-Q_DECLARE_METATYPE(OutputToFile::Codec)
 
 #endif // OUTPUTTOFILE_HPP

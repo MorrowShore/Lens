@@ -155,7 +155,7 @@ ScrollView {
                 }
 
                 onActivated: {
-                    if (outputToFile.setCodecOption(currentValue, false)) {
+                    if (outputToFile.setCodecOption(currentValue)) {
                         Global.windowSettings.showRestartDialog()
                     }
                 }
