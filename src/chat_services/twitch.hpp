@@ -33,9 +33,6 @@ private slots:
     void sendIRCMessage(const QString& message);
     void onIRCMessage(const QString& rawData);
 
-    void requestForAvatarsByChannelPage(const QString& channelLogin);
-    void onReplyAvatarsByChannelPage();
-
     void requestForGlobalBadges();
     void requestForChannelBadges(const QString& broadcasterId);
     void onReplyBadges();

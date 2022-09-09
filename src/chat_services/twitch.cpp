@@ -541,7 +541,6 @@ void Twitch::onIRCMessage(const QString &rawData)
         }
         else
         {
-            //requestForAvatarsByChannelPage(channelLogin);
             requestUserInfo(channelLogin);
         }
 
@@ -650,93 +649,6 @@ void Twitch::onIRCMessage(const QString &rawData)
     {
         emit readyRead(messages, authors);
     }
-}
-
-void Twitch::requestForAvatarsByChannelPage(const QString &channelLogin)
-{
-    QNetworkRequest request(QString("https://www.twitch.tv/%1").arg(channelLogin));
-    request.setRawHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-    //request.setRawHeader("Accept-Encoding", "gzip, deflate, br");
-    //request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-    QNetworkReply* reply = network.get(request);
-    if (!reply)
-    {
-        qDebug() << Q_FUNC_INFO << ": !reply";
-        return;
-    }
-
-    repliesForAvatar.insert(reply, channelLogin);
-
-    QObject::connect(reply, &QNetworkReply::finished, this, &Twitch::onReplyAvatarsByChannelPage);
-}
-
-void Twitch::onReplyAvatarsByChannelPage()
-{
-    //ToDo: https://www.teamfortress.tv/3580/show-twitch-profile-pictures-in-all-streams-list
-    //ToDo: 600x600, 300x300, 150x150, 70x70, 50x50, 28x28
-    QNetworkReply* reply = dynamic_cast<QNetworkReply*>(sender());
-    QByteArray data;
-    if (!checkReply(reply, Q_FUNC_INFO, data))
-    {
-        return;
-    }
-
-    const QString channelLogin = repliesForAvatar[reply];
-    repliesForAvatar.remove(reply);
-
-    reply->deleteLater();
-
-    static const QList<QByteArray> AvatarUrlPrefixes = {
-        "https://static-cdn.jtvnw.net/jtv_user_pictures/",
-        "https://static-cdn.jtvnw.net/user-default-pictures-uv/",
-    };
-
-    int startPos = -1;
-    for (const QByteArray& prefix : AvatarUrlPrefixes)
-    {
-        startPos = data.indexOf(prefix);
-        if (startPos != -1)
-        {
-            break;
-        }
-    }
-
-    if (startPos == -1)
-    {
-        qWarning() << Q_FUNC_INFO << "failed to find prefix" << AvatarUrlPrefixes << "of avatar link, request url:" << reply->url();
-        AxelChat::saveDebugDataToFile(FolderLogs, "no_prefix_avatar_url.html", data);
-        return;
-    }
-
-    static const QByteArray AvatarUrlPostfix = "\"";
-    const int postfixPos = data.indexOf(AvatarUrlPostfix, startPos);
-    if (postfixPos == -1 || postfixPos - startPos > 200)
-    {
-        qWarning() << Q_FUNC_INFO << "failed to find postfix of avatar link";
-        AxelChat::saveDebugDataToFile(FolderLogs, "no_postfix_avatar_url.html", data);
-        return;
-    }
-
-    const QByteArray rawUrl = data.mid(startPos, postfixPos - startPos);
-    if (rawUrl.isEmpty())
-    {
-        qWarning() << Q_FUNC_INFO << "empty avatar url";
-        AxelChat::saveDebugDataToFile(FolderLogs, "empty_avatar_url.html", data);
-        return;
-    }
-
-    const QUrl url(QString::fromUtf8(rawUrl));
-    if (!url.isValid())
-    {
-        qWarning() << Q_FUNC_INFO << "invalid avatar url";
-        AxelChat::saveDebugDataToFile(FolderLogs, "invalid_avatar_url.html", data);
-        return;
-    }
-
-    avatarsUrls.insert(channelLogin, url);
-
-    emit avatarDiscovered(channelLogin, url);
 }
 
 void Twitch::requestForGlobalBadges()
