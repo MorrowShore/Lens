@@ -169,7 +169,7 @@ BotAction *BotAction::fromJson(const QJsonObject &object)
         action = BotAction::createSoundPlay(keywords, soundFile, caseSensitive);
         break;
     }
-    case BotAction::Unknown:
+    case BotAction::ActionType::Unknown:
     {
         qDebug() << "unknown action type";
         break;

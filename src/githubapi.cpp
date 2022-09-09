@@ -177,17 +177,17 @@ void GitHubApi::onReplyReleases()
                         enabled = false;
                     }
 
-                    if (!_enabledBeta && release.version.type == VersionType::BetaVersionType)
+                    if (!_enabledBeta && release.version.type == VersionType::Beta)
                     {
                         enabled = false;
                     }
 
-                    if (!_enabledAlpha && release.version.type == VersionType::AlphaVersionType)
+                    if (!_enabledAlpha && release.version.type == VersionType::Alpha)
                     {
                         enabled = false;
                     }
 
-                    if (!_enabledRelease && release.version.type == VersionType::ReleaseVersionType)
+                    if (!_enabledRelease && release.version.type == VersionType::Release)
                     {
                         enabled = false;
                     }

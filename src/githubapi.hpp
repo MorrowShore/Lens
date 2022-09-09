@@ -18,14 +18,14 @@ class GitHubApi : public QObject
 
     Q_OBJECT
 public:
-    enum VersionType{
-        UnknownVersionType = 0,
-        ReleaseVersionType = 1000,
-        BetaVersionType    = 100,
-        AlphaVersionType   = 10
+    enum class VersionType {
+        Unknown = 0,
+        Release = 1000,
+        Beta    = 100,
+        Alpha   = 10
     };
 
-    enum class OperatingSystem{
+    enum class OperatingSystem {
         Unknown,
         Windows,
         Linux,
@@ -49,7 +49,7 @@ public:
         int patch = -1;
         bool draft = false;
         bool preRelease = false;
-        VersionType type = VersionType::UnknownVersionType;
+        VersionType type = VersionType::Unknown;
 
         static Version fromString(const QString& vesrionName)
         {
@@ -88,21 +88,21 @@ public:
 
                 if (rx.cap(4).toLower() == "-beta")
                 {
-                    version.type = VersionType::BetaVersionType;
+                    version.type = VersionType::Beta;
                 }
                 else if (rx.cap(4).toLower() == "-alpha")
                 {
-                    version.type = VersionType::AlphaVersionType;
+                    version.type = VersionType::Alpha;
                 }
                 else
                 {
-                    version.type = VersionType::ReleaseVersionType;
+                    version.type = VersionType::Release;
                 }
 
                 //qDebug() << rx.capturedTexts();
             }
 
-            if (version.type == VersionType::UnknownVersionType)
+            if (version.type == VersionType::Unknown)
             {
                 version.valid = false;
             }
@@ -122,14 +122,14 @@ public:
                                     .arg(patch);
 
                 switch (type) {
-                case UnknownVersionType:
+                case VersionType::Unknown:
                     break;
-                case ReleaseVersionType:
+                case VersionType::Release:
                     break;
-                case BetaVersionType:
+                case VersionType::Beta:
                     s += "-beta";
                     break;
-                case AlphaVersionType:
+                case VersionType::Alpha:
                     s += "-alpha";
                     break;
                 }
@@ -307,7 +307,7 @@ public:
         }
     };
 
-    enum ReplyState{
+    enum class ReplyState{
         NoReply,
         NewVersionAvailable,
         NewVersionAvailableButSkipped,

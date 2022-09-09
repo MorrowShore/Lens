@@ -14,12 +14,12 @@ class BotAction : public QObject
 {
     Q_OBJECT
 public:
-    enum ActionType {
+    enum class ActionType {
         SoundPlay,
         //ToDo: добавить новый функционал
         Unknown
     };
-    Q_ENUMS(ActionType)
+    Q_ENUM(ActionType)
 
     static const int DEFAULT_INACTIVITY_TIME = 10;
 
