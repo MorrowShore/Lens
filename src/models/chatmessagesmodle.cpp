@@ -251,7 +251,7 @@ void ChatMessagesModel::setAuthorData(const QString &authorId, const QVariant& v
                 const QModelIndex& index = createIndexByPtr(data);
                 if (!setData(index, value, (int)role))
                 {
-                    qCritical() << Q_FUNC_INFO << "failed to set author data, role =" << roleToString(role) << ", author id =" << authorId;
+                    qCritical() << Q_FUNC_INFO << "failed to set author data, role =" << role << ", author id =" << authorId;
                 }
             }
         }
@@ -280,11 +280,6 @@ void ChatMessagesModel::insertAuthor(const ChatAuthor& author)
         *newAuthor = author;
         _authorsById.insert(id, newAuthor);
     }
-}
-
-QString ChatMessagesModel::roleToString(const Role role)
-{
-    return QMetaEnum::fromType<Role>().valueToKey((int)role);
 }
 
 bool ChatMessagesModel::contains(const QString &id)

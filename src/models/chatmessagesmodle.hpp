@@ -70,8 +70,6 @@ public:
     void insertAuthor(const ChatAuthor& author);
 
 private:
-    static QString roleToString(const Role role);
-
     static const QHash<int, QByteArray> _roleNames;
     QList<QVariant*> _data;//*data
     QHash<QString, QVariant*> _dataById;//message_id, *data
