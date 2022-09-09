@@ -1,6 +1,7 @@
 #pragma once
 
-#include "chat_services/chatservice.hpp"
+#include "models/chatmessage.h"
+#include "models/chatauthor.h"
 #include <QAbstractListModel>
 
 class ChatMessagesModel : public QAbstractListModel
