@@ -225,7 +225,7 @@ signals:
     void stateChanged();
     void readyRead(QList<Message>& messages, QList<Author>& authors);
     void connectedChanged(const bool connected, const QString& name);
-    void avatarDiscovered(const QString& authorId, const QUrl& url);
+    void authorDataChanged(const QString& authorId, const QUrl& url);
 
 protected:
     struct Parameter {

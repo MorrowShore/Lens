@@ -172,7 +172,7 @@ void ChatHandler::playNewMessageSound()
 #endif
 }
 
-void ChatHandler::onAvatarDiscovered(const QString &authorId, const QUrl &url)
+void ChatHandler::onAuthorChanged(const QString &authorId, const QUrl &url)
 {
     ChatService::ServiceType type = ChatService::ServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
@@ -268,7 +268,7 @@ void ChatHandler::addService(ChatService* service)
     connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
     connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
     connect(service, &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
-    connect(service, &ChatService::avatarDiscovered, this, &ChatHandler::onAvatarDiscovered);
+    connect(service, &ChatService::authorDataChanged, this, &ChatHandler::onAuthorChanged);
 
     services.append(service);
 }
