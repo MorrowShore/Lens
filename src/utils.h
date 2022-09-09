@@ -53,7 +53,9 @@ static QString simplifyUrl(const QString& url)
 
 static void saveDebugDataToFile(const QString& folder, const QString& fileName, const QByteArray& data)
 {
-    return;
+    Q_UNUSED(folder)
+    Q_UNUSED(fileName)
+    Q_UNUSED(data)
 #ifndef AXELCHAT_LIBRARY
 #ifndef QT_NO_DEBUG
     QDir().mkpath(folder);
