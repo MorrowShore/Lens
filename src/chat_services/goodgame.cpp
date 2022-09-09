@@ -241,10 +241,36 @@ void GoodGame::requestUserPage(const QString &authorName, const QString &authorI
 
         if (!url.isEmpty())
         {
-            url = urlPrefix + url;
+            url = "https://static.goodgame.ru/files/avatars" + url;
 
             emit authorDataUpdated(authorId, { {Author::Role::AvatarUrl, QUrl(url)} });
         }
+    });
+}
+
+void GoodGame::requestSmiles()
+{
+    QNetworkRequest request(QUrl("https://goodgame.ru/api/4/smiles"));
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QJsonArray array = QJsonDocument::fromJson(reply->readAll()).array();
+        for (const QJsonValue& v : array)
+        {
+            const QJsonObject smile = v.toObject();
+            const QString smileName = smile.value("key").toString().trimmed().toLower();
+            const QUrl smileUrl = QUrl(smile.value("images").toObject().value("big").toString());
+
+            if (smileName.isEmpty() || smileUrl.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "smile name or url is empty";
+                continue;
+            }
+
+            smiles.insert(smileName, smileUrl);
+        }
+
+        reconnect();
     });
 }
 
@@ -273,6 +299,12 @@ QString GoodGame::getStreamId(const QString &stream)
 
 void GoodGame::reconnect()
 {
+    if (smiles.isEmpty())
+    {
+        requestSmiles();
+        return;
+    }
+
     _socket.close();
 
     state = State();
@@ -336,7 +368,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QString authorName = jsonMessage.value("user_name").toString();
             const QString messageId = QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
             const QDateTime publishedAt = QDateTime::fromSecsSinceEpoch(jsonMessage.value("timestamp").toVariant().toLongLong());
-            const QString text = jsonMessage.value("text").toString();
+            const QString rawText = jsonMessage.value("text").toString();
 
             const Author author(getServiceType(),
                                     authorName,
@@ -344,7 +376,61 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                                     QUrl(),
                                     QUrl("https://goodgame.ru/user/" + authorId));
 
-            const Message message({ new Message::Text(text) }, author, publishedAt, QDateTime::currentDateTime(), messageId);
+            QList<Message::Content*> contents;
+
+            QString text;
+            QString rawSmileId;
+            bool foundColon = false;
+            for (const QChar& c : rawText)
+            {
+                if (c == ':')
+                {
+                    if (foundColon)
+                    {
+                        const QString smileId = rawSmileId.toLower();
+                        if (smiles.contains(smileId.toLower()))
+                        {
+                            contents.append(new Message::Image(smiles.value(smileId)));
+                            rawSmileId = QString();
+                        }
+                        else
+                        {
+                            qWarning() << Q_FUNC_INFO << ": smile" << rawSmileId << "not found";
+                            text += ":" + rawSmileId + ":";
+                        }
+
+                        foundColon = false;
+                    }
+                    else
+                    {
+                        if (!text.isEmpty())
+                        {
+                            contents.append(new Message::Text(text));
+                            text = QString();
+                        }
+
+                        foundColon = true;
+                    }
+                }
+                else
+                {
+                    if (foundColon)
+                    {
+                        rawSmileId += c;
+                    }
+                    else
+                    {
+                        text += c;
+                    }
+                }
+            }
+
+            if (!text.isEmpty())
+            {
+                contents.append(new Message::Text(text));
+            }
+
+            const Message message(contents, author, publishedAt, QDateTime::currentDateTime(), messageId);
 
             messages.append(message);
             authors.append(author);

@@ -309,7 +309,7 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, fileName, imageFormat, height, ignoreIfExists]()
+    connect(reply, &QNetworkReply::finished, this, [this, fileName, imageFormat, height, ignoreIfExists, url]()
     {
         if (ignoreIfExists && QFile(fileName).exists())
         {
@@ -325,12 +325,14 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
 
         if (reply->bytesAvailable() <= 0)
         {
-            qDebug() << "Failed download image, reply is empty, error =" << reply->errorString() << ", file name =" << fileName;
+            qWarning() << Q_FUNC_INFO << ": failed download image, reply is empty, error =" << reply->errorString() << ", file name =" << fileName << ", url =" << url;
             return;
         }
 
+        const QByteArray data = reply->readAll();
+
         QImage rawImage;
-        if (rawImage.loadFromData(reply->readAll()))
+        if (rawImage.loadFromData(data))
         {
             QImage image = rawImage.scaledToHeight(height, Qt::TransformationMode::SmoothTransformation);
 
@@ -350,12 +352,12 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
             }
             else
             {
-                qWarning() << "Failed to save downloaded image, file name =" << fileName;
+                qWarning() << Q_FUNC_INFO << ": failed to save downloaded image" << url;
             }
         }
         else
         {
-            qWarning() << "Failed to read downloaded image, file name" << fileName;
+            qWarning() << Q_FUNC_INFO << ": failed to read downloaded image" << url;
         }
 
         reply->deleteLater();
