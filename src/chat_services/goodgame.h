@@ -31,6 +31,7 @@ private slots:
     void requestAuth();
     void requestChannelHistory();
     void requestChannelStatus();
+    void requestUserPage(const QString& authorName, const QString& authorId);
 
 private:
     static QString getStreamId(const QString& stream);
@@ -45,6 +46,8 @@ private:
 
     QTimer timerUpdateMessages;
     QTimer timerUpdateChannelStatus;
+
+    QSet<QString> requestedInfoUsers;
 };
 
 #endif // GOODGAME_H

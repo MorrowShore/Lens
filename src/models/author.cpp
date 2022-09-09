@@ -131,13 +131,15 @@ bool Author::setValue(const Role role, const QVariant &value)
         break;
     }
 
-    if (!validType)
+    if (validType)
+    {
+        qCritical() << Q_FUNC_INFO << ": role" << role << "not implemented yet" << ", author name = " << name;
+    }
+    else
     {
         qCritical() << Q_FUNC_INFO << ": invalid type" << type << "for role" << role << ", author name = " << name;
-        throw "see logs";
     }
 
-    qCritical() << Q_FUNC_INFO << ": role" << role << "not implemented yet" << ", author name = " << name;
     return false;
 }
 

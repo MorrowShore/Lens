@@ -534,11 +534,6 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
         }
 
-        if (!usersInfoUpdated.contains(channelLogin))
-        {
-            requestUserInfo(channelLogin);
-        }
-
         if (displayName.isEmpty())
         {
             displayName = channelLogin;
@@ -636,6 +631,11 @@ void Twitch::onIRCMessage(const QString &rawData)
                                                 messageFlags);
         messages.append(message);
         authors.append(author);
+
+        if (!usersInfoUpdated.contains(channelLogin))
+        {
+            requestUserInfo(channelLogin);
+        }
 
         //qDebug() << "Twitch:" << authorName << ":" << messageText;
     }

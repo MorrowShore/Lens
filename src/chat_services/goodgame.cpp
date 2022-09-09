@@ -209,6 +209,45 @@ void GoodGame::requestChannelStatus()
     });
 }
 
+void GoodGame::requestUserPage(const QString &authorName, const QString &authorId)
+{
+    QNetworkRequest request(QUrl("https://goodgame.ru/user/" + authorId));
+    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, authorName, authorId]()
+    {
+        const QByteArray data = reply->readAll();
+
+        static const QByteArray urlPrefix = "https://goodgame.ru/files/avatars";
+
+        const int startAvatarPos = data.indexOf(urlPrefix);
+        if (startAvatarPos == -1)
+        {
+            qCritical() << Q_FUNC_INFO << ": not found avatar url, author name" << authorName;
+            return;
+        }
+
+        QString url;
+        for (int i = startAvatarPos + urlPrefix.length(); i < qMin(startAvatarPos + 1024, data.length()); ++i)
+        {
+            const char c = data[i];
+            if (c == '"')
+            {
+                break;
+            }
+
+            url += c;
+        }
+
+        if (!url.isEmpty())
+        {
+            url = urlPrefix + url;
+
+            emit authorDataUpdated(authorId, { {Author::Role::AvatarUrl, QUrl(url)} });
+        }
+    });
+}
+
 QString GoodGame::getStreamId(const QString &stream)
 {
     QString streamId = stream.trimmed().toLower();
@@ -309,6 +348,12 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
             messages.append(message);
             authors.append(author);
+
+            if (!requestedInfoUsers.contains(authorName))
+            {
+                requestedInfoUsers.insert(authorName);
+                requestUserPage(authorName, authorId);
+            }
         }
 
         if (!messages.isEmpty())
