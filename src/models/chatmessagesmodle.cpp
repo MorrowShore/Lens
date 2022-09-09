@@ -6,24 +6,24 @@
 #include <QUuid>
 
 const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArray>{
-    {(int)Role::MessageId ,                     "messageId"},
-    {(int)Role::MessageHtml ,                   "messageHtml"},
-    {(int)Role::MessagePublishedAt ,            "messagePublishedAt"},
-    {(int)Role::MessageReceivedAt ,             "messageReceivedAt"},
-    {(int)Role::MessageIsBotCommand ,           "messageIsBotCommand"},
-    {(int)Role::MessageMarkedAsDeleted ,        "messageMarkedAsDeleted"},
-    {(int)Role::MessageCustomAuthorAvatarUrl,   "messageCustomAuthorAvatarUrl"},
-    {(int)Role::MessageCustomAuthorName,        "messageCustomAuthorName"},
+    {(int)ChatMessage::Role::MessageId ,                     "messageId"},
+    {(int)ChatMessage::Role::MessageHtml ,                   "messageHtml"},
+    {(int)ChatMessage::Role::MessagePublishedAt ,            "messagePublishedAt"},
+    {(int)ChatMessage::Role::MessageReceivedAt ,             "messageReceivedAt"},
+    {(int)ChatMessage::Role::MessageIsBotCommand ,           "messageIsBotCommand"},
+    {(int)ChatMessage::Role::MessageMarkedAsDeleted ,        "messageMarkedAsDeleted"},
+    {(int)ChatMessage::Role::MessageCustomAuthorAvatarUrl,   "messageCustomAuthorAvatarUrl"},
+    {(int)ChatMessage::Role::MessageCustomAuthorName,        "messageCustomAuthorName"},
 
-    {(int)Role::MessageIsDonateSimple,      "messageIsDonateSimple"},
-    {(int)Role::MessageIsDonateWithText,    "messageIsDonateWithText"},
-    {(int)Role::MessageIsDonateWithImage,   "messageIsDonateWithImage"},
+    {(int)ChatMessage::Role::MessageIsDonateSimple,      "messageIsDonateSimple"},
+    {(int)ChatMessage::Role::MessageIsDonateWithText,    "messageIsDonateWithText"},
+    {(int)ChatMessage::Role::MessageIsDonateWithImage,   "messageIsDonateWithImage"},
 
-    {(int)Role::MessageIsServiceMessage,           "messageIsServiceMessage"},
-    {(int)Role::MessageIsYouTubeChatMembership,    "messageIsYouTubeChatMembership"},
-    {(int)Role::MessageIsTwitchAction,             "messageIsTwitchAction"},
+    {(int)ChatMessage::Role::MessageIsServiceMessage,           "messageIsServiceMessage"},
+    {(int)ChatMessage::Role::MessageIsYouTubeChatMembership,    "messageIsYouTubeChatMembership"},
+    {(int)ChatMessage::Role::MessageIsTwitchAction,             "messageIsTwitchAction"},
 
-    {(int)Role::MessageBodyBackgroundForcedColor, "messageBodyBackgroundForcedColor"},
+    {(int)ChatMessage::Role::MessageBodyBackgroundForcedColor, "messageBodyBackgroundForcedColor"},
 
     {(int)Author::Role::ServiceType ,      "authorServiceType"},
     {(int)Author::Role::Id ,               "authorId"},
@@ -121,7 +121,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
             const QModelIndex& index = createIndexByPtr(data);
             if (index.isValid())
             {
-                if (!setData(index, true, (int)Role::MessageMarkedAsDeleted))
+                if (!setData(index, true, (int)ChatMessage::Role::MessageMarkedAsDeleted))
                 {
                     qDebug(QString("%1: failed to set data with role ChatMessageRoles::MessageMarkedAsDeleted")
                            .arg(Q_FUNC_INFO).toUtf8());
@@ -129,7 +129,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
                     message.printMessageInfo("Raw message:");
                 }
 
-                if (!setData(index, message.getHtml(), (int)Role::MessageHtml))
+                if (!setData(index, message.getHtml(), (int)ChatMessage::Role::MessageHtml))
                 {
                     qDebug(QString("%1: failed to set data with role ChatMessageRoles::MessageText")
                            .arg(Q_FUNC_INFO).toUtf8());
@@ -321,29 +321,29 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
 
     ChatMessage message = qvariant_cast<ChatMessage>(*_data[index.row()]);
 
-    switch ((Role)role)
+    switch ((ChatMessage::Role)role)
     {
-    case ChatMessagesModel::Role::MessageCustomAuthorAvatarUrl:
+    case ChatMessage::Role::MessageCustomAuthorAvatarUrl:
         break;
-    case ChatMessagesModel::Role::MessageCustomAuthorName:
+    case ChatMessage::Role::MessageCustomAuthorName:
         break;
-    case ChatMessagesModel::Role::MessageIsDonateSimple:
+    case ChatMessage::Role::MessageIsDonateSimple:
         break;
-    case ChatMessagesModel::Role::MessageIsDonateWithText:
+    case ChatMessage::Role::MessageIsDonateWithText:
         break;
-    case ChatMessagesModel::Role::MessageIsDonateWithImage:
+    case ChatMessage::Role::MessageIsDonateWithImage:
         break;
-    case ChatMessagesModel::Role::MessageIsServiceMessage:
+    case ChatMessage::Role::MessageIsServiceMessage:
         break;
-    case ChatMessagesModel::Role::MessageBodyBackgroundForcedColor:
+    case ChatMessage::Role::MessageBodyBackgroundForcedColor:
         break;
-    case ChatMessagesModel::Role::MessageIsYouTubeChatMembership:
+    case ChatMessage::Role::MessageIsYouTubeChatMembership:
         break;
-    case ChatMessagesModel::Role::MessageIsTwitchAction:
+    case ChatMessage::Role::MessageIsTwitchAction:
         break;
-    case Role::MessageId:
+    case ChatMessage::Role::MessageId:
         return false;
-    case Role::MessageHtml:
+    case ChatMessage::Role::MessageHtml:
         if (value.canConvert(QMetaType::QString))
         {
             message.setPlainText(value.toString());
@@ -353,13 +353,13 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
         break;
-    case Role::MessagePublishedAt:
+    case ChatMessage::Role::MessagePublishedAt:
         return false;
-    case Role::MessageReceivedAt:
+    case ChatMessage::Role::MessageReceivedAt:
         return false;
-    case Role::MessageIsBotCommand:
+    case ChatMessage::Role::MessageIsBotCommand:
         return false;
-    case Role::MessageMarkedAsDeleted:
+    case ChatMessage::Role::MessageMarkedAsDeleted:
         if (value.canConvert(QMetaType::Bool))
         {
             message.setFlag(ChatMessage::Flag::MarkedAsDeleted, value.toBool());
@@ -419,42 +419,42 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
 
 QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) const
 {
-    switch ((Role)role)
+    switch ((ChatMessage::Role)role)
     {
-    case Role::MessageId:
+    case ChatMessage::Role::MessageId:
         return message.getId();
-    case Role::MessageHtml:
+    case ChatMessage::Role::MessageHtml:
         return message.getHtml();
-    case Role::MessagePublishedAt:
+    case ChatMessage::Role::MessagePublishedAt:
         return message.getPublishedAt();
-    case Role::MessageReceivedAt:
+    case ChatMessage::Role::MessageReceivedAt:
         return message.getReceivedAt();
-    case Role::MessageIsBotCommand:
+    case ChatMessage::Role::MessageIsBotCommand:
         return message.isHasFlag(ChatMessage::Flag::BotCommand);
-    case Role::MessageMarkedAsDeleted:
+    case ChatMessage::Role::MessageMarkedAsDeleted:
         return message.isHasFlag(ChatMessage::Flag::MarkedAsDeleted);
-    case Role::MessageCustomAuthorAvatarUrl:
+    case ChatMessage::Role::MessageCustomAuthorAvatarUrl:
         return message.getCustomAuthorAvatarUrl();
-    case Role::MessageCustomAuthorName:
+    case ChatMessage::Role::MessageCustomAuthorName:
         return message.getCustomAuthorName();
 
-    case Role::MessageIsDonateSimple:
+    case ChatMessage::Role::MessageIsDonateSimple:
         return message.isHasFlag(ChatMessage::Flag::DonateSimple);
-    case Role::MessageIsDonateWithText:
+    case ChatMessage::Role::MessageIsDonateWithText:
         return message.isHasFlag(ChatMessage::Flag::DonateWithText);
-    case Role::MessageIsDonateWithImage:
+    case ChatMessage::Role::MessageIsDonateWithImage:
         return message.isHasFlag(ChatMessage::Flag::DonateWithImage);
 
-    case Role::MessageIsServiceMessage:
+    case ChatMessage::Role::MessageIsServiceMessage:
         return message.isHasFlag(ChatMessage::Flag::ServiceMessage);
 
-    case Role::MessageIsYouTubeChatMembership:
+    case ChatMessage::Role::MessageIsYouTubeChatMembership:
         return message.isHasFlag(ChatMessage::Flag::YouTubeChatMembership);
 
-    case Role::MessageIsTwitchAction:
+    case ChatMessage::Role::MessageIsTwitchAction:
         return message.isHasFlag(ChatMessage::Flag::TwitchAction);
 
-    case Role::MessageBodyBackgroundForcedColor:
+    case ChatMessage::Role::MessageBodyBackgroundForcedColor:
         return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole);
     }
 

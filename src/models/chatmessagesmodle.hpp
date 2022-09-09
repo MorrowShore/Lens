@@ -10,30 +10,6 @@ class ChatMessagesModel : public QAbstractListModel
 public:
     ChatMessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
 
-    enum class Role {
-        MessageId = Qt::UserRole + 1,
-        MessageHtml,
-        MessagePublishedAt,
-        MessageReceivedAt,
-        MessageIsBotCommand,
-        MessageMarkedAsDeleted,
-        MessageCustomAuthorAvatarUrl,
-        MessageCustomAuthorName,
-
-        MessageIsDonateSimple,
-        MessageIsDonateWithText,
-        MessageIsDonateWithImage,
-
-        MessageIsServiceMessage,
-
-        MessageBodyBackgroundForcedColor,
-
-        MessageIsYouTubeChatMembership,
-
-        MessageIsTwitchAction,
-    };
-    Q_ENUM(Role)
-
     QHash<int, QByteArray> roleNames() const override {
         return _roleNames;
     }

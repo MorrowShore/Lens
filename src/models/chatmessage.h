@@ -15,6 +15,30 @@ class Author;
 class ChatMessage{
     Q_GADGET
 public:
+    enum class Role {
+        MessageId = Qt::UserRole + 1,
+        MessageHtml,
+        MessagePublishedAt,
+        MessageReceivedAt,
+        MessageIsBotCommand,
+        MessageMarkedAsDeleted,
+        MessageCustomAuthorAvatarUrl,
+        MessageCustomAuthorName,
+
+        MessageIsDonateSimple,
+        MessageIsDonateWithText,
+        MessageIsDonateWithImage,
+
+        MessageIsServiceMessage,
+
+        MessageBodyBackgroundForcedColor,
+
+        MessageIsYouTubeChatMembership,
+
+        MessageIsTwitchAction,
+    };
+    Q_ENUM(Role)
+
     enum class Flag {
         MarkedAsDeleted,
         DeleterItem,
