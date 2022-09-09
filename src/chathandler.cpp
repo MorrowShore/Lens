@@ -186,7 +186,7 @@ void ChatHandler::onAvatarDiscovered(const QString &authorId, const QUrl &url)
     }
 
     outputToFile.downloadAvatar(authorId, url, type);
-    messagesModel.applyAvatar(authorId, url);
+    messagesModel.setAuthorData(authorId, url, ChatMessagesModel::Role::AuthorAvatarUrl);
 }
 
 void ChatHandler::clearMessages()

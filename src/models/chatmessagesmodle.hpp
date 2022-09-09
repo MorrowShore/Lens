@@ -62,7 +62,7 @@ public:
     uint64_t lastIdNum() const;
     QModelIndex createIndexByPtr(QVariant* data) const;
     int getRow(QVariant* data);
-    void applyAvatar(const QString& authorId, const QUrl& url);
+    void setAuthorData(const QString& authorId, const QVariant& value, const Role role);
 
     const ChatAuthor* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     ChatAuthor* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
@@ -75,7 +75,6 @@ private:
     QHash<QVariant*, QString> _idByData;//*data, message_id
     QHash<uint64_t, QVariant*> _dataByIdNum;//idNum, *data
     QHash<QVariant*, uint64_t> _idNumByData;//*data, idNum
-    QHash<QString, QSet<uint64_t>> _needUpdateAvatarMessages;//channel_id, QSet<idNum>
 
     QHash<QString, ChatAuthor*> _authorsById;
 

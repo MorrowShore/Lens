@@ -83,18 +83,6 @@ void ChatMessagesModel::append(ChatMessage&& message)
             std::set<uint64_t>& messagesIds = author->getMessagesIds();
             messagesIds.insert(message.getIdNum());
 
-            if (author && !author->getAvatarUrl().isValid())
-            {
-                const QString& authorId = author->getId();
-                if (!_needUpdateAvatarMessages.contains(authorId))
-                {
-                    _needUpdateAvatarMessages.insert(authorId, QSet<uint64_t>());
-
-                }
-
-                _needUpdateAvatarMessages[authorId].insert(message.getIdNum());
-            }
-
             _data.append(messageData);
 
             //printMessageInfo("New message:", rawMessage);
@@ -242,9 +230,18 @@ int ChatMessagesModel::getRow(QVariant *data)
     }
 }
 
-void ChatMessagesModel::applyAvatar(const QString &authorlId, const QUrl &url)
+void ChatMessagesModel::setAuthorData(const QString &authorId, const QVariant& value, const Role role)
 {
-    for (const uint64_t& oldIdNum : qAsConst(_needUpdateAvatarMessages[authorlId]))
+    ChatAuthor* author = _authorsById.value(authorId, nullptr);
+    if (!author)
+    {
+        qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found";
+        return;
+    }
+
+    const std::set<uint64_t>& messagesIds = author->getMessagesIds();
+
+    for (const uint64_t& oldIdNum : messagesIds)
     {
         if (_dataByIdNum.contains(oldIdNum))
         {
@@ -252,12 +249,13 @@ void ChatMessagesModel::applyAvatar(const QString &authorlId, const QUrl &url)
             if (data)
             {
                 const QModelIndex& index = createIndexByPtr(data);
-                setData(index, url, ChatMessagesModel::AuthorAvatarUrl);
+                if (!setData(index, value, role))
+                {
+                    qCritical() << Q_FUNC_INFO << "failed to set author data, role =" << role << ", author id =" << authorId;
+                }
             }
         }
     }
-
-    _needUpdateAvatarMessages.remove(authorlId);
 }
 
 void ChatMessagesModel::insertAuthor(const ChatAuthor& author)
