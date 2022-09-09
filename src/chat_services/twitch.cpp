@@ -1,6 +1,6 @@
 #include "twitch.hpp"
 #include "models/chatmessagesmodle.hpp"
-#include "models/chatauthor.h"
+#include "models/author.h"
 #include "models/chatmessage.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -137,7 +137,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         {
             qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
 
-            const ChatAuthor& author = ChatAuthor::getSoftwareAuthor();
+            const Author& author = Author::getSoftwareAuthor();
 
             QList<ChatMessage::Content*> contents;
 
@@ -149,7 +149,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
             QList<ChatMessage> messages;
             messages.append(message);
 
-            QList<ChatAuthor> authors;
+            QList<Author> authors;
             authors.append(author);
 
             emit readyRead(messages, authors);
@@ -315,7 +315,7 @@ void Twitch::onIRCMessage(const QString &rawData)
     }
 
     QList<ChatMessage> messages;
-    QList<ChatAuthor> authors;
+    QList<Author> authors;
 
     const QVector<QStringRef> rawMessages = rawData.splitRef("\r\n");
     for (const QStringRef& raw : rawMessages)
@@ -549,24 +549,24 @@ void Twitch::onIRCMessage(const QString &rawData)
             displayName = channelLogin;
         }
 
-        std::set<ChatAuthor::Flag> authorFlags;
+        std::set<Author::Flag> authorFlags;
 
         if (badges.contains("partner/1"))
         {
-            authorFlags.insert(ChatAuthor::Flag::Verified);
+            authorFlags.insert(Author::Flag::Verified);
         }
 
         if (badges.contains("broadcaster/1"))
         {
-            authorFlags.insert(ChatAuthor::Flag::ChatOwner);
+            authorFlags.insert(Author::Flag::ChatOwner);
         }
 
         if (badges.contains("moderator/1"))
         {
-            authorFlags.insert(ChatAuthor::Flag::Moderator);
+            authorFlags.insert(Author::Flag::Moderator);
         }
 
-        const ChatAuthor author(getServiceType(),
+        const Author author(getServiceType(),
                                 displayName,
                                 channelLogin,
                                 avatar,

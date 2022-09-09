@@ -41,14 +41,14 @@ public:
     void downloadAvatar(const QString& authorId, const QUrl &url, const ChatService::ServiceType serviceType);
     QString getAuthorDirectory(const ChatService::ServiceType serviceType, const QString& authorId) const;
     QString getServiceDirectory(const ChatService::ServiceType serviceType) const;
-    void writeAuthors(const QList<ChatAuthor*>& authors);
+    void writeAuthors(const QList<Author*>& authors);
     void writeServiceState(const ChatService* service) const;
 
 signals:
     void outputFolderChanged();
     void enabledChanged();
     void youTubeLastMessageIdChanged(const QString& id);
-    void authorNameChanged(const ChatAuthor& author, const QString& prevName, const QString& newName);
+    void authorNameChanged(const Author& author, const QString& prevName, const QString& newName);
 
 private:
     QString convertUrlForFileName(const QUrl& url, const QString& imageFileFormat) const;

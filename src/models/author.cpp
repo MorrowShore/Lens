@@ -1,6 +1,6 @@
-#include "chatauthor.h"
+#include "author.h"
 
-ChatAuthor::ChatAuthor(ChatService::ServiceType serviceType_,
+Author::Author(ChatService::ServiceType serviceType_,
                        const QString &name_,
                        const QString &authorId_,
                        const QUrl &avatarUrl_,
@@ -21,17 +21,17 @@ ChatAuthor::ChatAuthor(ChatService::ServiceType serviceType_,
 {
 }
 
-const ChatAuthor &ChatAuthor::getSoftwareAuthor()
+const Author &Author::getSoftwareAuthor()
 {
     static const QString authorId = "____SOFTWARE____";
-    static const ChatAuthor author(ChatService::ServiceType::Software,
+    static const Author author(ChatService::ServiceType::Software,
                             QCoreApplication::applicationName(),
                             authorId);
 
     return author;
 }
 
-QString ChatAuthor::flagToString(const Flag flag)
+QString Author::flagToString(const Flag flag)
 {
     return QMetaEnum::fromType<Flag>().valueToKey((int)flag);
 }

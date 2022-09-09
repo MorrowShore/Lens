@@ -23,7 +23,7 @@ HEADERS += \
     clipboardqml.hpp \
     commandseditor.h \
     commandsingleeditor.h \
-    models/chatauthor.h \
+    models/author.h \
     models/chatmessage.h \
     models/chatmessagesmodle.hpp \
     githubapi.hpp \
@@ -45,7 +45,7 @@ SOURCES += \
         clipboardqml.cpp \
         commandseditor.cpp \
         commandsingleeditor.cpp \
-        models/chatauthor.cpp \
+        models/author.cpp \
         models/chatmessage.cpp \
         models/chatmessagesmodle.cpp \
         githubapi.cpp \

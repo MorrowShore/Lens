@@ -1,5 +1,5 @@
 #include "chatmessagesmodle.hpp"
-#include "chatauthor.h"
+#include "author.h"
 #include "chatmessage.h"
 #include <QCoreApplication>
 #include <QTranslator>
@@ -25,19 +25,19 @@ const QHash<int, QByteArray> ChatMessagesModel::_roleNames = QHash<int, QByteArr
 
     {(int)Role::MessageBodyBackgroundForcedColor, "messageBodyBackgroundForcedColor"},
 
-    {(int)Role::AuthorServiceType ,      "authorServiceType"},
-    {(int)Role::AuthorId ,               "authorId"},
-    {(int)Role::AuthorPageUrl ,          "authorPageUrl"},
-    {(int)Role::AuthorName ,             "authorName"},
-    {(int)Role::AuthorNicknameColor ,    "authorNicknameColor"},
-    {(int)Role::AuthorAvatarUrl ,        "authorAvatarUrl"},
-    {(int)Role::AuthorLeftBadgesUrls ,   "authorLeftBadgesUrls"},
-    {(int)Role::AuthorRightBadgesUrls,   "authorRightBadgesUrls"},
+    {(int)Author::Role::ServiceType ,      "authorServiceType"},
+    {(int)Author::Role::Id ,               "authorId"},
+    {(int)Author::Role::AuthorPageUrl ,          "authorPageUrl"},
+    {(int)Author::Role::Name ,             "authorName"},
+    {(int)Author::Role::NicknameColor ,    "authorNicknameColor"},
+    {(int)Author::Role::AvatarUrl ,        "authorAvatarUrl"},
+    {(int)Author::Role::LeftBadgesUrls ,   "authorLeftBadgesUrls"},
+    {(int)Author::Role::RightBadgesUrls,   "authorRightBadgesUrls"},
 
-    {(int)Role::AuthorIsVerified ,       "authorIsVerified"},
-    {(int)Role::AuthorIsChatOwner ,      "authorIsChatOwner"},
-    {(int)Role::AuthorIsSponsor ,        "authorIsSponsor"},
-    {(int)Role::AuthorIsModerator ,      "authorIsModerator"}
+    {(int)Author::Role::IsVerified ,       "authorIsVerified"},
+    {(int)Author::Role::IsChatOwner ,      "authorIsChatOwner"},
+    {(int)Author::Role::Sponsor ,        "authorIsSponsor"},
+    {(int)Author::Role::Moderator ,      "authorIsModerator"}
 };
 
 
@@ -78,7 +78,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
             _dataByIdNum.insert(message.getIdNum(), messageData);
             _idNumByData.insert(messageData, message.getIdNum());
 
-            ChatAuthor* author = getAuthor(message.getAuthorId());
+            Author* author = getAuthor(message.getAuthorId());
 
             std::set<uint64_t>& messagesIds = author->getMessagesIds();
             messagesIds.insert(message.getIdNum());
@@ -230,9 +230,9 @@ int ChatMessagesModel::getRow(QVariant *data)
     }
 }
 
-void ChatMessagesModel::setAuthorData(const QString &authorId, const QVariant& value, const Role role)
+void ChatMessagesModel::setAuthorData(const QString &authorId, const QVariant& value, const Author::Role role)
 {
-    ChatAuthor* author = _authorsById.value(authorId, nullptr);
+    Author* author = _authorsById.value(authorId, nullptr);
     if (!author)
     {
         qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found";
@@ -258,10 +258,10 @@ void ChatMessagesModel::setAuthorData(const QString &authorId, const QVariant& v
     }
 }
 
-void ChatMessagesModel::insertAuthor(const ChatAuthor& author)
+void ChatMessagesModel::insertAuthor(const Author& author)
 {
     const QString& id = author.getId();
-    ChatAuthor* prevAuthor = _authorsById.value(id, nullptr);
+    Author* prevAuthor = _authorsById.value(id, nullptr);
     if (prevAuthor)
     {
         std::set<uint64_t> prevMssagesIds = prevAuthor->getMessagesIds();
@@ -276,7 +276,7 @@ void ChatMessagesModel::insertAuthor(const ChatAuthor& author)
     }
     else
     {
-        ChatAuthor* newAuthor = new ChatAuthor();
+        Author* newAuthor = new Author();
         *newAuthor = author;
         _authorsById.insert(id, newAuthor);
     }
@@ -323,6 +323,24 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
 
     switch ((Role)role)
     {
+    case ChatMessagesModel::Role::MessageCustomAuthorAvatarUrl:
+        break;
+    case ChatMessagesModel::Role::MessageCustomAuthorName:
+        break;
+    case ChatMessagesModel::Role::MessageIsDonateSimple:
+        break;
+    case ChatMessagesModel::Role::MessageIsDonateWithText:
+        break;
+    case ChatMessagesModel::Role::MessageIsDonateWithImage:
+        break;
+    case ChatMessagesModel::Role::MessageIsServiceMessage:
+        break;
+    case ChatMessagesModel::Role::MessageBodyBackgroundForcedColor:
+        break;
+    case ChatMessagesModel::Role::MessageIsYouTubeChatMembership:
+        break;
+    case ChatMessagesModel::Role::MessageIsTwitchAction:
+        break;
     case Role::MessageId:
         return false;
     case Role::MessageHtml:
@@ -335,8 +353,6 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
         break;
-    case Role::AuthorServiceType:
-        return false;
     case Role::MessagePublishedAt:
         return false;
     case Role::MessageReceivedAt:
@@ -353,17 +369,24 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
         break;
+    }
 
-    case Role::AuthorId:
+    switch ((Author::Role)role)
+    {
+    case Author::Role::ServiceType:
+        break;
+    case Author::Role::NicknameColor:
+        break;
+    case Author::Role::Id:
         return false;
-    case Role::AuthorPageUrl:
+    case Author::Role::AuthorPageUrl:
         return false;
-    case Role::AuthorName:
+    case Author::Role::Name:
         return false;
-    case Role::AuthorAvatarUrl:
+    case Author::Role::AvatarUrl:
         if (value.canConvert(QMetaType::QUrl))
         {
-            ChatAuthor* author = getAuthor(message.getAuthorId());
+            Author* author = getAuthor(message.getAuthorId());
             if (author)
             {
                 author->setAvatarUrl(value.toUrl());
@@ -374,19 +397,17 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
         break;
-    case Role::AuthorLeftBadgesUrls:
+    case Author::Role::LeftBadgesUrls:
         return false;
-    case Role::AuthorRightBadgesUrls:
+    case Author::Role::RightBadgesUrls:
         return false;
-    case Role::AuthorIsVerified:
+    case Author::Role::IsVerified:
         return false;
-    case Role::AuthorIsChatOwner:
+    case Author::Role::IsChatOwner:
         return false;
-    case Role::AuthorIsSponsor:
+    case Author::Role::Sponsor:
         return false;
-    case Role::AuthorIsModerator:
-        return false;
-    default:
+    case Author::Role::Moderator:
         return false;
     }
 
@@ -398,8 +419,6 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
 
 QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) const
 {
-    const ChatAuthor* author = getAuthor(message.getAuthorId());
-
     switch ((Role)role)
     {
     case Role::MessageId:
@@ -437,33 +456,43 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
 
     case Role::MessageBodyBackgroundForcedColor:
         return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole);
-
-    case Role::AuthorServiceType:
-        return (int)(author ? author->getServiceType() : ChatService::ServiceType::Unknown);
-    case Role::AuthorId:
-        return author ? author->getId() : QString();
-    case Role::AuthorPageUrl:
-        return author ? author->getPageUrl() : QUrl();
-    case Role::AuthorName:
-        return author ? author->getName() : QString();
-    case Role::AuthorNicknameColor:
-        return author ? author->getCustomNicknameColor() : QColor();
-    case Role::AuthorAvatarUrl:
-        return author ? author->getAvatarUrl() : QUrl();
-    case Role::AuthorLeftBadgesUrls:
-        return author ? author->getLeftBadgesUrls() : QStringList();
-    case Role::AuthorRightBadgesUrls:
-        return author ? author->getRightBadgesUrls() : QStringList();
-
-    case Role::AuthorIsVerified:
-        return author ? author->isHasFlag(ChatAuthor::Flag::Verified) : false;
-    case Role::AuthorIsChatOwner:
-        return author ? author->isHasFlag(ChatAuthor::Flag::ChatOwner) : false;
-    case Role::AuthorIsSponsor:
-        return author ? author->isHasFlag(ChatAuthor::Flag::Sponsor) : false;
-    case Role::AuthorIsModerator:
-        return author ? author->isHasFlag(ChatAuthor::Flag::Moderator) : false;
     }
+
+    const Author* author = getAuthor(message.getAuthorId());
+    if (!author)
+    {
+        return QVariant();
+    }
+
+    switch ((Author::Role)role)
+    {
+    case Author::Role::ServiceType:
+        return (int)author->getServiceType();
+    case Author::Role::Id:
+        return author->getId();
+    case Author::Role::AuthorPageUrl:
+        return author->getPageUrl();
+    case Author::Role::Name:
+        return author->getName();
+    case Author::Role::NicknameColor:
+        return author->getCustomNicknameColor();
+    case Author::Role::AvatarUrl:
+        return author->getAvatarUrl();
+    case Author::Role::LeftBadgesUrls:
+        return author->getLeftBadgesUrls();
+    case Author::Role::RightBadgesUrls:
+        return author->getRightBadgesUrls();
+
+    case Author::Role::IsVerified:
+        return author->isHasFlag(Author::Flag::Verified);
+    case Author::Role::IsChatOwner:
+        return author->isHasFlag(Author::Flag::ChatOwner);
+    case Author::Role::Sponsor:
+        return author->isHasFlag(Author::Flag::Sponsor);
+    case Author::Role::Moderator:
+        return author->isHasFlag(Author::Flag::Moderator);
+    }
+
     return QVariant();
 }
 

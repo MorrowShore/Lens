@@ -1,5 +1,5 @@
 #include "chathandler.hpp"
-#include "models/chatauthor.h"
+#include "models/author.h"
 #include "models/chatmessage.h"
 #include <QCoreApplication>
 #ifndef AXELCHAT_LIBRARY
@@ -46,7 +46,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
 }
 
-void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors)
+void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<Author>& authors)
 {
     if (messages.isEmpty() && authors.isEmpty())
     {
@@ -60,7 +60,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
     }
 
     QList<ChatMessage> messagesValidToAdd;
-    QList<ChatAuthor*> updatedAuthors;
+    QList<Author*> updatedAuthors;
 
     for (int i = 0; i < messages.count(); ++i)
     {
@@ -70,7 +70,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
             continue;
         }
 
-        ChatAuthor& author = authors[i];
+        Author& author = authors[i];
 
         messagesModel.insertAuthor(author);
 
@@ -124,8 +124,8 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
 
 void ChatHandler::sendTestMessage(const QString &text)
 {
-    const ChatAuthor& author = ChatAuthor::getSoftwareAuthor();
-    QList<ChatAuthor> authors;
+    const Author& author = Author::getSoftwareAuthor();
+    QList<Author> authors;
     authors.append(author);
 
     ChatMessage message({new ChatMessage::Text(text)}, author);
@@ -140,8 +140,8 @@ void ChatHandler::sendTestMessage(const QString &text)
 
 void ChatHandler::sendSoftwareMessage(const QString &text)
 {
-    const ChatAuthor& author = ChatAuthor::getSoftwareAuthor();
-    QList<ChatAuthor> authors;
+    const Author& author = Author::getSoftwareAuthor();
+    QList<Author> authors;
     authors.append(author);
 
     QList<ChatMessage> messages;
@@ -182,7 +182,7 @@ void ChatHandler::onAvatarDiscovered(const QString &authorId, const QUrl &url)
     }
 
     outputToFile.downloadAvatar(authorId, url, type);
-    messagesModel.setAuthorData(authorId, url, ChatMessagesModel::Role::AuthorAvatarUrl);
+    messagesModel.setAuthorData(authorId, url, Author::Role::AvatarUrl);
 }
 
 void ChatHandler::clearMessages()
@@ -233,7 +233,7 @@ void ChatHandler::onConnectedChanged(const bool connected, const QString& name)
     emit connectedCountChanged();
 }
 
-void ChatHandler::onAuthorNameChanged(const ChatAuthor& author, const QString &prevName, const QString &newName)
+void ChatHandler::onAuthorNameChanged(const Author& author, const QString &prevName, const QString &newName)
 {
     if (_enableShowAuthorNameChanged)
     {

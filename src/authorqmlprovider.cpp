@@ -1,5 +1,5 @@
 #include "authorqmlprovider.h"
-#include "models/chatauthor.h"
+#include "models/author.h"
 #include "chat_services/youtube.hpp"
 #include "chathandler.hpp"
 #include <QDesktopServices>
@@ -30,7 +30,7 @@ void AuthorQMLProvider::setSelectedAuthorId(const QString &authorId_)
 
 QString AuthorQMLProvider::getName() const
 {
-    const ChatAuthor* author = messagesModel.getAuthor(authorId);
+    const Author* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
         return QString();
@@ -41,7 +41,7 @@ QString AuthorQMLProvider::getName() const
 
 int AuthorQMLProvider::getServiceType() const
 {
-    const ChatAuthor* author = messagesModel.getAuthor(authorId);
+    const Author* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
         return (int)ChatService::ServiceType::Unknown;
@@ -52,7 +52,7 @@ int AuthorQMLProvider::getServiceType() const
 
 QUrl AuthorQMLProvider::getAvatarUrl() const
 {
-    const ChatAuthor* author = messagesModel.getAuthor(authorId);
+    const Author* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
         return QUrl();
@@ -63,7 +63,7 @@ QUrl AuthorQMLProvider::getAvatarUrl() const
 
 int AuthorQMLProvider::getMessagesCount() const
 {
-    const ChatAuthor* author = messagesModel.getAuthor(authorId);
+    const Author* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
         return -1;
@@ -74,7 +74,7 @@ int AuthorQMLProvider::getMessagesCount() const
 
 bool AuthorQMLProvider::openAvatar() const
 {
-    const ChatAuthor* author = messagesModel.getAuthor(authorId);
+    const Author* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
         return false;
@@ -96,7 +96,7 @@ bool AuthorQMLProvider::openAvatar() const
 
 bool AuthorQMLProvider::openPage() const
 {
-    const ChatAuthor* author = messagesModel.getAuthor(authorId);
+    const Author* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
         return false;
@@ -107,7 +107,7 @@ bool AuthorQMLProvider::openPage() const
 
 bool AuthorQMLProvider::openFolder() const
 {
-    const ChatAuthor* author = messagesModel.getAuthor(authorId);
+    const Author* author = messagesModel.getAuthor(authorId);
     if (!author)
     {
         return false;

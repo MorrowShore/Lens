@@ -87,7 +87,7 @@ signals:
     void messagesDataChanged();
 
 public slots:
-    void onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& authors);
+    void onReadyRead(QList<ChatMessage>& messages, QList<Author>& authors);
     void sendTestMessage(const QString& text);
     void sendSoftwareMessage(const QString& text);
     void playNewMessageSound();
@@ -101,7 +101,7 @@ public slots:
 
 private slots:
     void onConnectedChanged(const bool connected, const QString& name);
-    void onAuthorNameChanged(const ChatAuthor& author, const QString& prevName, const QString& newName);
+    void onAuthorNameChanged(const Author& author, const QString& prevName, const QString& newName);
 
 private:
     void updateProxy();

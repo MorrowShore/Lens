@@ -1,7 +1,7 @@
 #pragma once
 
 #include "models/chatmessage.h"
-#include "models/chatauthor.h"
+#include "models/author.h"
 #include <QAbstractListModel>
 
 class ChatMessagesModel : public QAbstractListModel
@@ -31,20 +31,6 @@ public:
         MessageIsYouTubeChatMembership,
 
         MessageIsTwitchAction,
-
-        AuthorServiceType,
-        AuthorId,
-        AuthorPageUrl,
-        AuthorName,
-        AuthorNicknameColor,
-        AuthorAvatarUrl,
-        AuthorLeftBadgesUrls,
-        AuthorRightBadgesUrls,
-
-        AuthorIsVerified,
-        AuthorIsChatOwner,
-        AuthorIsSponsor,
-        AuthorIsModerator
     };
     Q_ENUM(Role)
 
@@ -64,11 +50,11 @@ public:
     uint64_t lastIdNum() const;
     QModelIndex createIndexByPtr(QVariant* data) const;
     int getRow(QVariant* data);
-    void setAuthorData(const QString& authorId, const QVariant& value, const Role role);
+    void setAuthorData(const QString& authorId, const QVariant& value, const Author::Role role);
 
-    const ChatAuthor* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
-    ChatAuthor* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
-    void insertAuthor(const ChatAuthor& author);
+    const Author* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
+    Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
+    void insertAuthor(const Author& author);
 
 private:
     static const QHash<int, QByteArray> _roleNames;
@@ -78,7 +64,7 @@ private:
     QHash<uint64_t, QVariant*> _dataByIdNum;//idNum, *data
     QHash<QVariant*, uint64_t> _idNumByData;//*data, idNum
 
-    QHash<QString, ChatAuthor*> _authorsById;
+    QHash<QString, Author*> _authorsById;
 
     const int _maxSize  = 1000;
 

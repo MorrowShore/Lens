@@ -1,5 +1,5 @@
 #include "outputtofile.hpp"
-#include "models/chatauthor.h"
+#include "models/author.h"
 #include "models/chatmessage.h"
 #include "chat_services/youtube.hpp"
 #include <QStandardPaths>
@@ -167,7 +167,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
         const ChatMessage& message = messages[i];
 
         const QString authorId = message.getAuthorId();
-        const ChatAuthor* author = messagesModel.getAuthor(authorId);
+        const Author* author = messagesModel.getAuthor(authorId);
         if (!author)
         {
             qWarning() << "Not found author id" << message.getAuthorId();
@@ -549,14 +549,14 @@ QString OutputToFile::getServiceDirectory(const ChatService::ServiceType service
     return outputDirectory.get() + "/services/" + ChatService::getServiceTypeId(serviceType);
 }
 
-void OutputToFile::writeAuthors(const QList<ChatAuthor*>& authors)
+void OutputToFile::writeAuthors(const QList<Author*>& authors)
 {
     if (!enabled.get())
     {
         return;
     }
 
-    for (const ChatAuthor* author : authors)
+    for (const Author* author : authors)
     {
         const QString pathDir = getAuthorDirectory(author->getServiceType(), author->getId());
         if (!QDir(pathDir).exists())

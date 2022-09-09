@@ -1,5 +1,5 @@
-#ifndef CHATAUTHOR_H
-#define CHATAUTHOR_H
+#ifndef AUTHOR_H
+#define AUTHOR_H
 
 #include "chat_services/chatservice.hpp"
 #include <QString>
@@ -7,10 +7,27 @@
 #include <QColor>
 #include <set>
 
-class ChatAuthor
+class Author
 {
     Q_GADGET
 public:
+    enum class Role {
+        ServiceType = Qt::UserRole + 1 + 1024,
+        Id,
+        AuthorPageUrl,
+        Name,
+        NicknameColor,
+        AvatarUrl,
+        LeftBadgesUrls,
+        RightBadgesUrls,
+
+        IsVerified,
+        IsChatOwner,
+        Sponsor,
+        Moderator
+    };
+    Q_ENUM(Role)
+
     enum class Flag {
         ChatOwner,
         Moderator,
@@ -19,8 +36,8 @@ public:
     };
     Q_ENUM(Flag)
 
-    ChatAuthor() { };
-    ChatAuthor(ChatService::ServiceType serviceType,
+    Author() { };
+    Author(ChatService::ServiceType serviceType,
                const QString& name,
                const QString& authorId,
                const QUrl& avatarUrl = QUrl(),
@@ -30,7 +47,7 @@ public:
                const std::set<Flag>& flags = {},
                const QColor& customNicknameColor = QColor());
 
-    static const ChatAuthor& getSoftwareAuthor();
+    static const Author& getSoftwareAuthor();
 
     inline const QString& getId() const
     {
@@ -98,4 +115,4 @@ private:
     std::set<uint64_t> messagesIds;
 };
 
-#endif // CHATAUTHOR_H
+#endif // AUTHOR_H

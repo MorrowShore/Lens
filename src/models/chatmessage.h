@@ -10,7 +10,7 @@
 #include <QMap>
 #include <set>
 
-class ChatAuthor;
+class Author;
 
 class ChatMessage{
     Q_GADGET
@@ -147,7 +147,7 @@ public:
 
     ChatMessage() { }
     ChatMessage(const QList<Content*>& contents,
-                const ChatAuthor& author,
+                const Author& author,
                 const QDateTime& publishedAt = QDateTime::currentDateTime(),
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
                 const QString& messageId = QString(),

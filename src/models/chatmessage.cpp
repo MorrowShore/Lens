@@ -1,11 +1,11 @@
 #include "chatmessage.h"
-#include "chatauthor.h"
+#include "author.h"
 #include <QUuid>
 #include <QMetaEnum>
 #include <QDebug>
 
 ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
-                         const ChatAuthor& author,
+                         const Author& author,
                          const QDateTime &publishedAt_,
                          const QDateTime &receivedAt_,
                          const QString &messageId_,
