@@ -69,7 +69,7 @@ int AuthorQMLProvider::getMessagesCount() const
         return -1;
     }
 
-    return author->getMessagesCount();
+    return author->getMessagesIds().size();
 }
 
 bool AuthorQMLProvider::openAvatar() const

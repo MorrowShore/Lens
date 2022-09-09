@@ -320,7 +320,7 @@ void Twitch::onIRCMessage(const QString &rawData)
     const QVector<QStringRef> rawMessages = rawData.splitRef("\r\n");
     for (const QStringRef& raw : rawMessages)
     {
-        std::set<ChatMessage::Flags> messageFlags;
+        std::set<ChatMessage::Flag> messageFlags;
 
         QString rawMessage = raw.trimmed().toString();
         if (rawMessage.isEmpty())
@@ -372,7 +372,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             rawMessageText = rawMessageText.mid(7);
             rawMessageText = rawMessageText.left(rawMessageText.length() - 1);
             rawMessageText = rawMessageText.trimmed();
-            messageFlags.insert(ChatMessage::Flags::TwitchAction);
+            messageFlags.insert(ChatMessage::Flag::TwitchAction);
         }
 
         if (needIgnoreMessage(rawMessageText))
@@ -550,21 +550,21 @@ void Twitch::onIRCMessage(const QString &rawData)
             displayName = channelLogin;
         }
 
-        std::set<ChatAuthor::Flags> authorFlags;
+        std::set<ChatAuthor::Flag> authorFlags;
 
         if (badges.contains("partner/1"))
         {
-            authorFlags.insert(ChatAuthor::Flags::Verified);
+            authorFlags.insert(ChatAuthor::Flag::Verified);
         }
 
         if (badges.contains("broadcaster/1"))
         {
-            authorFlags.insert(ChatAuthor::Flags::ChatOwner);
+            authorFlags.insert(ChatAuthor::Flag::ChatOwner);
         }
 
         if (badges.contains("moderator/1"))
         {
-            authorFlags.insert(ChatAuthor::Flags::Moderator);
+            authorFlags.insert(ChatAuthor::Flag::Moderator);
         }
 
         const ChatAuthor author(getServiceType(),

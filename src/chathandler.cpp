@@ -69,41 +69,25 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
     for (int i = 0; i < messages.count(); ++i)
     {
         ChatMessage&& message = std::move(messages[i]);
-        if (messagesModel.contains(message.getId()) && !message.isHasFlag(ChatMessage::Flags::DeleterItem))
+        if (messagesModel.contains(message.getId()) && !message.isHasFlag(ChatMessage::Flag::DeleterItem))
         {
             continue;
         }
 
-        ChatAuthor&& author = std::move(authors[i]);
+        ChatAuthor& author = authors[i];
 
-        ChatAuthor* resultAuthor = nullptr;
-        ChatAuthor* prevAuthor = messagesModel.getAuthor(author.getId());
-        if (prevAuthor)
-        {
-            const auto prevMessagesCount = prevAuthor->getMessagesCount();
-            *prevAuthor = author;
-            prevAuthor->setMessagesCount(prevMessagesCount + 1);
-            resultAuthor = prevAuthor;
-        }
-        else
-        {
-            ChatAuthor* newAuthor = new ChatAuthor();
-            *newAuthor = author;
-            newAuthor->setMessagesCount(1);
-            messagesModel.addAuthor(newAuthor);
-            resultAuthor = newAuthor;
-        }
+        messagesModel.insertAuthor(author);
 
-        if (resultAuthor && !message.isHasFlag(ChatMessage::Flags::DeleterItem))
+        if (!message.isHasFlag(ChatMessage::Flag::DeleterItem))
         {
-            switch (resultAuthor->getServiceType())
+            switch (author.getServiceType())
             {
             case ChatService::ServiceType::Unknown:
             case ChatService::ServiceType::Software:
                 break;
 
             default:
-                updatedAuthors.append(resultAuthor);
+                updatedAuthors.append(&author);
                 break;
             }
         }
@@ -125,7 +109,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<ChatAuthor>& a
         ChatMessage&& message = std::move(messagesValidToAdd[i]);
 
 #ifndef AXELCHAT_LIBRARY
-        if (!message.isHasFlag(ChatMessage::Flags::IgnoreBotCommand))
+        if (!message.isHasFlag(ChatMessage::Flag::IgnoreBotCommand))
         {
             bot.processMessage(message);
         }

@@ -7,7 +7,7 @@ ChatAuthor::ChatAuthor(ChatService::ServiceType serviceType_,
                        const QUrl &pageUrl_,
                        const QStringList &leftBadgesUrls_,
                        const QStringList &rightBadgesUrls_,
-                       const std::set<Flags> &flags_,
+                       const std::set<Flag> &flags_,
                        const QColor &customNicknameColor_)
     : serviceType(serviceType_)
     , name(name_)
@@ -31,8 +31,8 @@ const ChatAuthor &ChatAuthor::getSoftwareAuthor()
     return author;
 }
 
-QString ChatAuthor::flagToString(const Flags flag)
+QString ChatAuthor::flagToString(const Flag flag)
 {
-    QMetaEnum metaEnum = QMetaEnum::fromType<Flags>();
+    QMetaEnum metaEnum = QMetaEnum::fromType<Flag>();
     return metaEnum.valueToKey((int)flag);
 }

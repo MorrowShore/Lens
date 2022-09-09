@@ -15,7 +15,7 @@ class ChatAuthor;
 class ChatMessage{
     Q_GADGET
 public:
-    enum class Flags {
+    enum class Flag {
         MarkedAsDeleted,
         DeleterItem,
         BotCommand,
@@ -30,9 +30,9 @@ public:
         YouTubeChatMembership,
         TwitchAction,
     };
-    Q_ENUM(Flags)
+    Q_ENUM(Flag)
 
-    enum ForcedColorRoles {
+    enum ForcedColorRole {
         BodyBackgroundForcedColorRole
     };
 
@@ -152,8 +152,8 @@ public:
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
                 const QString& messageId = QString(),
                 const QMap<QUrl, QList<int>>& images = {},
-                const std::set<Flags>& flags = {},
-                const QHash<ForcedColorRoles, QColor>& forcedColors = {});
+                const std::set<Flag>& flags = {},
+                const QHash<ForcedColorRole, QColor>& forcedColors = {});
 
     inline const QString& getId() const
     {
@@ -199,24 +199,24 @@ public:
     {
         idNum = idNum_;
     }
-    inline bool isHasFlag(const Flags flag) const
+    inline bool isHasFlag(const Flag flag) const
     {
         return flags.find(flag) != flags.end();
     }
     void setPlainText(const QString& text);
 
-    void setFlag(const Flags flag, bool enable);
+    void setFlag(const Flag flag, bool enable);
 
     void printMessageInfo(const QString& prefix, const int& row = -1) const;
 
-    QString getForcedColorRoleToQMLString(const ForcedColorRoles& role) const;
+    QString getForcedColorRoleToQMLString(const ForcedColorRole& role) const;
 
     const QList<Content*>& getContents() const
     {
         return contents;
     }
 
-    static QString flagToString(const Flags flag);
+    static QString flagToString(const Flag flag);
 
 private:
     void updateHtml();
@@ -228,8 +228,8 @@ private:
     QDateTime publishedAt;
     QDateTime receivedAt;
     QString authorId;
-    std::set<Flags> flags;
-    QHash<ForcedColorRoles, QColor> forcedColors;
+    std::set<Flag> flags;
+    QHash<ForcedColorRole, QColor> forcedColors;
     QMap<QUrl, QList<int>> images; // <image url, [image poses]>
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;

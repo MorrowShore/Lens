@@ -9,7 +9,7 @@ class ChatMessagesModel : public QAbstractListModel
 public:
     ChatMessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
 
-    enum ChatMessageRoles {
+    enum Role {
         MessageId = Qt::UserRole + 1,
         MessageHtml,
         MessagePublishedAt,
@@ -66,7 +66,7 @@ public:
 
     const ChatAuthor* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     ChatAuthor* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
-    void addAuthor(ChatAuthor* author);
+    void insertAuthor(const ChatAuthor& author);
 
 private:
     static const QHash<int, QByteArray> _roleNames;

@@ -472,10 +472,10 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         QStringList rightBadges;
         QUrl authorAvatarUrl;
         QMap<QUrl, QList<int>> images;
-        std::set<ChatMessage::Flags> messageFlags;
-        std::set<ChatAuthor::Flags> authorFlags;
+        std::set<ChatMessage::Flag> messageFlags;
+        std::set<ChatAuthor::Flag> authorFlags;
 
-        QHash<ChatMessage::ForcedColorRoles, QColor> forcedColors;
+        QHash<ChatMessage::ForcedColorRole, QColor> forcedColors;
 
         const QJsonObject& actionObject = actionJson.toObject();
 
@@ -497,7 +497,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 itemRenderer = item.value("liveChatPaidMessageRenderer").toObject();
 
-                messageFlags.insert(ChatMessage::Flags::DonateWithText);
+                messageFlags.insert(ChatMessage::Flag::DonateWithText);
 
                 valid = true;
             }
@@ -506,7 +506,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 //ToDo:
                 itemRenderer = item.value("liveChatPaidStickerRenderer").toObject();
 
-                messageFlags.insert(ChatMessage::Flags::DonateWithImage);
+                messageFlags.insert(ChatMessage::Flag::DonateWithImage);
 
                 valid = true;
             }
@@ -514,7 +514,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 itemRenderer = item.value("liveChatMembershipItemRenderer").toObject();
 
-                messageFlags.insert(ChatMessage::Flags::YouTubeChatMembership);
+                messageFlags.insert(ChatMessage::Flag::YouTubeChatMembership);
 
                 valid = true;
             }
@@ -525,7 +525,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 if (iconType == "POLL")
                 {
                     itemRenderer = std::move(itemRenderer_);
-                    messageFlags.insert(ChatMessage::Flags::ServiceMessage);
+                    messageFlags.insert(ChatMessage::Flag::ServiceMessage);
                     valid = true;
                 }
                 else if (iconType == "YOUTUBE_ROUND")
@@ -608,21 +608,21 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
                         if (iconType.toLower() == "owner")
                         {
-                            authorFlags.insert(ChatAuthor::Flags::ChatOwner);
+                            authorFlags.insert(ChatAuthor::Flag::ChatOwner);
                             rightBadges.append("qrc:/resources/images/king.svg");
                             foundIconType = true;
                         }
 
                         if (iconType.toLower() == "moderator")
                         {
-                            authorFlags.insert(ChatAuthor::Flags::Moderator);
+                            authorFlags.insert(ChatAuthor::Flag::Moderator);
                             rightBadges.append("qrc:/resources/images/youtube-moderator-icon.svg");
                             foundIconType = true;
                         }
 
                         if (iconType.toLower() == "verified")
                         {
-                            authorFlags.insert(ChatAuthor::Flags::Verified);
+                            authorFlags.insert(ChatAuthor::Flag::Verified);
                             rightBadges.append("qrc:/resources/images/youtube-verified-icon.svg");
                             foundIconType = true;
                         }
@@ -634,7 +634,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                     }
                     else if (liveChatAuthorBadgeRenderer.contains("customThumbnail"))
                     {
-                        authorFlags.insert(ChatAuthor::Flags::Sponsor);
+                        authorFlags.insert(ChatAuthor::Flag::Sponsor);
 
                         const QJsonArray& thumbnails = liveChatAuthorBadgeRenderer.value("customThumbnail").toObject()
                                 .value("thumbnails").toArray();
@@ -672,19 +672,19 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             if (itemRenderer.contains("bodyBackgroundColor"))
             {
                 // usually for liveChatPaidMessageRenderer
-                forcedColors.insert(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("backgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole, itemRenderer.value("backgroundColor").toVariant().toLongLong());
+                forcedColors.insert(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("backgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("headerBackgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
             }
         }
         else if (actionObject.contains("markChatItemAsDeletedAction"))
@@ -747,7 +747,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                                             QDateTime::currentDateTime(),
                                             messageId,
                                             {},
-                                            {ChatMessage::Flags::DeleterItem}));
+                                            {ChatMessage::Flag::DeleterItem}));
 
                 authors.append(ChatAuthor());
             }

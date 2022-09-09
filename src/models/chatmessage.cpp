@@ -10,8 +10,8 @@ ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
                          const QDateTime &receivedAt_,
                          const QString &messageId_,
                          const QMap<QUrl, QList<int>>& images_,
-                         const std::set<Flags> &flags_,
-                         const QHash<ForcedColorRoles, QColor> &forcedColors_)
+                         const std::set<Flag> &flags_,
+                         const QHash<ForcedColorRole, QColor> &forcedColors_)
     : contents(contents_)
     , messageId(messageId_)
     , publishedAt(publishedAt_)
@@ -37,7 +37,7 @@ void ChatMessage::setPlainText(const QString &text)
     updateHtml();
 }
 
-void ChatMessage::setFlag(const Flags flag, bool enable)
+void ChatMessage::setFlag(const Flag flag, bool enable)
 {
     if (enable)
     {
@@ -85,7 +85,7 @@ void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
 
     resultString += "\nMessage Flags: ";
 
-    for (const Flags& flag : flags)
+    for (const Flag& flag : flags)
     {
         resultString += flagToString(flag) + ", ";
     }
@@ -96,7 +96,7 @@ void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
     qDebug(resultString.toUtf8());
 }
 
-QString ChatMessage::getForcedColorRoleToQMLString(const ForcedColorRoles &role) const
+QString ChatMessage::getForcedColorRoleToQMLString(const ForcedColorRole &role) const
 {
     if (forcedColors.contains(role) && forcedColors[role].isValid())
     {
@@ -146,9 +146,9 @@ void ChatMessage::trimText(QString &text)
     text = text.mid(left, text.length() - left - right);
 }
 
-QString ChatMessage::flagToString(const Flags flag)
+QString ChatMessage::flagToString(const Flag flag)
 {
-    QMetaEnum metaEnum = QMetaEnum::fromType<Flags>();
+    QMetaEnum metaEnum = QMetaEnum::fromType<Flag>();
     return metaEnum.valueToKey((int)flag);
 }
 

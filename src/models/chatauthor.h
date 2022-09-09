@@ -11,13 +11,13 @@ class ChatAuthor
 {
     Q_GADGET
 public:
-    enum class Flags {
+    enum class Flag {
         ChatOwner,
         Moderator,
         Sponsor,
         Verified,
     };
-    Q_ENUM(Flags)
+    Q_ENUM(Flag)
 
     ChatAuthor() { };
     ChatAuthor(ChatService::ServiceType serviceType,
@@ -27,7 +27,7 @@ public:
                const QUrl& pageUrl = QUrl(),
                const QStringList& leftBadgesUrls = {},
                const QStringList& rightBadgesUrls = {},
-               const std::set<Flags>& flags = {},
+               const std::set<Flag>& flags = {},
                const QColor& customNicknameColor = QColor());
 
     static const ChatAuthor& getSoftwareAuthor();
@@ -52,14 +52,6 @@ public:
     {
         return pageUrl;
     }
-    inline int getMessagesCount() const
-    {
-        return messagesCount;
-    }
-    inline void setMessagesCount(int count)
-    {
-        messagesCount = count;
-    }
     inline const QColor& getCustomNicknameColor() const
     {
         return customNicknameColor;
@@ -76,12 +68,22 @@ public:
     {
         return rightBadgesUrls;
     }
-    inline bool isHasFlag(const Flags flag) const
+    inline bool isHasFlag(const Flag flag) const
     {
         return flags.find(flag) != flags.end();
     }
 
-    static QString flagToString(const Flags flag);
+    static QString flagToString(const Flag flag);
+
+    inline const std::set<uint64_t>& getMessagesIds() const
+    {
+        return messagesIds;
+    }
+
+    inline std::set<uint64_t>& getMessagesIds()
+    {
+        return messagesIds;
+    }
 
 private:
     ChatService::ServiceType serviceType = ChatService::ServiceType::Unknown;
@@ -91,9 +93,9 @@ private:
     QUrl pageUrl;
     QStringList leftBadgesUrls;
     QStringList rightBadgesUrls;
-    std::set<Flags> flags;
+    std::set<Flag> flags;
     QColor customNicknameColor;
-    int messagesCount = 0;
+    std::set<uint64_t> messagesIds;
 };
 
 #endif // CHATAUTHOR_H

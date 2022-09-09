@@ -148,7 +148,7 @@ void ChatBot::processMessage(ChatMessage &message)
     {
         if (canExecute(*action, message))
         {
-            message.setFlag(ChatMessage::Flags::BotCommand, true);
+            message.setFlag(ChatMessage::Flag::BotCommand, true);
             execute(*action);
         }
     }
@@ -159,7 +159,7 @@ void ChatBot::processMessage(ChatMessage &message)
         {
             if (canExecute(*action, message))
             {
-                message.setFlag(ChatMessage::Flags::BotCommand, true);
+                message.setFlag(ChatMessage::Flag::BotCommand, true);
                 execute(*action);
             }
         }

@@ -58,7 +58,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
         return;
     }
 
-    if (!message.isHasFlag(ChatMessage::Flags::DeleterItem))
+    if (!message.isHasFlag(ChatMessage::Flag::DeleterItem))
     {
         if (!_dataById.contains(message.getId()))
         {
@@ -78,7 +78,11 @@ void ChatMessagesModel::append(ChatMessage&& message)
             _dataByIdNum.insert(message.getIdNum(), messageData);
             _idNumByData.insert(messageData, message.getIdNum());
 
-            const ChatAuthor* author = getAuthor(message.getAuthorId());
+            ChatAuthor* author = getAuthor(message.getAuthorId());
+
+            std::set<uint64_t>& messagesIds = author->getMessagesIds();
+            messagesIds.insert(message.getIdNum());
+
             if (author && !author->getAvatarUrl().isValid())
             {
                 const QString& authorId = author->getId();
@@ -129,7 +133,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
             const QModelIndex& index = createIndexByPtr(data);
             if (index.isValid())
             {
-                if (!setData(index, true, ChatMessageRoles::MessageMarkedAsDeleted))
+                if (!setData(index, true, Role::MessageMarkedAsDeleted))
                 {
                     qDebug(QString("%1: failed to set data with role ChatMessageRoles::MessageMarkedAsDeleted")
                            .arg(Q_FUNC_INFO).toUtf8());
@@ -137,7 +141,7 @@ void ChatMessagesModel::append(ChatMessage&& message)
                     message.printMessageInfo("Raw message:");
                 }
 
-                if (!setData(index, message.getHtml(), ChatMessageRoles::MessageHtml))
+                if (!setData(index, message.getHtml(), Role::MessageHtml))
                 {
                     qDebug(QString("%1: failed to set data with role ChatMessageRoles::MessageText")
                            .arg(Q_FUNC_INFO).toUtf8());
@@ -256,14 +260,28 @@ void ChatMessagesModel::applyAvatar(const QString &authorlId, const QUrl &url)
     _needUpdateAvatarMessages.remove(authorlId);
 }
 
-void ChatMessagesModel::addAuthor(ChatAuthor* author)
+void ChatMessagesModel::insertAuthor(const ChatAuthor& author)
 {
-    if (!author)
+    const QString& id = author.getId();
+    ChatAuthor* prevAuthor = _authorsById.value(id, nullptr);
+    if (prevAuthor)
     {
-        return;
-    }
+        std::set<uint64_t> prevMssagesIds = prevAuthor->getMessagesIds();
+        for (const uint64_t newMessageId : author.getMessagesIds())
+        {
+            prevMssagesIds.insert(newMessageId);
+        }
 
-    _authorsById.insert(author->getId(), author);
+        *prevAuthor = author;
+        prevAuthor->getMessagesIds() = prevMssagesIds;
+        // TODO: update message data
+    }
+    else
+    {
+        ChatAuthor* newAuthor = new ChatAuthor();
+        *newAuthor = author;
+        _authorsById.insert(id, newAuthor);
+    }
 }
 
 bool ChatMessagesModel::contains(const QString &id)
@@ -329,7 +347,7 @@ bool ChatMessagesModel::setData(const QModelIndex &index, const QVariant &value,
     case MessageMarkedAsDeleted:
         if (value.canConvert(QMetaType::Bool))
         {
-            message.setFlag(ChatMessage::Flags::MarkedAsDeleted, value.toBool());
+            message.setFlag(ChatMessage::Flag::MarkedAsDeleted, value.toBool());
         }
         else
         {
@@ -393,32 +411,32 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
     case MessageReceivedAt:
         return message.getReceivedAt();
     case MessageIsBotCommand:
-        return message.isHasFlag(ChatMessage::Flags::BotCommand);
+        return message.isHasFlag(ChatMessage::Flag::BotCommand);
     case MessageMarkedAsDeleted:
-        return message.isHasFlag(ChatMessage::Flags::MarkedAsDeleted);
+        return message.isHasFlag(ChatMessage::Flag::MarkedAsDeleted);
     case MessageCustomAuthorAvatarUrl:
         return message.getCustomAuthorAvatarUrl();
     case MessageCustomAuthorName:
         return message.getCustomAuthorName();
 
     case MessageIsDonateSimple:
-        return message.isHasFlag(ChatMessage::Flags::DonateSimple);
+        return message.isHasFlag(ChatMessage::Flag::DonateSimple);
     case MessageIsDonateWithText:
-        return message.isHasFlag(ChatMessage::Flags::DonateWithText);
+        return message.isHasFlag(ChatMessage::Flag::DonateWithText);
     case MessageIsDonateWithImage:
-        return message.isHasFlag(ChatMessage::Flags::DonateWithImage);
+        return message.isHasFlag(ChatMessage::Flag::DonateWithImage);
 
     case MessageIsServiceMessage:
-        return message.isHasFlag(ChatMessage::Flags::ServiceMessage);
+        return message.isHasFlag(ChatMessage::Flag::ServiceMessage);
 
     case MessageIsYouTubeChatMembership:
-        return message.isHasFlag(ChatMessage::Flags::YouTubeChatMembership);
+        return message.isHasFlag(ChatMessage::Flag::YouTubeChatMembership);
 
     case MessageIsTwitchAction:
-        return message.isHasFlag(ChatMessage::Flags::TwitchAction);
+        return message.isHasFlag(ChatMessage::Flag::TwitchAction);
 
     case MessageBodyBackgroundForcedColor:
-        return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRoles::BodyBackgroundForcedColorRole);
+        return message.getForcedColorRoleToQMLString(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole);
 
     case AuthorServiceType:
         return (int)(author ? author->getServiceType() : ChatService::ServiceType::Unknown);
@@ -438,13 +456,13 @@ QVariant ChatMessagesModel::dataByRole(const ChatMessage &message, int role) con
         return author ? author->getRightBadgesUrls() : QStringList();
 
     case AuthorIsVerified:
-        return author ? author->isHasFlag(ChatAuthor::Flags::Verified) : false;
+        return author ? author->isHasFlag(ChatAuthor::Flag::Verified) : false;
     case AuthorIsChatOwner:
-        return author ? author->isHasFlag(ChatAuthor::Flags::ChatOwner) : false;
+        return author ? author->isHasFlag(ChatAuthor::Flag::ChatOwner) : false;
     case AuthorIsSponsor:
-        return author ? author->isHasFlag(ChatAuthor::Flags::Sponsor) : false;
+        return author ? author->isHasFlag(ChatAuthor::Flag::Sponsor) : false;
     case AuthorIsModerator:
-        return author ? author->isHasFlag(ChatAuthor::Flags::Moderator) : false;
+        return author ? author->isHasFlag(ChatAuthor::Flag::Moderator) : false;
     }
     return QVariant();
 }
