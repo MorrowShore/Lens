@@ -3,7 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFile>
-#include "botaction.hpp"
+#include "botaction.h"
 
 CommandSingleEditor::CommandSingleEditor(ChatBot& chatBot_, QWidget *parent) :
     QDialog(parent),

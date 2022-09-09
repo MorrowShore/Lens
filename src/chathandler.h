@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utils.hpp"
-#include "chat_services/youtube.hpp"
-#include "chat_services/twitch.hpp"
+#include "utils.h"
+#include "chat_services/youtube.h"
+#include "chat_services/twitch.h"
 #include "chat_services/goodgame.h"
 #include "authorqmlprovider.h"
 #include <QSettings>
@@ -16,8 +16,8 @@
 #endif
 
 #ifndef AXELCHAT_LIBRARY
-#include "outputtofile.hpp"
-#include "chatbot.hpp"
+#include "outputtofile.h"
+#include "chatbot.h"
 #endif
 
 class ChatHandler : public QObject

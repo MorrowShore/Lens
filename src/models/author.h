@@ -1,7 +1,7 @@
 #ifndef AUTHOR_H
 #define AUTHOR_H
 
-#include "chat_services/chatservice.hpp"
+#include "chat_services/chatservice.h"
 #include <QString>
 #include <QUrl>
 #include <QColor>

@@ -1,4 +1,4 @@
-#include "clipboardqml.hpp"
+#include "clipboardqml.h"
 #include <QGuiApplication>
 #include <QClipboard>
 

@@ -2,7 +2,7 @@
 #define YOUTUBEINTERCEPTOR_HPP
 
 #include "models/message.h"
-#include "chatservice.hpp"
+#include "chatservice.h"
 #include <QSettings>
 #include <QNetworkAccessManager>
 #include <QTimer>

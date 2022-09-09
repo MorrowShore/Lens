@@ -1,8 +1,8 @@
 #ifndef AUTHORQMLPROVIDER_H
 #define AUTHORQMLPROVIDER_H
 
-#include "models/messagesmodle.hpp"
-#include "outputtofile.hpp"
+#include "models/messagesmodle.h"
+#include "outputtofile.h"
 #include <QObject>
 
 class ChatHandler;

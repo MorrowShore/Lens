@@ -1,7 +1,7 @@
 #include "authorqmlprovider.h"
 #include "models/author.h"
-#include "chat_services/youtube.hpp"
-#include "chathandler.hpp"
+#include "chat_services/youtube.h"
+#include "chathandler.h"
 #include <QDesktopServices>
 
 namespace

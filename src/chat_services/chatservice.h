@@ -1,7 +1,7 @@
 #ifndef CHATSERVICE_H
 #define CHATSERVICE_H
 
-#include "utils.hpp"
+#include "utils.h"
 #include "setting.h"
 #include <QSettings>
 #include <QObject>

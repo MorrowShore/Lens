@@ -3,7 +3,7 @@ IDI_ICON1 ICON DISCARDABLE "icon.ico"
 /* https://docs.microsoft.com/ru-ru/windows/win32/menurc/versioninfo-resource?redirectedfrom=MSDN */
 
 #include <windows.h>
-#include "applicationinfo.hpp"
+#include "applicationinfo.h"
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION     APP_INFO_FILEVERSION

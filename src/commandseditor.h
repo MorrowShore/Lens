@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QQmlEngine>
 #include <QTableWidgetItem>
-#include "chatbot.hpp"
+#include "chatbot.h"
 #include "commandsingleeditor.h"
 
 namespace Ui {

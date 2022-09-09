@@ -1,15 +1,15 @@
 #if defined(AXELCHAT_LIBRARY)
-#include "axelchatlib_api.hpp"
+#include "axelchatlib_api.h"
 #else
 #include <QApplication>
-#include "applicationinfo.hpp"
+#include "applicationinfo.h"
 #include <QQmlApplicationEngine>
 #include <QSplashScreen>
-#include "chathandler.hpp"
-#include "githubapi.hpp"
-#include "clipboardqml.hpp"
-#include "qmlutils.hpp"
-#include "i18n.hpp"
+#include "chathandler.h"
+#include "githubapi.h"
+#include "clipboardqml.h"
+#include "qmlutils.h"
+#include "i18n.h"
 #include <QIcon>
 #include <QStandardPaths>
 #include <QDir>

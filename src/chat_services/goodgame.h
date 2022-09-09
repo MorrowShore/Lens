@@ -1,8 +1,8 @@
 #ifndef GOODGAME_H
 #define GOODGAME_H
 
-#include "chatservice.hpp"
-#include "utils.hpp"
+#include "chatservice.h"
+#include "utils.h"
 #include <QObject>
 #include <QWebSocket>
 #include <QTimer>

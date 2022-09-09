@@ -2,7 +2,7 @@
 #define COMMANDSINGLEEDITOR_H
 
 #include <QDialog>
-#include "chatbot.hpp"
+#include "chatbot.h"
 #include <QSound>
 
 namespace Ui {

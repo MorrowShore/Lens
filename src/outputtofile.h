@@ -1,10 +1,10 @@
 #ifndef OUTPUTTOFILE_HPP
 #define OUTPUTTOFILE_HPP
 
-#include "utils.hpp"
+#include "utils.h"
 #include "setting.h"
-#include "models/messagesmodle.hpp"
-#include "chat_services/chatservice.hpp"
+#include "models/messagesmodle.h"
+#include "chat_services/chatservice.h"
 #include <QObject>
 #include <QSettings>
 

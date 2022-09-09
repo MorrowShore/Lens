@@ -1,8 +1,8 @@
 #ifndef TWITCH_HPP
 #define TWITCH_HPP
 
-#include "utils.hpp"
-#include "chatservice.hpp"
+#include "utils.h"
+#include "chatservice.h"
 #include <QSettings>
 #include <QWebSocket>
 #include <QTimer>

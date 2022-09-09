@@ -1,4 +1,4 @@
-#include "chathandler.hpp"
+#include "chathandler.h"
 #include "models/author.h"
 #include "models/message.h"
 #include <QCoreApplication>

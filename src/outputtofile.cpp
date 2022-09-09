@@ -1,7 +1,7 @@
-#include "outputtofile.hpp"
+#include "outputtofile.h"
 #include "models/author.h"
 #include "models/message.h"
-#include "chat_services/youtube.hpp"
+#include "chat_services/youtube.h"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>

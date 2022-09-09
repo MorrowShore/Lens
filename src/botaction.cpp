@@ -1,5 +1,5 @@
-#include "botaction.hpp"
-#include "chatbot.hpp"
+#include "botaction.h"
+#include "chatbot.h"
 #include <QJsonArray>
 
 namespace {

@@ -1,5 +1,5 @@
 #include "goodgame.h"
-#include "models/messagesmodle.hpp"
+#include "models/messagesmodle.h"
 #include "models/message.h"
 #include "models/author.h"
 #include <QJsonObject>

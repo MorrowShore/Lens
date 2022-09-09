@@ -14,28 +14,28 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    chat_services/chatservice.hpp \
-    applicationinfo.hpp \
+    chat_services/chatservice.h \
+    applicationinfo.h \
     authorqmlprovider.h \
-    botaction.hpp \
-    chatbot.hpp \
-    chathandler.hpp \
-    clipboardqml.hpp \
+    botaction.h \
+    chatbot.h \
+    chathandler.h \
+    clipboardqml.h \
     commandseditor.h \
     commandsingleeditor.h \
     models/author.h \
-    githubapi.hpp \
+    githubapi.h \
     chat_services/goodgame.h \
-    i18n.hpp \
+    i18n.h \
     models/message.h \
-    models/messagesmodle.hpp \
-    outputtofile.hpp \
-    qmlutils.hpp \
+    models/messagesmodle.h \
+    outputtofile.h \
+    qmlutils.h \
     setting.h \
     tray.h \
-    chat_services/twitch.hpp \
-    utils.hpp \
-    chat_services/youtube.hpp
+    chat_services/twitch.h \
+    utils.h \
+    chat_services/youtube.h
 
 SOURCES += \
         authorqmlprovider.cpp \

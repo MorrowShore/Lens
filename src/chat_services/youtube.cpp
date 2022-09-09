@@ -1,6 +1,6 @@
-#include "youtube.hpp"
-#include "utils.hpp"
-#include "models/messagesmodle.hpp"
+#include "youtube.h"
+#include "utils.h"
+#include "models/messagesmodle.h"
 #include "models/author.h"
 #include <QDebug>
 #include <QJsonDocument>

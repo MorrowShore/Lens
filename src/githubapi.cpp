@@ -1,4 +1,4 @@
-#include "githubapi.hpp"
+#include "githubapi.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDebug>

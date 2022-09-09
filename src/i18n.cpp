@@ -1,4 +1,4 @@
-#include "i18n.hpp"
+#include "i18n.h"
 #include <QApplication>
 #include <QLocale>
 #include <QQmlEngine>
