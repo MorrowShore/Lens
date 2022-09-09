@@ -16,11 +16,11 @@ class OutputToFile : public QObject
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    enum class OutputToFileCodec
+    enum class Codec
     {
-        UTF8Codec = 0,
-        ANSICodec = 100,
-        ANSIWithUTF8Codec = 200
+        UTF8 = 0,
+        ANSI = 100,
+        ANSIWithUTF8Codes = 200
     };
 
     explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const MessagesModel& messages, QList<ChatService*>& services, QObject *parent = nullptr);
@@ -73,7 +73,7 @@ private:
     QFile* _fileMessagesCount           = nullptr;
     QFile* _fileMessages                = nullptr;
 
-    Setting<OutputToFileCodec> codec;
+    Setting<Codec> codec;
 
     const QDateTime _startupDateTime = QDateTime::currentDateTime();
 
@@ -82,6 +82,6 @@ private:
     QSet<QString> needIgnoreDownloadFileNames;
 };
 
-Q_DECLARE_METATYPE(OutputToFile::OutputToFileCodec)
+Q_DECLARE_METATYPE(OutputToFile::Codec)
 
 #endif // OUTPUTTOFILE_HPP

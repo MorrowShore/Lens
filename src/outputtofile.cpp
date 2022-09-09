@@ -73,7 +73,7 @@ OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath
     , services(services_)
     , enabled(settings, settingsGroupPath + "/enabled", false)
     , outputDirectory(settings, settingsGroupPath + "/output_folder", standardOutputFolder())
-    , codec(settings, settingsGroupPath + "/codec", OutputToFileCodec::UTF8Codec)
+    , codec(settings, settingsGroupPath + "/codec", Codec::UTF8)
 {
     reinit(true);
 }
@@ -414,13 +414,13 @@ bool OutputToFile::setCodecOption(int option, bool applyWithoutReset)
     {
         switch (option) {
         case 0:
-            codec.set(OutputToFileCodec::UTF8Codec);
+            codec.set(Codec::UTF8);
             break;
         case 100:
-            codec.set(OutputToFileCodec::ANSICodec);
+            codec.set(Codec::ANSI);
             break;
         case 200:
-            codec.set(OutputToFileCodec::ANSIWithUTF8Codec);
+            codec.set(Codec::ANSIWithUTF8Codes);
             break;
         default:
             qCritical() << "unknown codec option" << option << ", ignore";
@@ -513,23 +513,23 @@ QByteArray OutputToFile::prepare(const QString &text_)
 {
     QString text = text_;
 
-    const OutputToFileCodec codec_ = codec.get();
+    const Codec codec_ = codec.get();
 
-    if (codec_ != OutputToFileCodec::ANSIWithUTF8Codec)
+    if (codec_ != Codec::ANSIWithUTF8Codes)
     {
         text.replace('\n', "\\n");
         text.replace('\r', "\\r");
     }
 
-    if (codec_ == OutputToFileCodec::UTF8Codec)
+    if (codec_ == Codec::UTF8)
     {
         return text.toUtf8();
     }
-    else if (codec_ == OutputToFileCodec::ANSICodec)
+    else if (codec_ == Codec::ANSI)
     {
         return text.toLocal8Bit();
     }
-    else if (codec_ == OutputToFileCodec::ANSIWithUTF8Codec)
+    else if (codec_ == Codec::ANSIWithUTF8Codes)
     {
         return AxelChat::convertANSIWithUtf8Numbers(text);
     }
