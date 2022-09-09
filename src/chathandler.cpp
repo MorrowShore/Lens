@@ -42,11 +42,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
 
     addService(new YouTube(settings, SettingsGroupPath + "/youtube", network, this));
-
-    Twitch* twitch = new Twitch(settings, SettingsGroupPath + "/twitch", network, this);
-    connect(twitch, &Twitch::avatarDiscovered, this, &ChatHandler::onAvatarDiscovered);
-    addService(twitch);
-
+    addService(new Twitch(settings, SettingsGroupPath + "/twitch", network, this));
     addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
 }
 
@@ -269,11 +265,12 @@ void ChatHandler::updateProxy()
 
 void ChatHandler::addService(ChatService* service)
 {
-    services.append(service);
-
+    connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
     connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
     connect(service, &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
-    connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
+    connect(service, &ChatService::avatarDiscovered, this, &ChatHandler::onAvatarDiscovered);
+
+    services.append(service);
 }
 
 #ifndef AXELCHAT_LIBRARY
