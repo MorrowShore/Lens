@@ -67,7 +67,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 }
 
 Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-  : ChatService(settings_, settingsGroupPath, ChatService::ServiceType::Twitch, parent)
+  : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Twitch, parent)
   , settings(settings_)
   , network(network_)
   , oauthToken(Setting<QString>(settings, settingsGroupPath + "/oauth_token"))

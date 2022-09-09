@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 #include <QTranslator>
 #include <QUuid>
+#include <QDebug>
 
 const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>{
     {(int)Message::Role::Id ,                     "messageId"},

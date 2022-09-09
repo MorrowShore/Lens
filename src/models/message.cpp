@@ -1,5 +1,6 @@
 #include "message.h"
 #include "author.h"
+#include "chat_services/chatservice.h"
 #include <QUuid>
 #include <QMetaEnum>
 #include <QDebug>

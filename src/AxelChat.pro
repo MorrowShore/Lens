@@ -18,6 +18,7 @@ HEADERS += \
     applicationinfo.h \
     authorqmlprovider.h \
     botaction.h \
+    chat_services/chatservicestypes.h \
     chatbot.h \
     chathandler.h \
     clipboardqml.h \

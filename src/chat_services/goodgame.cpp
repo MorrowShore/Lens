@@ -18,7 +18,7 @@ static const int RequestChannelStatus = 10000;
 }
 
 GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(settings_, settingsGroupPath, ChatService::ServiceType::GoodGame, parent)
+    : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::GoodGame, parent)
     , settings(settings_)
     , network(network_)
 {

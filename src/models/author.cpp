@@ -1,6 +1,8 @@
 #include "author.h"
+#include <QCoreApplication>
+#include <QMetaEnum>
 
-Author::Author(ChatService::ServiceType serviceType_,
+Author::Author(AxelChat::ServiceType serviceType_,
                        const QString &name_,
                        const QString &authorId_,
                        const QUrl &avatarUrl_,
@@ -24,7 +26,7 @@ Author::Author(ChatService::ServiceType serviceType_,
 const Author &Author::getSoftwareAuthor()
 {
     static const QString authorId = "____SOFTWARE____";
-    static const Author author(ChatService::ServiceType::Software,
+    static const Author author(AxelChat::ServiceType::Software,
                             QCoreApplication::applicationName(),
                             authorId);
 

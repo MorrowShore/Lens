@@ -38,9 +38,9 @@ public:
     void setOutputFolder(const QString& outputDirectory);
     void writeMessages(const QList<Message>& messages);
     Q_INVOKABLE void showInExplorer();
-    void downloadAvatar(const QString& authorId, const ChatService::ServiceType serviceType, const QUrl &url);
-    QString getAuthorDirectory(const ChatService::ServiceType serviceType, const QString& authorId) const;
-    QString getServiceDirectory(const ChatService::ServiceType serviceType) const;
+    void downloadAvatar(const QString& authorId, const AxelChat::ServiceType serviceType, const QUrl &url);
+    QString getAuthorDirectory(const AxelChat::ServiceType serviceType, const QString& authorId) const;
+    QString getServiceDirectory(const AxelChat::ServiceType serviceType) const;
     void writeAuthors(const QList<Author*>& authors);
     void writeServiceState(const ChatService* service) const;
 
@@ -53,7 +53,7 @@ signals:
 private:
     QString convertUrlForFileName(const QUrl& url, const QString& imageFileFormat) const;
     void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, const int height, bool ignoreIfExists);
-    void downloadEmoji(const QUrl &url, const int height, const ChatService::ServiceType serviceType);
+    void downloadEmoji(const QUrl &url, const int height, const AxelChat::ServiceType serviceType);
 
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
     QByteArray prepare(const QString& text);

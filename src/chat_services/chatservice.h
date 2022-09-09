@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "setting.h"
+#include "chatservicestypes.h"
 #include <QSettings>
 #include <QObject>
 #include <QQmlEngine>
@@ -27,17 +28,6 @@ public:
 
     Q_PROPERTY(int                  viewersCount                 READ getViewersCount                    NOTIFY stateChanged)
 
-    enum class ServiceType
-    {
-        Unknown = -1,
-
-        Software = 10,
-
-        YouTube = 100,
-        Twitch = 101,
-        GoodGame = 102,
-    };
-
     enum class ConnectionStateType
     {
         NotConnected = 10,
@@ -56,52 +46,52 @@ public:
         int viewersCount = -1;
     };
 
-    static QString getServiceTypeId(const ChatService::ServiceType serviceType)
+    static QString getServiceTypeId(const AxelChat::ServiceType serviceType)
     {
         switch (serviceType)
         {
-        case ChatService::ServiceType::Unknown: return "unknown";
-        case ChatService::ServiceType::Software: return "software";
+        case AxelChat::ServiceType::Unknown: return "unknown";
+        case AxelChat::ServiceType::Software: return "software";
 
-        case ChatService::ServiceType::YouTube: return "youtube";
-        case ChatService::ServiceType::Twitch: return "twitch";
-        case ChatService::ServiceType::GoodGame: return "goodgame";
+        case AxelChat::ServiceType::YouTube: return "youtube";
+        case AxelChat::ServiceType::Twitch: return "twitch";
+        case AxelChat::ServiceType::GoodGame: return "goodgame";
         }
 
         return "unknown";
     }
 
-    static QString getName(const ChatService::ServiceType serviceType)
+    static QString getName(const AxelChat::ServiceType serviceType)
     {
         switch (serviceType)
         {
-        case ChatService::ServiceType::Unknown: return tr("Unknown");
-        case ChatService::ServiceType::Software: return QCoreApplication::applicationName();
+        case AxelChat::ServiceType::Unknown: return tr("Unknown");
+        case AxelChat::ServiceType::Software: return QCoreApplication::applicationName();
 
-        case ChatService::ServiceType::YouTube: return tr("YouTube");
-        case ChatService::ServiceType::Twitch: return tr("Twitch");
-        case ChatService::ServiceType::GoodGame: return tr("GoodGame");
+        case AxelChat::ServiceType::YouTube: return tr("YouTube");
+        case AxelChat::ServiceType::Twitch: return tr("Twitch");
+        case AxelChat::ServiceType::GoodGame: return tr("GoodGame");
         }
 
         return tr("Unknown");
     }
 
-    static QUrl getIconUrl(const ChatService::ServiceType serviceType)
+    static QUrl getIconUrl(const AxelChat::ServiceType serviceType)
     {
         switch (serviceType)
         {
-        case ChatService::ServiceType::Unknown: return QUrl();
-        case ChatService::ServiceType::Software: return QUrl("qrc:/resources/images/axelchat-rounded.svg");
+        case AxelChat::ServiceType::Unknown: return QUrl();
+        case AxelChat::ServiceType::Software: return QUrl("qrc:/resources/images/axelchat-rounded.svg");
 
-        case ChatService::ServiceType::YouTube: return QUrl("qrc:/resources/images/youtube-icon.svg");
-        case ChatService::ServiceType::Twitch: return QUrl("qrc:/resources/images/twitch-icon.svg");
-        case ChatService::ServiceType::GoodGame: return QUrl("qrc:/resources/images/goodgame-icon.svg");
+        case AxelChat::ServiceType::YouTube: return QUrl("qrc:/resources/images/youtube-icon.svg");
+        case AxelChat::ServiceType::Twitch: return QUrl("qrc:/resources/images/twitch-icon.svg");
+        case AxelChat::ServiceType::GoodGame: return QUrl("qrc:/resources/images/goodgame-icon.svg");
         }
 
         return QUrl();
     }
 
-    explicit ChatService(QSettings& settings, const QString& settingsGroupPath, ServiceType serviceType_, QObject *parent = nullptr)
+    explicit ChatService(QSettings& settings, const QString& settingsGroupPath, AxelChat::ServiceType serviceType_, QObject *parent = nullptr)
         : QObject(parent)
         , serviceType(serviceType_)
         , stream(settings, settingsGroupPath + "/stream")
@@ -115,7 +105,7 @@ public:
 
     virtual ConnectionStateType getConnectionStateType() const = 0;
     virtual QString getStateDescription() const  = 0;
-    ServiceType getServiceType() const { return serviceType; }
+    AxelChat::ServiceType getServiceType() const { return serviceType; }
 
     int getViewersCount() const { return state.viewersCount; }
 
@@ -281,7 +271,7 @@ protected:
     }
 
     QList<Parameter> parameters;
-    const ServiceType serviceType;
+    const AxelChat::ServiceType serviceType;
     State state;
     Setting<QString> stream;
 };

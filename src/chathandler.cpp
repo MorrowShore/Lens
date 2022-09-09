@@ -78,8 +78,8 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
         {
             switch (author.getServiceType())
             {
-            case ChatService::ServiceType::Unknown:
-            case ChatService::ServiceType::Software:
+            case AxelChat::ServiceType::Unknown:
+            case AxelChat::ServiceType::Software:
                 break;
 
             default:
@@ -174,7 +174,7 @@ void ChatHandler::playNewMessageSound()
 
 void ChatHandler::onAuthorChanged(const QString &authorId, const QUrl &url)
 {
-    ChatService::ServiceType type = ChatService::ServiceType::Unknown;
+    AxelChat::ServiceType type = AxelChat::ServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
     if (service)
     {
@@ -447,7 +447,7 @@ ChatService *ChatHandler::getServiceByType(int type) const
 {
     for (ChatService* service : services)
     {
-        if (service->getServiceType() == (ChatService::ServiceType)type)
+        if (service->getServiceType() == (AxelChat::ServiceType)type)
         {
             return service;
         }
@@ -458,10 +458,10 @@ ChatService *ChatHandler::getServiceByType(int type) const
 
 QUrl ChatHandler::getServiceIconUrl(int serviceType) const
 {
-    return ChatService::getIconUrl((ChatService::ServiceType)serviceType);
+    return ChatService::getIconUrl((AxelChat::ServiceType)serviceType);
 }
 
 QUrl ChatHandler::getServiceName(int serviceType) const
 {
-    return ChatService::getName((ChatService::ServiceType)serviceType);
+    return ChatService::getName((AxelChat::ServiceType)serviceType);
 }
