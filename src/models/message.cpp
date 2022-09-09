@@ -1,10 +1,10 @@
-#include "chatmessage.h"
+#include "message.h"
 #include "author.h"
 #include <QUuid>
 #include <QMetaEnum>
 #include <QDebug>
 
-ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
+Message::Message(const QList<Message::Content*>& contents_,
                          const Author& author,
                          const QDateTime &publishedAt_,
                          const QDateTime &receivedAt_,
@@ -31,13 +31,13 @@ ChatMessage::ChatMessage(const QList<ChatMessage::Content*>& contents_,
     updateHtml();
 }
 
-void ChatMessage::setPlainText(const QString &text)
+void Message::setPlainText(const QString &text)
 {
     contents = QList<Content*>({new Text(text)});
     updateHtml();
 }
 
-void ChatMessage::setFlag(const Flag flag, bool enable)
+void Message::setFlag(const Flag flag, bool enable)
 {
     if (enable)
     {
@@ -61,7 +61,7 @@ QString boolToString(const bool& value)
     }
 }
 
-void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
+void Message::printMessageInfo(const QString &prefix, const int &row) const
 {
     QString resultString = prefix;
     if (!resultString.isEmpty())
@@ -96,7 +96,7 @@ void ChatMessage::printMessageInfo(const QString &prefix, const int &row) const
     qDebug(resultString.toUtf8());
 }
 
-QString ChatMessage::getForcedColorRoleToQMLString(const ForcedColorRole &role) const
+QString Message::getForcedColorRoleToQMLString(const ForcedColorRole &role) const
 {
     if (forcedColors.contains(role) && forcedColors[role].isValid())
     {
@@ -106,7 +106,7 @@ QString ChatMessage::getForcedColorRoleToQMLString(const ForcedColorRole &role) 
     return QString();
 }
 
-void ChatMessage::trimText(QString &text)
+void Message::trimText(QString &text)
 {
     static const QSet<QChar> trimChars = {
         ' ',
@@ -146,13 +146,13 @@ void ChatMessage::trimText(QString &text)
     text = text.mid(left, text.length() - left - right);
 }
 
-QString ChatMessage::flagToString(const Flag flag)
+QString Message::flagToString(const Flag flag)
 {
     QMetaEnum metaEnum = QMetaEnum::fromType<Flag>();
     return metaEnum.valueToKey((int)flag);
 }
 
-void ChatMessage::updateHtml()
+void Message::updateHtml()
 {
     html.clear();
 
@@ -174,7 +174,7 @@ void ChatMessage::updateHtml()
         }
             break;
 
-        case ChatMessage::Content::Type::Image:
+        case Message::Content::Type::Image:
         {
             const Image* image = static_cast<const Image*>(content);
             if (image)
@@ -192,7 +192,7 @@ void ChatMessage::updateHtml()
         }
             break;
 
-        case ChatMessage::Content::Type::Hyperlink:
+        case Message::Content::Type::Hyperlink:
         {
             const Hyperlink* hyperlink = static_cast<const Hyperlink*>(content);
             if (hyperlink)

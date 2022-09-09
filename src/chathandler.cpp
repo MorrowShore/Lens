@@ -1,6 +1,6 @@
 #include "chathandler.hpp"
 #include "models/author.h"
-#include "models/chatmessage.h"
+#include "models/message.h"
 #include <QCoreApplication>
 #ifndef AXELCHAT_LIBRARY
 #include <QDesktopServices>
@@ -46,7 +46,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(new GoodGame(settings, SettingsGroupPath + "/goodgame", network, this));
 }
 
-void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<Author>& authors)
+void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
 {
     if (messages.isEmpty() && authors.isEmpty())
     {
@@ -59,13 +59,13 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<Author>& autho
         return;
     }
 
-    QList<ChatMessage> messagesValidToAdd;
+    QList<Message> messagesValidToAdd;
     QList<Author*> updatedAuthors;
 
     for (int i = 0; i < messages.count(); ++i)
     {
-        ChatMessage&& message = std::move(messages[i]);
-        if (messagesModel.contains(message.getId()) && !message.isHasFlag(ChatMessage::Flag::DeleterItem))
+        Message&& message = std::move(messages[i]);
+        if (messagesModel.contains(message.getId()) && !message.isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
         }
@@ -74,7 +74,7 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<Author>& autho
 
         messagesModel.insertAuthor(author);
 
-        if (!message.isHasFlag(ChatMessage::Flag::DeleterItem))
+        if (!message.isHasFlag(Message::Flag::DeleterItem))
         {
             switch (author.getServiceType())
             {
@@ -102,10 +102,10 @@ void ChatHandler::onReadyRead(QList<ChatMessage>& messages, QList<Author>& autho
 
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {
-        ChatMessage&& message = std::move(messagesValidToAdd[i]);
+        Message&& message = std::move(messagesValidToAdd[i]);
 
 #ifndef AXELCHAT_LIBRARY
-        if (!message.isHasFlag(ChatMessage::Flag::IgnoreBotCommand))
+        if (!message.isHasFlag(Message::Flag::IgnoreBotCommand))
         {
             bot.processMessage(message);
         }
@@ -128,11 +128,11 @@ void ChatHandler::sendTestMessage(const QString &text)
     QList<Author> authors;
     authors.append(author);
 
-    ChatMessage message({new ChatMessage::Text(text)}, author);
+    Message message({new Message::Text(text)}, author);
     message.setCustomAuthorName(tr("Test Message"));
     message.setCustomAuthorAvatarUrl(QUrl("qrc:/resources/images/flask2.svg"));
 
-    QList<ChatMessage> messages;
+    QList<Message> messages;
     messages.append(message);
 
     onReadyRead(messages, authors);
@@ -144,8 +144,8 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
     QList<Author> authors;
     authors.append(author);
 
-    QList<ChatMessage> messages;
-    messages.append(ChatMessage({new ChatMessage::Text(text)},
+    QList<Message> messages;
+    messages.append(Message({new Message::Text(text)},
                                 author,
                                 QDateTime::currentDateTime(),
                                 QDateTime::currentDateTime(),
@@ -285,7 +285,7 @@ OutputToFile& ChatHandler::getOutputToFile()
 }
 #endif
 
-ChatMessagesModel& ChatHandler::getMessagesModel()
+MessagesModel& ChatHandler::getMessagesModel()
 {
     return messagesModel;
 }

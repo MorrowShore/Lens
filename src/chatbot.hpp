@@ -3,7 +3,7 @@
 
 #include <QSettings>
 #include <QMediaPlayer>
-#include "models/chatmessagesmodle.hpp"
+#include "models/messagesmodle.hpp"
 #include "botaction.hpp"
 
 class ChatBot : public QObject
@@ -47,11 +47,11 @@ signals:
 
 public slots:
     void setVolume(int volume);
-    void processMessage(ChatMessage& message);
+    void processMessage(Message& message);
     void execute(BotAction& action);
 
 private:
-    bool canExecute(BotAction& action, const ChatMessage &message);
+    bool canExecute(BotAction& action, const Message &message);
     void initBuiltinCommands();
     void saveCommands();
     void loadCommands();

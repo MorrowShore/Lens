@@ -1,5 +1,5 @@
-#ifndef CHATMESSAGE_H
-#define CHATMESSAGE_H
+#ifndef MESSAGE_H
+#define MESSAGE_H
 
 #include <QObject>
 #include <QDateTime>
@@ -12,30 +12,30 @@
 
 class Author;
 
-class ChatMessage{
+class Message{
     Q_GADGET
 public:
     enum class Role {
-        MessageId = Qt::UserRole + 1,
-        MessageHtml,
-        MessagePublishedAt,
-        MessageReceivedAt,
-        MessageIsBotCommand,
-        MessageMarkedAsDeleted,
-        MessageCustomAuthorAvatarUrl,
-        MessageCustomAuthorName,
+        Id = Qt::UserRole + 1,
+        Html,
+        PublishedAt,
+        ReceivedAt,
+        IsBotCommand,
+        MarkedAsDeleted,
+        CustomAuthorAvatarUrl,
+        CustomAuthorName,
 
-        MessageIsDonateSimple,
-        MessageIsDonateWithText,
-        MessageIsDonateWithImage,
+        IsDonateSimple,
+        IsDonateWithText,
+        IsDonateWithImage,
 
-        MessageIsServiceMessage,
+        IsServiceMessage,
 
-        MessageBodyBackgroundForcedColor,
+        BodyBackgroundForcedColor,
 
-        MessageIsYouTubeChatMembership,
+        IsYouTubeChatMembership,
 
-        MessageIsTwitchAction,
+        IsTwitchAction,
     };
     Q_ENUM(Role)
 
@@ -169,8 +169,8 @@ public:
         const int height;
     };
 
-    ChatMessage() { }
-    ChatMessage(const QList<Content*>& contents,
+    Message() { }
+    Message(const QList<Content*>& contents,
                 const Author& author,
                 const QDateTime& publishedAt = QDateTime::currentDateTime(),
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
@@ -261,4 +261,4 @@ private:
     uint64_t idNum = 0;
 };
 
-#endif // CHATMESSAGE_H
+#endif // MESSAGE_H

@@ -1,5 +1,4 @@
-#ifndef CHATMESSAGEHANDLER_HPP
-#define CHATMESSAGEHANDLER_HPP
+#pragma once
 
 #include "utils.hpp"
 #include "chat_services/youtube.hpp"
@@ -37,7 +36,7 @@ class ChatHandler : public QObject
 public:
     explicit ChatHandler(QSettings& settings, QNetworkAccessManager& network, QObject *parent = nullptr);
 
-    ChatMessagesModel& getMessagesModel();
+    MessagesModel& getMessagesModel();
 
 #ifndef AXELCHAT_LIBRARY
     OutputToFile& getOutputToFile();
@@ -87,7 +86,7 @@ signals:
     void messagesDataChanged();
 
 public slots:
-    void onReadyRead(QList<ChatMessage>& messages, QList<Author>& authors);
+    void onReadyRead(QList<Message>& messages, QList<Author>& authors);
     void sendTestMessage(const QString& text);
     void sendSoftwareMessage(const QString& text);
     void playNewMessageSound();
@@ -107,7 +106,7 @@ private:
     void updateProxy();
     void addService(ChatService* service);
 
-    ChatMessagesModel messagesModel;
+    MessagesModel messagesModel;
 
     QSettings& settings;
     QNetworkAccessManager& network;
@@ -132,4 +131,3 @@ private:
     QNetworkProxy _proxy = QNetworkProxy(QNetworkProxy::ProxyType::Socks5Proxy/*HttpProxy*/);
 };
 
-#endif // CHATMESSAGEHANDLER_HPP

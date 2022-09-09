@@ -24,11 +24,11 @@ HEADERS += \
     commandseditor.h \
     commandsingleeditor.h \
     models/author.h \
-    models/chatmessage.h \
-    models/chatmessagesmodle.hpp \
     githubapi.hpp \
     chat_services/goodgame.h \
     i18n.hpp \
+    models/message.h \
+    models/messagesmodle.hpp \
     outputtofile.hpp \
     qmlutils.hpp \
     setting.h \
@@ -46,12 +46,12 @@ SOURCES += \
         commandseditor.cpp \
         commandsingleeditor.cpp \
         models/author.cpp \
-        models/chatmessage.cpp \
-        models/chatmessagesmodle.cpp \
         githubapi.cpp \
         chat_services/goodgame.cpp \
         i18n.cpp \
         main.cpp \
+        models/message.cpp \
+        models/messagesmodle.cpp \
         outputtofile.cpp \
         qmlutils.cpp \
         tray.cpp \

@@ -1,7 +1,7 @@
 #ifndef AUTHORQMLPROVIDER_H
 #define AUTHORQMLPROVIDER_H
 
-#include "models/chatmessagesmodle.hpp"
+#include "models/messagesmodle.hpp"
 #include "outputtofile.hpp"
 #include <QObject>
 
@@ -16,7 +16,7 @@ class AuthorQMLProvider : public QObject
     Q_PROPERTY(int messagesCount READ getMessagesCount NOTIFY changed)
 
 public:
-    explicit AuthorQMLProvider(const ChatHandler& chantHandler, const ChatMessagesModel& messagesModel, const OutputToFile& outputToFile, QObject *parent = nullptr);
+    explicit AuthorQMLProvider(const ChatHandler& chantHandler, const MessagesModel& messagesModel, const OutputToFile& outputToFile, QObject *parent = nullptr);
 
     static void declareQML()
     {
@@ -37,7 +37,7 @@ signals:
     void changed();
 
 private:
-    const ChatMessagesModel& messagesModel;
+    const MessagesModel& messagesModel;
     const OutputToFile& outputToFile;
     QString authorId;
 };

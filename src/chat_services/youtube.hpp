@@ -1,7 +1,7 @@
 #ifndef YOUTUBEINTERCEPTOR_HPP
 #define YOUTUBEINTERCEPTOR_HPP
 
-#include "models/chatmessage.h"
+#include "models/message.h"
 #include "chatservice.hpp"
 #include <QSettings>
 #include <QNetworkAccessManager>
@@ -37,8 +37,8 @@ private:
     void processBadChatReply();
     void processBadLivePageReply();
 
-    void tryAppedToText(QList<ChatMessage::Content*>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const;
-    void parseText(const QJsonObject& message, QList<ChatMessage::Content*>& contents) const;
+    void tryAppedToText(QList<Message::Content*>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const;
+    void parseText(const QJsonObject& message, QList<Message::Content*>& contents) const;
 
     QColor intToColor(quint64 rawColor) const;
 

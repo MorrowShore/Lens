@@ -1,6 +1,6 @@
 #include "outputtofile.hpp"
 #include "models/author.h"
-#include "models/chatmessage.h"
+#include "models/message.h"
 #include "chat_services/youtube.hpp"
 #include <QStandardPaths>
 #include <QGuiApplication>
@@ -66,7 +66,7 @@ QString removePostfix(const QString& string, const QString& postfix, const Qt::C
 
 }
 
-OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const ChatMessagesModel& messagesModel_, const QList<ChatService*>& services_, QObject *parent)
+OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, const QList<ChatService*>& services_, QObject *parent)
     : QObject(parent)
     , network(network_)
     , messagesModel(messagesModel_)
@@ -136,7 +136,7 @@ void OutputToFile::resetSettings()
     setOutputFolder(standardOutputFolder());
 }
 
-void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
+void OutputToFile::writeMessages(const QList<Message>& messages)
 {
     if (!enabled.get())
     {
@@ -149,7 +149,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
     {
         for (int i = 0; i < messages.count(); ++i)
         {
-            const ChatMessage& message = messages[i];
+            const Message& message = messages[i];
 
             if (message.getId() == youTubeLastMessageId.get())
             {
@@ -164,7 +164,7 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
     for (int i = firstValidMessage; i < messages.count(); ++i)
     {
-        const ChatMessage& message = messages[i];
+        const Message& message = messages[i];
 
         const QString authorId = message.getAuthorId();
         const Author* author = messagesModel.getAuthor(authorId);
@@ -185,23 +185,23 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
 
         QString text;
 
-        for (const ChatMessage::Content* content : message.getContents())
+        for (const Message::Content* content : message.getContents())
         {
             switch (content->getContentType())
             {
-            case ChatMessage::Content::Type::Unknown:
+            case Message::Content::Type::Unknown:
                 break;
 
-            case ChatMessage::Content::Type::Text:
-                text += prepare(static_cast<const ChatMessage::Text*>(content)->getText());
+            case Message::Content::Type::Text:
+                text += prepare(static_cast<const Message::Text*>(content)->getText());
                 break;
 
-            case ChatMessage::Content::Type::Image:
-                text += "<emoji:" + convertUrlForFileName(static_cast<const ChatMessage::Image*>(content)->getUrl(), ImageFileFormat) + ">";
+            case Message::Content::Type::Image:
+                text += "<emoji:" + convertUrlForFileName(static_cast<const Message::Image*>(content)->getUrl(), ImageFileFormat) + ">";
                 break;
 
-            case ChatMessage::Content::Type::Hyperlink:
-                text += prepare(static_cast<const ChatMessage::Hyperlink*>(content)->getText());
+            case Message::Content::Type::Hyperlink:
+                text += prepare(static_cast<const Message::Hyperlink*>(content)->getText());
                 break;
             }
         }
@@ -236,12 +236,12 @@ void OutputToFile::writeMessages(const QList<ChatMessage>& messages)
             break;
         }
 
-        for (const ChatMessage::Content* content : message.getContents())
+        for (const Message::Content* content : message.getContents())
         {
-            if (content->getContentType() == ChatMessage::Content::Type::Image)
+            if (content->getContentType() == Message::Content::Type::Image)
             {
                 static const int ImageHeight = 24;
-                const ChatMessage::Image* image = static_cast<const ChatMessage::Image*>(content);
+                const Message::Image* image = static_cast<const Message::Image*>(content);
                 downloadEmoji(image->getUrl(), ImageHeight, author->getServiceType());
             }
         }

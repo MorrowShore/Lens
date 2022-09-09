@@ -1,6 +1,6 @@
 #include "goodgame.h"
-#include "models/chatmessagesmodle.hpp"
-#include "models/chatmessage.h"
+#include "models/messagesmodle.hpp"
+#include "models/message.h"
 #include "models/author.h"
 #include <QJsonObject>
 #include <QJsonValue>
@@ -285,7 +285,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             emit stateChanged();
         }
 
-        QList<ChatMessage> messages;
+        QList<Message> messages;
         QList<Author> authors;
 
         const QJsonArray jsonMessages = data.value("messages").toArray();
@@ -305,7 +305,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                                     QUrl(),
                                     QUrl("https://goodgame.ru/user/" + authorId));
 
-            const ChatMessage message({ new ChatMessage::Text(text) }, author, publishedAt, QDateTime::currentDateTime(), messageId);
+            const Message message({ new Message::Text(text) }, author, publishedAt, QDateTime::currentDateTime(), messageId);
 
             messages.append(message);
             authors.append(author);

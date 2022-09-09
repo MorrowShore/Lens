@@ -3,7 +3,7 @@
 
 #include "utils.hpp"
 #include "setting.h"
-#include "models/chatmessagesmodle.hpp"
+#include "models/messagesmodle.hpp"
 #include "chat_services/chatservice.hpp"
 #include <QObject>
 #include <QSettings>
@@ -23,7 +23,7 @@ public:
         ANSIWithUTF8Codec = 200
     };
 
-    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const ChatMessagesModel& messages, const QList<ChatService*>& services, QObject *parent = nullptr);
+    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const MessagesModel& messages, const QList<ChatService*>& services, QObject *parent = nullptr);
     ~OutputToFile();
 
     bool isEnabled() const;
@@ -36,7 +36,7 @@ public:
     Q_INVOKABLE int codecOption() const;
 
     void setOutputFolder(const QString& outputDirectory);
-    void writeMessages(const QList<ChatMessage>& messages);
+    void writeMessages(const QList<Message>& messages);
     Q_INVOKABLE void showInExplorer();
     void downloadAvatar(const QString& authorId, const QUrl &url, const ChatService::ServiceType serviceType);
     QString getAuthorDirectory(const ChatService::ServiceType serviceType, const QString& authorId) const;
@@ -63,7 +63,7 @@ private:
     void writeApplicationState(const bool started) const;
 
     QNetworkAccessManager& network;
-    const ChatMessagesModel& messagesModel;
+    const MessagesModel& messagesModel;
     const QList<ChatService*>& services;
 
     Setting<bool> enabled;

@@ -1,5 +1,5 @@
 #include "chatbot.hpp"
-#include "models/chatmessage.h"
+#include "models/message.h"
 #include <QSoundEffect>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -142,13 +142,13 @@ void ChatBot::setVolume(int volume)
     }
 }
 
-void ChatBot::processMessage(ChatMessage &message)
+void ChatBot::processMessage(Message &message)
 {
     for (BotAction* action : _actions)
     {
         if (canExecute(*action, message))
         {
-            message.setFlag(ChatMessage::Flag::BotCommand, true);
+            message.setFlag(Message::Flag::BotCommand, true);
             execute(*action);
         }
     }
@@ -159,14 +159,14 @@ void ChatBot::processMessage(ChatMessage &message)
         {
             if (canExecute(*action, message))
             {
-                message.setFlag(ChatMessage::Flag::BotCommand, true);
+                message.setFlag(Message::Flag::BotCommand, true);
                 execute(*action);
             }
         }
     }
 }
 
-bool ChatBot::canExecute(BotAction& action, const ChatMessage &message)
+bool ChatBot::canExecute(BotAction& action, const Message &message)
 {
     const QString& trimmed = message.getHtml().trimmed();
     const QString& lowered = trimmed.toLower();

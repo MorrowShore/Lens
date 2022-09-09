@@ -1,6 +1,6 @@
 #include "youtube.hpp"
 #include "utils.hpp"
-#include "models/chatmessagesmodle.hpp"
+#include "models/messagesmodle.hpp"
 #include "models/author.h"
 #include <QDebug>
 #include <QJsonDocument>
@@ -453,7 +453,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         emit stateChanged();
     }
 
-    QList<ChatMessage> messages;
+    QList<Message> messages;
     QList<Author> authors;
 
     for (const QJsonValue& actionJson : array)
@@ -461,7 +461,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         bool valid = false;
         bool isDeleter = false;
 
-        QList<ChatMessage::Content*> contents;
+        QList<Message::Content*> contents;
 
         QString messageId;
         const QDateTime& receivedAt = QDateTime::currentDateTime();
@@ -472,10 +472,10 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         QStringList rightBadges;
         QUrl authorAvatarUrl;
         QMap<QUrl, QList<int>> images;
-        std::set<ChatMessage::Flag> messageFlags;
+        std::set<Message::Flag> messageFlags;
         std::set<Author::Flag> authorFlags;
 
-        QHash<ChatMessage::ForcedColorRole, QColor> forcedColors;
+        QHash<Message::ForcedColorRole, QColor> forcedColors;
 
         const QJsonObject& actionObject = actionJson.toObject();
 
@@ -497,7 +497,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 itemRenderer = item.value("liveChatPaidMessageRenderer").toObject();
 
-                messageFlags.insert(ChatMessage::Flag::DonateWithText);
+                messageFlags.insert(Message::Flag::DonateWithText);
 
                 valid = true;
             }
@@ -506,7 +506,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 //ToDo:
                 itemRenderer = item.value("liveChatPaidStickerRenderer").toObject();
 
-                messageFlags.insert(ChatMessage::Flag::DonateWithImage);
+                messageFlags.insert(Message::Flag::DonateWithImage);
 
                 valid = true;
             }
@@ -514,7 +514,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 itemRenderer = item.value("liveChatMembershipItemRenderer").toObject();
 
-                messageFlags.insert(ChatMessage::Flag::YouTubeChatMembership);
+                messageFlags.insert(Message::Flag::YouTubeChatMembership);
 
                 valid = true;
             }
@@ -525,7 +525,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 if (iconType == "POLL")
                 {
                     itemRenderer = std::move(itemRenderer_);
-                    messageFlags.insert(ChatMessage::Flag::ServiceMessage);
+                    messageFlags.insert(Message::Flag::ServiceMessage);
                     valid = true;
                 }
                 else if (iconType == "YOUTUBE_ROUND")
@@ -562,13 +562,13 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         itemRenderer.value("timestampUsec").toString().toLongLong() / 1000,
                         Qt::TimeSpec::UTC).toLocalTime();
 
-            QList<ChatMessage::Content*> authorNameContent;
+            QList<Message::Content*> authorNameContent;
             tryAppedToText(authorNameContent, itemRenderer, "authorName", false);
             if (!authorNameContent.isEmpty())
             {
-                if (const ChatMessage::Content* content = authorNameContent.first(); content->getContentType() == ChatMessage::Content::Type::Text)
+                if (const Message::Content* content = authorNameContent.first(); content->getContentType() == Message::Content::Type::Text)
                 {
-                    authorName = static_cast<const ChatMessage::Text*>(content)->getText();
+                    authorName = static_cast<const Message::Text*>(content)->getText();
                 }
             }
 
@@ -659,12 +659,12 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 const QString stickerUrl = createResizedAvatarUrl(stickerThumbnails.first().toObject().value("url").toString(), _stickerSize).toString();
 
-                if (!contents.isEmpty() && contents.last()->getContentType() == ChatMessage::Content::Type::Text)
+                if (!contents.isEmpty() && contents.last()->getContentType() == Message::Content::Type::Text)
                 {
-                    contents.append(new ChatMessage::Text("\n"));
+                    contents.append(new Message::Text("\n"));
                 }
 
-                contents.append(new ChatMessage::Image(stickerUrl, _stickerSize));
+                contents.append(new Message::Image(stickerUrl, _stickerSize));
             }
 
             //Other colors: headerBackgroundColor headerTextColor bodyBackgroundColor bodyTextColor authorNameTextColor timestampColor backgroundColor moneyChipBackgroundColor moneyChipTextColor
@@ -672,19 +672,19 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             if (itemRenderer.contains("bodyBackgroundColor"))
             {
                 // usually for liveChatPaidMessageRenderer
-                forcedColors.insert(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("backgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("backgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("backgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("headerBackgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(ChatMessage::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
             }
         }
         else if (actionObject.contains("markChatItemAsDeletedAction"))
@@ -741,13 +741,13 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         {
             if (isDeleter)
             {
-                messages.append(ChatMessage(contents,
+                messages.append(Message(contents,
                                             Author(),
                                             QDateTime::currentDateTime(),
                                             QDateTime::currentDateTime(),
                                             messageId,
                                             {},
-                                            {ChatMessage::Flag::DeleterItem}));
+                                            {Message::Flag::DeleterItem}));
 
                 authors.append(Author());
             }
@@ -762,7 +762,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                                         rightBadges,
                                         authorFlags);
 
-                const ChatMessage message(
+                const Message message(
                             contents,
                             author,
                             publishedAt,
@@ -883,43 +883,43 @@ void YouTube::processBadLivePageReply()
     }
 }
 
-void YouTube::tryAppedToText(QList<ChatMessage::Content*>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const
+void YouTube::tryAppedToText(QList<Message::Content*>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const
 {
     if (!jsonObject.contains(varName))
     {
         return;
     }
 
-    QList<ChatMessage::Content*> newContents;
+    QList<Message::Content*> newContents;
     parseText(jsonObject.value(varName).toObject(), newContents);
 
     if (!contents.isEmpty() && !newContents.isEmpty())
     {
-        if (contents.last()->getContentType() == ChatMessage::Content::Type::Text && contents.last()->getContentType() == newContents.first()->getContentType())
+        if (contents.last()->getContentType() == Message::Content::Type::Text && contents.last()->getContentType() == newContents.first()->getContentType())
         {
-            contents.append(new ChatMessage::Text("\n"));
+            contents.append(new Message::Text("\n"));
         }
     }
 
-    for (ChatMessage::Content* content : newContents)
+    for (Message::Content* content : newContents)
     {
-        if (content->getContentType() == ChatMessage::Content::Type::Text)
+        if (content->getContentType() == Message::Content::Type::Text)
         {
-            static_cast<ChatMessage::Text*>(content)->getStyle().bold = bold;
+            static_cast<Message::Text*>(content)->getStyle().bold = bold;
         }
     }
 
     contents.append(newContents);
 }
 
-void YouTube::parseText(const QJsonObject &message, QList<ChatMessage::Content*>& contents) const
+void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& contents) const
 {
     if (message.contains("simpleText"))
     {
         const QString text = message.value("simpleText").toString().trimmed();
         if (!text.isEmpty())
         {
-            contents.append(new ChatMessage::Text(text));
+            contents.append(new Message::Text(text));
         }
     }
 
@@ -945,7 +945,7 @@ void YouTube::parseText(const QJsonObject &message, QList<ChatMessage::Content*>
                         url = "https://www.youtube.com" + url;
                     }
 
-                    contents.append(new ChatMessage::Hyperlink(text, url));
+                    contents.append(new Message::Hyperlink(text, url));
                     continue;
                 }
                 else
@@ -959,7 +959,7 @@ void YouTube::parseText(const QJsonObject &message, QList<ChatMessage::Content*>
                 const QString text = runObject.value("text").toString();
                 if (!text.isEmpty())
                 {
-                    contents.append(new ChatMessage::Text(text));
+                    contents.append(new Message::Text(text));
                 }
             }
             else if (runObject.contains("emoji"))
@@ -973,7 +973,7 @@ void YouTube::parseText(const QJsonObject &message, QList<ChatMessage::Content*>
                     const QString empjiUrl = thumbnails.first().toObject().value("url").toString();
                     if (!empjiUrl.isEmpty())
                     {
-                        contents.append(new ChatMessage::Image(empjiUrl, _emojiPixelSize));
+                        contents.append(new Message::Image(empjiUrl, _emojiPixelSize));
                     }
                     else
                     {

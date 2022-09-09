@@ -1,7 +1,7 @@
 #include "twitch.hpp"
-#include "models/chatmessagesmodle.hpp"
+#include "models/messagesmodle.hpp"
 #include "models/author.h"
-#include "models/chatmessage.h"
+#include "models/message.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
@@ -139,14 +139,14 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
             const Author& author = Author::getSoftwareAuthor();
 
-            QList<ChatMessage::Content*> contents;
+            QList<Message::Content*> contents;
 
-            ChatMessage::Text* text = new ChatMessage::Text(tr("Ping timeout! Reconnection..."));
+            Message::Text* text = new Message::Text(tr("Ping timeout! Reconnection..."));
             contents.append(text);
 
-            ChatMessage message(contents, author);
+            Message message(contents, author);
 
-            QList<ChatMessage> messages;
+            QList<Message> messages;
             messages.append(message);
 
             QList<Author> authors;
@@ -314,13 +314,13 @@ void Twitch::onIRCMessage(const QString &rawData)
         _timerCheckPong.stop();
     }
 
-    QList<ChatMessage> messages;
+    QList<Message> messages;
     QList<Author> authors;
 
     const QVector<QStringRef> rawMessages = rawData.splitRef("\r\n");
     for (const QStringRef& raw : rawMessages)
     {
-        std::set<ChatMessage::Flag> messageFlags;
+        std::set<Message::Flag> messageFlags;
 
         QString rawMessage = raw.trimmed().toString();
         if (rawMessage.isEmpty())
@@ -372,7 +372,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             rawMessageText = rawMessageText.mid(7);
             rawMessageText = rawMessageText.left(rawMessageText.length() - 1);
             rawMessageText = rawMessageText.trimmed();
-            messageFlags.insert(ChatMessage::Flag::TwitchAction);
+            messageFlags.insert(Message::Flag::TwitchAction);
         }
 
         if (needIgnoreMessage(rawMessageText))
@@ -576,13 +576,13 @@ void Twitch::onIRCMessage(const QString &rawData)
                                 authorFlags,
                                 nicknameColor);
 
-        QList<ChatMessage::Content*> contents;
+        QList<Message::Content*> contents;
 
         if (emotesInfo.isEmpty())
         {
             if (!rawMessageText.isEmpty())
             {
-                contents.append(new ChatMessage::Text(rawMessageText));
+                contents.append(new Message::Text(rawMessageText));
             }
         }
         else
@@ -606,14 +606,14 @@ void Twitch::onIRCMessage(const QString &rawData)
                         {
                             if (!textChunk.isEmpty())
                             {
-                                contents.append(new ChatMessage::Text(textChunk));
+                                contents.append(new Message::Text(textChunk));
                                 textChunk.clear();
                             }
 
                             static const QString sizeUrlPart = "1.0";
                             const QString emoteUrl = QString("https://static-cdn.jtvnw.net/emoticons/v2/%1/default/light/%2").arg(emoteInfo.id, sizeUrlPart);
 
-                            contents.append(new ChatMessage::Image(emoteUrl));
+                            contents.append(new Message::Image(emoteUrl));
                         }
                     }
                 }
@@ -627,12 +627,12 @@ void Twitch::onIRCMessage(const QString &rawData)
 
             if (!textChunk.isEmpty())
             {
-                contents.append(new ChatMessage::Text(textChunk));
+                contents.append(new Message::Text(textChunk));
                 textChunk.clear();
             }
         }
 
-        const ChatMessage message = ChatMessage(contents,
+        const Message message = Message(contents,
                                                 author,
                                                 QDateTime::currentDateTime(),
                                                 QDateTime::currentDateTime(),

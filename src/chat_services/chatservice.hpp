@@ -11,7 +11,7 @@
 
 class ChatHandler;
 class Author;
-class ChatMessage;
+class Message;
 
 class ChatService : public QObject
 {
@@ -223,7 +223,7 @@ public:
 
 signals:
     void stateChanged();
-    void readyRead(QList<ChatMessage>& messages, QList<Author>& authors);
+    void readyRead(QList<Message>& messages, QList<Author>& authors);
     void connectedChanged(const bool connected, const QString& name);
     void avatarDiscovered(const QString& authorId, const QUrl& url);
 

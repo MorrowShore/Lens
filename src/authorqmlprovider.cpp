@@ -11,7 +11,7 @@ static const int YouTubeAvatarSize = 1080;
 
 }
 
-AuthorQMLProvider::AuthorQMLProvider(const ChatHandler& chantHandler, const ChatMessagesModel& messagesModel_, const OutputToFile& outputToFile_, QObject *parent)
+AuthorQMLProvider::AuthorQMLProvider(const ChatHandler& chantHandler, const MessagesModel& messagesModel_, const OutputToFile& outputToFile_, QObject *parent)
     : QObject{parent}
     , messagesModel(messagesModel_)
     , outputToFile(outputToFile_)

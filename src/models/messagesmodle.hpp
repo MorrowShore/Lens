@@ -1,25 +1,25 @@
 #pragma once
 
-#include "models/chatmessage.h"
+#include "models/message.h"
 #include "models/author.h"
 #include <QAbstractListModel>
 
-class ChatMessagesModel : public QAbstractListModel
+class MessagesModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    ChatMessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
+    MessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
 
     QHash<int, QByteArray> roleNames() const override {
         return _roleNames;
     }
 
-    void append(ChatMessage&& message);
+    void append(Message&& message);
     bool contains(const QString& id);
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
-    QVariant dataByRole(const ChatMessage& message, int role) const;
+    QVariant dataByRole(const Message& message, int role) const;
     QVariant dataByNumId(const uint64_t &idNum, int role);
     bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
     void clear();
