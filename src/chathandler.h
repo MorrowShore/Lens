@@ -75,6 +75,7 @@ public:
     Q_INVOKABLE ChatService* getServiceByType(int type) const;
     Q_INVOKABLE QUrl getServiceIconUrl(int serviceType) const;
     Q_INVOKABLE QUrl getServiceName(int serviceType) const;
+    const QList<ChatService*>& getServices() const { return services; }
 
 signals:
     void connectedCountChanged();

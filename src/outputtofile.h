@@ -23,7 +23,7 @@ public:
         ANSIWithUTF8Codec = 200
     };
 
-    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const MessagesModel& messages, const QList<ChatService*>& services, QObject *parent = nullptr);
+    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const MessagesModel& messages, QList<ChatService*>& services, QObject *parent = nullptr);
     ~OutputToFile();
 
     bool isEnabled() const;
@@ -36,7 +36,7 @@ public:
     Q_INVOKABLE int codecOption() const;
 
     void setOutputFolder(const QString& outputDirectory);
-    void writeMessages(const QList<Message>& messages);
+    void writeMessages(const QList<Message>& messages, const AxelChat::ServiceType serviceType);
     Q_INVOKABLE void showInExplorer();
     void downloadAvatar(const QString& authorId, const AxelChat::ServiceType serviceType, const QUrl &url);
     QString getAuthorDirectory(const AxelChat::ServiceType serviceType, const QString& authorId) const;
@@ -47,7 +47,6 @@ public:
 signals:
     void outputFolderChanged();
     void enabledChanged();
-    void youTubeLastMessageIdChanged(const QString& id);
     void authorNameChanged(const Author& author, const QString& prevName, const QString& newName);
 
 private:
@@ -65,7 +64,7 @@ private:
 
     QNetworkAccessManager& network;
     const MessagesModel& messagesModel;
-    const QList<ChatService*>& services;
+    QList<ChatService*>& services;
 
     Setting<bool> enabled;
     Setting<QString> outputDirectory;
@@ -73,8 +72,6 @@ private:
 
     QFile* _fileMessagesCount           = nullptr;
     QFile* _fileMessages                = nullptr;
-
-    Setting<QString> youTubeLastMessageId;
 
     Setting<OutputToFileCodec> codec;
 

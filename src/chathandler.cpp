@@ -59,6 +59,8 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
         return;
     }
 
+    AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
+
     QList<Message> messagesValidToAdd;
     QList<Author*> updatedAuthors;
 
@@ -83,6 +85,7 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
                 break;
 
             default:
+                serviceType = author.getServiceType();
                 updatedAuthors.append(&author);
                 break;
             }
@@ -98,7 +101,7 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
         return;
     }
 
-    outputToFile.writeMessages(messagesValidToAdd);
+    outputToFile.writeMessages(messagesValidToAdd, serviceType);
 
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {

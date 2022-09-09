@@ -96,6 +96,7 @@ public:
         : QObject(parent)
         , serviceType(serviceType_)
         , stream(settings, settingsGroupPath + "/stream")
+        , lastSavedMessageId(settings, settingsGroupPath + "/lastSavedMessageId")
     {
         parameters.append(Parameter(&stream, tr("Stream"), Parameter::Type::String, {}));
     }
@@ -109,6 +110,9 @@ public:
     AxelChat::ServiceType getServiceType() const { return serviceType; }
 
     int getViewersCount() const { return state.viewersCount; }
+
+    const Setting<QString>& getLastSavedMessageId() const { return lastSavedMessageId; }
+    void setLastSavedMessageId(const QString& messageId) { lastSavedMessageId.set(messageId); }
 
     virtual void reconnect() = 0;
 
@@ -275,6 +279,7 @@ protected:
     const AxelChat::ServiceType serviceType;
     State state;
     Setting<QString> stream;
+    Setting<QString> lastSavedMessageId;
 };
 
 #endif // CHATSERVICE_H

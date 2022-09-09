@@ -66,14 +66,13 @@ QString removePostfix(const QString& string, const QString& postfix, const Qt::C
 
 }
 
-OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, const QList<ChatService*>& services_, QObject *parent)
+OutputToFile::OutputToFile(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, QList<ChatService*>& services_, QObject *parent)
     : QObject(parent)
     , network(network_)
     , messagesModel(messagesModel_)
     , services(services_)
     , enabled(settings, settingsGroupPath + "/enabled", false)
     , outputDirectory(settings, settingsGroupPath + "/output_folder", standardOutputFolder())
-    , youTubeLastMessageId(settings, settingsGroupPath + "/youtube_last_saved_message_id")
     , codec(settings, settingsGroupPath + "/codec", OutputToFileCodec::UTF8Codec)
 {
     reinit(true);
@@ -136,31 +135,44 @@ void OutputToFile::resetSettings()
     setOutputFolder(standardOutputFolder());
 }
 
-void OutputToFile::writeMessages(const QList<Message>& messages)
+void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat::ServiceType serviceType)
 {
     if (!enabled.get())
     {
         return;
     }
 
+    ChatService* service = nullptr;
+    for (ChatService* service_ : services)
+    {
+        if (service_->getServiceType() == serviceType)
+        {
+            service = service_;
+            break;
+        }
+    }
+
     int firstValidMessage = 0;
 
-    if (!youTubeLastMessageId.get().isEmpty())
+    if (service)
     {
-        for (int i = 0; i < messages.count(); ++i)
+        if (!service->getLastSavedMessageId().get().isEmpty())
         {
-            const Message& message = messages[i];
-
-            if (message.getId() == youTubeLastMessageId.get())
+            for (int i = 0; i < messages.count(); ++i)
             {
-                qDebug() << "found youtube message with id" << message.getId() << ", ignore saving messages before it, index =" << i;
-                firstValidMessage = i + 1;
-                break;
+                const Message& message = messages[i];
+
+                if (message.getId() == service->getLastSavedMessageId().get())
+                {
+                    qDebug() << "found message with id" << message.getId() << ", ignore saving messages before it, index =" << i;
+                    firstValidMessage = i + 1;
+                    break;
+                }
             }
         }
     }
 
-    QString currentLastYouTubeMessageId;
+    QString currentLastMessageId;
 
     for (int i = firstValidMessage; i < messages.count(); ++i)
     {
@@ -214,13 +226,10 @@ void OutputToFile::writeMessages(const QList<Message>& messages)
 
         writeMessage(tags);
 
-        if (author->getServiceType() == AxelChat::ServiceType::YouTube)
+        const QString id = message.getId();
+        if (!id.isEmpty())
         {
-            const QString id = message.getId();
-            if (!id.isEmpty())
-            {
-                currentLastYouTubeMessageId = id;
-            }
+            currentLastMessageId = id;
         }
 
         if (type != AxelChat::ServiceType::Unknown && type != AxelChat::ServiceType::Software)
@@ -239,9 +248,12 @@ void OutputToFile::writeMessages(const QList<Message>& messages)
         }
     }
 
-    if (!currentLastYouTubeMessageId.isEmpty())
+    if (service)
     {
-        youTubeLastMessageId.set(currentLastYouTubeMessageId);
+        if (!currentLastMessageId.isEmpty())
+        {
+            service->setLastSavedMessageId(currentLastMessageId);
+        }
     }
 }
 
