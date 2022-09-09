@@ -110,11 +110,6 @@ public:
         Role::AvatarUrl,
         Role::LeftBadgesUrls,
         Role::RightBadgesUrls,
-
-        Role::IsVerified,
-        Role::IsChatOwner,
-        Role::Sponsor,
-        Role::Moderator
     };
 
 private:

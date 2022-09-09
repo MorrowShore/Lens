@@ -47,11 +47,53 @@ bool Author::setValue(const Role role, const QVariant &value)
         return false;
     }
 
+    const QVariant::Type type = value.type();
+
     bool validType = true;
     switch (role)
     {
+    case Author::Role::PageUrl:
+        if (type == QVariant::Type::Url)
+        {
+            const QUrl url = value.toUrl();
+            if (!url.isEmpty())
+            {
+                pageUrl = url;
+            }
+            return true;
+        }
+        else
+        {
+            validType = false;
+        }
+        break;
+
+    case Author::Role::Name:
+        if (type == QVariant::Type::String)
+        {
+            name = value.toString();
+            return true;
+        }
+        else
+        {
+            validType = false;
+        }
+        break;
+
+    case Author::Role::NicknameColor:
+        if (type == QVariant::Type::Color)
+        {
+            customNicknameColor = value.value<QColor>();
+            return true;
+        }
+        else
+        {
+            validType = false;
+        }
+        break;
+
     case Role::AvatarUrl:
-        if (value.type() == QVariant::Type::Url)
+        if (type == QVariant::Type::Url)
         {
             const QUrl url = value.toUrl();
             if (!url.isEmpty())
@@ -66,13 +108,38 @@ bool Author::setValue(const Role role, const QVariant &value)
         }
         break;
 
+    case Author::Role::LeftBadgesUrls:
+        if (type == QVariant::Type::StringList)
+        {
+            leftBadgesUrls = value.toStringList();
+            return true;
+        }
+        else
+        {
+            validType = false;
+        }
+        break;
+
+    case Author::Role::RightBadgesUrls:
+        if (type == QVariant::Type::StringList)
+        {
+            rightBadgesUrls = value.toStringList();
+            return true;
+        }
+        else
+        {
+            validType = false;
+        }
+        break;
+
     default:
         break;
     }
 
     if (!validType)
     {
-        qCritical() << Q_FUNC_INFO << ": invalid type" << value.type() << "for role" << role << ", author name = " << name;
+        qCritical() << Q_FUNC_INFO << ": invalid type" << type << "for role" << role << ", author name = " << name;
+        throw "see logs";
     }
 
     qCritical() << Q_FUNC_INFO << ": role" << role << "not implemented yet" << ", author name = " << name;
