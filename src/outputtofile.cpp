@@ -308,6 +308,7 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
     QNetworkReply* reply = network.get(request);
     connect(reply, &QNetworkReply::finished, this, [this, fileName, imageFormat, height, ignoreIfExists, url]()
     {
@@ -793,3 +794,4 @@ void OutputToFile::writeServiceState(const ChatService* service) const
     file.write(QString("panel_url=%1\n").arg(service->getControlPanelUrl().toString()).toUtf8());
     file.write(QString("viewers_count=%1\n").arg(service->getViewersCount()).toUtf8());
 }
+

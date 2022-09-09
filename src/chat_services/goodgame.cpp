@@ -241,7 +241,7 @@ void GoodGame::requestUserPage(const QString &authorName, const QString &authorI
 
         if (!url.isEmpty())
         {
-            url = "https://static.goodgame.ru/files/avatars" + url;
+            url = urlPrefix + url;
 
             emit authorDataUpdated(authorId, { {Author::Role::AvatarUrl, QUrl(url)} });
         }

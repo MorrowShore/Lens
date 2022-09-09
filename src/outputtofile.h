@@ -52,8 +52,9 @@ signals:
 
 private:
     QString convertUrlForFileName(const QUrl& url, const QString& imageFileFormat) const;
-    void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, const int height, bool ignoreIfExists);
     void downloadEmoji(const QUrl &url, const int height, const AxelChat::ServiceType serviceType);
+
+    void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, const int height, bool ignoreIfExists);
 
     void writeMessage(const QList<QPair<QString, QString>> tags /*<tagName, tagValue>*/);
     QByteArray prepare(const QString& text);
