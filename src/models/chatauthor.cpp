@@ -33,6 +33,5 @@ const ChatAuthor &ChatAuthor::getSoftwareAuthor()
 
 QString ChatAuthor::flagToString(const Flag flag)
 {
-    QMetaEnum metaEnum = QMetaEnum::fromType<Flag>();
-    return metaEnum.valueToKey((int)flag);
+    return QMetaEnum::fromType<Flag>().valueToKey((int)flag);
 }

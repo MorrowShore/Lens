@@ -9,7 +9,7 @@ class ChatMessagesModel : public QAbstractListModel
 public:
     ChatMessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
 
-    enum Role {
+    enum class Role {
         MessageId = Qt::UserRole + 1,
         MessageHtml,
         MessagePublishedAt,
@@ -45,6 +45,7 @@ public:
         AuthorIsSponsor,
         AuthorIsModerator
     };
+    Q_ENUM(Role)
 
     QHash<int, QByteArray> roleNames() const override {
         return _roleNames;
@@ -69,6 +70,8 @@ public:
     void insertAuthor(const ChatAuthor& author);
 
 private:
+    static QString roleToString(const Role role);
+
     static const QHash<int, QByteArray> _roleNames;
     QList<QVariant*> _data;//*data
     QHash<QString, QVariant*> _dataById;//message_id, *data
