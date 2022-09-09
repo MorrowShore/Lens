@@ -425,6 +425,11 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 }
             }
 
+            if (!rawSmileId.isEmpty())
+            {
+                text += rawSmileId;
+            }
+
             if (!text.isEmpty())
             {
                 contents.append(new Message::Text(text));
