@@ -227,7 +227,7 @@ int MessagesModel::getRow(QVariant *data)
     }
 }
 
-void MessagesModel::setAuthorData(const QString& authorId, const Author::Role role, const QVariant& value)
+void MessagesModel::setAuthorData(const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     Author* author = _authorsById.value(authorId, nullptr);
     if (!author)
@@ -246,9 +246,13 @@ void MessagesModel::setAuthorData(const QString& authorId, const Author::Role ro
             if (data)
             {
                 const QModelIndex& index = createIndexByPtr(data);
-                if (!setData(index, value, (int)role))
+                const QList<Author::Role> roles = values.keys();
+                for (const Author::Role role : roles)
                 {
-                    qCritical() << Q_FUNC_INFO << "failed to set author data, role =" << role << ", author id =" << authorId;
+                    if (!setData(index, values[role], (int)role))
+                    {
+                        qCritical() << Q_FUNC_INFO << "failed to set author data, role =" << role << ", author id =" << authorId;
+                    }
                 }
             }
         }

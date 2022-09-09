@@ -172,7 +172,7 @@ void ChatHandler::playNewMessageSound()
 #endif
 }
 
-void ChatHandler::onAuthorDataUpdated(const QString& authorId, const Author::Role role, const QVariant& value)
+void ChatHandler::onAuthorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     AxelChat::ServiceType type = AxelChat::ServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
@@ -181,12 +181,17 @@ void ChatHandler::onAuthorDataUpdated(const QString& authorId, const Author::Rol
         type = service->getServiceType();
     }
 
-    if (role == Author::Role::AvatarUrl)
+
+    const QList<Author::Role> roles = values.keys();
+    for (const Author::Role role : roles)
     {
-        outputToFile.downloadAvatar(authorId, type, value.toUrl());
+        if (role == Author::Role::AvatarUrl)
+        {
+            outputToFile.downloadAvatar(authorId, type, values[role].toUrl());
+        }
     }
 
-    messagesModel.setAuthorData(authorId, role, value);
+    messagesModel.setAuthorData(authorId, values);
 }
 
 void ChatHandler::clearMessages()

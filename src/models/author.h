@@ -1,5 +1,4 @@
-#ifndef AUTHOR_H
-#define AUTHOR_H
+#pragma once
 
 #include "chat_services/chatservicestypes.h"
 #include <QString>
@@ -115,4 +114,4 @@ private:
     std::set<uint64_t> messagesIds;
 };
 
-#endif // AUTHOR_H
+Q_DECLARE_METATYPE(Author::Role)

@@ -98,7 +98,7 @@ public slots:
 #endif
 
 private slots:
-    void onAuthorDataUpdated(const QString& authorId, const Author::Role role, const QVariant& value);
+    void onAuthorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values);
     void onConnectedChanged(const bool connected, const QString& name);
     void onAuthorNameChanged(const Author& author, const QString& prevName, const QString& newName);
 
