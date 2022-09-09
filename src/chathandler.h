@@ -122,7 +122,7 @@ private:
 
     bool _enabledSoundNewMessage = false;
     bool _enabledClearMessagesOnLinkChange = false;
-    bool _enableShowAuthorNameChanged = false;
+    bool _enableShowAuthorNameChanged = true;
 
 #ifdef QT_MULTIMEDIA_LIB
     std::unique_ptr<QSound> _soundDefaultNewMessage = std::unique_ptr<QSound>(new QSound(":/resources/sound/ui/beep1.wav"));
