@@ -206,7 +206,7 @@ void OutputToFile::writeMessages(const QList<Message>& messages)
             }
         }
 
-        tags.append(QPair<QString, QString>("author", prepare(author->getName())));
+        tags.append(QPair<QString, QString>("author", prepare(author->getValue(Author::Role::Name).toString())));
         tags.append(QPair<QString, QString>("author_id", authorId));
         tags.append(QPair<QString, QString>("message", text));
         tags.append(QPair<QString, QString>("time", timeToString(message.getPublishedAt())));
@@ -223,17 +223,9 @@ void OutputToFile::writeMessages(const QList<Message>& messages)
             }
         }
 
-        switch (type)
+        if (type != AxelChat::ServiceType::Unknown && type != AxelChat::ServiceType::Software)
         {
-        case AxelChat::ServiceType::GoodGame:
-        case AxelChat::ServiceType::YouTube:
-        case AxelChat::ServiceType::Twitch:
-            downloadAvatar(authorId, type, author->getAvatarUrl());
-            break;
-
-        case AxelChat::ServiceType::Unknown:
-        case AxelChat::ServiceType::Software:
-            break;
+            downloadAvatar(authorId, type, author->getValue(Author::Role::AvatarUrl).toUrl());
         }
 
         for (const Message::Content* content : message.getContents())
@@ -372,16 +364,9 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
 
 void OutputToFile::downloadEmoji(const QUrl &url, const int height, const AxelChat::ServiceType serviceType)
 {
-    switch (serviceType)
+    if (serviceType == AxelChat::ServiceType::Unknown || serviceType == AxelChat::ServiceType::Software)
     {
-    case AxelChat::ServiceType::Unknown:
-    case AxelChat::ServiceType::Software:
         return;
-
-    case AxelChat::ServiceType::YouTube:
-    case AxelChat::ServiceType::Twitch:
-    case AxelChat::ServiceType::GoodGame:
-        break;
     }
 
     const QString emojiDirectory = getServiceDirectory(serviceType) + "/emoji";
@@ -574,11 +559,11 @@ void OutputToFile::writeAuthors(const QList<Author*>& authors)
             }
 
             file.write("[info]\n");
-            file.write("name=" + prepare(author->getName()) + "\n");
+            file.write("name=" + prepare(author->getValue(Author::Role::Name).toString()) + "\n");
             file.write("id=" + prepare(author->getId()) + "\n");
             file.write("service=" + prepare(ChatService::getServiceTypeId(author->getServiceType())) + "\n");
-            file.write("avatar_url=" + prepare(author->getAvatarUrl().toString()) + "\n");
-            file.write("page_url=" + prepare(author->getPageUrl().toString()) + "\n");
+            file.write("avatar_url=" + prepare(author->getValue(Author::Role::AvatarUrl).toUrl().toString()) + "\n");
+            file.write("page_url=" + prepare(author->getValue(Author::Role::PageUrl).toUrl().toString()) + "\n");
             //ToDo: file.write("last_message_at=" +  + "\n");
 
             file.flush();
@@ -586,7 +571,7 @@ void OutputToFile::writeAuthors(const QList<Author*>& authors)
         }
 
         {
-            const QByteArray newName = prepare(author->getName());
+            const QByteArray newName = prepare(author->getValue(Author::Role::Name).toString());
 
             bool needAddName = false;
 

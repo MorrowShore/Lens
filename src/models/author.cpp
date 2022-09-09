@@ -34,11 +34,6 @@ const Author &Author::getSoftwareAuthor()
     return author;
 }
 
-QString Author::flagToString(const Flag flag)
-{
-    return QMetaEnum::fromType<Flag>().valueToKey((int)flag);
-}
-
 bool Author::setValue(const Role role, const QVariant &value)
 {
     if (UpdateableRoles.find(role) == UpdateableRoles.end())

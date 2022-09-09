@@ -52,47 +52,14 @@ public:
     {
         return authorId;
     }
-    inline const QString& getName() const
-    {
-        return name;
-    }
-    inline const QUrl& getAvatarUrl() const
-    {
-        return avatarUrl;
-    }
-
-    inline const QUrl& getPageUrl() const
-    {
-        return pageUrl;
-    }
-    inline const QColor& getCustomNicknameColor() const
-    {
-        return customNicknameColor;
-    }
     inline AxelChat::ServiceType getServiceType() const
     {
         return serviceType;
     }
-    inline const QStringList& getLeftBadgesUrls() const
-    {
-        return leftBadgesUrls;
-    }
-    inline const QStringList& getRightBadgesUrls() const
-    {
-        return rightBadgesUrls;
-    }
-    inline bool isHasFlag(const Flag flag) const
-    {
-        return flags.find(flag) != flags.end();
-    }
-
-    static QString flagToString(const Flag flag);
-
     inline const std::set<uint64_t>& getMessagesIds() const
     {
         return messagesIds;
     }
-
     inline std::set<uint64_t>& getMessagesIds()
     {
         return messagesIds;

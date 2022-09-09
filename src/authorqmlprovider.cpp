@@ -36,7 +36,7 @@ QString AuthorQMLProvider::getName() const
         return QString();
     }
 
-    return author->getName();
+    return author->getValue(Author::Role::Name).toString();
 }
 
 int AuthorQMLProvider::getServiceType() const
@@ -58,7 +58,7 @@ QUrl AuthorQMLProvider::getAvatarUrl() const
         return QUrl();
     }
 
-    return author->getAvatarUrl();
+    return author->getValue(Author::Role::AvatarUrl).toUrl();
 }
 
 int AuthorQMLProvider::getMessagesCount() const
@@ -80,11 +80,11 @@ bool AuthorQMLProvider::openAvatar() const
         return false;
     }
 
-    QUrl url = author->getAvatarUrl();
+    QUrl url = author->getValue(Author::Role::AvatarUrl).toUrl();
 
     if (author->getServiceType() == AxelChat::ServiceType::YouTube)
     {
-        const QUrl url_ = YouTube::createResizedAvatarUrl(author->getAvatarUrl(), YouTubeAvatarSize);
+        const QUrl url_ = YouTube::createResizedAvatarUrl(url, YouTubeAvatarSize);
         if (url_.isValid())
         {
             url = url_;
@@ -102,7 +102,7 @@ bool AuthorQMLProvider::openPage() const
         return false;
     }
 
-    return QDesktopServices::openUrl(author->getPageUrl());
+    return QDesktopServices::openUrl(author->getValue(Author::Role::PageUrl).toUrl());
 }
 
 bool AuthorQMLProvider::openFolder() const
