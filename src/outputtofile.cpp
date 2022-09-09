@@ -228,7 +228,7 @@ void OutputToFile::writeMessages(const QList<Message>& messages)
         case ChatService::ServiceType::GoodGame:
         case ChatService::ServiceType::YouTube:
         case ChatService::ServiceType::Twitch:
-            downloadAvatar(authorId, author->getAvatarUrl(), type);
+            downloadAvatar(authorId, type, author->getAvatarUrl());
             break;
 
         case ChatService::ServiceType::Unknown:
@@ -258,10 +258,10 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + outputDirectory.get()));
 }
 
-void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, const ChatService::ServiceType service)
+void OutputToFile::downloadAvatar(const QString& authorId, const ChatService::ServiceType serviceType, const QUrl &url_)
 {
     QUrl url = url_;
-    if (service == ChatService::ServiceType::YouTube)
+    if (serviceType == ChatService::ServiceType::YouTube)
     {
         url = YouTube::createResizedAvatarUrl(url, avatarHeight);
     }
@@ -277,12 +277,12 @@ void OutputToFile::downloadAvatar(const QString& authorId, const QUrl& url_, con
         return;
     }
 
-    if (service == ChatService::ServiceType::Twitch)
+    if (serviceType == ChatService::ServiceType::Twitch)
     {
         fileName = removePostfix(fileName, "-300x300", Qt::CaseSensitivity::CaseInsensitive);
     }
 
-    const QString authorDirectory = getAuthorDirectory(service, authorId);
+    const QString authorDirectory = getAuthorDirectory(serviceType, authorId);
 
     const QString avatarsDirectory = authorDirectory + "/avatars";
     QDir dir(avatarsDirectory);

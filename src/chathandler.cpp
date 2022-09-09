@@ -181,8 +181,8 @@ void ChatHandler::onAvatarDiscovered(const QString &authorId, const QUrl &url)
         type = service->getServiceType();
     }
 
-    outputToFile.downloadAvatar(authorId, url, type);
-    messagesModel.setAuthorData(authorId, url, Author::Role::AvatarUrl);
+    outputToFile.downloadAvatar(authorId, type, url);
+    messagesModel.setAuthorData(authorId, Author::Role::AvatarUrl, url);
 }
 
 void ChatHandler::clearMessages()

@@ -226,7 +226,7 @@ int MessagesModel::getRow(QVariant *data)
     }
 }
 
-void MessagesModel::setAuthorData(const QString &authorId, const QVariant& value, const Author::Role role)
+void MessagesModel::setAuthorData(const QString& authorId, const Author::Role role, const QVariant& value)
 {
     Author* author = _authorsById.value(authorId, nullptr);
     if (!author)

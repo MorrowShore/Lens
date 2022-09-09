@@ -26,7 +26,7 @@ public:
     uint64_t lastIdNum() const;
     QModelIndex createIndexByPtr(QVariant* data) const;
     int getRow(QVariant* data);
-    void setAuthorData(const QString& authorId, const QVariant& value, const Author::Role role);
+    void setAuthorData(const QString& authorId, const Author::Role role, const QVariant& value);
 
     const Author* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
