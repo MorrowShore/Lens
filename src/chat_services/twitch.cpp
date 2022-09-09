@@ -766,7 +766,7 @@ void Twitch::onReplyUserInfo()
         if (!profileImageUrl.isEmpty())
         {
             avatarsUrls.insert(channelLogin, profileImageUrl);
-            emit authorDataChanged(channelLogin, profileImageUrl);
+            emit authorDataUpdated(channelLogin, Author::Role::AvatarUrl, profileImageUrl);
         }
 
         if (channelLogin == state.streamId)

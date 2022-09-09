@@ -90,7 +90,6 @@ public slots:
     void sendTestMessage(const QString& text);
     void sendSoftwareMessage(const QString& text);
     void playNewMessageSound();
-    void onAuthorChanged(const QString& authorId, const QUrl& url);
     void clearMessages();
     void onStateChanged();
 
@@ -99,6 +98,7 @@ public slots:
 #endif
 
 private slots:
+    void onAuthorDataUpdated(const QString& authorId, const Author::Role role, const QVariant& value);
     void onConnectedChanged(const bool connected, const QString& name);
     void onAuthorNameChanged(const Author& author, const QString& prevName, const QString& newName);
 

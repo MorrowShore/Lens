@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "setting.h"
 #include "chatservicestypes.h"
+#include "models/author.h"
 #include <QSettings>
 #include <QObject>
 #include <QQmlEngine>
@@ -215,7 +216,7 @@ signals:
     void stateChanged();
     void readyRead(QList<Message>& messages, QList<Author>& authors);
     void connectedChanged(const bool connected, const QString& name);
-    void authorDataChanged(const QString& authorId, const QUrl& url);
+    void authorDataUpdated(const QString& authorId, const Author::Role role, const QVariant& value);
 
 protected:
     struct Parameter {

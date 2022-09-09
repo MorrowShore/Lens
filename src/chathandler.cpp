@@ -172,7 +172,7 @@ void ChatHandler::playNewMessageSound()
 #endif
 }
 
-void ChatHandler::onAuthorChanged(const QString &authorId, const QUrl &url)
+void ChatHandler::onAuthorDataUpdated(const QString& authorId, const Author::Role role, const QVariant& value)
 {
     AxelChat::ServiceType type = AxelChat::ServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
@@ -181,8 +181,12 @@ void ChatHandler::onAuthorChanged(const QString &authorId, const QUrl &url)
         type = service->getServiceType();
     }
 
-    outputToFile.downloadAvatar(authorId, type, url);
-    messagesModel.setAuthorData(authorId, Author::Role::AvatarUrl, url);
+    if (role == Author::Role::AvatarUrl)
+    {
+        outputToFile.downloadAvatar(authorId, type, value.toUrl());
+    }
+
+    messagesModel.setAuthorData(authorId, role, value);
 }
 
 void ChatHandler::clearMessages()
@@ -268,7 +272,7 @@ void ChatHandler::addService(ChatService* service)
     connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
     connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
     connect(service, &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
-    connect(service, &ChatService::authorDataChanged, this, &ChatHandler::onAuthorChanged);
+    connect(service, &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
 
     services.append(service);
 }
