@@ -44,5 +44,6 @@
         <file>resources/images/viewer.svg</file>
         <file>resources/images/internet-globe.svg</file>
         <file>resources/images/language-svgrepo-com.svg</file>
+        <file>resources/images/forward-arrow.svg</file>
     </qresource>
 </RCC>
