@@ -192,7 +192,7 @@ void ChatHandler::playNewMessageSound()
 #endif
 }
 
-void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
+void ChatHandler::onAvatarDiscovered(const QString &authorId, const QUrl &url)
 {
     ChatService::ServiceType type = ChatService::ServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
@@ -201,8 +201,8 @@ void ChatHandler::onAvatarDiscovered(const QString &channelId, const QUrl &url)
         type = service->getServiceType();
     }
 
-    outputToFile.downloadAvatar(channelId, url, type);
-    messagesModel.applyAvatar(channelId, url);
+    outputToFile.downloadAvatar(authorId, url, type);
+    messagesModel.applyAvatar(authorId, url);
 }
 
 void ChatHandler::clearMessages()

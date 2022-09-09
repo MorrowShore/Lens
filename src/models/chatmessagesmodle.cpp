@@ -238,9 +238,9 @@ int ChatMessagesModel::getRow(QVariant *data)
     }
 }
 
-void ChatMessagesModel::applyAvatar(const QString &channelId, const QUrl &url)
+void ChatMessagesModel::applyAvatar(const QString &authorlId, const QUrl &url)
 {
-    for (const uint64_t& oldIdNum : qAsConst(_needUpdateAvatarMessages[channelId]))
+    for (const uint64_t& oldIdNum : qAsConst(_needUpdateAvatarMessages[authorlId]))
     {
         if (_dataByIdNum.contains(oldIdNum))
         {
@@ -253,7 +253,7 @@ void ChatMessagesModel::applyAvatar(const QString &channelId, const QUrl &url)
         }
     }
 
-    _needUpdateAvatarMessages.remove(channelId);
+    _needUpdateAvatarMessages.remove(authorlId);
 }
 
 void ChatMessagesModel::addAuthor(ChatAuthor* author)

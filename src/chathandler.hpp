@@ -91,7 +91,7 @@ public slots:
     void sendTestMessage(const QString& text);
     void sendSoftwareMessage(const QString& text);
     void playNewMessageSound();
-    void onAvatarDiscovered(const QString& channelId, const QUrl& url);
+    void onAvatarDiscovered(const QString& authorId, const QUrl& url);
     void clearMessages();
     void onStateChanged();
 

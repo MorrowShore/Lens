@@ -62,7 +62,7 @@ public:
     uint64_t lastIdNum() const;
     QModelIndex createIndexByPtr(QVariant* data) const;
     int getRow(QVariant* data);
-    void applyAvatar(const QString& channelId, const QUrl& url);
+    void applyAvatar(const QString& authorId, const QUrl& url);
 
     const ChatAuthor* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     ChatAuthor* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }

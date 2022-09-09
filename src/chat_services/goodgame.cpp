@@ -273,7 +273,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     const QJsonObject root = document.object();
     const QJsonObject data = root.value("data").toObject();
     const QString type = root.value("type").toString();
-    const QString channelId = data.value("channel_id").toString();
+    const QString channelId_ = data.value("channel_id").toString();
 
     if (type == "channel_history")
     {
@@ -326,11 +326,11 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     }
     else if (type == "error")
     {
-        qWarning() << Q_FUNC_INFO << ": client received error, channel id =" << channelId << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
+        qWarning() << Q_FUNC_INFO << ": client received error, channel id =" << channelId_ << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
     }
     else if (type == "success_auth")
     {
-        this->channelId = -1;
+        channelId = -1;
         requestChannelStatus();
     }
     else
