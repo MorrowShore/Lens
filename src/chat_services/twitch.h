@@ -27,7 +27,7 @@ signals:
 public slots:
 
 protected:
-    void onParameterChanged(Parameter& parameter) override;
+    void onParameterChangedImpl(Parameter& parameter) override;
 
 private slots:
     void sendIRCMessage(const QString& message);

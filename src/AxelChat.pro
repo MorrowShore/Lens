@@ -19,6 +19,7 @@ HEADERS += \
     authorqmlprovider.h \
     botaction.h \
     chat_services/chatservicestypes.h \
+    chat_services/trovo.h \
     chatbot.h \
     chathandler.h \
     clipboardqml.h \
@@ -41,6 +42,7 @@ HEADERS += \
 SOURCES += \
         authorqmlprovider.cpp \
         botaction.cpp \
+        chat_services/trovo.cpp \
         chatbot.cpp \
         chathandler.cpp \
         clipboardqml.cpp \

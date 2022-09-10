@@ -13,16 +13,13 @@ class GoodGame : public ChatService
 {
     Q_OBJECT
 public:
-    explicit GoodGame(QSettings& settings, const QString& SettingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit GoodGame(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
     void reconnect() override;
 
 signals:
-
-protected:
-    void onParameterChanged(Parameter &parameter) override;
 
 private slots:
     void onWebSocketReceived(const QString& rawData);

@@ -325,17 +325,6 @@ void GoodGame::reconnect()
     emit stateChanged();
 }
 
-void GoodGame::onParameterChanged(Parameter &parameter)
-{
-    Setting<QString>& setting = *parameter.getSetting();
-
-    if (&setting == &stream)
-    {
-        stream.set(stream.get().trimmed());
-        reconnect();
-    }
-}
-
 void GoodGame::onWebSocketReceived(const QString &rawData)
 {
     //qDebug(rawData.toUtf8());

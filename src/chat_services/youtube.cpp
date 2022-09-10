@@ -430,17 +430,6 @@ void YouTube::onReplyStreamPage()
     }
 }
 
-void YouTube::onParameterChanged(Parameter &parameter)
-{
-    Setting<QString>& setting = *parameter.getSetting();
-
-    if (&setting == &stream)
-    {
-        stream.set(stream.get().trimmed());
-        reconnect();
-    }
-}
-
 void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 {
     //AxelChat::saveDebugDataToFile(FolderLogs, "debug.json", data);

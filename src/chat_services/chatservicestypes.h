@@ -14,6 +14,7 @@ enum class ServiceType
     YouTube = 100,
     Twitch = 101,
     GoodGame = 102,
+    Trovo = 103,
 };
 
 }

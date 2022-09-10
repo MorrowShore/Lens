@@ -260,7 +260,25 @@ protected:
         QString placeHolder;
     };
 
-    virtual void onParameterChanged(Parameter& parameter) = 0;
+    void onParameterChanged(Parameter& parameter)
+    {
+        Setting<QString>& setting = *parameter.getSetting();
+
+        if (&setting == &stream)
+        {
+            stream.set(stream.get().trimmed());
+            reconnect();
+        }
+        else
+        {
+            onParameterChangedImpl(parameter);
+        }
+    }
+
+    virtual void onParameterChangedImpl(Parameter& parameter)
+    {
+        Q_UNUSED(parameter)
+    }
 
     Parameter* getParameter(const Setting<QString>& setting)
     {

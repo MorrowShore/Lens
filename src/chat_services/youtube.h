@@ -20,9 +20,6 @@ public:
 
     Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
 
-protected:
-    void onParameterChanged(Parameter &parameter) override;
-
 private slots:
     void onTimeoutRequestChat();
     void onReplyChatPage();

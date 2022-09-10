@@ -232,16 +232,11 @@ QUrl Twitch::requesGetAOuthTokenUrl() const
                         + "&scope=openid+chat:read");
 }
 
-void Twitch::onParameterChanged(Parameter& parameter)
+void Twitch::onParameterChangedImpl(Parameter& parameter)
 {
     Setting<QString>& setting = *parameter.getSetting();
 
-    if (&setting == &stream)
-    {
-        setting.set(setting.get().trimmed().toLower());
-        reconnect();
-    }
-    else if (&setting == &oauthToken)
+    if (&setting == &oauthToken)
     {
         QString token = parameter.getSetting()->get();
         if (token.startsWith("oauth:", Qt::CaseSensitivity::CaseInsensitive))
