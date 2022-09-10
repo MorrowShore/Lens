@@ -1,9 +1,6 @@
 #pragma once
 
 #include "utils.h"
-#include "chat_services/youtube.h"
-#include "chat_services/twitch.h"
-#include "chat_services/goodgame.h"
 #include "authorqmlprovider.h"
 #include <QSettings>
 #include <QMap>

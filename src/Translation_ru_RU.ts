@@ -37,7 +37,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="147"/>
+        <location filename="chathandler.cpp" line="140"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -75,17 +75,17 @@
         <translation type="vanished">Twitch отключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="236"/>
+        <location filename="chathandler.cpp" line="238"/>
         <source>%1 connected: %2</source>
         <translation>%1 подключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="240"/>
+        <location filename="chathandler.cpp" line="242"/>
         <source>%1 disconnected: %2</source>
         <translation>%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="255"/>
+        <location filename="chathandler.cpp" line="257"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -94,28 +94,33 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="78"/>
-        <location filename="chat_services/chatservice.hpp" line="86"/>
+        <location filename="chat_services/chatservice.h" line="70"/>
+        <location filename="chat_services/chatservice.h" line="79"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="81"/>
+        <location filename="chat_services/chatservice.h" line="73"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="82"/>
+        <location filename="chat_services/chatservice.h" line="74"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="83"/>
+        <location filename="chat_services/chatservice.h" line="75"/>
+        <source>Trovo</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.h" line="76"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.hpp" line="109"/>
+        <location filename="chat_services/chatservice.h" line="104"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -337,28 +342,28 @@
 <context>
     <name>GoodGame</name>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="16"/>
+        <location filename="chat_services/goodgame.cpp" line="25"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="79"/>
+        <location filename="chat_services/goodgame.cpp" line="109"/>
         <source>Channel not specified</source>
         <oldsource>Stream not specified</oldsource>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="82"/>
+        <location filename="chat_services/goodgame.cpp" line="112"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="85"/>
+        <location filename="chat_services/goodgame.cpp" line="115"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="88"/>
+        <location filename="chat_services/goodgame.cpp" line="118"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -489,6 +494,29 @@
     </message>
 </context>
 <context>
+    <name>Trovo</name>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="30"/>
+        <source>Channel not specified</source>
+        <translation>Канал не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="33"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="36"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="39"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
+    </message>
+</context>
+<context>
     <name>Twitch</name>
     <message>
         <location filename="chat_services/twitch.cpp" line="75"/>
@@ -602,7 +630,7 @@
 <context>
     <name>about</name>
     <message>
-        <location filename="setting_pages/about.qml" line="299"/>
+        <location filename="setting_pages/about.qml" line="300"/>
         <source>You are using the most current version!
 
 Current version: %1
@@ -616,12 +644,12 @@ Latest version available: %2</oldsource>
 Последняя доступная версия: %2</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="307"/>
+        <location filename="setting_pages/about.qml" line="308"/>
         <source>Failed to connect to server. Check your internet connection!</source>
         <translation>Не удалось подключиться к серверу. Проверьте подключение к интернету!</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="312"/>
+        <location filename="setting_pages/about.qml" line="313"/>
         <source>Request limits exceeded! Please try again later</source>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
@@ -653,17 +681,17 @@ Latest version available: %2</oldsource>
         <translation>YouTube канал</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="126"/>
+        <location filename="setting_pages/about.qml" line="127"/>
         <source>Check for Updates</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="164"/>
+        <location filename="setting_pages/about.qml" line="165"/>
         <source>subscribe</source>
         <translation>подпишись</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="244"/>
+        <location filename="setting_pages/about.qml" line="245"/>
         <source>Support the developer</source>
         <translation>Поддержать разработчика</translation>
     </message>
@@ -672,12 +700,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Форум (Discussions)</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="176"/>
+        <location filename="setting_pages/about.qml" line="177"/>
         <source>Releases</source>
         <translation>Релизы</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="269"/>
+        <location filename="setting_pages/about.qml" line="270"/>
         <source>Source Code</source>
         <translation>Исходный код</translation>
     </message>
@@ -686,7 +714,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Лицензия</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="257"/>
+        <location filename="setting_pages/about.qml" line="258"/>
         <source>Complaints and suggestions (Issues)</source>
         <oldsource>Complaints and suggestions  (Issues)</oldsource>
         <translation>Жалобы и предложения (Issues)</translation>
@@ -696,13 +724,13 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Жалобы и предложения</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="190"/>
+        <location filename="setting_pages/about.qml" line="191"/>
         <source>AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</source>
         <oldsource>A free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</oldsource>
         <translation>AxelChat — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="204"/>
+        <location filename="setting_pages/about.qml" line="205"/>
         <source>GitHub</source>
         <translation></translation>
     </message>

@@ -56,6 +56,7 @@ public:
 
         case AxelChat::ServiceType::YouTube: return "youtube";
         case AxelChat::ServiceType::Twitch: return "twitch";
+        case AxelChat::ServiceType::Trovo: return "trovo";
         case AxelChat::ServiceType::GoodGame: return "goodgame";
         }
 
@@ -71,6 +72,7 @@ public:
 
         case AxelChat::ServiceType::YouTube: return tr("YouTube");
         case AxelChat::ServiceType::Twitch: return tr("Twitch");
+        case AxelChat::ServiceType::Trovo: return tr("Trovo");
         case AxelChat::ServiceType::GoodGame: return tr("GoodGame");
         }
 
@@ -86,6 +88,7 @@ public:
 
         case AxelChat::ServiceType::YouTube: return QUrl("qrc:/resources/images/youtube-icon.svg");
         case AxelChat::ServiceType::Twitch: return QUrl("qrc:/resources/images/twitch-icon.svg");
+        case AxelChat::ServiceType::Trovo: return QUrl("qrc:/resources/images/trovo-icon.svg");
         case AxelChat::ServiceType::GoodGame: return QUrl("qrc:/resources/images/goodgame-icon.svg");
         }
 
