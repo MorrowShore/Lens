@@ -12,8 +12,21 @@ namespace
 {
 
 static const int RequestChatInterval = 2000;
-
 static const int RequestChannelStatus = 10000;
+
+static const QMap<QString, QColor> ColorTypes =
+{
+    {"",                    QColor(115, 173, 255)},
+    {"gold",                QColor(238, 252, 8)},
+    {"silver",              QColor(180, 180, 180)},
+    {"bronze",              QColor(231, 130, 10)},
+    {"king",                QColor(48,  213, 200)},
+    {"premium",             QColor(189, 112, 215)},
+    {"premium-personal",    QColor(49,  169, 58)},
+    {"diamond",             QColor(135, 129, 189)},
+    {"moderator",           QColor(236, 64,  88)},
+    {"streamer",            QColor(232, 187,  0)},
+};
 
 }
 
@@ -358,12 +371,33 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QString messageId = QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
             const QDateTime publishedAt = QDateTime::fromSecsSinceEpoch(jsonMessage.value("timestamp").toVariant().toLongLong());
             const QString rawText = jsonMessage.value("text").toString();
+            const QString colorType = jsonMessage.value("color").toString();
+
+            QColor nicknameColor;
+
+            if (colorType == "simple")
+            {
+                // TODO: may be different: QColor(255, 255, 255), QColor(115, 173, 255)
+                nicknameColor = QColor();
+            }
+            else if (ColorTypes.contains(colorType))
+            {
+                nicknameColor = ColorTypes.value(colorType);
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << ": unknown color type" << colorType << ", author name =" << authorName;
+            }
 
             const Author author(getServiceType(),
-                                    authorName,
-                                    authorId,
-                                    QUrl(),
-                                    QUrl("https://goodgame.ru/user/" + authorId));
+                                authorName,
+                                authorId,
+                                QUrl(),
+                                QUrl("https://goodgame.ru/user/" + authorId),
+                                {},
+                                {},
+                                {},
+                                nicknameColor);
 
             QList<Message::Content*> contents;
 

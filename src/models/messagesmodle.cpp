@@ -27,19 +27,20 @@ const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>
 
     {(int)Message::Role::BodyBackgroundForcedColor,     "messageBodyBackgroundForcedColor"},
 
-    {(int)Author::Role::ServiceType ,       "authorServiceType"},
-    {(int)Author::Role::Id ,                "authorId"},
-    {(int)Author::Role::PageUrl ,           "authorPageUrl"},
-    {(int)Author::Role::Name ,              "authorName"},
-    {(int)Author::Role::NicknameColor ,     "authorNicknameColor"},
-    {(int)Author::Role::AvatarUrl ,         "authorAvatarUrl"},
-    {(int)Author::Role::LeftBadgesUrls ,    "authorLeftBadgesUrls"},
-    {(int)Author::Role::RightBadgesUrls,    "authorRightBadgesUrls"},
+    {(int)Author::Role::ServiceType ,           "authorServiceType"},
+    {(int)Author::Role::Id ,                    "authorId"},
+    {(int)Author::Role::PageUrl ,               "authorPageUrl"},
+    {(int)Author::Role::Name ,                  "authorName"},
+    {(int)Author::Role::HasCustomNicknameColor, "authorHasCustomNicknameColor"},
+    {(int)Author::Role::CustomNicknameColor,    "authorCustomNicknameColor"},
+    {(int)Author::Role::AvatarUrl ,             "authorAvatarUrl"},
+    {(int)Author::Role::LeftBadgesUrls ,        "authorLeftBadgesUrls"},
+    {(int)Author::Role::RightBadgesUrls,        "authorRightBadgesUrls"},
 
-    {(int)Author::Role::IsVerified ,        "authorIsVerified"},
-    {(int)Author::Role::IsChatOwner ,       "authorIsChatOwner"},
-    {(int)Author::Role::Sponsor ,           "authorIsSponsor"},
-    {(int)Author::Role::Moderator ,         "authorIsModerator"}
+    {(int)Author::Role::IsVerified ,            "authorIsVerified"},
+    {(int)Author::Role::IsChatOwner ,           "authorIsChatOwner"},
+    {(int)Author::Role::Sponsor ,               "authorIsSponsor"},
+    {(int)Author::Role::Moderator ,             "authorIsModerator"}
 };
 
 

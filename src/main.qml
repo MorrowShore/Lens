@@ -472,43 +472,10 @@ ApplicationWindow {
                 Text {
                     id: authorNameText
                     visible: Global.windowChatMessageShowAuthorName
-                    //readOnly: true
                     style: Text.Outline
-                    color: {
-                        if (authorServiceType === Global._YouTubeServiceType)
-                        {
-                            if (authorIsChatOwner)
-                            {
-                                return "#FFD90F";
-                            }
-                            else if (authorIsVerified)
-                            {
-                                return "#F48FB1";
-                            }
-                            else if (authorIsModerator)
-                            {
-                                return "#5F84F1";
-                            }
-                            else if (authorIsSponsor)
-                            {
-                                return "#107516";
-                            }
-                        }
-                        else if (authorServiceType === Global._TwitchServiceType)
-                        {
-                            if (authorNicknameColor !== "#000000")
-                            {
-                                return authorNicknameColor;
-                            }
-                        }
-
-                        return "#03A9F4";
-                    }
+                    color: authorHasCustomNicknameColor ? authorCustomNicknameColor : "#03A9F4"
                     font.bold: true
                     font.pointSize: Global.windowChatMessageAuthorNameFontSize
-                    //font.hintingPreference: Font.PreferFullHinting
-                    //style: Text.Outline;
-                    //styleColor: "red"
 
                     MouseArea {
                         anchors.fill: parent
@@ -524,15 +491,7 @@ ApplicationWindow {
                         }
                     }
 
-                    //selectByKeyboard: true
-                    //selectByMouse: true
-                    //readOnly: true
-                    //style: Text.Outline
-                    //styleColor: "black"
-
-                    //anchors.margins: 4
                     textFormat: Text.RichText
-                    //wrapMode: Text.Wrap
 
                     property int badgePixelSize: font.pixelSize * 1.25
                     text: {

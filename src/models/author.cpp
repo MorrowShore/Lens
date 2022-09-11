@@ -75,7 +75,7 @@ bool Author::setValue(const Role role, const QVariant &value)
         }
         break;
 
-    case Author::Role::NicknameColor:
+    case Author::Role::CustomNicknameColor:
         if (type == QVariant::Type::Color)
         {
             customNicknameColor = value.value<QColor>();
@@ -151,7 +151,8 @@ QVariant Author::getValue(const Role role) const
     case Author::Role::Id: return authorId;
     case Author::Role::PageUrl: return pageUrl;
     case Author::Role::Name: return name;
-    case Author::Role::NicknameColor: return customNicknameColor;
+    case Author::Role::HasCustomNicknameColor: return customNicknameColor.isValid();
+    case Author::Role::CustomNicknameColor: return customNicknameColor;
     case Author::Role::AvatarUrl: return avatarUrl;
     case Author::Role::LeftBadgesUrls: return leftBadgesUrls;
     case Author::Role::RightBadgesUrls: return rightBadgesUrls;

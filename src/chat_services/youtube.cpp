@@ -459,6 +459,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         QString authorName;
         QString authorChannelId;
         QStringList rightBadges;
+        QColor authorNicknameColor;
         QUrl authorAvatarUrl;
         std::set<Message::Flag> messageFlags;
         std::set<Author::Flag> authorFlags;
@@ -597,6 +598,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         if (iconType.toLower() == "owner")
                         {
                             authorFlags.insert(Author::Flag::ChatOwner);
+                            authorNicknameColor = QColor(255, 217, 15);
                             rightBadges.append("qrc:/resources/images/king.svg");
                             foundIconType = true;
                         }
@@ -604,6 +606,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         if (iconType.toLower() == "moderator")
                         {
                             authorFlags.insert(Author::Flag::Moderator);
+                            authorNicknameColor = QColor(95, 132, 241);
                             rightBadges.append("qrc:/resources/images/youtube-moderator-icon.svg");
                             foundIconType = true;
                         }
@@ -611,6 +614,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         if (iconType.toLower() == "verified")
                         {
                             authorFlags.insert(Author::Flag::Verified);
+                            authorNicknameColor = QColor(244, 143, 177);
                             rightBadges.append("qrc:/resources/images/youtube-verified-icon.svg");
                             foundIconType = true;
                         }
@@ -623,6 +627,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                     else if (liveChatAuthorBadgeRenderer.contains("customThumbnail"))
                     {
                         authorFlags.insert(Author::Flag::Sponsor);
+                        authorNicknameColor = QColor(16, 117, 22);
 
                         const QJsonArray& thumbnails = liveChatAuthorBadgeRenderer.value("customThumbnail").toObject()
                                 .value("thumbnails").toArray();
@@ -741,13 +746,14 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             else
             {
                 const Author author(getServiceType(),
-                                        authorName,
-                                        authorChannelId,
-                                        authorAvatarUrl,
-                                        QUrl(QString("https://www.youtube.com/channel/%1").arg(authorChannelId)),
-                                        {},
-                                        rightBadges,
-                                        authorFlags);
+                                    authorName,
+                                    authorChannelId,
+                                    authorAvatarUrl,
+                                    QUrl(QString("https://www.youtube.com/channel/%1").arg(authorChannelId)),
+                                    {},
+                                    rightBadges,
+                                    authorFlags,
+                                    authorNicknameColor);
 
                 const Message message(
                             contents,

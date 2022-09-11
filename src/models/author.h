@@ -15,7 +15,8 @@ public:
         Id,
         PageUrl,
         Name,
-        NicknameColor,
+        HasCustomNicknameColor,
+        CustomNicknameColor,
         AvatarUrl,
         LeftBadgesUrls,
         RightBadgesUrls,
@@ -73,7 +74,7 @@ public:
     {
         Role::PageUrl,
         Role::Name,
-        Role::NicknameColor,
+        Role::CustomNicknameColor,
         Role::AvatarUrl,
         Role::LeftBadgesUrls,
         Role::RightBadgesUrls,
