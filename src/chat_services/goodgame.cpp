@@ -25,7 +25,26 @@ static const QMap<QString, QColor> ColorTypes =
     {"premium-personal",    QColor(49,  169, 58)},
     {"diamond",             QColor(135, 129, 189)},
     {"moderator",           QColor(236, 64,  88)},
-    {"streamer",            QColor(232, 187,  0)},
+    {"streamer",            QColor(232, 187, 0)},
+    {"undead",              QColor(171, 72,  115)},
+    //top-one
+};
+
+static const QMap<QString, QString> Icons8Types =
+{
+    {"",                        QString()},
+    {"none",                    QString()},
+    {"star",                    "star"},
+    {"top1",                    "moderator"},
+    {"helper",                  "shield"},
+    {"moderator",               "sword"},
+    {"diamond",                 "diamond"},
+    {"crown",                   "crown"},
+    {"eagle",                   "bird"},
+    {"coin",                    "money"},
+    {"cup",                     "cup"},
+    {"undead",                  "skull"},
+    //ggplus
 };
 
 }
@@ -372,6 +391,12 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QDateTime publishedAt = QDateTime::fromSecsSinceEpoch(jsonMessage.value("timestamp").toVariant().toLongLong());
             const QString rawText = jsonMessage.value("text").toString();
             const QString colorType = jsonMessage.value("color").toString();
+            const QString iconType = jsonMessage.value("icon").toString();
+
+            if (authorName == "uBot")
+            {
+                qDebug() << jsonMessage;
+            }
 
             QColor nicknameColor;
 
@@ -389,12 +414,39 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 qWarning() << Q_FUNC_INFO << ": unknown color type" << colorType << ", author name =" << authorName;
             }
 
+            QStringList leftBadges;
+
+            if (Icons8Types.contains(iconType))
+            {
+                const QString icon = Icons8Types.value(iconType);
+                if (!icon.isEmpty())
+                {
+                    QString url = "https://img.icons8.com/";
+                    if (nicknameColor.isValid())
+                    {
+                        url += nicknameColor.name(QColor::NameFormat::HexRgb).toUpper().remove('#') + "/";
+                    }
+                    else
+                    {
+                        url += "color/";
+                    }
+
+                    url += icon;
+
+                    leftBadges.append(url);
+                }
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << ": unknown icon type" << iconType << ", author name =" << authorName;
+            }
+
             const Author author(getServiceType(),
                                 authorName,
                                 authorId,
                                 QUrl(),
                                 QUrl("https://goodgame.ru/user/" + authorId),
-                                {},
+                                leftBadges,
                                 {},
                                 {},
                                 nicknameColor);
