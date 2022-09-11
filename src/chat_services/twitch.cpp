@@ -622,7 +622,6 @@ void Twitch::onIRCMessage(const QString &rawData)
                                                 QDateTime::currentDateTime(),
                                                 QDateTime::currentDateTime(),
                                                 QString(),
-                                                {},
                                                 messageFlags);
         messages.append(message);
         authors.append(author);

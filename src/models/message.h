@@ -175,7 +175,6 @@ public:
                 const QDateTime& publishedAt = QDateTime::currentDateTime(),
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
                 const QString& messageId = QString(),
-                const QMap<QUrl, QList<int>>& images = {},
                 const std::set<Flag>& flags = {},
                 const QHash<ForcedColorRole, QColor>& forcedColors = {});
 
@@ -254,7 +253,6 @@ private:
     QString authorId;
     std::set<Flag> flags;
     QHash<ForcedColorRole, QColor> forcedColors;
-    QMap<QUrl, QList<int>> images; // <image url, [image poses]>
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
 

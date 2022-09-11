@@ -460,7 +460,6 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         QString authorChannelId;
         QStringList rightBadges;
         QUrl authorAvatarUrl;
-        QMap<QUrl, QList<int>> images;
         std::set<Message::Flag> messageFlags;
         std::set<Author::Flag> authorFlags;
 
@@ -735,7 +734,6 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                                             QDateTime::currentDateTime(),
                                             QDateTime::currentDateTime(),
                                             messageId,
-                                            {},
                                             {Message::Flag::DeleterItem}));
 
                 authors.append(Author());
@@ -757,7 +755,6 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                             publishedAt,
                             receivedAt,
                             messageId,
-                            images,
                             messageFlags,
                             forcedColors);
 
