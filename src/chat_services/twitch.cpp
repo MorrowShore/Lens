@@ -22,7 +22,7 @@ static const QString TwitchIRCHost = "tmi.twitch.tv";
 
 static const QString FolderLogs = "logs_twitch";
 
-static const int ReconncectPeriod = 2 * 1000;
+static const int ReconncectPeriod = 3 * 1000;
 static const int PingPeriod = 60 * 1000;
 static const int PongTimeout = 5 * 1000;
 static const int UpdateStreamInfoPeriod = 10 * 1000;
@@ -116,8 +116,8 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         state.viewersCount = -1;
     });
 
-    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [](QAbstractSocket::SocketError error_){
-        qDebug() << "Twitch: WebSocket error:" << error_;
+    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
+        qDebug() << "Twitch: WebSocket error:" << error_ << ":" << _socket.errorString();
     });
 
     reconnect();
