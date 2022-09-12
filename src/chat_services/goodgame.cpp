@@ -56,8 +56,9 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
 {
     getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
 
-    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState)
+    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
+        Q_UNUSED(state)
         //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
     });
 
@@ -83,14 +84,16 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
             emit stateChanged();
             emit connectedChanged(false, _lastConnectedChannelName);
         }
+
+        QTimer::singleShot(3000, this, &GoodGame::reconnect);
     });
 
-    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [](QAbstractSocket::SocketError error_)
+    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_;
+        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << _socket.errorString();
     });
 
-    reconnect();
+    QTimer::singleShot(3000, this, &GoodGame::reconnect);
 
     timerUpdateMessages.setInterval(RequestChatInterval);
     connect(&timerUpdateMessages, &QTimer::timeout, this, [this]()
@@ -392,11 +395,6 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QString rawText = jsonMessage.value("text").toString();
             const QString colorType = jsonMessage.value("color").toString();
             const QString iconType = jsonMessage.value("icon").toString();
-
-            if (authorName == "uBot")
-            {
-                qDebug() << jsonMessage;
-            }
 
             QColor nicknameColor;
 
