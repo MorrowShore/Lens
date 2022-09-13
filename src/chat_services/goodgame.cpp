@@ -16,7 +16,6 @@ static const int RequestChannelStatus = 10000;
 
 static const QMap<QString, QColor> ColorTypes =
 {
-    {"",                    QColor(115, 173, 255)},
     {"gold",                QColor(238, 252, 8)},
     {"silver",              QColor(180, 180, 180)},
     {"bronze",              QColor(231, 130, 10)},
@@ -27,10 +26,10 @@ static const QMap<QString, QColor> ColorTypes =
     {"moderator",           QColor(236, 64,  88)},
     {"streamer",            QColor(232, 187, 0)},
     {"undead",              QColor(171, 72,  115)},
-    //top-one
+    {"top-one",             QColor(59, 203,  255)},
 };
 
-static const QMap<QString, QString> Icons8Types =
+static const QMap<QString, QString> IconsTypes =
 {
     {"",                        QString()},
     {"none",                    QString()},
@@ -44,6 +43,8 @@ static const QMap<QString, QString> Icons8Types =
     {"coin",                    "money"},
     {"cup",                     "cup"},
     {"undead",                  "skull"},
+    {"smartphone",              "smartphone"},
+    {"apple",                   "apple"},
     //ggplus
 };
 
@@ -200,6 +201,7 @@ void GoodGame::requestChannelStatus()
         uint64_t id = 0;
         bool found = false;
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
+        qDebug() << root;
         const QStringList idsKeys = root.keys();
         for (const QString& channelObjKey : idsKeys)
         {
@@ -394,11 +396,17 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QDateTime publishedAt = QDateTime::fromSecsSinceEpoch(jsonMessage.value("timestamp").toVariant().toLongLong());
             const QString rawText = jsonMessage.value("text").toString();
             const QString colorType = jsonMessage.value("color").toString();
-            const QString iconType = jsonMessage.value("icon").toString();
+            QString iconType = jsonMessage.value("icon").toString();
+            const int mobile = jsonMessage.value("mobile").toInt();
+            const int ggPlusTier = jsonMessage.value("gg_plus_tier").toInt();
+            const int isStatus = jsonMessage.value("isStatus").toInt();
+            const QString role = jsonMessage.value("role").toString();
+            const QString staff = jsonMessage.value("staff").toString();
+            const int userRights = jsonMessage.value("user_rights").toInt();
 
             QColor nicknameColor;
 
-            if (colorType == "simple")
+            if (colorType == "" || colorType == "simple")
             {
                 // TODO: may be different: QColor(255, 255, 255), QColor(115, 173, 255)
                 nicknameColor = QColor();
@@ -414,9 +422,26 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
             QStringList leftBadges;
 
-            if (Icons8Types.contains(iconType))
+            if (iconType.isEmpty())
             {
-                const QString icon = Icons8Types.value(iconType);
+                if (mobile == 2)
+                {
+                    iconType = "apple";
+                }
+                else if (mobile == 4)
+                {
+                    // TODO: android
+                    iconType = "smartphone";
+                }
+                else if (mobile != 0)
+                {
+                    iconType = "smartphone";
+                }
+            }
+
+            if (IconsTypes.contains(iconType))
+            {
+                const QString icon = IconsTypes.value(iconType);
                 if (!icon.isEmpty())
                 {
                     QString url = "https://img.icons8.com/";
