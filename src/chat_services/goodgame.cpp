@@ -190,59 +190,20 @@ void GoodGame::requestChannelHistory()
 
 void GoodGame::requestChannelStatus()
 {
-    const QString channelName = state.streamId;
+    const QString channelName = state.streamId.trimmed().toLower();
 
-    QNetworkRequest request(QUrl("https://goodgame.ru/api/getchannelstatus?fmt=json&id=" + channelName));
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-
+    QNetworkRequest request(QUrl("https://goodgame.ru/api/4/stream/" + channelName));
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply, channelName]()
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        uint64_t id = 0;
-        bool found = false;
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
-        qDebug() << root;
-        const QStringList idsKeys = root.keys();
-        for (const QString& channelObjKey : idsKeys)
-        {
-            id = channelObjKey.toULongLong(&found);
-            if (found)
-            {
-                const QJsonObject channel = root.value(channelObjKey).toObject();
-                if (channel.value("key").toString().trimmed().toLower() == channelName.trimmed().toLower())
-                {
-                    const QString viewers = channel.value("viewers").toString();
-                    bool ok = false;
-                    int viewersCount = viewers.toInt(&ok);
-                    if (!ok)
-                    {
-                        viewersCount = -1;
-                    }
+        state.viewersCount = root.value("viewers").toInt(-1);
 
-                    state.viewersCount = viewersCount;
-                    break;
-                }
-                else
-                {
-                    found = false;
-                }
-            }
-        }
+        channelId = root.value("id").toInt(-1);
+        state.chatUrl = QString("https://goodgame.ru/chat/%1").arg(channelId);
 
-        if (found)
-        {
-            channelId = id;
-
-            state.chatUrl = QString("https://goodgame.ru/chat/%1").arg(channelId);
-
-            emit stateChanged();
-
-            requestChannelHistory();
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << ": channel id not found";
-        }
+        emit stateChanged();
+        requestChannelHistory();
     });
 }
 
