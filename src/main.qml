@@ -553,8 +553,7 @@ ApplicationWindow {
                 //cache: false // TODO: need check
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
-                         !messageIsServiceMessage &&
-                         messageCustomAuthorAvatarUrl.toString() === "";
+                         source !== chatHandler.getServiceIconUrl(authorServiceType);
 
                 width: Global.windowChatMessageAvatarSize
                 height: Global.windowChatMessageAvatarSize

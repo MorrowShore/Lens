@@ -11,7 +11,7 @@ Message::Message(const QList<Message::Content*>& contents_,
                          const QDateTime &receivedAt_,
                          const QString &messageId_,
                          const std::set<Flag> &flags_,
-                         const QHash<ForcedColorRole, QColor> &forcedColors_)
+                         const QHash<ColorRole, QColor> &forcedColors_)
     : contents(contents_)
     , messageId(messageId_)
     , publishedAt(publishedAt_)
@@ -95,7 +95,7 @@ void Message::printMessageInfo(const QString &prefix, const int &row) const
     qDebug(resultString.toUtf8());
 }
 
-QString Message::getForcedColorRoleToQMLString(const ForcedColorRole &role) const
+QString Message::getForcedColorRoleToQMLString(const ColorRole &role) const
 {
     if (forcedColors.contains(role) && forcedColors[role].isValid())
     {
@@ -165,10 +165,24 @@ void Message::updateHtml()
 
         case Content::Type::Text:
         {
-            const Text* text = static_cast<const Text*>(content);
-            if (text)
+            const Text* textContent = static_cast<const Text*>(content);
+            if (textContent)
             {
-                html += text->getText();
+                const Text::Style& style = textContent->getStyle();
+
+                QString text = textContent->getText();
+
+                if (style.bold)
+                {
+                    text = "<b>" + text + "</b>";
+                }
+
+                if (style.italic)
+                {
+                    text = "<i>" + text + "</i>";
+                }
+
+                html += text;
             }
         }
             break;

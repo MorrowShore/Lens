@@ -27,16 +27,6 @@ static const int PingPeriod = 60 * 1000;
 static const int PongTimeout = 5 * 1000;
 static const int UpdateStreamInfoPeriod = 10 * 1000;
 
-static bool needIgnoreMessage(const QString& text)
-{
-    if (text.isEmpty())
-    {
-        return true;
-    }
-
-    return false;
-}
-
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
     resultData.clear();
@@ -93,10 +83,10 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
         state.viewersCount = -1;
 
-        sendIRCMessage("CAP REQ :twitch.tv/tags");
-        //sendIRCMessage("CAP REQ :twitch.tv/commands");
-        sendIRCMessage(QString("PASS oauth:") + oauthToken.get());
-        sendIRCMessage(QString("NICK ") + state.streamId);
+        sendIRCMessage("CAP REQ :twitch.tv/tags twitch.tv/commands");
+        sendIRCMessage("PASS SCHMOOPIIE");
+        sendIRCMessage("NICK justinfan12348");
+        sendIRCMessage("USER justinfan12348 8 * :justinfan12348");
         sendIRCMessage(QString("JOIN #") + state.streamId);
         sendIRCMessage(QString("PING :") + TwitchIRCHost);
 
@@ -296,7 +286,7 @@ void Twitch::reconnect()
         state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(state.streamId));
 
         _socket.setProxy(network.proxy());
-        _socket.open(QUrl("ws://irc-ws.chat.twitch.tv:80")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
+        _socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
     }
 
     emit stateChanged();
@@ -323,7 +313,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             continue;
         }
 
-        //qDebug() << "Twitch: received:" << rawMessage.toUtf8() << "\n";
+        qDebug() << "Twitch: received:" << rawMessage.toUtf8() << "\n";
 
         if (rawMessage.startsWith("PING", Qt::CaseSensitivity::CaseInsensitive))
         {
@@ -352,14 +342,27 @@ void Twitch::onIRCMessage(const QString &rawData)
             continue;
         }
 
-        static const QString Snippet1 = ".tmi.twitch.tv PRIVMSG #";
-        const int posSnippet1 = rawMessage.indexOf(Snippet1);
-        if (posSnippet1 == -1)
+        QString messageType;
+        static const QRegExp rxMessageType(".tmi.twitch.tv\\s+([a-zA-Z0-9]+)\\s+#");
+        const int posSnippet1 = rxMessageType.indexIn(rawMessage);
+        if (posSnippet1 != -1)
+        {
+            messageType = rxMessageType.cap(1).trimmed().toUpper();
+        }
+        else
         {
             continue;
         }
 
-        const QString snippet2 = rawMessage.mid(posSnippet1 + Snippet1.length()); // [owner-channel-id] :[message-text]
+        static const QSet<QString> MessagesTypes = { "PRIVMSG", "NOTICE", "USERNOTICE" };
+        if (!MessagesTypes.contains(messageType))
+        {
+            continue;
+        }
+
+        const QString snippet1 = rxMessageType.cap(0);
+        const QString snippet2 = rawMessage.mid(posSnippet1 + snippet1.length()); // [owner-channel-id] :[message-text]
+
         QString rawMessageText = snippet2.mid(snippet2.indexOf(':') + 1);
 
         if (rawMessageText.startsWith(QString("\u0001ACTION")) && rawMessageText.endsWith("\u0001"))
@@ -370,20 +373,16 @@ void Twitch::onIRCMessage(const QString &rawData)
             messageFlags.insert(Message::Flag::TwitchAction);
         }
 
-        if (needIgnoreMessage(rawMessageText))
-        {
-            //qDebug(QString("Twitch: ignore message \"%1\"").arg(messageText).toUtf8());
-            continue;
-        }
-
         const QString snippet3 = rawMessage.left(posSnippet1); // [@tags] :[channel-id]![channel-id]@[channel-id]
 
         const QString channelLogin = snippet3.mid(snippet3.lastIndexOf("@") + 1);
 
+        QList<Message::Content*> contents;
         QString displayName;
         QColor nicknameColor;
         QMap<QString, QString> badges;
         QVector<MessageEmoteInfo> emotesInfo;
+        QHash<Message::ColorRole, QColor> forcedColors;
 
         const QString tagsSnippet = snippet3.left(snippet3.lastIndexOf(":")).mid(1).trimmed();
         const QVector<QStringRef> rawTags = tagsSnippet.splitRef(";", Qt::SplitBehaviorFlags::SkipEmptyParts);
@@ -393,28 +392,12 @@ void Twitch::onIRCMessage(const QString &rawData)
 
             if (!tag.contains("="))
             {
+                qWarning() << Q_FUNC_INFO << ": tag" << tag << "not contains '=', raw message:" << rawMessage;
                 continue;
             }
 
-            const QVector<QStringRef> tagArray = tag.split("=", Qt::SplitBehaviorFlags::SkipEmptyParts);
-            if (tagArray.count() > 2)
-            {
-                qWarning() << Q_FUNC_INFO << "tag" << tag << "contains more than 1 equals";
-            }
-
-            if (tagArray.isEmpty())
-            {
-                continue;
-            }
-
-            const QStringRef tagName = tagArray.first().trimmed();
-            QString tagValue;
-            if (tagArray.count() >= 2)
-            {
-                tagValue = tagArray[1].trimmed().toString();
-
-                //qDebug() << "Twitch:" << tagName << "=" << tagValue;
-            }
+            const QStringRef tagName = tag.left(tag.indexOf('='));
+            const QString tagValue = tag.mid(tag.indexOf('=') + 1).toString();
 
             if (tagName == "color")
             {
@@ -423,6 +406,23 @@ void Twitch::onIRCMessage(const QString &rawData)
             else if (tagName == "display-name")
             {
                 displayName = tagValue;
+            }
+            else if (tagName == "msg-id")
+            {
+                if (!tagValue.trimmed().isEmpty())
+                {
+                    forcedColors.insert(Message::ColorRole::BodyBackground, QColor(117, 94, 188));
+                }
+            }
+            else if (tagName == "system-msg")
+            {
+                Message::Text::Style style;
+                style.bold = true;
+
+                QString text = tagValue;
+                text = text.replace("\\s", " ");
+                text += "<br>";
+                contents.append(new Message::Text(tagValue, style));
             }
             else if (tagName == "emotes")
             {
@@ -486,18 +486,6 @@ void Twitch::onIRCMessage(const QString &rawData)
                     }
                 }
             }
-            else if (tagName == "id") // id of message
-            {
-                //
-            }
-            else if (tagName == "user-id")
-            {
-                //ToDo
-            }
-            else if (tagName == "badge-info")
-            {
-                //ToDo
-            }
             else if (tagName == "badges")
             {
                 const QVector<QStringRef> badgesInfo = tagValue.splitRef(',', Qt::SplitBehaviorFlags::SkipEmptyParts);
@@ -514,18 +502,6 @@ void Twitch::onIRCMessage(const QString &rawData)
                         badges.insert(badgeInfoStr, "qrc:/resources/images/unknown-badge.png");
                     }
                 }
-            }
-            else if (tagName == "mod")
-            {
-                //ToDo
-            }
-            else if (tagName == "turbo")
-            {
-                //ToDo
-            }
-            else if (tagName == "subscriber")
-            {
-
             }
         }
 
@@ -560,8 +536,6 @@ void Twitch::onIRCMessage(const QString &rawData)
                                 {},
                                 authorFlags,
                                 nicknameColor);
-
-        QList<Message::Content*> contents;
 
         if (emotesInfo.isEmpty())
         {
@@ -618,11 +592,12 @@ void Twitch::onIRCMessage(const QString &rawData)
         }
 
         const Message message = Message(contents,
-                                                author,
-                                                QDateTime::currentDateTime(),
-                                                QDateTime::currentDateTime(),
-                                                QString(),
-                                                messageFlags);
+                                        author,
+                                        QDateTime::currentDateTime(),
+                                        QDateTime::currentDateTime(),
+                                        QString(),
+                                        messageFlags,
+                                        forcedColors);
         messages.append(message);
         authors.append(author);
 

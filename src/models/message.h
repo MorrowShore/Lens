@@ -56,8 +56,8 @@ public:
     };
     Q_ENUM(Flag)
 
-    enum ForcedColorRole {
-        BodyBackgroundForcedColorRole
+    enum ColorRole {
+        BodyBackground
     };
 
     class Content
@@ -87,9 +87,11 @@ public:
         {
             Style()
                 : bold(false)
+                , italic(false)
             {}
 
             bool bold;
+            bool italic;
         };
 
         Text(const QString& text_, const Style& style_ = Style())
@@ -176,7 +178,7 @@ public:
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
                 const QString& messageId = QString(),
                 const std::set<Flag>& flags = {},
-                const QHash<ForcedColorRole, QColor>& forcedColors = {});
+                const QHash<ColorRole, QColor>& forcedColors = {});
 
     inline const QString& getId() const
     {
@@ -232,7 +234,7 @@ public:
 
     void printMessageInfo(const QString& prefix, const int& row = -1) const;
 
-    QString getForcedColorRoleToQMLString(const ForcedColorRole& role) const;
+    QString getForcedColorRoleToQMLString(const ColorRole& role) const;
 
     const QList<Content*>& getContents() const
     {
@@ -252,7 +254,7 @@ private:
     QDateTime receivedAt;
     QString authorId;
     std::set<Flag> flags;
-    QHash<ForcedColorRole, QColor> forcedColors;
+    QHash<ColorRole, QColor> forcedColors;
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
 

@@ -464,7 +464,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         std::set<Message::Flag> messageFlags;
         std::set<Author::Flag> authorFlags;
 
-        QHash<Message::ForcedColorRole, QColor> forcedColors;
+        QHash<Message::ColorRole, QColor> forcedColors;
 
         const QJsonObject& actionObject = actionJson.toObject();
 
@@ -665,19 +665,19 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             if (itemRenderer.contains("bodyBackgroundColor"))
             {
                 // usually for liveChatPaidMessageRenderer
-                forcedColors.insert(Message::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ColorRole::BodyBackground, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("backgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(Message::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("backgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ColorRole::BodyBackground, itemRenderer.value("backgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("headerBackgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(Message::ForcedColorRole::BodyBackgroundForcedColorRole, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ColorRole::BodyBackground, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
             }
         }
         else if (actionObject.contains("markChatItemAsDeletedAction"))

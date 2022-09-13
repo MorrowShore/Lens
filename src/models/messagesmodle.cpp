@@ -399,7 +399,7 @@ QVariant MessagesModel::dataByRole(const Message &message, int role) const
         return message.isHasFlag(Message::Flag::TwitchAction);
 
     case Message::Role::BodyBackgroundForcedColor:
-        return message.getForcedColorRoleToQMLString(Message::ForcedColorRole::BodyBackgroundForcedColorRole);
+        return message.getForcedColorRoleToQMLString(Message::ColorRole::BodyBackground);
     }
 
     const Author* author = getAuthor(message.getAuthorId());

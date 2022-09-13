@@ -318,7 +318,6 @@ void GoodGame::reconnect()
     state.chatUrl = "https://goodgame.ru/chat/" + state.streamId;
 
     _socket.setProxy(network.proxy());
-    //_socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
     _socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
 
     emit stateChanged();
