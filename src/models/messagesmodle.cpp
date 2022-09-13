@@ -38,11 +38,6 @@ const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>
     {(int)Author::Role::AvatarUrl ,                         "authorAvatarUrl"},
     {(int)Author::Role::LeftBadgesUrls ,                    "authorLeftBadgesUrls"},
     {(int)Author::Role::RightBadgesUrls,                    "authorRightBadgesUrls"},
-
-    {(int)Author::Role::IsVerified ,            "authorIsVerified"},
-    {(int)Author::Role::IsChatOwner ,           "authorIsChatOwner"},
-    {(int)Author::Role::Sponsor ,               "authorIsSponsor"},
-    {(int)Author::Role::Moderator ,             "authorIsModerator"}
 };
 
 
