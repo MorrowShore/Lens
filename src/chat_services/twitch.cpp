@@ -397,7 +397,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
 
             const QStringRef tagName = tag.left(tag.indexOf('='));
-            const QString tagValue = tag.mid(tag.indexOf('=') + 1).toString();
+            const QString tagValue = tag.mid(tag.indexOf('=') + 1).toString().replace("\\s", " ");
 
             if (tagName == "color")
             {
@@ -419,10 +419,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                 Message::Text::Style style;
                 style.bold = true;
 
-                QString text = tagValue;
-                text = text.replace("\\s", " ");
-                text += "<br>";
-                contents.append(new Message::Text(tagValue, style));
+                contents.append(new Message::Text(tagValue + "\n", style));
             }
             else if (tagName == "emotes")
             {

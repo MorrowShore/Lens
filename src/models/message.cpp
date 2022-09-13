@@ -182,6 +182,8 @@ void Message::updateHtml()
                     text = "<i>" + text + "</i>";
                 }
 
+                text = text.replace('\n', "<br>");
+
                 html += text;
             }
         }
