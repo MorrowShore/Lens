@@ -34,14 +34,15 @@ private slots:
 private:
     static QString getStreamId(const QString& stream);
 
-    QWebSocket _socket;
+    QWebSocket socket;
 
     QSettings& settings;
     QNetworkAccessManager& network;
 
     int64_t channelId = -1;
-    QString _lastConnectedChannelName;
+    QString lastConnectedChannelName;
 
+    QTimer timerReconnect;
     QTimer timerUpdateMessages;
     QTimer timerUpdateChannelStatus;
 

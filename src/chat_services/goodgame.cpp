@@ -13,6 +13,7 @@ namespace
 
 static const int RequestChatInterval = 2000;
 static const int RequestChannelStatus = 10000;
+static const int ReconncectPeriod = 3 * 1000;
 
 static const QMap<QString, QColor> ColorTypes =
 {
@@ -57,44 +58,40 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
 {
     getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
 
-    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
         //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
     });
 
-    QObject::connect(&_socket, &QWebSocket::textMessageReceived, this, &GoodGame::onWebSocketReceived);
+    QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &GoodGame::onWebSocketReceived);
 
-    QObject::connect(&_socket, &QWebSocket::connected, this, [this]()
+    QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false, _lastConnectedChannelName);
+            emit connectedChanged(false, lastConnectedChannelName);
         }
 
         requestChannelStatus();
         emit stateChanged();
     });
 
-    QObject::connect(&_socket, &QWebSocket::disconnected, this, [this]()
+    QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         if (state.connected)
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false, _lastConnectedChannelName);
+            emit connectedChanged(false, lastConnectedChannelName);
         }
-
-        QTimer::singleShot(3000, this, &GoodGame::reconnect);
     });
 
-    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
+    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << _socket.errorString();
+        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
     });
-
-    QTimer::singleShot(3000, this, &GoodGame::reconnect);
 
     timerUpdateMessages.setInterval(RequestChatInterval);
     connect(&timerUpdateMessages, &QTimer::timeout, this, [this]()
@@ -119,6 +116,17 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
         requestChannelStatus();
     });
     timerUpdateChannelStatus.start();
+
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState)
+        {
+            reconnect();
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);
+
+    reconnect();
 }
 
 ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
@@ -266,8 +274,6 @@ void GoodGame::requestSmiles()
 
             smiles.insert(smileName, smileUrl);
         }
-
-        reconnect();
     });
 }
 
@@ -302,7 +308,7 @@ void GoodGame::reconnect()
         return;
     }
 
-    _socket.close();
+    socket.close();
 
     state = State();
 
@@ -317,8 +323,8 @@ void GoodGame::reconnect()
     state.streamUrl = "https://goodgame.ru/channel/" + state.streamId;
     state.chatUrl = "https://goodgame.ru/chat/" + state.streamId;
 
-    _socket.setProxy(network.proxy());
-    _socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
+    socket.setProxy(network.proxy());
+    socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
 
     emit stateChanged();
 }
@@ -338,7 +344,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
         if (!state.connected)
         {
             state.connected = true;
-            _lastConnectedChannelName = state.streamId;
+            lastConnectedChannelName = state.streamId;
             emit connectedChanged(true, state.streamId);
             emit stateChanged();
         }
@@ -359,11 +365,6 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QString colorType = jsonMessage.value("color").toString();
             QString iconType = jsonMessage.value("icon").toString();
             const int mobile = jsonMessage.value("mobile").toInt();
-            const int ggPlusTier = jsonMessage.value("gg_plus_tier").toInt();
-            const int isStatus = jsonMessage.value("isStatus").toInt();
-            const QString role = jsonMessage.value("role").toString();
-            const QString staff = jsonMessage.value("staff").toString();
-            const int userRights = jsonMessage.value("user_rights").toInt();
 
             QColor nicknameColor;
 
@@ -550,5 +551,5 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
 void GoodGame::sendToWebSocket(const QJsonDocument &data)
 {
-    _socket.sendTextMessage(QString::fromUtf8(data.toJson()));
+    socket.sendTextMessage(QString::fromUtf8(data.toJson()));
 }
