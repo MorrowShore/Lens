@@ -200,7 +200,6 @@ void GoodGame::requestChannelStatus()
         state.viewersCount = root.value("viewers").toInt(-1);
 
         channelId = root.value("id").toInt(-1);
-        state.chatUrl = QString("https://goodgame.ru/chat/%1").arg(channelId);
 
         emit stateChanged();
         requestChannelHistory();
@@ -316,9 +315,11 @@ void GoodGame::reconnect()
     }
 
     state.streamUrl = "https://goodgame.ru/channel/" + state.streamId;
+    state.chatUrl = "https://goodgame.ru/chat/" + state.streamId;
 
     _socket.setProxy(network.proxy());
-    _socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
+    //_socket.open(QUrl("wss://chat.goodgame.ru/chat/websocket"));
+    _socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
 
     emit stateChanged();
 }
@@ -523,7 +524,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     else if (type == "welcome")
     {
         const double protocolVersion = data.value("protocolVersion").toDouble();
-        if (protocolVersion != 1.1)
+        if (protocolVersion != 2)
         {
             qWarning() << Q_FUNC_INFO << ": unsupported protocol version" << protocolVersion;
         }
