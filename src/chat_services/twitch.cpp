@@ -313,7 +313,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             continue;
         }
 
-        qDebug() << "Twitch: received:" << rawMessage.toUtf8() << "\n";
+        //qDebug() << "Twitch: received:" << rawMessage.toUtf8() << "\n";
 
         if (rawMessage.startsWith("PING", Qt::CaseSensitivity::CaseInsensitive))
         {

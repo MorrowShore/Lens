@@ -17,6 +17,8 @@ public:
         Name,
         HasCustomNicknameColor,
         CustomNicknameColor,
+        HasCustomNicknameBackgroundColor,
+        CustomNicknameBackgroundColor,
         AvatarUrl,
         LeftBadgesUrls,
         RightBadgesUrls,
@@ -38,14 +40,15 @@ public:
 
     Author() { };
     Author(AxelChat::ServiceType serviceType,
-               const QString& name,
-               const QString& authorId,
-               const QUrl& avatarUrl = QUrl(),
-               const QUrl& pageUrl = QUrl(),
-               const QStringList& leftBadgesUrls = {},
-               const QStringList& rightBadgesUrls = {},
-               const std::set<Flag>& flags = {},
-               const QColor& customNicknameColor = QColor());
+           const QString& name,
+           const QString& authorId,
+           const QUrl& avatarUrl = QUrl(),
+           const QUrl& pageUrl = QUrl(),
+           const QStringList& leftBadgesUrls = {},
+           const QStringList& rightBadgesUrls = {},
+           const std::set<Flag>& flags = {},
+           const QColor& customNicknameColor = QColor(),
+           const QColor& customNicknameBackgroundColor = QColor());
 
     static const Author& getSoftwareAuthor();
 
@@ -75,6 +78,7 @@ public:
         Role::PageUrl,
         Role::Name,
         Role::CustomNicknameColor,
+        Role::CustomNicknameBackgroundColor,
         Role::AvatarUrl,
         Role::LeftBadgesUrls,
         Role::RightBadgesUrls,
@@ -90,6 +94,7 @@ private:
     QStringList rightBadgesUrls;
     std::set<Flag> flags;
     QColor customNicknameColor;
+    QColor customNicknameBackgroundColor;
     std::set<uint64_t> messagesIds;
 };
 

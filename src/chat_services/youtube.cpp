@@ -460,6 +460,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         QString authorChannelId;
         QStringList rightBadges;
         QColor authorNicknameColor;
+        QColor authorNicknameBackgroundColor;
         QUrl authorAvatarUrl;
         std::set<Message::Flag> messageFlags;
         std::set<Author::Flag> authorFlags;
@@ -599,7 +600,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         {
                             authorFlags.insert(Author::Flag::ChatOwner);
                             authorNicknameColor = QColor(255, 217, 15);
-                            rightBadges.append("qrc:/resources/images/king.svg");
+                            authorNicknameBackgroundColor = QColor(255, 214, 0);
                             foundIconType = true;
                         }
 
@@ -753,7 +754,8 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                                     {},
                                     rightBadges,
                                     authorFlags,
-                                    authorNicknameColor);
+                                    authorNicknameColor,
+                                    authorNicknameBackgroundColor);
 
                 const Message message(
                             contents,

@@ -457,6 +457,17 @@ ApplicationWindow {
 
             radius: Global.windowChatMessageFrameCornerRadius
 
+            Rectangle {
+                id: authorBackground
+                x: authorRow.x - 6
+                y: authorRow.y - 1
+                width: authorNameText.width + 12
+                height: authorNameText.height + 2
+                radius: 2
+                visible: authorHasCustomNicknameBackgroundColor
+                color: authorCustomNicknameBackgroundColor
+            }
+
             Row {
                 id: authorRow
                 y: 3
@@ -464,7 +475,7 @@ ApplicationWindow {
                 anchors.right: labelTime.visible ? labelTime.left : messageContent.right
                 anchors.topMargin: 6
                 anchors.bottomMargin: 6
-                anchors.leftMargin: 4
+                anchors.leftMargin: 4 + authorBackground.visible * 6
                 anchors.rightMargin: 4
                 spacing: 4
 

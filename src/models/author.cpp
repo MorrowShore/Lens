@@ -4,14 +4,15 @@
 #include <QDebug>
 
 Author::Author(AxelChat::ServiceType serviceType_,
-                       const QString &name_,
-                       const QString &authorId_,
-                       const QUrl &avatarUrl_,
-                       const QUrl &pageUrl_,
-                       const QStringList &leftBadgesUrls_,
-                       const QStringList &rightBadgesUrls_,
-                       const std::set<Flag> &flags_,
-                       const QColor &customNicknameColor_)
+               const QString &name_,
+               const QString &authorId_,
+               const QUrl &avatarUrl_,
+               const QUrl &pageUrl_,
+               const QStringList &leftBadgesUrls_,
+               const QStringList &rightBadgesUrls_,
+               const std::set<Flag> &flags_,
+               const QColor &customNicknameColor_,
+               const QColor &customNicknameBackgroundColor_)
     : serviceType(serviceType_)
     , name(name_)
     , authorId(authorId_)
@@ -21,6 +22,7 @@ Author::Author(AxelChat::ServiceType serviceType_,
     , rightBadgesUrls(rightBadgesUrls_)
     , flags(flags_)
     , customNicknameColor(customNicknameColor_)
+    , customNicknameBackgroundColor(customNicknameBackgroundColor_)
 {
 }
 
@@ -79,6 +81,18 @@ bool Author::setValue(const Role role, const QVariant &value)
         if (type == QVariant::Type::Color)
         {
             customNicknameColor = value.value<QColor>();
+            return true;
+        }
+        else
+        {
+            validType = false;
+        }
+        break;
+
+    case Author::Role::CustomNicknameBackgroundColor:
+        if (type == QVariant::Type::Color)
+        {
+            customNicknameBackgroundColor = value.value<QColor>();
             return true;
         }
         else
@@ -153,6 +167,8 @@ QVariant Author::getValue(const Role role) const
     case Author::Role::Name: return name;
     case Author::Role::HasCustomNicknameColor: return customNicknameColor.isValid();
     case Author::Role::CustomNicknameColor: return customNicknameColor;
+    case Author::Role::HasCustomNicknameBackgroundColor: return customNicknameBackgroundColor.isValid();
+    case Author::Role::CustomNicknameBackgroundColor: return customNicknameBackgroundColor;
     case Author::Role::AvatarUrl: return avatarUrl;
     case Author::Role::LeftBadgesUrls: return leftBadgesUrls;
     case Author::Role::RightBadgesUrls: return rightBadgesUrls;
