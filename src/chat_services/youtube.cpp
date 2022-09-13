@@ -48,11 +48,11 @@ YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetwor
 {
     getParameter(stream)->setPlaceholder(tr("Link or broadcast ID..."));
 
-    QObject::connect(&_timerRequestChat, &QTimer::timeout, this, &YouTube::onTimeoutRequestChat);
-    _timerRequestChat.start(RequestChatInterval);
+    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTube::onTimeoutRequestChat);
+    timerRequestChat.start(RequestChatInterval);
 
-    QObject::connect(&_timerRequestStreamPage,&QTimer::timeout, this, &YouTube::onTimeoutRequestStreamPage);
-    _timerRequestStreamPage.start(RequestStreamInterval);
+    QObject::connect(&timerRequestStreamPage,&QTimer::timeout, this, &YouTube::onTimeoutRequestStreamPage);
+    timerRequestStreamPage.start(RequestStreamInterval);
 
     reconnect();
 }
@@ -226,8 +226,8 @@ void YouTube::reconnect()
 
     state = State();
 
-    _badChatReplies = 0;
-    _badLivePageReplies = 0;
+    badChatReplies = 0;
+    badLivePageReplies = 0;
 
     state.connected = false;
 
@@ -367,7 +367,7 @@ void YouTube::onReplyChatPage()
         const QJsonArray actionsArray = jsonDocument.array();
         //qDebug() << "array size = " << actionsArray.size();
         parseActionsArray(actionsArray, data);
-        _badChatReplies = 0;
+        badChatReplies = 0;
     }
     else
     {
@@ -422,7 +422,7 @@ void YouTube::onReplyStreamPage()
 
     if (parseViews(rawData))
     {
-        _badLivePageReplies = 0;
+        badLivePageReplies = 0;
     }
     else
     {
@@ -635,7 +635,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
                         if (!thumbnails.isEmpty())
                         {
-                            rightBadges.append(createResizedAvatarUrl(QUrl(thumbnails.first().toObject().value("url").toString()), _badgePixelSize).toString());
+                            rightBadges.append(createResizedAvatarUrl(QUrl(thumbnails.first().toObject().value("url").toString()), badgePixelSize).toString());
                         }
                     }
                     else
@@ -651,14 +651,14 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
             if (!stickerThumbnails.isEmpty())
             {
-                const QString stickerUrl = createResizedAvatarUrl(stickerThumbnails.first().toObject().value("url").toString(), _stickerSize).toString();
+                const QString stickerUrl = createResizedAvatarUrl(stickerThumbnails.first().toObject().value("url").toString(), stickerSize).toString();
 
                 if (!contents.isEmpty() && contents.last()->getContentType() == Message::Content::Type::Text)
                 {
                     contents.append(new Message::Text("\n"));
                 }
 
-                contents.append(new Message::Image(stickerUrl, _stickerSize));
+                contents.append(new Message::Image(stickerUrl, stickerSize));
             }
 
             //Other colors: headerBackgroundColor headerTextColor bodyBackgroundColor bodyTextColor authorNameTextColor timestampColor backgroundColor moneyChipBackgroundColor moneyChipTextColor
@@ -843,9 +843,9 @@ bool YouTube::parseViews(const QByteArray &rawData)
 
 void YouTube::processBadChatReply()
 {
-    _badChatReplies++;
+    badChatReplies++;
 
-    if (_badChatReplies >= MaxBadChatReplies)
+    if (badChatReplies >= MaxBadChatReplies)
     {
         if (state.connected && !state.streamId.isEmpty())
         {
@@ -866,9 +866,9 @@ void YouTube::processBadChatReply()
 
 void YouTube::processBadLivePageReply()
 {
-    _badLivePageReplies++;
+    badLivePageReplies++;
 
-    if (_badLivePageReplies >= MaxBadLivePageReplies)
+    if (badLivePageReplies >= MaxBadLivePageReplies)
     {
         qWarning() << Q_FUNC_INFO << "too many bad live page replies!";
         state.viewersCount = -1;
@@ -967,7 +967,7 @@ void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& co
                     const QString empjiUrl = thumbnails.first().toObject().value("url").toString();
                     if (!empjiUrl.isEmpty())
                     {
-                        contents.append(new Message::Image(empjiUrl, _emojiPixelSize));
+                        contents.append(new Message::Image(empjiUrl, emojiPixelSize));
                     }
                     else
                     {

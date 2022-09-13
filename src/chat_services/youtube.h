@@ -42,17 +42,17 @@ private:
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    QTimer _timerRequestChat;
-    QTimer _timerRequestStreamPage;
+    QTimer timerRequestChat;
+    QTimer timerRequestStreamPage;
 
-    int _badChatReplies = 0;
-    int _badLivePageReplies = 0;
+    int badChatReplies = 0;
+    int badLivePageReplies = 0;
 
     static void printData(const QString& tag, const QByteArray& data);
 
-    const int _emojiPixelSize = 24;
-    const int _stickerSize = 80;
-    const int _badgePixelSize = 64;
+    const int emojiPixelSize = 24;
+    const int stickerSize = 80;
+    const int badgePixelSize = 64;
 };
 
 #endif // YOUTUBEINTERCEPTOR_HPP

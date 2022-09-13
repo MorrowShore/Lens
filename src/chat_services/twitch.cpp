@@ -67,14 +67,14 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     parameters.append(Parameter(&oauthToken, tr("OAuth token"), Parameter::Type::String, { Parameter::Flag::PasswordEcho }));
     parameters.append(Parameter(new Setting<QString>(settings, QString(), requesGetAOuthTokenUrl().toString()), tr("Get token"), Parameter::Type::ButtonUrl, {}));
 
-    QObject::connect(&_socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
         //qDebug() << "Twitch: WebSocket state changed:" << state;
     });
 
-    QObject::connect(&_socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
+    QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
 
-    QObject::connect(&_socket, &QWebSocket::connected, this, [this]() {
+    QObject::connect(&socket, &QWebSocket::connected, this, [this]() {
         if (state.connected)
         {
             state.connected = false;
@@ -94,34 +94,34 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         requestStreamInfo(state.streamId);
     });
 
-    QObject::connect(&_socket, &QWebSocket::disconnected, this, [this]()
+    QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false, _lastConnectedChannelName);
+            emit connectedChanged(false, lastConnectedChannelName);
             emit stateChanged();
         }
 
         state.viewersCount = -1;
     });
 
-    QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
-        qDebug() << "Twitch: WebSocket error:" << error_ << ":" << _socket.errorString();
+    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
+        qDebug() << "Twitch: WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
-    QObject::connect(&_timerReconnect, &QTimer::timeout, this, [this]()
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
         if (!state.connected && !oauthToken.get().isEmpty())
         {
             reconnect();
         }
     });
-    _timerReconnect.start(ReconncectPeriod);
+    timerReconnect.start(ReconncectPeriod);
 
     reconnect();
 
-    QObject::connect(&_timerCheckPong, &QTimer::timeout, this, [this]{
+    QObject::connect(&timerCheckPong, &QTimer::timeout, this, [this]{
         if (state.connected)
         {
             qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
@@ -145,28 +145,28 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
             state.connected = false;
 
-            emit connectedChanged(false, _lastConnectedChannelName);
+            emit connectedChanged(false, lastConnectedChannelName);
             emit stateChanged();
             reconnect();
         }
     });
 
-    QObject::connect(&_timerPing, &QTimer::timeout, this, [this]{
+    QObject::connect(&timerPing, &QTimer::timeout, this, [this]{
         if (state.connected)
         {
             sendIRCMessage(QString("PING :") + TwitchIRCHost);
-            _timerCheckPong.start(PongTimeout);
+            timerCheckPong.start(PongTimeout);
         }
     });
-    _timerPing.start(PingPeriod);
+    timerPing.start(PingPeriod);
 
-    QObject::connect(&_timerUpdaetStreamInfo, &QTimer::timeout, this, [this]{
+    QObject::connect(&timerUpdaetStreamInfo, &QTimer::timeout, this, [this]{
         if (state.connected)
         {
             requestStreamInfo(state.streamId);
         }
     });
-    _timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
+    timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
     requestForGlobalBadges();
 }
@@ -243,12 +243,12 @@ void Twitch::onParameterChangedImpl(Parameter& parameter)
 void Twitch::sendIRCMessage(const QString &message)
 {
     //qDebug() << "Twitch: send:" << message.toUtf8() << "\n";
-    _socket.sendTextMessage(message);
+    socket.sendTextMessage(message);
 }
 
 void Twitch::reconnect()
 {
-    _socket.close();
+    socket.close();
 
     state = State();
 
@@ -284,8 +284,8 @@ void Twitch::reconnect()
         state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
         state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(state.streamId));
 
-        _socket.setProxy(network.proxy());
-        _socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
+        socket.setProxy(network.proxy());
+        socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
     }
 
     emit stateChanged();
@@ -293,9 +293,9 @@ void Twitch::reconnect()
 
 void Twitch::onIRCMessage(const QString &rawData)
 {
-    if (_timerCheckPong.isActive())
+    if (timerCheckPong.isActive())
     {
-        _timerCheckPong.stop();
+        timerCheckPong.stop();
     }
 
     QList<Message> messages;
@@ -322,7 +322,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         if (!state.connected && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
         {
             state.connected = true;
-            _lastConnectedChannelName = state.streamId;
+            lastConnectedChannelName = state.streamId;
             emit connectedChanged(true, state.streamId);
             emit stateChanged();
         }
@@ -491,9 +491,9 @@ void Twitch::onIRCMessage(const QString &rawData)
                 for (const QStringRef& badgeInfo : badgesInfo)
                 {
                     const QString badgeInfoStr = badgeInfo.toString();
-                    if (_badgesUrls.contains(badgeInfoStr))
+                    if (badgesUrls.contains(badgeInfoStr))
                     {
-                        badges.insert(badgeInfoStr, _badgesUrls[badgeInfoStr]);
+                        badges.insert(badgeInfoStr, badgesUrls[badgeInfoStr]);
                     }
                     else
                     {
@@ -678,7 +678,7 @@ void Twitch::parseBadgesJson(const QByteArray &data)
             const QString url = versionsObj.value(version).toObject().value("image_url_1x").toString();
             if (!url.isEmpty())
             {
-                _badgesUrls.insert(badgeName + "/" + version, url);
+                badgesUrls.insert(badgeName + "/" + version, url);
             }
         }
     }

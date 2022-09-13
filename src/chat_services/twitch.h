@@ -60,20 +60,20 @@ private:
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    QWebSocket _socket;
+    QWebSocket socket;
 
     Setting<QString> oauthToken;
 
-    QString _lastConnectedChannelName;
+    QString lastConnectedChannelName;
 
-    QTimer _timerReconnect;
-    QTimer _timerPing;
-    QTimer _timerCheckPong;
+    QTimer timerReconnect;
+    QTimer timerPing;
+    QTimer timerCheckPong;
 
-    QTimer _timerUpdaetStreamInfo;
+    QTimer timerUpdaetStreamInfo;
 
     QSet<QString> usersInfoUpdated;
-    QHash<QString, QString> _badgesUrls;
+    QHash<QString, QString> badgesUrls;
 };
 
 #endif // TWITCH_HPP
