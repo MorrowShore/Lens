@@ -47,7 +47,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
     const QJsonObject root = QJsonDocument::fromJson(resultData).object();
     if (root.contains("error"))
     {
-        qWarning() << tag << "Error:" << resultData;
+        qWarning() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
         return false;
     }
 
@@ -110,8 +110,6 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         qDebug() << "Twitch: WebSocket error:" << error_ << ":" << _socket.errorString();
     });
 
-    reconnect();
-
     QObject::connect(&_timerReconnect, &QTimer::timeout, this, [this]()
     {
         if (!state.connected && !oauthToken.get().isEmpty())
@@ -119,8 +117,9 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
             reconnect();
         }
     });
-
     _timerReconnect.start(ReconncectPeriod);
+
+    reconnect();
 
     QObject::connect(&_timerCheckPong, &QTimer::timeout, this, [this]{
         if (state.connected)
@@ -375,9 +374,8 @@ void Twitch::onIRCMessage(const QString &rawData)
 
         const QString snippet3 = rawMessage.left(posSnippet1); // [@tags] :[channel-id]![channel-id]@[channel-id]
 
-        const QString channelLogin = snippet3.mid(snippet3.lastIndexOf("@") + 1);
-
         QList<Message::Content*> contents;
+        QString login;
         QString displayName;
         QColor nicknameColor;
         QMap<QString, QString> badges;
@@ -402,6 +400,10 @@ void Twitch::onIRCMessage(const QString &rawData)
             if (tagName == "color")
             {
                 nicknameColor = QColor(tagValue);
+            }
+            else if (tagName == "login")
+            {
+                login = tagValue;
             }
             else if (tagName == "display-name")
             {
@@ -502,9 +504,9 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
         }
 
-        if (displayName.isEmpty())
+        if (login.isEmpty())
         {
-            displayName = channelLogin;
+            login = displayName.toLower();
         }
 
         std::set<Author::Flag> authorFlags;
@@ -526,9 +528,9 @@ void Twitch::onIRCMessage(const QString &rawData)
 
         const Author author(getServiceType(),
                                 displayName,
-                                channelLogin,
+                                login,
                                 QUrl(),
-                                QUrl(QString("https://www.twitch.tv/%1").arg(channelLogin)),
+                                QUrl(QString("https://www.twitch.tv/%1").arg(login)),
                                 badges.values(),
                                 {},
                                 authorFlags,
@@ -598,9 +600,9 @@ void Twitch::onIRCMessage(const QString &rawData)
         messages.append(message);
         authors.append(author);
 
-        if (!usersInfoUpdated.contains(channelLogin))
+        if (!usersInfoUpdated.contains(login))
         {
-            requestUserInfo(channelLogin);
+            requestUserInfo(login);
         }
 
         //qDebug() << "Twitch:" << authorName << ":" << messageText;
