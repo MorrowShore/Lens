@@ -252,7 +252,9 @@ void Twitch::reconnect()
 
     state = State();
 
-    if (stream.get().trimmed().isEmpty())
+    stream.set(stream.get().toLower().trimmed());
+
+    if (stream.get().isEmpty())
     {
         emit stateChanged();
         return;

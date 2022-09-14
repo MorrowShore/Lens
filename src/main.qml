@@ -464,8 +464,7 @@ ApplicationWindow {
                 width: authorNameText.width + 12
                 height: authorNameText.height + 2
                 radius: 2
-                visible: authorHasCustomNicknameBackgroundColor
-                color: authorCustomNicknameBackgroundColor
+                color: authorHasCustomNicknameBackgroundColor ? authorCustomNicknameBackgroundColor : "transparent"
             }
 
             Row {
