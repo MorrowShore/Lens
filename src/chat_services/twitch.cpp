@@ -380,7 +380,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         QString login;
         QString displayName;
         QColor nicknameColor;
-        QMap<QString, QString> badges;
+        QStringList badges;
         QVector<MessageEmoteInfo> emotesInfo;
         QHash<Message::ColorRole, QColor> forcedColors;
 
@@ -495,12 +495,12 @@ void Twitch::onIRCMessage(const QString &rawData)
                     const QString badgeInfoStr = badgeInfo.toString();
                     if (badgesUrls.contains(badgeInfoStr))
                     {
-                        badges.insert(badgeInfoStr, badgesUrls[badgeInfoStr]);
+                        badges.append(badgesUrls[badgeInfoStr]);
                     }
                     else
                     {
                         qWarning() << Q_FUNC_INFO << "unknown badge" << badgeInfoStr;
-                        badges.insert(badgeInfoStr, "qrc:/resources/images/unknown-badge.png");
+                        badges.append("qrc:/resources/images/unknown-badge.png");
                     }
                 }
             }
@@ -533,7 +533,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                                 login,
                                 QUrl(),
                                 QUrl(QString("https://www.twitch.tv/%1").arg(login)),
-                                badges.values(),
+                                badges,
                                 {},
                                 authorFlags,
                                 nicknameColor);
