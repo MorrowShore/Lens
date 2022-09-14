@@ -447,6 +447,9 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
     for (const QJsonValue& actionJson : array)
     {
+        //const QByteArray rawData = QJsonDocument(actionJson.toObject()).toJson(QJsonDocument::JsonFormat::Compact);
+        //if (rawData.contains("")) { qDebug(rawData + "\n"); }
+
         bool valid = false;
         bool isDeleter = false;
 
@@ -508,6 +511,43 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
                 valid = true;
             }
+            else if (item.contains("liveChatSponsorshipsGiftPurchaseAnnouncementRenderer"))
+            {
+                itemRenderer = item.value("liveChatSponsorshipsGiftPurchaseAnnouncementRenderer").toObject();
+                if (itemRenderer.contains("id"))
+                {
+                    messageId = itemRenderer.value("id").toString(messageId);
+                }
+
+                if (itemRenderer.contains("timestampUsec"))
+                {
+                    publishedAt = QDateTime::fromMSecsSinceEpoch(
+                                itemRenderer.value("timestampUsec").toString().toLongLong() / 1000,
+                                Qt::TimeSpec::UTC).toLocalTime();
+                }
+
+                itemRenderer = itemRenderer.value("header").toObject().value("liveChatSponsorshipsHeaderRenderer").toObject();
+
+                messageFlags.insert(Message::Flag::YouTubeChatMembership);
+
+                valid = true;
+            }
+            else if (item.contains("liveChatSponsorshipsGiftRedemptionAnnouncementRenderer"))
+            {
+                itemRenderer = item.value("liveChatSponsorshipsGiftRedemptionAnnouncementRenderer").toObject();
+
+                messageFlags.insert(Message::Flag::YouTubeChatMembership);
+
+                valid = true;
+            }
+            else if (item.contains("liveChatTickerSponsorItemRenderer"))
+            {
+                itemRenderer = item.value("liveChatTickerSponsorItemRenderer").toObject();
+
+                messageFlags.insert(Message::Flag::YouTubeChatMembership);
+
+                valid = true;
+            }
             else if (item.contains("liveChatViewerEngagementMessageRenderer"))
             {
                 QJsonObject itemRenderer_ = item.value("liveChatViewerEngagementMessageRenderer").toObject();
@@ -546,11 +586,17 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 valid = false;
             }
 
-            messageId = itemRenderer.value("id").toString();
+            if (itemRenderer.contains("id"))
+            {
+                messageId = itemRenderer.value("id").toString(messageId);
+            }
 
-            publishedAt = QDateTime::fromMSecsSinceEpoch(
-                        itemRenderer.value("timestampUsec").toString().toLongLong() / 1000,
-                        Qt::TimeSpec::UTC).toLocalTime();
+            if (itemRenderer.contains("timestampUsec"))
+            {
+                publishedAt = QDateTime::fromMSecsSinceEpoch(
+                            itemRenderer.value("timestampUsec").toString().toLongLong() / 1000,
+                            Qt::TimeSpec::UTC).toLocalTime();
+            }
 
             QList<Message::Content*> authorNameContent;
             tryAppedToText(authorNameContent, itemRenderer, "authorName", false);
@@ -563,10 +609,15 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             }
 
             tryAppedToText(contents, itemRenderer, "purchaseAmountText", true);
+
             tryAppedToText(contents, itemRenderer, "headerPrimaryText",  true);
+            tryAppedToText(contents, itemRenderer, "header",             true);
             tryAppedToText(contents, itemRenderer, "headerSubtext",      false);
+
+            tryAppedToText(contents, itemRenderer, "primaryText",        true);
             tryAppedToText(contents, itemRenderer, "text",               true);
             tryAppedToText(contents, itemRenderer, "subtext",            false);
+
             tryAppedToText(contents, itemRenderer, "message",            false);
 
             authorChannelId = itemRenderer
