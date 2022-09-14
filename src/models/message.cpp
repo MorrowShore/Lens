@@ -170,7 +170,8 @@ void Message::updateHtml()
             {
                 const Text::Style& style = textContent->getStyle();
 
-                QString text = textContent->getText();
+                QString text = textContent->getText().toHtmlEscaped();
+                text = text.replace('\n', "<br>");
 
                 if (style.bold)
                 {
@@ -218,6 +219,4 @@ void Message::updateHtml()
     }
 
     trimText(html);
-
-    html = html.replace('\n', "<br>");
 }
