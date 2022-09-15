@@ -43,6 +43,7 @@ public:
     QString getServiceDirectory(const AxelChat::ServiceType serviceType) const;
     void writeAuthors(const QList<Author*>& authors);
     void writeServiceState(const ChatService* service) const;
+    void writeApplicationState(const bool started, const int viewersTotalCount) const;
 
 signals:
     void outputFolderChanged();
@@ -59,8 +60,6 @@ private:
     QByteArray prepare(const QString& text);
 
     void reinit(bool forceUpdateOutputFolder);
-
-    void writeApplicationState(const bool started) const;
 
     QSettings& settings;
     const QString settingsGroupPath;

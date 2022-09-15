@@ -215,6 +215,8 @@ void ChatHandler::onStateChanged()
         outputToFile.writeServiceState(service);
     }
 
+    outputToFile.writeApplicationState(true, viewersTotalCount());
+
     emit viewersTotalCountChanged();
 }
 
