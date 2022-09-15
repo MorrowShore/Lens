@@ -29,9 +29,11 @@ Window {
     }
 
     Settings {
+        id: settings
         category: "settings_window"
         property alias window_width:  root.width;
         property alias window_height: root.height;
+        property alias category_index: listViewCategories.currentIndex
     }
 
     function showRestartDialog() {
@@ -156,7 +158,7 @@ Window {
                                      })
                     }
 
-                    currentIndex = 0
+                    currentIndex = settings.category_index
                 }
 
                 model: ListModel {
@@ -188,7 +190,7 @@ Window {
 
                 delegate: ItemDelegate {
                     id: categoryDelegate
-                    width: parent.width
+                    width: listViewCategories.width
                     text: model.name
 
                     contentItem: Item {
