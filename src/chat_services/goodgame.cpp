@@ -199,6 +199,8 @@ void GoodGame::requestChannelStatus()
 
         emit stateChanged();
         requestChannelHistory();
+
+        reply->deleteLater();
     });
 }
 
@@ -210,6 +212,7 @@ void GoodGame::requestUserPage(const QString &authorName, const QString &authorI
     connect(reply, &QNetworkReply::finished, this, [this, reply, authorName, authorId]()
     {
         const QByteArray data = reply->readAll();
+        reply->deleteLater();
 
         static const QByteArray urlPrefix = "https://goodgame.ru/files/avatars";
 
@@ -248,6 +251,8 @@ void GoodGame::requestSmiles()
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QJsonArray array = QJsonDocument::fromJson(reply->readAll()).array();
+        reply->deleteLater();
+
         for (const QJsonValue& v : array)
         {
             const QJsonObject smile = v.toObject();
