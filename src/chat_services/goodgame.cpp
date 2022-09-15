@@ -26,27 +26,15 @@ static const QMap<QString, QColor> ColorTypes =
     {"diamond",             QColor(135, 129, 189)},
     {"moderator",           QColor(236, 64,  88)},
     {"streamer",            QColor(232, 187, 0)},
+    {"streamer-helper",     QColor(232, 187, 0)},
     {"undead",              QColor(171, 72,  115)},
-    {"top-one",             QColor(59, 203,  255)},
+    {"top-one",             QColor(59,  203, 255)},
+    {"newguy",              QColor(255, 255, 255)},
 };
 
-static const QMap<QString, QString> IconsTypes =
+static const QMap<QString, QString> IconTypesExtra =
 {
-    {"",                        QString()},
-    {"none",                    QString()},
-    {"star",                    "star"},
-    {"top1",                    "moderator"},
-    {"helper",                  "shield"},
-    {"moderator",               "sword"},
-    {"diamond",                 "diamond"},
-    {"crown",                   "crown"},
-    {"eagle",                   "bird"},
-    {"coin",                    "money"},
-    {"cup",                     "cup"},
-    {"undead",                  "skull"},
-    {"smartphone",              "smartphone"},
-    {"apple",                   "apple"},
-    //ggplus
+    {"ggplus",                  ":/resources/images/goodgame/star-one.svg"},
 };
 
 }
@@ -363,7 +351,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             const QDateTime publishedAt = QDateTime::fromSecsSinceEpoch(jsonMessage.value("timestamp").toVariant().toLongLong());
             const QString rawText = jsonMessage.value("text").toString();
             const QString colorType = jsonMessage.value("color").toString();
-            QString iconType = jsonMessage.value("icon").toString();
+            const QString iconType = jsonMessage.value("icon").toString();
             const int mobile = jsonMessage.value("mobile").toInt();
 
             QColor nicknameColor;
@@ -382,48 +370,47 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 qWarning() << Q_FUNC_INFO << ": unknown color type" << colorType << ", author name =" << authorName;
             }
 
-            QStringList leftBadges;
+            QString badge;
 
-            if (iconType.isEmpty())
+            if (iconType.isEmpty() || iconType == "none")
             {
                 if (mobile == 2)
                 {
-                    iconType = "apple";
+                    badge = ":/resources/images/goodgame/ios.svg";
                 }
                 else if (mobile == 4)
                 {
-                    // TODO: android
-                    iconType = "smartphone";
+                    badge = ":/resources/images/goodgame/android.svg";
                 }
                 else if (mobile != 0)
                 {
-                    iconType = "smartphone";
-                }
-            }
-
-            if (IconsTypes.contains(iconType))
-            {
-                const QString icon = IconsTypes.value(iconType);
-                if (!icon.isEmpty())
-                {
-                    QString url = "https://img.icons8.com/";
-                    if (nicknameColor.isValid())
-                    {
-                        url += nicknameColor.name(QColor::NameFormat::HexRgb).toUpper().remove('#') + "/";
-                    }
-                    else
-                    {
-                        url += "color/";
-                    }
-
-                    url += icon;
-
-                    leftBadges.append(url);
+                    badge = ":/resources/images/goodgame/smartphone.svg";
                 }
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << ": unknown icon type" << iconType << ", author name =" << authorName;
+                if (IconTypesExtra.contains(iconType))
+                {
+                    badge = IconTypesExtra.value(iconType);
+                }
+                else
+                {
+                    badge = ":/resources/images/goodgame/" + iconType + ".svg";
+                }
+            }
+
+            QStringList leftBadges;
+
+            if (!badge.isEmpty())
+            {
+                if (QFileInfo::exists(badge))
+                {
+                    leftBadges.append("qrc" + badge);
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << ": not found badge" << badge << ", author name" << authorName;
+                }
             }
 
             const Author author(getServiceType(),
@@ -431,7 +418,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                                 authorId,
                                 QUrl(),
                                 QUrl("https://goodgame.ru/user/" + authorId),
-                                leftBadges,
+                                {}, // leftBadges, // TODO
                                 {},
                                 {},
                                 nicknameColor);

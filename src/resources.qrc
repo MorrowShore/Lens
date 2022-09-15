@@ -46,5 +46,24 @@
         <file>resources/images/language-svgrepo-com.svg</file>
         <file>resources/images/forward-arrow.svg</file>
         <file>resources/images/trovo-icon.svg</file>
+        <file>resources/images/goodgame/android.svg</file>
+        <file>resources/images/goodgame/coin.svg</file>
+        <file>resources/images/goodgame/crown.svg</file>
+        <file>resources/images/goodgame/cup.svg</file>
+        <file>resources/images/goodgame/diamond.svg</file>
+        <file>resources/images/goodgame/eagle.svg</file>
+        <file>resources/images/goodgame/helper.svg</file>
+        <file>resources/images/goodgame/ios.svg</file>
+        <file>resources/images/goodgame/moderator.svg</file>
+        <file>resources/images/goodgame/smartphone.svg</file>
+        <file>resources/images/goodgame/star.svg</file>
+        <file>resources/images/goodgame/star-one.svg</file>
+        <file>resources/images/goodgame/star-two.svg</file>
+        <file>resources/images/goodgame/star-three.svg</file>
+        <file>resources/images/goodgame/star-four.svg</file>
+        <file>resources/images/goodgame/star-five.svg</file>
+        <file>resources/images/goodgame/star-six.svg</file>
+        <file>resources/images/goodgame/top-one.svg</file>
+        <file>resources/images/goodgame/undead.svg</file>
     </qresource>
 </RCC>
