@@ -232,6 +232,7 @@ protected:
             Unknown = -1,
             String = 10,
             ButtonUrl = 20,
+            Label = 21,
         };
 
         enum class Flag

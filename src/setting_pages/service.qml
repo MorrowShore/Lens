@@ -170,6 +170,23 @@ Button {
 }
 ", row)
                 }
+                else if (type === Global._LabelParameterType)
+                {
+                    Qt.createQmlObject(
+"
+import QtQuick 2.0
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.12
+
+Label {
+    text: chatService.getParameterName(" + String("%1").arg(i) + ")
+    font.pixelSize: 20
+    anchors.verticalCenter: parent.verticalCenter
+    font.bold: true
+    color: '" + Material.accentColor + "'
+}
+", row)
+                }
                 else
                 {
                     console.log("Unknown parameter type ", type)

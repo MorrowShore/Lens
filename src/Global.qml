@@ -18,6 +18,7 @@ QtObject {
     readonly property int _UnknownParameterType: -1
     readonly property int _StringParameterType: 10
     readonly property int _ButtonUrlParameterType: 20
+    readonly property int _LabelParameterType: 21
 
     readonly property int _PasswordEchoParameterFlag: 10
 

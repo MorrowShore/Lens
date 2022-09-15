@@ -342,28 +342,28 @@
 <context>
     <name>GoodGame</name>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="25"/>
+        <location filename="chat_services/goodgame.cpp" line="59"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="109"/>
+        <location filename="chat_services/goodgame.cpp" line="153"/>
         <source>Channel not specified</source>
         <oldsource>Stream not specified</oldsource>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="112"/>
+        <location filename="chat_services/goodgame.cpp" line="156"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="115"/>
+        <location filename="chat_services/goodgame.cpp" line="159"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="118"/>
+        <location filename="chat_services/goodgame.cpp" line="162"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -519,49 +519,55 @@
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="chat_services/twitch.cpp" line="75"/>
+        <location filename="chat_services/twitch.cpp" line="65"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="77"/>
+        <location filename="chat_services/twitch.cpp" line="67"/>
+        <source>To display avatars and complete work, specify the OAuth-token:</source>
+        <oldsource>To display avatars and complete work, specify the token</oldsource>
+        <translation>Для отображения аватарок и полноценной работы укажите OAuth-токен:</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="68"/>
         <source>OAuth token</source>
         <oldsource>Token</oldsource>
         <translation>OAuth-токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="78"/>
+        <location filename="chat_services/twitch.cpp" line="69"/>
         <source>Get token</source>
         <oldsource>Get Token</oldsource>
         <translation>Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="144"/>
+        <location filename="chat_services/twitch.cpp" line="134"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="206"/>
+        <location filename="chat_services/twitch.cpp" line="196"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="211"/>
+        <location filename="chat_services/twitch.cpp" line="201"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="214"/>
+        <location filename="chat_services/twitch.cpp" line="204"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="217"/>
+        <location filename="chat_services/twitch.cpp" line="207"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="220"/>
+        <location filename="chat_services/twitch.cpp" line="210"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1121,12 +1127,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="784"/>
+        <location filename="main.qml" line="752"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="788"/>
+        <location filename="main.qml" line="756"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
@@ -1253,12 +1259,12 @@ Latest version available: %2</oldsource>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="188"/>
+        <location filename="setting_pages/service.qml" line="206"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="198"/>
+        <location filename="setting_pages/service.qml" line="216"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1267,7 +1273,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="207"/>
+        <location filename="setting_pages/service.qml" line="225"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>
