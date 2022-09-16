@@ -32,7 +32,6 @@
 
 # FAQ
 - Is AxelChat considered a viewer? - No, at least for now, for YouTube and Twitch
-- Whether AxelChat sends any user data? - No
 - Does AxelChat work with YouTube premieres? - Yes
 - Can I download a YouTube chat for an already past stream using the AxelChat? - No, use something else instead. For example, use the browser extension [Save Live Streaming Chats for YouTube™](https://chrome.google.com/webstore/detail/save-live-streaming-chats/bcclhcedlelimlnmcpfeiabljbpahnef)
 
