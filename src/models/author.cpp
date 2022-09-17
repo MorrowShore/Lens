@@ -190,6 +190,9 @@ QJsonObject Author::toJson() const
     root.insert("serviceId", ChatService::getServiceTypeId(serviceType));
     root.insert("name", name);
     root.insert("avatar", avatarUrl.toString());
+    root.insert("color", customNicknameColor.isValid() ? customNicknameColor.name() : QString());
+    root.insert("backgroundColor", customNicknameBackgroundColor.isValid() ? customNicknameBackgroundColor.name() : QString());
+    root.insert("pageUrl", pageUrl.toString());
 
     QJsonArray jsonLeftBadges;
     for (const QString& badgeUrl : leftBadgesUrls)

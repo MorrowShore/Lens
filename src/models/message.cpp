@@ -109,6 +109,7 @@ QJsonObject Message::toJson(const Author& author) const
 {
     QJsonObject root;
 
+    root.insert("id", messageId);
     root.insert("author", author.toJson());
 
     QJsonArray jsonContents;
