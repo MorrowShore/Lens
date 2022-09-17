@@ -1,4 +1,4 @@
-#include "messagesmodle.h"
+#include "messagesmodel.h"
 #include "author.h"
 #include "message.h"
 #include <QCoreApplication>
@@ -127,7 +127,7 @@ void MessagesModel::append(Message&& message)
                     message.printMessageInfo("Raw message:");
                 }
 
-                if (!setData(index, message.getHtml(), (int)Message::Role::Html))
+                if (!setData(index, message.toHtml(), (int)Message::Role::Html))
                 {
                     qCritical() << Q_FUNC_INFO << ": failed to set data with role" << Message::Role::Html;
 
@@ -256,6 +256,30 @@ void MessagesModel::setAuthorValues(const QString& authorId, const QMap<Author::
     }
 }
 
+QList<Message> MessagesModel::getLastMessages(int count) const
+{
+    QList<Message> result;
+
+    for (int64_t i = _data.count() - 1; i >= 0; --i)
+    {
+        const QVariant* data = _data[i];
+        const Message& message = qvariant_cast<Message>(*data);
+        if (message.isHasFlag(Message::Flag::DeleterItem))
+        {
+            continue;
+        }
+
+        result.insert(0, message);
+
+        if (result.count() >= count)
+        {
+            break;
+        }
+    }
+
+    return result;
+}
+
 void MessagesModel::insertAuthor(const Author& author)
 {
     const QString& id = author.getId();
@@ -365,7 +389,7 @@ QVariant MessagesModel::dataByRole(const Message &message, int role) const
     case Message::Role::Id:
         return message.getId();
     case Message::Role::Html:
-        return message.getHtml();
+        return message.toHtml();
     case Message::Role::PublishedAt:
         return message.getPublishedAt();
     case Message::Role::ReceivedAt:

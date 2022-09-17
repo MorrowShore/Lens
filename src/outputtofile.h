@@ -3,7 +3,7 @@
 
 #include "utils.h"
 #include "setting.h"
-#include "models/messagesmodle.h"
+#include "models/messagesmodel.h"
 #include "chat_services/chatservice.h"
 #include <QObject>
 #include <QSettings>

@@ -1,4 +1,5 @@
 #include "author.h"
+#include "chat_services/chatservice.h"
 #include <QCoreApplication>
 #include <QMetaEnum>
 #include <QDebug>
@@ -180,4 +181,29 @@ QVariant Author::getValue(const Role role) const
 
     qCritical() << Q_FUNC_INFO << ": role" << role << "not implemented yet" << ", author name = " << name;
     return QVariant();
+}
+
+QJsonObject Author::toJson() const
+{
+    QJsonObject root;
+
+    root.insert("serviceId", ChatService::getServiceTypeId(serviceType));
+    root.insert("name", name);
+    root.insert("avatar", avatarUrl.toString());
+
+    QJsonArray jsonLeftBadges;
+    for (const QString& badgeUrl : leftBadgesUrls)
+    {
+        jsonLeftBadges.append(badgeUrl);
+    }
+    root.insert("leftBadges", jsonLeftBadges);
+
+    QJsonArray rightBadgesJson;
+    for (const QString& badgeUrl : rightBadgesUrls)
+    {
+        rightBadgesJson.append(badgeUrl);
+    }
+    root.insert("rightBadges", rightBadgesJson);
+
+    return root;
 }

@@ -2,6 +2,7 @@
 
 #include "utils.h"
 #include "authorqmlprovider.h"
+#include "websocket.h"
 #include <QSettings>
 #include <QMap>
 #include <QDateTime>
@@ -21,7 +22,7 @@ class ChatHandler : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int  connectedCount                   READ connectedCount                                                             NOTIFY connectedCountChanged)
-    Q_PROPERTY(int  viewersTotalCount                READ viewersTotalCount                                                          NOTIFY viewersTotalCountChanged)
+    Q_PROPERTY(int  viewersTotalCount                READ getViewersTotalCount                                                       NOTIFY viewersTotalCountChanged)
     Q_PROPERTY(bool enabledSoundNewMessage           READ enabledSoundNewMessage           WRITE setEnabledSoundNewMessage           NOTIFY enabledSoundNewMessageChanged)
     Q_PROPERTY(bool enabledClearMessagesOnLinkChange READ enabledClearMessagesOnLinkChange WRITE setEnabledClearMessagesOnLinkChange NOTIFY enabledClearMessagesOnLinkChangeChanged)
     Q_PROPERTY(bool enabledShowAuthorNameChanged     READ enabledShowAuthorNameChanged     WRITE setEnabledShowAuthorNameChanged     NOTIFY enabledShowAuthorNameChangedChanged)
@@ -55,7 +56,7 @@ public:
     void setEnabledClearMessagesOnLinkChange(bool enabled);
 
     int connectedCount() const;
-    int viewersTotalCount() const;
+    int getViewersTotalCount() const;
 
     void setProxyEnabled(bool enabled);
     inline bool proxyEnabled() const { return _enabledProxy; }
@@ -115,6 +116,7 @@ private:
     OutputToFile outputToFile;
     ChatBot bot;
     AuthorQMLProvider authorQMLProvider;
+    WebSocket webSocket;
 #endif
 
     bool _enabledSoundNewMessage = false;

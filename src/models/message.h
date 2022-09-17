@@ -8,6 +8,8 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QMap>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <set>
 
 class Author;
@@ -63,12 +65,27 @@ public:
     class Content
     {
     public:
-        enum class Type { Unknown, Text, Image , Hyperlink };
+        enum class Type { Text, Image , Hyperlink };
 
-        Type getContentType() const
+        Type getType() const
         {
             return type;
         }
+
+        static QString typeToStringId(const Type type)
+        {
+            switch (type)
+            {
+            case Message::Content::Type::Text: return "text";
+            case Message::Content::Type::Image: return "image";
+            case Message::Content::Type::Hyperlink: return "hyperlink";
+            }
+
+            return "unknown";
+        }
+
+
+        virtual QJsonObject toJson() const = 0;
 
     protected:
         Content(const Type type_)
@@ -77,7 +94,7 @@ public:
 
         }
 
-        Type type = Type::Unknown;
+        Type type;
     };
 
     class Text : public Content
@@ -99,6 +116,13 @@ public:
             , text(text_)
             , style(style_)
         {
+        }
+
+        QJsonObject toJson() const override
+        {
+            QJsonObject root;
+            root.insert("text", text);
+            return root;
         }
 
         const QString& getText() const
@@ -131,6 +155,14 @@ public:
         {
         }
 
+        QJsonObject toJson() const override
+        {
+            QJsonObject root;
+            root.insert("url", url.toString());
+            root.insert("text", text);
+            return root;
+        }
+
         const QString& getText() const
         {
             return text;
@@ -154,6 +186,13 @@ public:
             , url(url_)
             , height(height_)
         {
+        }
+
+        QJsonObject toJson() const override
+        {
+            QJsonObject root;
+            root.insert("url", url.toString());
+            return root;
         }
 
         const QUrl& getUrl() const
@@ -184,7 +223,7 @@ public:
     {
         return messageId;
     }
-    inline const QString& getHtml() const
+    inline const QString& toHtml() const
     {
         return html;
     }
@@ -240,6 +279,8 @@ public:
     {
         return contents;
     }
+
+    QJsonObject toJson(const Author& author) const;
 
     static QString flagToString(const Flag flag);
 

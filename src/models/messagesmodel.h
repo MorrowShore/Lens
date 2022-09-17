@@ -31,6 +31,7 @@ public:
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
     void insertAuthor(const Author& author);
     void setAuthorValues(const QString& authorId, const QMap<Author::Role, QVariant>& values);
+    QList<Message> getLastMessages(int count) const;
 
 private:
     static const QHash<int, QByteArray> _roleNames;

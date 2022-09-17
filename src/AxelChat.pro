@@ -30,14 +30,15 @@ HEADERS += \
     chat_services/goodgame.h \
     i18n.h \
     models/message.h \
-    models/messagesmodle.h \
+    models/messagesmodel.h \
     outputtofile.h \
     qmlutils.h \
     setting.h \
     tray.h \
     chat_services/twitch.h \
     utils.h \
-    chat_services/youtube.h
+    chat_services/youtube.h \
+    websocket.h
 
 SOURCES += \
         authorqmlprovider.cpp \
@@ -54,12 +55,13 @@ SOURCES += \
         i18n.cpp \
         main.cpp \
         models/message.cpp \
-        models/messagesmodle.cpp \
+        models/messagesmodel.cpp \
         outputtofile.cpp \
         qmlutils.cpp \
         tray.cpp \
         chat_services/twitch.cpp \
-        chat_services/youtube.cpp
+        chat_services/youtube.cpp \
+        websocket.cpp
 
 RESOURCES += qml.qrc \
     resources.qrc

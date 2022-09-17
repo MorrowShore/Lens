@@ -202,11 +202,8 @@ void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat:
 
         for (const Message::Content* content : message.getContents())
         {
-            switch (content->getContentType())
+            switch (content->getType())
             {
-            case Message::Content::Type::Unknown:
-                break;
-
             case Message::Content::Type::Text:
                 text += prepare(static_cast<const Message::Text*>(content)->getText());
                 break;
@@ -242,7 +239,7 @@ void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat:
 
         for (const Message::Content* content : message.getContents())
         {
-            if (content->getContentType() == Message::Content::Type::Image)
+            if (content->getType() == Message::Content::Type::Image)
             {
                 static const int ImageHeight = 24;
                 const Message::Image* image = static_cast<const Message::Image*>(content);

@@ -3,7 +3,7 @@
 
 #include <QSettings>
 #include <QMediaPlayer>
-#include "models/messagesmodle.h"
+#include "models/messagesmodel.h"
 #include "botaction.h"
 
 class ChatBot : public QObject

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QUrl>
 #include <QColor>
+#include <QJsonObject>
 #include <set>
 
 class Author
@@ -72,6 +73,8 @@ public:
     bool setValue(const Role role, const QVariant& value);
 
     QVariant getValue(const Role role) const;
+
+    QJsonObject toJson() const;
 
     inline static const std::set<Role> UpdateableRoles =
     {

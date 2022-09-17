@@ -1,6 +1,6 @@
 #include "youtube.h"
 #include "utils.h"
-#include "models/messagesmodle.h"
+#include "models/messagesmodel.h"
 #include "models/author.h"
 #include <QDebug>
 #include <QJsonDocument>
@@ -602,7 +602,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             tryAppedToText(authorNameContent, itemRenderer, "authorName", false);
             if (!authorNameContent.isEmpty())
             {
-                if (const Message::Content* content = authorNameContent.first(); content->getContentType() == Message::Content::Type::Text)
+                if (const Message::Content* content = authorNameContent.first(); content->getType() == Message::Content::Type::Text)
                 {
                     authorName = static_cast<const Message::Text*>(content)->getText();
                 }
@@ -704,7 +704,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             {
                 const QString stickerUrl = createResizedAvatarUrl(stickerThumbnails.first().toObject().value("url").toString(), stickerSize).toString();
 
-                if (!contents.isEmpty() && contents.last()->getContentType() == Message::Content::Type::Text)
+                if (!contents.isEmpty() && contents.last()->getType() == Message::Content::Type::Text)
                 {
                     contents.append(new Message::Text("\n"));
                 }
@@ -940,7 +940,7 @@ void YouTube::tryAppedToText(QList<Message::Content*>& contents, const QJsonObje
 
     if (!contents.isEmpty() && !newContents.isEmpty())
     {
-        if (contents.last()->getContentType() == Message::Content::Type::Text && contents.last()->getContentType() == newContents.first()->getContentType())
+        if (contents.last()->getType() == Message::Content::Type::Text && contents.last()->getType() == newContents.first()->getType())
         {
             contents.append(new Message::Text("\n"));
         }
@@ -948,7 +948,7 @@ void YouTube::tryAppedToText(QList<Message::Content*>& contents, const QJsonObje
 
     for (Message::Content* content : newContents)
     {
-        if (content->getContentType() == Message::Content::Type::Text)
+        if (content->getType() == Message::Content::Type::Text)
         {
             static_cast<Message::Text*>(content)->getStyle().bold = bold;
         }

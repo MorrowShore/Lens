@@ -69,7 +69,7 @@ void Message::printMessageInfo(const QString &prefix, const int &row) const
     resultString += "===========================";
 
     resultString += "\nAuthor Id: \"" + getAuthorId() + "\"";
-    resultString += "\nMessage Text: \"" + getHtml() + "\"";
+    resultString += "\nMessage Text: \"" + toHtml() + "\"";
     resultString += "\nMessage Id: \"" + getId() + "\"";
     resultString += QString("\nMessage Id Num: %1").arg(getIdNum());
 
@@ -103,6 +103,26 @@ QString Message::getForcedColorRoleToQMLString(const ColorRole &role) const
     }
 
     return QString();
+}
+
+QJsonObject Message::toJson(const Author& author) const
+{
+    QJsonObject root;
+
+    root.insert("author", author.toJson());
+
+    QJsonArray jsonContents;
+    for (const Content* content : qAsConst(contents))
+    {
+        QJsonObject jsonContent;
+        jsonContent.insert("type", Content::typeToStringId(content->getType()));
+        jsonContent.insert("data", content->toJson());
+        jsonContents.append(jsonContent);
+    }
+
+    root.insert("contents", jsonContents);
+
+    return root;
 }
 
 void Message::trimText(QString &text)
@@ -157,12 +177,8 @@ void Message::updateHtml()
 
     for (const Content* content : qAsConst(contents))
     {
-        switch (content->getContentType())
+        switch (content->getType())
         {
-        case Content::Type::Unknown:
-            qWarning() << "Unknown content type";
-            break;
-
         case Content::Type::Text:
         {
             const Text* textContent = static_cast<const Text*>(content);

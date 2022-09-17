@@ -9,6 +9,8 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QCoreApplication>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <set>
 
 class ChatHandler;
@@ -116,6 +118,17 @@ public:
 
     const Setting<QString>& getLastSavedMessageId() const { return lastSavedMessageId; }
     void setLastSavedMessageId(const QString& messageId) { lastSavedMessageId.set(messageId); }
+
+    QJsonObject toJson() const
+    {
+        QJsonObject root;
+
+        root.insert("type", getServiceTypeId(serviceType));
+        root.insert("icon", getIconUrl(serviceType).toString().replace("qrc:/resources/", "./"));
+        root.insert("viewersCount", getViewersCount());
+
+        return root;
+    }
 
     virtual void reconnect() = 0;
 

@@ -63,7 +63,7 @@
         <file>resources/images/goodgame/star-four.svg</file>
         <file>resources/images/goodgame/star-five.svg</file>
         <file>resources/images/goodgame/star-six.svg</file>
-        <file>resources/images/goodgame/top-one.svg</file>
+        <file>resources/images/goodgame/top1.svg</file>
         <file>resources/images/goodgame/undead.svg</file>
     </qresource>
 </RCC>

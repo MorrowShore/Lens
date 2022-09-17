@@ -32,6 +32,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, services)
     , bot(settings, SettingsGroupPath + "/chat_bot")
     , authorQMLProvider(*this, messagesModel, outputToFile)
+    , webSocket(*this)
 {
     connect(&outputToFile, &OutputToFile::authorNameChanged, this, &ChatHandler::onAuthorNameChanged);
 
@@ -107,6 +108,7 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
     }
 
     outputToFile.writeMessages(messagesValidToAdd, serviceType);
+    webSocket.sendMessages(messagesValidToAdd);
 
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {
@@ -215,7 +217,8 @@ void ChatHandler::onStateChanged()
         outputToFile.writeServiceState(service);
     }
 
-    outputToFile.writeApplicationState(true, viewersTotalCount());
+    outputToFile.writeApplicationState(true, getViewersTotalCount());
+    webSocket.sendInfo();
 
     emit viewersTotalCountChanged();
 }
@@ -376,7 +379,7 @@ int ChatHandler::connectedCount() const
     return result;
 }
 
-int ChatHandler::viewersTotalCount() const
+int ChatHandler::getViewersTotalCount() const
 {
     int result = 0;
 

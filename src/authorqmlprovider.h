@@ -1,7 +1,7 @@
 #ifndef AUTHORQMLPROVIDER_H
 #define AUTHORQMLPROVIDER_H
 
-#include "models/messagesmodle.h"
+#include "models/messagesmodel.h"
 #include "outputtofile.h"
 #include <QObject>
 

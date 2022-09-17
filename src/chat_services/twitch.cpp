@@ -1,5 +1,5 @@
 #include "twitch.h"
-#include "models/messagesmodle.h"
+#include "models/messagesmodel.h"
 #include "models/author.h"
 #include "models/message.h"
 #include <QNetworkRequest>
