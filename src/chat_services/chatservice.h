@@ -127,6 +127,23 @@ public:
         root.insert("icon", getIconUrl(serviceType).toString().replace("qrc:/resources/", "./"));
         root.insert("viewersCount", getViewersCount());
 
+        QString connectionStateType;
+
+        switch (getConnectionStateType())
+        {
+        case ConnectionStateType::NotConnected:
+            connectionStateType = "not_connected";
+            break;
+        case ConnectionStateType::Connecting:
+            connectionStateType = "connecting";
+            break;
+        case ConnectionStateType::Connected:
+            connectionStateType = "connected";
+            break;
+        }
+
+        root.insert("connectionStateType", connectionStateType);
+
         return root;
     }
 
