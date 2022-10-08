@@ -1,8 +1,48 @@
 #include "trovo.h"
-#include <QNetworkAccessManager>
+#include "apikeys.h"
+#include "models/message.h"
+#include "models/author.h"
+#include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+
+namespace
+{
+
+static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
+{
+    resultData.clear();
+
+    if (!reply)
+    {
+        qWarning() << tag << ": !reply";
+        return false;
+    }
+
+    resultData = reply->readAll();
+    if (resultData.isEmpty())
+    {
+        qWarning() << tag << ": data is empty";
+        return false;
+    }
+
+    const QJsonObject root = QJsonDocument::fromJson(resultData).object();
+    if (root.contains("error"))
+    {
+        qWarning() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
+        return false;
+    }
+
+    return true;
+}
+
+static const int PingPeriod = 30 * 1000;
+static const int PongTimeout = 5 * 1000;
+
+static const QString NonceAuth = "AUTH";
+
+}
 
 Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Trovo, parent)
@@ -14,7 +54,7 @@ Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAcc
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Trovo::onWebSocketReceived);
@@ -29,15 +69,17 @@ Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAcc
 
         QJsonObject root;
         root.insert("type", "AUTH");
-        root.insert("nonce", "nonce");
+        root.insert("nonce", NonceAuth);
 
         QJsonObject data;
 
-        data.insert("token", "token");
+        data.insert("token", oauthToken);
 
         root.insert("data", data);
 
         sendToWebSocket(QJsonDocument(root));
+
+        ping();
 
         emit stateChanged();
     });
@@ -57,6 +99,10 @@ Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAcc
     {
         qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
     });
+
+    timerPing.setInterval(PingPeriod);
+    QObject::connect(&timerPing, &QTimer::timeout, this, &Trovo::ping);
+    timerPing.start();
 
     reconnect();
 }
@@ -100,6 +146,9 @@ QString Trovo::getStateDescription() const
 
 void Trovo::reconnect()
 {
+    oauthToken.clear();
+    channelId.clear();
+
     socket.close();
 
     state = State();
@@ -112,28 +161,125 @@ void Trovo::reconnect()
         return;
     }
 
-    socket.setProxy(network.proxy());
-    socket.open(QUrl("wss://open-chat.trovo.live/chat"));
+    requestChannelId();
 
     emit stateChanged();
 }
 
 void Trovo::onWebSocketReceived(const QString& rawData)
 {
-    qDebug("RECIEVE: " + rawData.toUtf8() + "\n");
+    //qDebug("RECIEVE: " + rawData.toUtf8() + "\n");
 
     const QJsonObject root = QJsonDocument::fromJson(rawData.toUtf8()).object();
 
-    const QString typeMessage = root.value("type").toString();
+    const QString type = root.value("type").toString();
+    const QString nonce = root.value("nonce").toString();
     const QString error = root.value("error").toString();
+    const QJsonObject data = root.value("data").toObject();
 
-    if (typeMessage == "RESPONSE")
+    if (type == "RESPONSE")
     {
+        if (nonce == NonceAuth)
+        {
+            state.connected = true;
+            lastConnectedChannelName = state.streamId;
+            emit connectedChanged(true, state.streamId);
+            emit stateChanged();
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << ": unknown nonce" << nonce << ", raw data =" << rawData;
+        }
+    }
+    else if (type == "CHAT")
+    {
+        QList<Message> messages;
+        QList<Author> authors;
 
+        const QJsonArray chats = data.value("chats").toArray();
+        for (const QJsonValue& v : qAsConst(chats))
+        {
+            const QJsonObject jsonMessage = v.toObject();
+            const int type = jsonMessage.value("type").toInt();
+            const QString content = jsonMessage.value("content").toString().trimmed();
+            const QString authorName = jsonMessage.value("nick_name").toString().trimmed();
+            const QString avatar = jsonMessage.value("avatar").toString().trimmed();
+
+            bool ok = false;
+            const int64_t authorIdNum = jsonMessage.value("sender_id").toVariant().toLongLong(&ok);
+
+            if (type == 5)
+            {
+                //TODO
+                continue;
+            }
+            else if (type != 0)
+            {
+                qWarning() << Q_FUNC_INFO << ": unsupported message type" << type << ", message =" << jsonMessage;
+                continue;
+            }
+
+            if (content.isEmpty() || authorName.isEmpty() || authorIdNum == 0 || !ok)
+            {
+                qWarning() << Q_FUNC_INFO << ": ignore not valid message, message =" << jsonMessage;
+                continue;
+            }
+
+            QUrl avatarUrl;
+            if (!avatar.isEmpty())
+            {
+                if (avatar.startsWith("http", Qt::CaseSensitivity::CaseInsensitive))
+                {
+                    avatarUrl = QUrl(avatar);
+                }
+                else
+                {
+                    avatarUrl = QUrl("https://headicon.trovo.live/user/" + avatar);
+                }
+            }
+
+            Author author(getServiceType(),
+                          authorName,
+                          getServiceTypeId(serviceType) + QString("/%1").arg(authorIdNum),
+                          avatarUrl,
+                          QUrl("https://trovo.live/s/" + authorName));
+
+            QDateTime publishedAt;
+
+            ok = false;
+            const int64_t rawSendTime = jsonMessage.value("send_time").toVariant().toLongLong(&ok);
+            if (ok)
+            {
+                publishedAt = QDateTime::fromSecsSinceEpoch(rawSendTime);
+            }
+            else
+            {
+                publishedAt = QDateTime::currentDateTime();
+            }
+
+            const QString messageId = jsonMessage.value("message_id").toString().trimmed();
+
+            QList<Message::Content*> contents;
+            contents.append(new Message::Text(content));
+
+            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+
+            messages.append(message);
+            authors.append(author);
+        }
+
+        if (!messages.isEmpty())
+        {
+            emit readyRead(messages, authors);
+        }
+    }
+    else if (type == "PONG")
+    {
+        //
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << ": unknown message type" << typeMessage << ", raw data =" << rawData;
+        qWarning() << Q_FUNC_INFO << ": unknown message type" << type << ", raw data =" << rawData;
     }
 
     if (!error.isEmpty())
@@ -144,12 +290,92 @@ void Trovo::onWebSocketReceived(const QString& rawData)
 
 void Trovo::sendToWebSocket(const QJsonDocument &data)
 {
-    qDebug("SEND:" + data.toJson(QJsonDocument::JsonFormat::Compact) + "\n");
+    //qDebug("SEND:" + data.toJson(QJsonDocument::JsonFormat::Compact) + "\n");
     socket.sendTextMessage(QString::fromUtf8(data.toJson()));
+}
+
+void Trovo::ping()
+{
+    if (socket.state() == QAbstractSocket::SocketState::ConnectedState)
+    {
+        QJsonObject object;
+        object.insert("type", "PING");
+        object.insert("nonce", "ping");
+        sendToWebSocket(QJsonDocument(object));
+    }
 }
 
 QString Trovo::getStreamId(const QString &stream)
 {
     //TODO
     return stream.toLower().trimmed();
+}
+
+void Trovo::requestChannelId()
+{
+    QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/getusers"));
+    request.setRawHeader("Accept", "application/json");
+    request.setRawHeader("Content-type", "application/json");
+    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+
+    QJsonObject object;
+    QJsonArray usersNames;
+    usersNames.append(stream.get());
+    object.insert("user", usersNames);
+
+    QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QJsonArray users = QJsonDocument::fromJson(data).object().value("users").toArray();
+        if (users.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "users is empty";
+            return;
+        }
+
+        const QJsonObject user = users.first().toObject();
+        const QString channelId_ = user.value("channel_id").toString().trimmed();
+        if (channelId_.isEmpty() || channelId_ == "0")
+        {
+            return;
+        }
+
+        channelId = channelId_;
+
+        requestChatToken();
+    });
+}
+
+void Trovo::requestChatToken()
+{
+    QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/chat/channel-token/" + channelId));
+    request.setRawHeader("Accept", "application/json");
+    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QString token = QJsonDocument::fromJson(data).object().value("token").toString().trimmed();
+        if (token.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "token is empty";
+            return;
+        }
+
+        oauthToken = token;
+
+        socket.setProxy(network.proxy());
+        socket.open(QUrl("wss://open-chat.trovo.live/chat"));
+    });
 }
