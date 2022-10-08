@@ -37,6 +37,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
     return true;
 }
 
+static const int RequestChannelInfoPariod = 10000;
 static const int PingPeriod = 30 * 1000;
 static const int PongTimeout = 5 * 1000;
 static const int ReconncectPeriod = 3 * 1000;
@@ -113,6 +114,18 @@ Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAcc
         }
     });
     timerReconnect.start(ReconncectPeriod);
+
+    timerUpdateChannelInfo.setInterval(RequestChannelInfoPariod);
+    connect(&timerUpdateChannelInfo, &QTimer::timeout, this, [this]()
+    {
+        if (!state.connected)
+        {
+            return;
+        }
+
+        requestChannelInfo();
+    });
+    timerUpdateChannelInfo.start();
 
     reconnect();
 }
@@ -195,6 +208,8 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             lastConnectedChannelName = state.streamId;
             emit connectedChanged(true, state.streamId);
             emit stateChanged();
+
+            requestChannelInfo();
         }
         else
         {
@@ -407,5 +422,37 @@ void Trovo::requestChatToken()
 
         socket.setProxy(network.proxy());
         socket.open(QUrl("wss://open-chat.trovo.live/chat"));
+    });
+}
+
+void Trovo::requestChannelInfo()
+{
+    QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/channels/id"));
+    request.setRawHeader("Accept", "application/json");
+    request.setRawHeader("Content-type", "application/json");
+    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+
+    QJsonObject object;
+    object.insert("channel_id", channelId);
+
+    QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        bool ok = false;
+        const int64_t viewersCount = QJsonDocument::fromJson(data).object().value("current_viewers").toVariant().toLongLong(&ok);
+        if (!ok)
+        {
+            return;
+        }
+
+        state.viewersCount = viewersCount;
+
+        emit stateChanged();
     });
 }

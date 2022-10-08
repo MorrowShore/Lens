@@ -25,6 +25,7 @@ private:
     static QString getChannelName(const QString& stream);
     void requestChannelId();
     void requestChatToken();
+    void requestChannelInfo();
 
     QSettings& settings;
     QNetworkAccessManager& network;
@@ -36,6 +37,7 @@ private:
 
     QTimer timerPing;
     QTimer timerReconnect;
+    QTimer timerUpdateChannelInfo;
 
     QString lastConnectedChannelName;
 };
