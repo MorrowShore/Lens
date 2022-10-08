@@ -1,4 +1,5 @@
 #include "twitch.h"
+#include "apikeys.h"
 #include "models/messagesmodel.h"
 #include "models/author.h"
 #include "models/message.h"
@@ -16,7 +17,6 @@ namespace
 
 static const QByteArray AcceptLanguageNetworkHeaderName = ""; // "en-US;q=0.5,en;q=0.3";
 
-static const QString ApplicationClientID = "cx5rgsivc62io2kk79yf6eivhhwiui";
 static const QString RedirectUri = "https://twitchapps.com/tmi/";//"https://localhost";
 static const QString TwitchIRCHost = "tmi.twitch.tv";
 
@@ -216,7 +216,7 @@ QString Twitch::getStateDescription() const
 
 QUrl Twitch::requesGetAOuthTokenUrl() const
 {
-    return QUrl("https://id.twitch.tv/oauth2/authorize?client_id=" + ApplicationClientID
+    return QUrl("https://id.twitch.tv/oauth2/authorize?client_id=" + QString(TWITCH_CLIENT_ID)
                         + "&redirect_uri=" + RedirectUri
                         + "&response_type=token"
                         + "&scope=openid+chat:read");
@@ -692,7 +692,7 @@ void Twitch::requestUserInfo(const QString& login)
     QNetworkRequest request(QString("https://api.twitch.tv/helix/users?login=%1").arg(login));
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-    request.setRawHeader("Client-ID", ApplicationClientID.toUtf8());
+    request.setRawHeader("Client-ID", TWITCH_CLIENT_ID);
     request.setRawHeader("Authorization", QByteArray("Bearer ") + oauthToken.get().toUtf8());
     QNetworkReply* reply = network.get(request);
     if (!reply)
@@ -748,7 +748,7 @@ void Twitch::requestStreamInfo(const QString &login)
     QNetworkRequest request(QString("https://api.twitch.tv/helix/streams?user_login=%1").arg(login));
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-    request.setRawHeader("Client-ID", ApplicationClientID.toUtf8());
+    request.setRawHeader("Client-ID", TWITCH_CLIENT_ID);
     request.setRawHeader("Authorization", QByteArray("Bearer ") + oauthToken.get().toUtf8());
     QNetworkReply* reply = network.get(request);
     if (!reply)

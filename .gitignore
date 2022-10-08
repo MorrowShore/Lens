@@ -72,3 +72,5 @@ Thumbs.db
 # Builds
 build-*
 release_*
+
+src/chat_services/apikeys.h

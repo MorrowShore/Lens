@@ -48,7 +48,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
 
     addService(new YouTube  (settings, SettingsGroupPath + "/youtube",  network, this));
     addService(new Twitch   (settings, SettingsGroupPath + "/twitch",   network, this));
-    //addService(new Trovo    (settings, SettingsGroupPath + "/trovo",    network, this));
+    addService(new Trovo    (settings, SettingsGroupPath + "/trovo",    network, this));
     addService(new GoodGame (settings, SettingsGroupPath + "/goodgame", network, this));
 }
 
