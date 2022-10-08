@@ -208,14 +208,16 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             bool ok = false;
             const int64_t authorIdNum = jsonMessage.value("sender_id").toVariant().toLongLong(&ok);
 
-            if (type == 5)
+            // https://developer.trovo.live/docs/Chat%20Service.html#_3-4-chat-message-types-and-samples
+
+            if ((type >= 5 && type <= 9) || (type >= 5001 && type <= 5009) || (type >= 5012 && type <= 5013))
             {
                 //TODO
                 continue;
             }
             else if (type != 0)
             {
-                qWarning() << Q_FUNC_INFO << ": unsupported message type" << type << ", message =" << jsonMessage;
+                qWarning() << Q_FUNC_INFO << ": unknown message type" << type << ", message =" << jsonMessage;
                 continue;
             }
 
