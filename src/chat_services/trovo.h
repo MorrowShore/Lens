@@ -35,6 +35,7 @@ private:
     QString channelId;
 
     QTimer timerPing;
+    QTimer timerReconnect;
 
     QString lastConnectedChannelName;
 };
