@@ -37,7 +37,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="140"/>
+        <location filename="chathandler.cpp" line="142"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -75,17 +75,17 @@
         <translation type="vanished">Twitch отключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="238"/>
+        <location filename="chathandler.cpp" line="243"/>
         <source>%1 connected: %2</source>
         <translation>%1 подключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="242"/>
+        <location filename="chathandler.cpp" line="247"/>
         <source>%1 disconnected: %2</source>
         <translation>%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="257"/>
+        <location filename="chathandler.cpp" line="262"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -94,33 +94,33 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.h" line="70"/>
-        <location filename="chat_services/chatservice.h" line="79"/>
+        <location filename="chat_services/chatservice.h" line="72"/>
+        <location filename="chat_services/chatservice.h" line="81"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="73"/>
+        <location filename="chat_services/chatservice.h" line="75"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="74"/>
+        <location filename="chat_services/chatservice.h" line="76"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="75"/>
+        <location filename="chat_services/chatservice.h" line="77"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="76"/>
+        <location filename="chat_services/chatservice.h" line="78"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="104"/>
+        <location filename="chat_services/chatservice.h" line="106"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -342,28 +342,28 @@
 <context>
     <name>GoodGame</name>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="59"/>
+        <location filename="chat_services/goodgame.cpp" line="47"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="153"/>
+        <location filename="chat_services/goodgame.cpp" line="141"/>
         <source>Channel not specified</source>
         <oldsource>Stream not specified</oldsource>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="156"/>
+        <location filename="chat_services/goodgame.cpp" line="144"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="159"/>
+        <location filename="chat_services/goodgame.cpp" line="147"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/goodgame.cpp" line="162"/>
+        <location filename="chat_services/goodgame.cpp" line="150"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -496,22 +496,27 @@
 <context>
     <name>Trovo</name>
     <message>
-        <location filename="chat_services/trovo.cpp" line="30"/>
+        <location filename="chat_services/trovo.cpp" line="52"/>
+        <source>Link or channel name...</source>
+        <translation>Ссылка или имя канала...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="131"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="33"/>
+        <location filename="chat_services/trovo.cpp" line="134"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="36"/>
+        <location filename="chat_services/trovo.cpp" line="137"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="39"/>
+        <location filename="chat_services/trovo.cpp" line="140"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1286,27 +1291,27 @@ Latest version available: %2</oldsource>
         <translation>Настройки AxelChat</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="44"/>
+        <location filename="settings.qml" line="46"/>
         <source>Changes will take effect after restarting the program</source>
         <translation>Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="49"/>
+        <location filename="settings.qml" line="51"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="57"/>
+        <location filename="settings.qml" line="59"/>
         <source>Restart</source>
         <translation>Перезапуск</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="87"/>
+        <location filename="settings.qml" line="89"/>
         <source>Ok</source>
         <translation>Ок</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="168"/>
+        <location filename="settings.qml" line="170"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -1315,17 +1320,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="164"/>
+        <location filename="settings.qml" line="166"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="176"/>
+        <location filename="settings.qml" line="178"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="180"/>
+        <location filename="settings.qml" line="182"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -1334,7 +1339,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="184"/>
+        <location filename="settings.qml" line="186"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>

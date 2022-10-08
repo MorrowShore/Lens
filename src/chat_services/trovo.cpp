@@ -153,7 +153,7 @@ void Trovo::reconnect()
 
     state = State();
 
-    state.streamId = getStreamId(stream.get());
+    state.streamId = getChannelName(stream.get());
 
     if (state.streamId.isEmpty())
     {
@@ -307,10 +307,28 @@ void Trovo::ping()
     }
 }
 
-QString Trovo::getStreamId(const QString &stream)
+QString Trovo::getChannelName(const QString &stream)
 {
-    //TODO
-    return stream.toLower().trimmed();
+    QString channelName = stream.toLower().trimmed();
+
+    if (channelName.startsWith("https://trovo.live/s/", Qt::CaseSensitivity::CaseInsensitive))
+    {
+        channelName = AxelChat::simplifyUrl(channelName);
+        channelName = AxelChat::removeFromStart(channelName, "trovo.live/s/", Qt::CaseSensitivity::CaseInsensitive);
+
+        if (channelName.contains("/"))
+        {
+            channelName = channelName.left(channelName.indexOf("/"));
+        }
+    }
+
+    QRegExp rx("^[a-zA-Z0-9_\\-]+$", Qt::CaseInsensitive);
+    if (rx.indexIn(channelName) == -1)
+    {
+        return QString();
+    }
+
+    return channelName;
 }
 
 void Trovo::requestChannelId()
@@ -322,7 +340,7 @@ void Trovo::requestChannelId()
 
     QJsonObject object;
     QJsonArray usersNames;
-    usersNames.append(stream.get());
+    usersNames.append(state.streamId);
     object.insert("user", usersNames);
 
     QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());

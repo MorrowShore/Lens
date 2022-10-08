@@ -96,26 +96,44 @@ static QByteArray convertANSIWithUtf8Numbers(const QString& string)
     return ba;
 }
 
-static bool removeFromStart(QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity)
+static QString removeFromStart(const QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity, bool* ok = nullptr)
 {
     if (!string.startsWith(subString, caseSensitivity))
     {
-        return false;
+        if (ok)
+        {
+            *ok = false;
+        }
+
+        return string;
     }
 
-    string = string.mid(subString.length());
-    return true;
+    if (ok)
+    {
+        *ok = true;
+    }
+
+    return string.mid(subString.length());
 }
 
-static bool removeFromEnd(QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity)
+static QString removeFromEnd(const QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity, bool* ok = nullptr)
 {
     if (!string.endsWith(subString, caseSensitivity))
     {
-        return false;
+        if (ok)
+        {
+            *ok = false;
+        }
+
+        return string;
     }
 
-    string = string.left(string.lastIndexOf(subString, -1, caseSensitivity));
-    return true;
+    if (ok)
+    {
+        *ok = true;
+    }
+
+    return string.left(string.lastIndexOf(subString, -1, caseSensitivity));
 }
 
 }

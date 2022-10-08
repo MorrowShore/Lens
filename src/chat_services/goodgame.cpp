@@ -277,7 +277,10 @@ QString GoodGame::getStreamId(const QString &stream)
     {
         streamId = AxelChat::simplifyUrl(streamId);
 
-        if (!AxelChat::removeFromStart(streamId, "goodgame.ru/channel/", Qt::CaseSensitivity::CaseInsensitive))
+        bool ok = false;
+        streamId = AxelChat::removeFromStart(streamId, "goodgame.ru/channel/", Qt::CaseSensitivity::CaseInsensitive, &ok);
+
+        if (!ok)
         {
             return QString();
         }
