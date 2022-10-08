@@ -287,7 +287,88 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             const QString messageId = jsonMessage.value("message_id").toString().trimmed();
 
             QList<Message::Content*> contents;
-            contents.append(new Message::Text(content));
+
+            QStringList chunks;
+
+            QString chunk;
+            bool foundColon = false;
+            for (const QChar& c : content)
+            {
+                if (c == ":")
+                {
+                    if (!chunk.isEmpty())
+                    {
+                        chunks.append(chunk);
+                        chunk.clear();
+                    }
+
+                    chunk += c;
+                    foundColon = true;
+                }
+                else
+                {
+                    if (foundColon)
+                    {
+                        if (SmilesValidSymbols.contains(c))
+                        {
+                            chunk += c;
+                        }
+                        else
+                        {
+                            if (!chunk.isEmpty())
+                            {
+                                chunks.append(chunk);
+                                chunk.clear();
+                            }
+
+                            chunk += c;
+
+                            foundColon = false;
+                        }
+                    }
+                    else
+                    {
+                        chunk += c;
+                    }
+                }
+            }
+
+            if  (!chunk.isEmpty())
+            {
+                chunks.append(chunk);
+            }
+
+            QString text;
+            for (const QString& chunk : chunks)
+            {
+                if (chunk.startsWith(":"))
+                {
+                    const QString emote = AxelChat::removeFromStart(chunk, ":", Qt::CaseSensitivity::CaseInsensitive);
+                    if (smiles.contains(emote))
+                    {
+                        if (!text.isEmpty())
+                        {
+                            contents.append(new Message::Text(text));
+                            text = QString();
+                        }
+
+                        contents.append(new Message::Image(QUrl(smiles.value(emote)), 40));
+                    }
+                    else
+                    {
+                        text += chunk;
+                    }
+                }
+                else
+                {
+                    text += chunk;
+                }
+            }
+
+            if (!text.isEmpty())
+            {
+                contents.append(new Message::Text(text));
+            }
 
             Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
 
@@ -393,6 +474,7 @@ void Trovo::requestChannelId()
 
         channelId = channelId_;
 
+        requsetSmiles();
         requestChatToken();
     });
 }
@@ -454,5 +536,80 @@ void Trovo::requestChannelInfo()
         state.viewersCount = viewersCount;
 
         emit stateChanged();
+    });
+}
+
+void Trovo::requsetSmiles()
+{
+    QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/getemotes"));
+    request.setRawHeader("Accept", "application/json");
+    request.setRawHeader("Content-type", "application/json");
+    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+
+    QJsonObject object;
+    QJsonArray channelIds;
+    channelIds.append(channelId);
+    object.insert("channel_id", channelIds);
+    object.insert("emote_type", 0);
+
+    QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QJsonObject channels = QJsonDocument::fromJson(data).object().value("channels").toObject();
+
+        const QJsonArray channelsArray = channels.value("customizedEmotes").toObject().value("channel").toArray();
+        if (!channelsArray.isEmpty())
+        {
+            const QJsonArray emotes = channelsArray.first().toObject().value("emotes").toArray();
+            for (const QJsonValue& v : qAsConst(emotes))
+            {
+                const QJsonObject emote = v.toObject();
+                const QString name = emote.value("name").toString();
+                const QUrl url(emote.value("url").toString());
+
+                if (name.isEmpty() || url.isEmpty())
+                {
+                    continue;
+                }
+
+                smiles.insert(name, url);
+            }
+        }
+
+        const QJsonArray eventEmotes = channels.value("eventEmotes").toArray();
+        for (const QJsonValue& v : qAsConst(eventEmotes))
+        {
+            const QJsonObject emote = v.toObject();
+            const QString name = emote.value("name").toString();
+            const QUrl url(emote.value("url").toString());
+
+            if (name.isEmpty() || url.isEmpty())
+            {
+                continue;
+            }
+
+            smiles.insert(name, url);
+        }
+
+        const QJsonArray globalEmotes = channels.value("globalEmotes").toArray();
+        for (const QJsonValue& v : qAsConst(globalEmotes))
+        {
+            const QJsonObject emote = v.toObject();
+            const QString name = emote.value("name").toString();
+            const QUrl url(emote.value("url").toString());
+
+            if (name.isEmpty() || url.isEmpty())
+            {
+                continue;
+            }
+
+            smiles.insert(name, url);
+        }
     });
 }

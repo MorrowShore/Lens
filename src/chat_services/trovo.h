@@ -26,6 +26,7 @@ private:
     void requestChannelId();
     void requestChatToken();
     void requestChannelInfo();
+    void requsetSmiles();
 
     QSettings& settings;
     QNetworkAccessManager& network;
@@ -40,5 +41,8 @@ private:
     QTimer timerUpdateChannelInfo;
 
     QString lastConnectedChannelName;
+
+    inline static const QString SmilesValidSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
+    QHash<QString, QUrl> smiles;
 };
 
