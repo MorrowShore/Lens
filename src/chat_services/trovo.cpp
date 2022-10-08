@@ -184,6 +184,10 @@ void Trovo::reconnect()
         return;
     }
 
+    state.streamUrl = QUrl("https://trovo.live/s/" + state.streamId);
+    state.chatUrl = QUrl("https://trovo.live/chat/" + state.streamId);
+    state.controlPanelUrl = QUrl("https://studio.trovo.live/stream");
+
     requestChannelId();
 
     emit stateChanged();
