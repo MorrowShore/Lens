@@ -167,6 +167,10 @@ Window {
                         category: "common"
                     }
                     ListElement {
+                        name: qsTr("Widgets")
+                        category: "widgets"
+                    }
+                    ListElement {
                         name: qsTr("Appearance")
                         category: "appearance"
                     }
@@ -246,6 +250,10 @@ Window {
                     else if (currentItem.category === "common")
                     {
                         stackViewCategories.replace("setting_pages/common.qml");
+                    }
+                    else if (currentItem.category === "widgets")
+                    {
+                        stackViewCategories.replace("setting_pages/widgets.qml");
                     }
                     else if (currentItem.category === "appearance")
                     {

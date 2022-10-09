@@ -496,27 +496,27 @@
 <context>
     <name>Trovo</name>
     <message>
-        <location filename="chat_services/trovo.cpp" line="52"/>
+        <location filename="chat_services/trovo.cpp" line="54"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="131"/>
+        <location filename="chat_services/trovo.cpp" line="154"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="134"/>
+        <location filename="chat_services/trovo.cpp" line="157"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="137"/>
+        <location filename="chat_services/trovo.cpp" line="160"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="140"/>
+        <location filename="chat_services/trovo.cpp" line="163"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1312,6 +1312,11 @@ Latest version available: %2</oldsource>
     </message>
     <message>
         <location filename="settings.qml" line="170"/>
+        <source>Widgets</source>
+        <translation>Виджеты</translation>
+    </message>
+    <message>
+        <location filename="settings.qml" line="174"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -1325,12 +1330,12 @@ Latest version available: %2</oldsource>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="178"/>
+        <location filename="settings.qml" line="182"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="182"/>
+        <location filename="settings.qml" line="186"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -1339,7 +1344,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="186"/>
+        <location filename="settings.qml" line="190"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
@@ -1535,6 +1540,19 @@ Latest version available: %2</oldsource>
         <location filename="updatesnotification.qml" line="120"/>
         <source>Published: %1</source>
         <translation>Опубликовано: %1</translation>
+    </message>
+</context>
+<context>
+    <name>widgets</name>
+    <message>
+        <location filename="setting_pages/widgets.qml" line="28"/>
+        <source>Chat</source>
+        <translation>Чат</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/widgets.qml" line="48"/>
+        <source>Viewers</source>
+        <translation>Зрители</translation>
     </message>
 </context>
 <context>

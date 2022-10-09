@@ -104,7 +104,7 @@ void WebSocket::send(const QJsonObject& object, const QList<QWebSocket*>& client
         client->sendTextMessage(message);
     }
 
-    qDebug("SENDED: " + message.toUtf8());
+    //qDebug("SENDED: " + message.toUtf8());
 }
 
 void WebSocket::sendMessagesToClient(const QList<Message> &messages, QWebSocket *client)

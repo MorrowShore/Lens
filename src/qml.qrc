@@ -19,5 +19,6 @@
         <file>my_components/SliderRow.qml</file>
         <file>my_components/MyTextArea.qml</file>
         <file>setting_pages/service.qml</file>
+        <file>setting_pages/widgets.qml</file>
     </qresource>
 </RCC>
