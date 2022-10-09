@@ -166,10 +166,10 @@ Window {
                         name: qsTr("Common")
                         category: "common"
                     }
-                    ListElement {
+                    /*ListElement {
                         name: qsTr("Widgets")
                         category: "widgets"
-                    }
+                    }*/
                     ListElement {
                         name: qsTr("Appearance")
                         category: "appearance"
