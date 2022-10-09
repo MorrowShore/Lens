@@ -385,17 +385,10 @@ int ChatHandler::getViewersTotalCount() const
 
     for (ChatService* service : services)
     {
-        if (service->getConnectionStateType()  == ChatService::ConnectionStateType::Connected)
+        const int count = service->getViewersCount();
+        if (count >= 0)
         {
-            const int count = service->getViewersCount();
-            if (count < 0)
-            {
-                return -1;
-            }
-            else
-            {
-                result += count;
-            }
+            result += count;
         }
     }
 
