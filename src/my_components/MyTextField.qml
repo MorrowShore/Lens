@@ -7,7 +7,7 @@ TextField {
     selectByMouse: true
 
     persistentSelection: true
-    //background.visible: !readOnly
+    background.visible: !readOnly
 
     onFocusChanged: {
         if (!focus)
