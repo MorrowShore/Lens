@@ -75,7 +75,7 @@
 #define TWITCH_CLIENT_ID "<Paste Twitch client ID here>"
 #define TROVO_CLIENT_ID "<Paste Trovo client ID here>"
 ```
-1. Open file `<AxelChat_project_folder>/src/AxelChat.pro` with Qt Creator
+3. Open file `<AxelChat_project_folder>/src/AxelChat.pro` with Qt Creator
 1. In Qt Creator select `Desktop Qt x.x.x MinGW 64-bit` kit
 1. Select `Release` building mode
 1. Click button `Build Project "AxelChat"`. If successful build, folder `release_win64` will appear in the project folder with AxelChat.exe and other files
