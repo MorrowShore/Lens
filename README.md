@@ -7,7 +7,7 @@
 [![Patreon](https://raw.githubusercontent.com/3dproger/AxelChat/main/images/button-patron.png)](https://patreon.com/axel_k)
 
 <p align="center">
-  <img src="images/github-social5b.png">
+  <img src="images/github-social6a.png">
 </p>
 
 # Features
