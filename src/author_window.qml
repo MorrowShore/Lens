@@ -69,6 +69,7 @@ Window {
                     color: "#03A9F4";
                     font.bold: true
                     selectByMouse: true
+                    background.visible: false
                     readOnly: true
                     wrapMode: Text.Wrap
                 }
