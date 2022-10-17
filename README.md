@@ -37,10 +37,12 @@
 - [x] Proxy support
 - [ ] Web-based widgets
 - [ ] Support for donate platforms
-- [ ] Linux support
-- [ ] macOS support
-- [ ] Android support
-- [ ] iOS support
+- [x] Windows builds
+- [ ] Linux builds
+- [ ] macOS builds
+- [ ] Android builds
+- [ ] iOS builds
+- [ ] Many other improvements
 
 # FAQ
 - Is AxelChat considered a viewer? - No, at least for now, for YouTube and Twitch
