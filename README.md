@@ -25,10 +25,22 @@
 - Proxy support
 
 # Possibly in future updates
-- Support for other live streaming platforms
-- Support for donate platforms
-- Support for other operating systems, including mobile
-- Many other improvements
+- [x] Twitch support
+- [x] YouTube support
+- [x] Trovo support
+- [x] GoodGame support
+- [x] Display avatars of participants of chat
+- [x] Displaying the number of viewers both total and for individual platforms
+- [x] Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
+- [x] Built-in sound commands
+- [x] Output to files
+- [x] Proxy support
+- [ ] Web-based widgets
+- [ ] Support for donate platforms
+- [ ] Linux support
+- [ ] macOS support
+- [ ] Android support
+- [ ] iOS support
 
 # FAQ
 - Is AxelChat considered a viewer? - No, at least for now, for YouTube and Twitch
