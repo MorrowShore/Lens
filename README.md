@@ -1,3 +1,6 @@
+# AxelChat
+The AxelChat application collects chat from various streaming platforms and displays it in one window. Has a user-friendly interface and various useful features
+
 [Download](https://github.com/3dproger/axelchat/releases/latest/) |
 [Releases](https://github.com/3dproger/AxelChat/releases) |
 [Issues](https://github.com/3dproger/AxelChat/issues) |
@@ -12,7 +15,6 @@
 
 # Features
 - Display messages from multiple streaming platforms at once
-- YouTube: Messages in AxelChat arrive much faster than the standard YouTube live chat in your browser
 - Display avatars of participants of chat
 - Displaying the number of viewers both total and for individual platforms
 - Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
@@ -23,6 +25,7 @@
 - Sound commands that are activated by the corresponding message from the chat. There are built-in commands, but you can always add your own
 - Saving messages and other information on the fly to text files. It may be useful for further processing by other software
 - Proxy support
+- Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
 
 # Possibly in future updates
 - [x] Twitch support
@@ -33,8 +36,9 @@
 - [x] Displaying the number of viewers both total and for individual platforms
 - [x] Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
 - [x] Built-in sound commands
-- [x] Output to files
+- [x] Output data to files in real time. Can be used to integrate with other programs
 - [x] Proxy support
+- [x] Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
 - [ ] Web-based widgets
 - [ ] Support for donate platforms
 - [x] Windows builds
