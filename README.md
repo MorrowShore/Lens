@@ -85,7 +85,7 @@ The AxelChat application collects chat from various streaming platforms and disp
     * Developer and Designer Tools / OpenSSL 1.1.1x Toolkit / OpenSSL 32-bit binaries
     * Developer and Designer Tools / OpenSSL 1.1.1x Toolkit / OpenSSL 64-bit binaries
 
-### Build source
+### Build source for Windows x64
 1. Clone repo or download source
 1. Create file `src/chat_services/apikeys.h` with contents:
 ```
@@ -97,7 +97,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 1. In Qt Creator select `Desktop Qt x.x.x MinGW 64-bit` kit
 1. Select `Release` building mode
 1. Click button `Build Project "AxelChat"`. If successful build, folder `release_win64` will appear in the project folder with AxelChat.exe and other files
-1. Copy files from `<AxelChat_project_folder>/app_files/win64` to `<AxelChat_project_folder>/release_win64`
+1. Unpack files from `<AxelChat_project_folder>/app_files/win64.zip` to `<AxelChat_project_folder>/release_win64`
 1. Run `<AxelChat_project_folder>/release_win64/AxelChat.exe` or click `Run` in Qt Creator
 1. For subsequent builds, just close `AxelChat.exe` application and click `Run` in Qt Creator
 
