@@ -19,7 +19,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - Displaying the number of viewers both total and for individual platforms
 - Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
 <p align="center">
-  <img src="images/9.png">
+  <img src="images/11.png">
 </p>
 
 - Sound commands that are activated by the corresponding message from the chat. There are built-in commands, but you can always add your own
