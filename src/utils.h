@@ -6,6 +6,14 @@
 #include <QFile>
 #include <QDir>
 #include <QDebug>
+#include <qwindowdefs.h>
+
+#ifdef Q_OS_WINDOWS
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+#endif
+#include <dwmapi.h>
+#endif
 
 namespace AxelChat
 {
@@ -135,5 +143,13 @@ static QString removeFromEnd(const QString& string, const QString& subString, co
 
     return string.left(string.lastIndexOf(subString, -1, caseSensitivity));
 }
+
+#ifdef Q_OS_WINDOWS
+static void setDarkWindowFrame(const WId wid)
+{
+    BOOL value = TRUE;
+    ::DwmSetWindowAttribute((HWND)wid, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
+}
+#endif
 
 }

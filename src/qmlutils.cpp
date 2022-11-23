@@ -1,8 +1,10 @@
 #include "qmlutils.h"
+#include "utils.h"
 #include <QProcess>
 #include <QApplication>
 #include <QQmlEngine>
 #include <QSysInfo>
+#include <QWindow>
 
 namespace
 {
@@ -104,8 +106,23 @@ qreal QMLUtils::valueReal(const QString &key, qreal defaultValue)
     return defaultValue;
 }
 
+void QMLUtils::updateWindowStyle(QWindow* window) const
+{
+    if (!window)
+    {
+        return;
+    }
+
+    AxelChat::setDarkWindowFrame(window->winId());
+}
+
 void QMLUtils::declareQml()
 {
     qmlRegisterUncreatableType<QMLUtils> ("AxelChat.QMLUtils",
-                                             1, 0, "QMLUtils", "Type cannot be created in QML");
+                                          1, 0, "QMLUtils", "Type cannot be created in QML");
+}
+
+void QMLUtils::setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine_)
+{
+    qmlEngine = qmlEngine_;
 }

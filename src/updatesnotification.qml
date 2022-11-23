@@ -25,8 +25,8 @@ Window {
     color: "#202225"
 
     onVisibleChanged: {
-        if (visible)
-        {
+        if (visible) {
+            qmlUtils.updateWindowStyle(this)
             checkBoxSkipVersion.checked = false
         }
     }

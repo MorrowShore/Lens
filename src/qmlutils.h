@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QQmlApplicationEngine>
+#include <QWindow>
 
 class QMLUtils : public QObject
 {
@@ -14,6 +16,8 @@ class QMLUtils : public QObject
 public:
     explicit QMLUtils(QSettings& settings, const QString& settingsGroup, QObject *parent = nullptr);
     static void declareQml();
+
+    void setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine);
 
     Q_INVOKABLE static void restartApplication();
 
@@ -30,12 +34,15 @@ public:
     Q_INVOKABLE bool valueBool(const QString& key, bool defaultValue);
     Q_INVOKABLE qreal valueReal(const QString& key, qreal defaultValue);
 
+    Q_INVOKABLE void updateWindowStyle(QWindow* window) const;
+
 signals:
     void dataChanged();
 
 private:
     QSettings& settings;
     const QString SettingsGroupPath = "qml_utils";
+    const QQmlApplicationEngine* qmlEngine = nullptr;
 };
 
 #endif // QMLUTILS_HPP

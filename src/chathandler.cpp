@@ -312,22 +312,6 @@ MessagesModel& ChatHandler::getMessagesModel()
     return messagesModel;
 }
 
-#ifdef QT_QUICK_LIB
-void ChatHandler::declareQml()
-{
-    qmlRegisterUncreatableType<ChatHandler> ("AxelChat.ChatHandler",
-                                             1, 0, "ChatHandler", "Type cannot be created in QML");
-
-    qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
-                                              1, 0, "OutputToFile", "Type cannot be created in QML");
-
-    ChatService::declareQml();
-
-    AuthorQMLProvider::declareQML();
-    ChatBot::declareQml();
-}
-#endif
-
 void ChatHandler::setEnabledSoundNewMessage(bool enabled)
 {
     if (_enabledSoundNewMessage != enabled)

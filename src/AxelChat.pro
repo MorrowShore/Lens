@@ -94,6 +94,8 @@ ANDROID_EXTRA_LIBS += \
     $$_PRO_FILE_PWD_/../app_files/arm/libssl_1_1.so
 
 win32: {
+    LIBS += -lDwmapi
+
     #Подключаем SSL для Windows. Соответствующий модуль должен быть установлён!!!
 
     contains(QT_ARCH, i386) {

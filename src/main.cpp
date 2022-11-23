@@ -63,8 +63,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     i18n.setQmlApplicationEngine(&engine);
-
-    engine.rootContext();
+    qmlUtils.setQmlApplicationEngine(&engine);
 
     ClipboardQml::declareQml();
     ClipboardQml clipboard;

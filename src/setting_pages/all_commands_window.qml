@@ -16,6 +16,12 @@ Window {
     Material.foreground: "#FFFFFF"
     color: "#202225"
 
+    onVisibleChanged: {
+        if (visible) {
+            qmlUtils.updateWindowStyle(this)
+        }
+    }
+
     ScrollView {
         anchors.left: parent.left
         anchors.right: parent.right

@@ -21,6 +21,9 @@ public:
 signals:
     void commandsChanged();
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private slots:
     void on_pushButtonCancel_clicked();
 

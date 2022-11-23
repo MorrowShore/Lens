@@ -20,6 +20,12 @@ ApplicationWindow {
     minimumWidth:  150
     title: Qt.application.name
 
+    onVisibleChanged: {
+        if (visible) {
+            qmlUtils.updateWindowStyle(this)
+        }
+    }
+
     flags: {
         var windowFlags = Qt.Window
         if (_customizeWindowHint) {

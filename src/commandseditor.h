@@ -24,6 +24,9 @@ public:
         qmlRegisterUncreatableType<CommandsEditor>("CommandsEditor", 1, 0, "CommandsEditor", "Type cannot be created in QML");
     }
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private slots:
     void on_pushButtonCreate_clicked();
 

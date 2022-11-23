@@ -96,8 +96,10 @@ Window {
     }
 
     onVisibleChanged: {
-        if (!visible)
-        {
+        if (visible) {
+            qmlUtils.updateWindowStyle(this)
+        }
+        else {
             commandsEditor.close();
         }
     }

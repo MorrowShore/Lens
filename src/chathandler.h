@@ -43,7 +43,19 @@ public:
 #endif
 
 #ifdef QT_QUICK_LIB
-    static void declareQml();
+    static void declareQml()
+    {
+        qmlRegisterUncreatableType<ChatHandler> ("AxelChat.ChatHandler",
+                                                 1, 0, "ChatHandler", "Type cannot be created in QML");
+
+        qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
+                                                  1, 0, "OutputToFile", "Type cannot be created in QML");
+
+        ChatService::declareQml();
+
+        AuthorQMLProvider::declareQML();
+        ChatBot::declareQml();
+    }
 #endif
 
     inline bool enabledSoundNewMessage() const { return _enabledSoundNewMessage; }

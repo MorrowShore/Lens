@@ -5,6 +5,7 @@ import QtQuick.Controls.Material 2.12
 import "my_components" as MyComponents
 import AxelChat.AuthorQMLProvider 1.0
 import AxelChat.ChatHandler 1.0
+import AxelChat.QMLUtils 1.0
 
 Window {
     id: root
@@ -24,6 +25,12 @@ Window {
            Qt.WindowCloseButtonHint
 
     property string authorId: ""
+
+    onVisibleChanged: {
+        if (visible) {
+            qmlUtils.updateWindowStyle(this)
+        }
+    }
 
     onAuthorIdChanged: {
         authorQMLProvider.setSelectedAuthorId(authorId)
