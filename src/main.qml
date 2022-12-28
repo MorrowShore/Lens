@@ -484,7 +484,7 @@ ApplicationWindow {
                 anchors.leftMargin: 4 + authorBackground.visible * 6
                 anchors.rightMargin: 4
                 spacing: 4
-                visible: Global.windowChatMessageShowAuthorName && (!messageMarkedAsDeleted || !Global.windowChatMessageHideAuthorDeletedMessage)
+                visible: Global.windowChatMessageShowAuthorName && !messageMarkedAsDeleted
 
                 //Author Name
                 Text {
@@ -566,7 +566,7 @@ ApplicationWindow {
             //Author Avatar
             MyComponents.ImageRounded {
                 id: avatarImage
-                visible: Global.windowChatMessageShowAvatar && (!messageMarkedAsDeleted || !Global.windowChatMessageHideAuthorDeletedMessage)
+                visible: Global.windowChatMessageShowAvatar && !messageMarkedAsDeleted
                 //cache: false // TODO: need check
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
