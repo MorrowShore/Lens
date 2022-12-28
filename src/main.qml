@@ -471,6 +471,7 @@ ApplicationWindow {
                 height: authorNameText.height + 2
                 radius: 2
                 color: authorHasCustomNicknameBackgroundColor ? authorCustomNicknameBackgroundColor : "transparent"
+                visible: authorRow.visible
             }
 
             Row {
@@ -483,11 +484,11 @@ ApplicationWindow {
                 anchors.leftMargin: 4 + authorBackground.visible * 6
                 anchors.rightMargin: 4
                 spacing: 4
+                visible: Global.windowChatMessageShowAuthorName && (!messageMarkedAsDeleted || !Global.windowChatMessageHideAuthorDeletedMessage)
 
                 //Author Name
                 Text {
                     id: authorNameText
-                    visible: Global.windowChatMessageShowAuthorName
                     style: Text.Outline
                     color: authorHasCustomNicknameColor ? authorCustomNicknameColor : "#03A9F4"
                     font.bold: true
@@ -565,7 +566,7 @@ ApplicationWindow {
             //Author Avatar
             MyComponents.ImageRounded {
                 id: avatarImage
-                visible: Global.windowChatMessageShowAvatar
+                visible: Global.windowChatMessageShowAvatar && (!messageMarkedAsDeleted || !Global.windowChatMessageHideAuthorDeletedMessage)
                 //cache: false // TODO: need check
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
@@ -583,18 +584,15 @@ ApplicationWindow {
 
                 asynchronous: true
                 source: {
-                    if (!Global.windowChatMessageShowAvatar)
-                    {
-                        return "" // Potentialy optimization
+                    if (!visible) {
+                        return ""
                     }
 
-                    if (messageCustomAuthorAvatarUrl.toString() !== "")
-                    {
+                    if (messageCustomAuthorAvatarUrl.toString() !== "") {
                         return messageCustomAuthorAvatarUrl;
                     }
 
-                    if (authorAvatarUrl.toString() !== "")
-                    {
+                    if (authorAvatarUrl.toString() !== "") {
                         return authorAvatarUrl;
                     }
 

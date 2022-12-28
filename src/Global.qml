@@ -52,6 +52,7 @@ QtObject {
     property color windowChatMessageFrameBorderColor: "#003760"
     property color windowChatMessageFrameBackgroundColor: "transparent"
     property real windowChatMessageFrameCornerRadius: 4//0
+    property bool windowChatMessageHideAuthorDeletedMessage : true
 
     function save(){
         windowChat.saveGlobalSettings()
