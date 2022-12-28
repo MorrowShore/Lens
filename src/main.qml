@@ -621,7 +621,7 @@ ApplicationWindow {
 
                 anchors.left: avatarImage.visible ? avatarImage.right : parent.left
                 anchors.right: parent.right
-                anchors.top: authorRow.bottom
+                anchors.top: authorRow.visible ? authorRow.bottom : parent.top
                 anchors.margins: 4
                 wrapMode: Text.Wrap
                 textFormat: TextEdit.RichText
