@@ -58,38 +58,48 @@ void MessagesModel::append(Message&& message)
         return;
     }
 
-    if (!message.isHasFlag(Message::Flag::DeleterItem))
+    if (message.isHasFlag(Message::Flag::DeleterItem))
     {
+        //Deleter
+
         if (!_dataById.contains(message.getId()))
         {
-            //Normal message
-
-            beginInsertRows(QModelIndex(), _data.count(), _data.count());
-
-            message.setIdNum(_lastIdNum);
-            _lastIdNum++;
-
-            QVariant* messageData = new QVariant();
-
-            messageData->setValue(message);
-
-            _idByData.insert(messageData, message.getId());
-            _dataById.insert(message.getId(), messageData);
-            _dataByIdNum.insert(message.getIdNum(), messageData);
-            _idNumByData.insert(messageData, message.getIdNum());
-
-            Author* author = getAuthor(message.getAuthorId());
-
-            std::set<uint64_t>& messagesIds = author->getMessagesIds();
-            messagesIds.insert(message.getIdNum());
-
-            _data.append(messageData);
-
-            //printMessageInfo("New message:", rawMessage);
-
-            endInsertRows();
+            return;
         }
-        else
+
+        QVariant* data = _dataById[message.getId()];
+        if (!data)
+        {
+            return;
+        }
+
+        const QModelIndex& index = createIndexByPtr(data);
+        if (!index.isValid())
+        {
+            qCritical() << Q_FUNC_INFO << ": index not valid";
+            message.printMessageInfo("Raw message:");
+            return;
+        }
+
+        if (!setData(index, true, (int)Message::Role::MarkedAsDeleted))
+        {
+            qCritical() << Q_FUNC_INFO << ": failed to set data with role" << Message::Role::MarkedAsDeleted;
+
+            message.printMessageInfo("Raw message:");
+        }
+
+        if (!setData(index, message.toHtml(), (int)Message::Role::Html))
+        {
+            qCritical() << Q_FUNC_INFO << ": failed to set data with role" << Message::Role::Html;
+
+            message.printMessageInfo("Raw message:");
+        }
+
+        //qDebug(QString("Message \"%1\" marked as deleted").arg(rawMessage.id()).toUtf8());
+    }
+    else
+    {
+        if (_dataById.contains(message.getId()))
         {
             qCritical() << Q_FUNC_INFO << "ignore message because this id" << message.getId() << "already exists";
 
@@ -106,43 +116,36 @@ void MessagesModel::append(Message&& message)
                 message.printMessageInfo("Raw new message:");
                 qDebug("Old message: nullptr");
             }
+
+            return;
         }
-    }
-    else
-    {
-        //Deleter
 
-        //ToDo: Если пришёл делетер, а сообщение ещё нет, то когда это сообщение придёт не будет удалено
+        //Normal message
 
-        QVariant* data = _dataById[message.getId()];
-        if (_dataById.contains(message.getId()) && data)
-        {
-            const QModelIndex& index = createIndexByPtr(data);
-            if (index.isValid())
-            {
-                if (!setData(index, true, (int)Message::Role::MarkedAsDeleted))
-                {
-                    qCritical() << Q_FUNC_INFO << ": failed to set data with role" << Message::Role::MarkedAsDeleted;
+        beginInsertRows(QModelIndex(), _data.count(), _data.count());
 
-                    message.printMessageInfo("Raw message:");
-                }
+        message.setIdNum(_lastIdNum);
+        _lastIdNum++;
 
-                if (!setData(index, message.toHtml(), (int)Message::Role::Html))
-                {
-                    qCritical() << Q_FUNC_INFO << ": failed to set data with role" << Message::Role::Html;
+        QVariant* messageData = new QVariant();
 
-                    message.printMessageInfo("Raw message:");
-                }
+        messageData->setValue(message);
 
-                //qDebug(QString("Message \"%1\" marked as deleted").arg(rawMessage.id()).toUtf8());
-            }
-            else
-            {
-                qCritical() << Q_FUNC_INFO << ": index not valid";
+        _idByData.insert(messageData, message.getId());
+        _dataById.insert(message.getId(), messageData);
+        _dataByIdNum.insert(message.getIdNum(), messageData);
+        _idNumByData.insert(messageData, message.getIdNum());
 
-                message.printMessageInfo("Raw message:");
-            }
-        }
+        Author* author = getAuthor(message.getAuthorId());
+
+        std::set<uint64_t>& messagesIds = author->getMessagesIds();
+        messagesIds.insert(message.getIdNum());
+
+        _data.append(messageData);
+
+        //printMessageInfo("New message:", rawMessage);
+
+        endInsertRows();
     }
 
     //qDebug() << "Count:" << _data.count();

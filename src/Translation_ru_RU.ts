@@ -129,7 +129,7 @@
     <name>CommandSingleEditor</name>
     <message>
         <location filename="commandsingleeditor.ui" line="14"/>
-        <location filename="commandsingleeditor.cpp" line="24"/>
+        <location filename="commandsingleeditor.cpp" line="25"/>
         <source>Command Creating</source>
         <translation>Создание команды</translation>
     </message>
@@ -210,51 +210,51 @@
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="39"/>
+        <location filename="commandsingleeditor.cpp" line="40"/>
         <source>Command Editing</source>
         <translation>Изменение команды</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="120"/>
-        <location filename="commandsingleeditor.cpp" line="127"/>
-        <location filename="commandsingleeditor.cpp" line="199"/>
+        <location filename="commandsingleeditor.cpp" line="126"/>
+        <location filename="commandsingleeditor.cpp" line="133"/>
+        <location filename="commandsingleeditor.cpp" line="205"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="120"/>
+        <location filename="commandsingleeditor.cpp" line="126"/>
         <source>No keywords specified</source>
         <translation>Не указаны ключевые слова</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="127"/>
-        <location filename="commandsingleeditor.cpp" line="200"/>
+        <location filename="commandsingleeditor.cpp" line="133"/>
+        <location filename="commandsingleeditor.cpp" line="206"/>
         <source>Sound file not specified</source>
         <translation>Звуковой файл не указан</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="135"/>
-        <location filename="commandsingleeditor.cpp" line="208"/>
+        <location filename="commandsingleeditor.cpp" line="141"/>
+        <location filename="commandsingleeditor.cpp" line="214"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="136"/>
+        <location filename="commandsingleeditor.cpp" line="142"/>
         <source>File &quot;%1&quot; not found. Save command anyway?</source>
         <translation>Файл &quot;%1&quot; не найен. Всё равно сохранить команду?</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="181"/>
+        <location filename="commandsingleeditor.cpp" line="187"/>
         <source>Sound File Openning...</source>
         <translation>Открытие звукового файла...</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="183"/>
+        <location filename="commandsingleeditor.cpp" line="189"/>
         <source>WAV File</source>
         <translation>WAV-файл</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="183"/>
+        <location filename="commandsingleeditor.cpp" line="189"/>
         <source>All Files</source>
         <translation>Все файлы</translation>
     </message>
@@ -267,7 +267,7 @@
         <translation type="vanished">ВСе файлы (*)</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="209"/>
+        <location filename="commandsingleeditor.cpp" line="215"/>
         <source>File &quot;%1&quot; not found</source>
         <translation>Файл &quot;%1&quot; не найден</translation>
     </message>
@@ -309,32 +309,32 @@
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="40"/>
+        <location filename="commandseditor.cpp" line="46"/>
         <source>Keywords</source>
         <translation>Ключ. слова</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="41"/>
+        <location filename="commandseditor.cpp" line="47"/>
         <source>Action</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="68"/>
+        <location filename="commandseditor.cpp" line="74"/>
         <source>Sound: %1</source>
         <translation>Звук: %1</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="71"/>
+        <location filename="commandseditor.cpp" line="77"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="126"/>
+        <location filename="commandseditor.cpp" line="132"/>
         <source>Deletion</source>
         <translation>Удаление</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="127"/>
+        <location filename="commandseditor.cpp" line="133"/>
         <source>Are you sure you want to delete the command?</source>
         <translation>Вы уверены, что хотите удалить команду?</translation>
     </message>
@@ -394,22 +394,22 @@
 <context>
     <name>MyTextField</name>
     <message>
-        <location filename="my_components/MyTextField.qml" line="35"/>
+        <location filename="my_components/MyTextField.qml" line="34"/>
         <source>Cut</source>
         <translation>Вырезать</translation>
     </message>
     <message>
-        <location filename="my_components/MyTextField.qml" line="44"/>
+        <location filename="my_components/MyTextField.qml" line="43"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="my_components/MyTextField.qml" line="53"/>
+        <location filename="my_components/MyTextField.qml" line="52"/>
         <source>Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="my_components/MyTextField.qml" line="63"/>
+        <location filename="my_components/MyTextField.qml" line="62"/>
         <source>Select All</source>
         <translation>Выделить всё</translation>
     </message>
@@ -610,6 +610,11 @@
         <translation>Успешно подключено!</translation>
     </message>
     <message>
+        <location filename="chat_services/youtube.cpp" line="741"/>
+        <source>Message deleted</source>
+        <translation>Сообщение удалено</translation>
+    </message>
+    <message>
         <source>DONATION: %1</source>
         <translation type="vanished">ДОНАТ: %1</translation>
     </message>
@@ -749,7 +754,7 @@ Latest version available: %2</oldsource>
 <context>
     <name>all_commands_window</name>
     <message>
-        <location filename="setting_pages/all_commands_window.qml" line="54"/>
+        <location filename="setting_pages/all_commands_window.qml" line="60"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
@@ -897,38 +902,38 @@ Latest version available: %2</oldsource>
 <context>
     <name>author_window</name>
     <message>
-        <location filename="author_window.qml" line="11"/>
+        <location filename="author_window.qml" line="12"/>
         <source>Participant Information</source>
         <translation>Информация об участнике</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="87"/>
+        <location filename="author_window.qml" line="95"/>
         <source>Messages: %1</source>
         <translation>Сообщения: %1</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="91"/>
+        <location filename="author_window.qml" line="99"/>
         <source>Folder</source>
         <translation>Папка</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="105"/>
+        <location filename="author_window.qml" line="113"/>
         <source>The folder does not exist or an error occurred</source>
         <translation>Папка не существует или произошла ошибка</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="112"/>
+        <location filename="author_window.qml" line="120"/>
         <source>Avatar</source>
         <translation>Аватар</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="126"/>
-        <location filename="author_window.qml" line="146"/>
+        <location filename="author_window.qml" line="134"/>
+        <location filename="author_window.qml" line="154"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="author_window.qml" line="133"/>
+        <location filename="author_window.qml" line="141"/>
         <source>Page</source>
         <translation>Страница</translation>
     </message>
@@ -1132,12 +1137,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="752"/>
+        <location filename="main.qml" line="758"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="756"/>
+        <location filename="main.qml" line="762"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
@@ -1311,12 +1316,11 @@ Latest version available: %2</oldsource>
         <translation>Ок</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="170"/>
         <source>Widgets</source>
-        <translation>Виджеты</translation>
+        <translation type="vanished">Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="174"/>
+        <location filename="settings.qml" line="176"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -1325,17 +1329,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="166"/>
+        <location filename="settings.qml" line="168"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="182"/>
+        <location filename="settings.qml" line="184"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="186"/>
+        <location filename="settings.qml" line="188"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -1344,7 +1348,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="190"/>
+        <location filename="settings.qml" line="192"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>

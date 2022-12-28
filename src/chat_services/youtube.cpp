@@ -359,7 +359,7 @@ void YouTube::onReplyChatPage()
         data = data.remove(pos, data.length());
     }
 
-    //saveDataToFile(FolderLogs, "last_youtube.json", data);
+    //sAxelChat::saveDebugDataToFile(FolderLogs, "last_youtube.json", data);
 
     const QJsonDocument jsonDocument = QJsonDocument::fromJson(data);
     if (jsonDocument.isArray())
@@ -732,15 +732,15 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 forcedColors.insert(Message::ColorRole::BodyBackground, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
             }
         }
-        else if (actionObject.contains("markChatItemAsDeletedAction"))
+        else if (actionObject.contains("removeChatItemAction"))
         {
-            //Deleted message by unknown
+            //Message deleted
 
-            const QJsonObject& markChatItemAsDeletedAction = actionObject.value("markChatItemAsDeletedAction").toObject();
+            const QJsonObject& removeChatItemAction = actionObject.value("removeChatItemAction").toObject();
 
-            tryAppedToText(contents, markChatItemAsDeletedAction, "deletedStateMessage", false);
+            contents.append(new Message::Text(tr("Message deleted")));
 
-            messageId = markChatItemAsDeletedAction.value("targetItemId").toString();
+            messageId = removeChatItemAction.value("targetItemId").toString();
 
             isDeleter = true;
             valid = true;
@@ -786,14 +786,16 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         {
             if (isDeleter)
             {
+                static const Author author(getServiceType(), "", "");
+
                 messages.append(Message(contents,
-                                            Author(),
+                                            author,
                                             QDateTime::currentDateTime(),
                                             QDateTime::currentDateTime(),
                                             messageId,
                                             {Message::Flag::DeleterItem}));
 
-                authors.append(Author());
+                authors.append(author);
             }
             else
             {
