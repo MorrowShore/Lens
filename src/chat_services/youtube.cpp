@@ -157,6 +157,11 @@ void YouTube::printData(const QString &tag, const QByteArray& data)
 
 QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeight)
 {
+    if (sourceAvatarUrl.isEmpty())
+    {
+        return sourceAvatarUrl;
+    }
+
     //qDebug("Source URL: " + sourceAvatarUrl.toString().toUtf8());
 
     //example: https://yt3.ggpht.com/ytc/AAUvwngFVeI2l6JADC9wxZbdGK1fu382MwOtp6bYWA=s3200-c-k-c0x00ffffff-no-rj
@@ -176,7 +181,7 @@ QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeigh
     const QVector<QStringRef>& parts = source.splitRef('/', Qt::KeepEmptyParts);
     if (parts.count() < 2)
     {
-        qDebug() << Q_FUNC_INFO << ": Failed to convert: parts.count() < 2";
+        qDebug() << Q_FUNC_INFO << ": Failed to convert: parts.count() < 2, url:" << sourceAvatarUrl;
         return sourceAvatarUrl;
     }
 
