@@ -339,6 +339,8 @@ void YouTube::onReplyChatPage()
         return;
     }
 
+    //AxelChat::saveDebugDataToFile(FolderLogs, "raw_last_youtube.html", rawData);
+
     const QString startData = QString::fromUtf8(rawData.left(100));
 
     if (startData.contains("<title>Oops</title>", Qt::CaseSensitivity::CaseInsensitive))
@@ -364,7 +366,7 @@ void YouTube::onReplyChatPage()
         data = data.remove(pos, data.length());
     }
 
-    //sAxelChat::saveDebugDataToFile(FolderLogs, "last_youtube.json", data);
+    //AxelChat::saveDebugDataToFile(FolderLogs, "last_youtube.json", data);
 
     const QJsonDocument jsonDocument = QJsonDocument::fromJson(data);
     if (jsonDocument.isArray())
