@@ -670,11 +670,6 @@ Latest version available: %2</oldsource>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
     <message>
-        <source>Alexander &apos;Axel_k&apos; Kirsanov %1</source>
-        <oldsource>Alexander &apos;Axel_k&apos; Kirsanov © 2020-2022</oldsource>
-        <translation type="vanished">Александр &apos;Axel_k&apos; Кирсанов %1</translation>
-    </message>
-    <message>
         <location filename="setting_pages/about.qml" line="52"/>
         <source>32-bit Build</source>
         <translation>32-битная сборка</translation>
