@@ -64,7 +64,7 @@ ScrollView {
             id: element
             y: 352
             height: 24
-            text: qsTr("Alexander 'Axel_k' Kirsanov %1").arg("© 2020-2022")
+            text: APP_INFO_LEGALCOPYRIGHT_STR_U
             anchors.right: parent.right
             anchors.rightMargin: 8
             anchors.left: parent.left

@@ -86,6 +86,8 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
     engine.rootContext()->setContextProperty("tray",               &tray);
 
+    engine.rootContext()->setContextProperty("APP_INFO_LEGALCOPYRIGHT_STR_U", APP_INFO_LEGALCOPYRIGHT_STR_U);
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

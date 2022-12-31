@@ -585,32 +585,32 @@
         <translation>Ссылка или ID трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="277"/>
+        <location filename="chat_services/youtube.cpp" line="282"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="282"/>
+        <location filename="chat_services/youtube.cpp" line="287"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="285"/>
+        <location filename="chat_services/youtube.cpp" line="290"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="288"/>
+        <location filename="chat_services/youtube.cpp" line="293"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="291"/>
+        <location filename="chat_services/youtube.cpp" line="296"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="741"/>
+        <location filename="chat_services/youtube.cpp" line="748"/>
         <source>Message deleted</source>
         <translation>Сообщение удалено</translation>
     </message>
@@ -670,10 +670,9 @@ Latest version available: %2</oldsource>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="67"/>
         <source>Alexander &apos;Axel_k&apos; Kirsanov %1</source>
         <oldsource>Alexander &apos;Axel_k&apos; Kirsanov © 2020-2022</oldsource>
-        <translation>Александр &apos;Axel_k&apos; Кирсанов %1</translation>
+        <translation type="vanished">Александр &apos;Axel_k&apos; Кирсанов %1</translation>
     </message>
     <message>
         <location filename="setting_pages/about.qml" line="52"/>
@@ -1137,12 +1136,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="758"/>
+        <location filename="main.qml" line="756"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="762"/>
+        <location filename="main.qml" line="760"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
