@@ -15,6 +15,7 @@ enum class ServiceType
     Twitch = 101,
     Trovo = 102,
     GoodGame = 103,
+    VkPlayLive = 104,
 };
 
 }

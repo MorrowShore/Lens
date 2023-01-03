@@ -3,6 +3,7 @@
 #include "chat_services/twitch.h"
 #include "chat_services/trovo.h"
 #include "chat_services/goodgame.h"
+#include "chat_services/vkplaylive.h"
 #include "models/author.h"
 #include "models/message.h"
 #include <QCoreApplication>
@@ -46,10 +47,11 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
 
-    addService(new YouTube  (settings, SettingsGroupPath + "/youtube",  network, this));
-    addService(new Twitch   (settings, SettingsGroupPath + "/twitch",   network, this));
-    addService(new Trovo    (settings, SettingsGroupPath + "/trovo",    network, this));
-    addService(new GoodGame (settings, SettingsGroupPath + "/goodgame", network, this));
+    addService(new YouTube      (settings, SettingsGroupPath + "/youtube",      network, this));
+    addService(new Twitch       (settings, SettingsGroupPath + "/twitch",       network, this));
+    addService(new Trovo        (settings, SettingsGroupPath + "/trovo",        network, this));
+    addService(new GoodGame     (settings, SettingsGroupPath + "/goodgame",     network, this));
+    addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));
 }
 
 void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)

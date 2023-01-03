@@ -65,5 +65,6 @@
         <file>resources/images/goodgame/star-six.svg</file>
         <file>resources/images/goodgame/top1.svg</file>
         <file>resources/images/goodgame/undead.svg</file>
+        <file>resources/images/vkplaylive-icon.svg</file>
     </qresource>
 </RCC>
