@@ -1,4 +1,4 @@
-# AxelChat
+# AxelChat <img width="32" height="32" src="misc/platforms/youtube-icon.png"> <img width="32" height="32" src="misc/platforms/twitch-icon.png"> <img width="32" height="32" src="misc/platforms/trovo-icon.png"> <img width="32" height="32" src="misc/platforms/goodgame-icon.png">
 The AxelChat application collects chat from various streaming platforms and displays it in one window. Has a user-friendly interface and various useful features
 
 [Download](https://github.com/3dproger/axelchat/releases/latest/) |
