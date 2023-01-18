@@ -382,14 +382,16 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
         else if (type == "smile")
         {
-            const QString url = data.value("mediumUrl").toString();
-            if (url.isEmpty())
+            const QString url = data.value("smallUrl").toString();
+            if (!url.isEmpty())
             {
                 contents.append(new Message::Image(url));
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "image url is empty";
+                qWarning() << Q_FUNC_INFO << "image url is empty:";
+
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
             }
         }
         else
