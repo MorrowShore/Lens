@@ -325,11 +325,23 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
     QList<Message> messages;
     QList<Author> authors;
 
+    QStringList leftBadges;
+
     const QJsonObject rawAuthor = data.value("author").toObject();
 
     const QString authorName = rawAuthor.value("displayName").toString();
     const QString authorAvatarUrl = rawAuthor.value("avatarUrl").toString();
     const QString authorId = rawAuthor.value("id").toString();
+
+    const QJsonArray badges = rawAuthor.value("badges").toArray();
+    for (const QJsonValue& v : qAsConst(badges))
+    {
+        const QString url = v.toObject().value("smallUrl").toString().trimmed();
+        if (!url.isEmpty())
+        {
+            leftBadges.append(url);
+        }
+    }
 
     QDateTime publishedAt;
 
@@ -406,7 +418,8 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
                   authorName,
                   getServiceTypeId(serviceType) + QString("/%1").arg(authorId),
                   authorAvatarUrl,
-                  QUrl("https://vkplay.live/" + authorName));
+                  QUrl("https://vkplay.live/" + authorName),
+                  leftBadges);
 
     Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
 
