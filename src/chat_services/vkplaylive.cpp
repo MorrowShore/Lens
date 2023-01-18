@@ -2,6 +2,7 @@
 #include "models/message.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QUrlQuery>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -205,9 +206,11 @@ void VkPlayLive::reconnect()
         return;
     }
 
+    lastConnectedChannelName = state.streamId;
+
     state.chatUrl = QUrl(QString("https://vkplay.live/%1/only-chat").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://vkplay.live/%1").arg(state.streamId));
-    //state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
+    state.controlPanelUrl = QUrl(QString("https://vkplay.live/%1/studio").arg(state.streamId));
 
     emit stateChanged();
 }
@@ -225,7 +228,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
 
         if (info.version != "3.2.3")
         {
-            qWarning() << Q_FUNC_INFO << "Unsupported version" << version;
+            qWarning() << Q_FUNC_INFO << "unsupported version" << version;
         }
 
         if (info.wsChannel.isEmpty())
@@ -237,7 +240,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
             sendParams(QJsonObject({{"channel", info.wsChannel}}), 1);
         }
 
-        if (!state.connected && !state.streamId.isEmpty())
+        if (!state.connected && !state.streamId.isEmpty() && !info.wsChannel.isEmpty() && !info.token.isEmpty())
         {
             state.connected = true;
 
@@ -256,14 +259,41 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "unknown type" << type;
+            qWarning() << Q_FUNC_INFO << "unknown receive type" << type;
         }
     }
 }
 
-QString VkPlayLive::extractChannelName(const QString &stream)
+QString VkPlayLive::extractChannelName(const QString &stream_)
 {
-    return stream;
+    const QString stream = stream_.toLower().trimmed();
+
+    if (stream.startsWith("http", Qt::CaseSensitivity::CaseInsensitive))
+    {
+        const QString simpleUrl = AxelChat::simplifyUrl(stream_);
+
+        if (simpleUrl.startsWith("vkplay.live/", Qt::CaseSensitivity::CaseInsensitive))
+        {
+            QString result = simpleUrl.mid(12);
+            if (result.contains("/"))
+            {
+                result = result.left(result.indexOf("/"));
+            }
+
+            if (!result.isEmpty())
+            {
+                return result;
+            }
+        }
+    }
+
+    const QRegExp rx("^[a-zA-Z0-9_\\-]+$", Qt::CaseInsensitive);
+    if (rx.indexIn(stream) != -1)
+    {
+        return stream;
+    }
+
+    return QString();
 }
 
 void VkPlayLive::send(const QJsonDocument &data)
@@ -350,7 +380,19 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             style.bold = true;
             contents.append(new Message::Text(text, style));
         }
-        else // smile
+        else if (type == "smile")
+        {
+            const QString url = data.value("mediumUrl").toString();
+            if (url.isEmpty())
+            {
+                contents.append(new Message::Image(url));
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "image url is empty";
+            }
+        }
+        else
         {
             qDebug() << Q_FUNC_INFO << "unknown content type" << type << ", message:";
 

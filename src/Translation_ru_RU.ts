@@ -585,32 +585,32 @@
 <context>
     <name>VkPlayLive</name>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="15"/>
+        <location filename="chat_services/vkplaylive.cpp" line="16"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="170"/>
+        <location filename="chat_services/vkplaylive.cpp" line="171"/>
         <source>Stream not specified</source>
         <translation>Стрим не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="175"/>
+        <location filename="chat_services/vkplaylive.cpp" line="176"/>
         <source>The stream is not correct</source>
         <translation>Стрим указан некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="178"/>
+        <location filename="chat_services/vkplaylive.cpp" line="179"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="181"/>
+        <location filename="chat_services/vkplaylive.cpp" line="182"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="184"/>
+        <location filename="chat_services/vkplaylive.cpp" line="185"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
