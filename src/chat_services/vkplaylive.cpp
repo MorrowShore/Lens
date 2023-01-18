@@ -6,22 +6,142 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-namespace
-{
-
-static const int RequestChatInterval = 2000;
-
-}
-
 VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::VkPlayLive, parent)
     , settings(settings_)
     , network(network_)
+    , socket("https://vkplay.live")
 {
     getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
 
-    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &VkPlayLive::onTimeoutRequestChat);
-    timerRequestChat.start(RequestChatInterval);
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
+    {
+        Q_UNUSED(state)
+        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+    });
+
+    QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &VkPlayLive::onWebSocketReceived);
+
+    QObject::connect(&socket, &QWebSocket::connected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+
+        if (state.connected)
+        {
+            state.connected = false;
+            emit connectedChanged(false, lastConnectedChannelName);
+        }
+
+        if (info.token.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "token is empty";
+            return;
+        }
+
+        sendParams(QJsonObject(
+                       {
+                           {"token", info.token},
+                           {"name", "js"}
+                       }));
+
+        emit stateChanged();
+    });
+
+    QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
+
+        if (state.connected)
+        {
+            state.connected = false;
+            emit stateChanged();
+            emit connectedChanged(false, lastConnectedChannelName);
+        }
+    });
+
+    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
+    {
+        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+    });
+
+    QObject::connect(&timerRequestToken, &QTimer::timeout, this, [this]()
+    {
+        if (!info.token.isEmpty())
+        {
+            if (socket.state() == QAbstractSocket::SocketState::UnconnectedState)
+            {
+                socket.setProxy(network.proxy());
+                socket.open(QUrl("wss://pubsub.vkplay.live/connection/websocket"));
+            }
+
+            return;
+        }
+
+        if (state.chatUrl.isEmpty())
+        {
+            return;
+        }
+
+        QNetworkRequest request(state.chatUrl);
+        QNetworkReply* reply = network.get(request);
+        if (reply)
+        {
+            connect(reply, &QNetworkReply::finished, this, [this, reply]()
+            {
+                const QByteArray data = reply->readAll();
+                reply->deleteLater();
+
+                // token
+                {
+                    info.token = QString();
+
+                    std::unique_ptr<QJsonObject> object;
+                    int startPosition = 0;
+                    do
+                    {
+                        object = AxelChat::findJsonObject(data, "websocket", startPosition, startPosition);
+                        if (object)
+                        {
+                            info.token = object->value("token").toString();
+                            if (!info.token.isEmpty())
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    while(object);
+                }
+
+                // wsChannel
+                {
+                    std::unique_ptr<QJsonObject> object;
+                    int startPosition = 0;
+                    do
+                    {
+                        object = AxelChat::findJsonObject(data, "blog", startPosition, startPosition);
+                        if (object)
+                        {
+                            QString publicWebSocketChannel = object->value("data").toObject().value("publicWebSocketChannel").toString();
+                            if (!publicWebSocketChannel.isEmpty())
+                            {
+                                const QStringList parts = publicWebSocketChannel.split(':');
+                                if (!parts.isEmpty())
+                                {
+                                    publicWebSocketChannel = "public-chat:" + parts.last();
+                                }
+
+                                info.wsChannel = publicWebSocketChannel;
+                                break;
+                            }
+                        }
+                    }
+                    while(object);
+                }
+            });
+        }
+    });
+    timerRequestToken.setInterval(2000);
+    timerRequestToken.start();
 
     reconnect();
 }
@@ -70,74 +190,53 @@ QString VkPlayLive::getStateDescription() const
 
 void VkPlayLive::reconnect()
 {
-    const bool preConnected = state.connected;
-    const QString preStreamId = state.streamId;
+    socket.close();
 
     state = State();
+    info = Info();
 
     state.connected = false;
 
     state.streamId = extractChannelName(stream.get().trimmed());
 
-    if (!state.streamId.isEmpty())
-    {
-        state.chatUrl = QUrl(QString("https://vkplay.live/%1/only-chat").arg(state.streamId));
-
-        state.streamUrl = QUrl(QString("https://vkplay.live/%1").arg(state.streamId));
-
-        //state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
-    }
-
-    if (preConnected && !preStreamId.isEmpty())
-    {
-        emit connectedChanged(false, preStreamId);
-    }
-
-    emit stateChanged();
-
-    onTimeoutRequestChat();
-}
-
-void VkPlayLive::onTimeoutRequestChat()
-{
     if (state.streamId.isEmpty())
     {
+        emit stateChanged();
         return;
     }
 
-    QNetworkRequest request("https://api.vkplay.live/v1/blog/" + state.streamId + "/public_video_stream/chat?limit=20");
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    QNetworkReply* reply = network.get(request);
-    if (!reply)
-    {
-        qDebug() << Q_FUNC_INFO << ": !reply";
-        return;
-    }
+    state.chatUrl = QUrl(QString("https://vkplay.live/%1/only-chat").arg(state.streamId));
+    state.streamUrl = QUrl(QString("https://vkplay.live/%1").arg(state.streamId));
+    //state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
 
-    QObject::connect(reply, &QNetworkReply::finished, this, &VkPlayLive::onReplyChat);
+    emit stateChanged();
 }
 
-void VkPlayLive::onReplyChat()
+void VkPlayLive::onWebSocketReceived(const QString &rawData)
 {
-    QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-    if (!reply)
+    //qDebug("\nreceived: " + rawData.toUtf8() + "\n");
+
+    const QJsonObject result = QJsonDocument::fromJson(rawData.toUtf8()).object().value("result").toObject();
+
+    const QString version = result.value("version").toString();
+    if (!version.isEmpty())
     {
-        qDebug() << "!reply";
-        return;
-    }
+        info.version = version;
 
-    const QByteArray replyData = reply->readAll();
-    qDebug(replyData);
+        if (info.version != "3.2.3")
+        {
+            qWarning() << Q_FUNC_INFO << "Unsupported version" << version;
+        }
 
-    QList<Message> messages;
-    QList<Author> authors;
+        if (info.wsChannel.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "ws channel is empty";
+        }
+        else
+        {
+            sendParams(QJsonObject({{"channel", info.wsChannel}}), 1);
+        }
 
-    const QJsonObject root = QJsonDocument::fromJson(replyData).object();
-    reply->deleteLater();
-
-    const QJsonArray rawMessages = root.value("data").toArray();
-    for (const QJsonValue& value : qAsConst(rawMessages))
-    {
         if (!state.connected && !state.streamId.isEmpty())
         {
             state.connected = true;
@@ -145,80 +244,133 @@ void VkPlayLive::onReplyChat()
             emit connectedChanged(true, state.streamId);
             emit stateChanged();
         }
+    }
+    else if (!result.isEmpty())
+    {
+        const QJsonObject data = result.value("data").toObject().value("data").toObject();
+        const QString type = data.value("type").toString();
 
-        const QJsonObject rawMessage = value.toObject();
-        const QJsonObject rawAuthor = rawMessage.value("author").toObject();
-
-        const QString authorName = rawAuthor.value("displayName").toString();
-        const QString authorAvatarUrl = rawAuthor.value("avatarUrl").toString();
-        const QString authorId = rawAuthor.value("id").toString();
-
-        QDateTime publishedAt;
-
-        bool ok = false;
-        const int64_t rawSendTime = rawMessage.value("createdAt").toVariant().toLongLong(&ok);
-        if (ok)
+        if (type == "message")
         {
-            publishedAt = QDateTime::fromSecsSinceEpoch(rawSendTime);
+            parseMessage(data.value("data").toObject());
         }
         else
         {
-            publishedAt = QDateTime::currentDateTime();
+            qWarning() << Q_FUNC_INFO << "unknown type" << type;
         }
-
-        const QString messageId = QString("%1").arg(rawMessage.value("id").toVariant().toLongLong());
-
-        QList<Message::Content*> contents;
-
-        const QJsonArray messageData = rawMessage.value("data").toArray();
-        for (const QJsonValue& value : qAsConst(messageData))
-        {
-            const QJsonObject data = value.toObject();
-            const QString type = data.value("type").toString();
-
-            if (type == "text")
-            {
-                const QString rawContent = data.value("content").toString();
-                if (rawContent.isEmpty())
-                {
-                    continue;
-                }
-
-                const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
-                if (rawContents.isEmpty())
-                {
-                    continue;
-                }
-
-                const QString text = rawContents.at(0).toString();
-
-                contents.append(new Message::Text(text));
-            }
-            else
-            {
-                //TODO
-            }
-        }
-
-        Author author(getServiceType(),
-                      authorName,
-                      getServiceTypeId(serviceType) + QString("/%1").arg(authorId),
-                      authorAvatarUrl,
-                      QUrl("https://vkplay.live/" + authorName));
-
-        Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
-
-        messages.append(message);
-        authors.append(author);
-    }
-
-    if (!messages.isEmpty())
-    {
-        emit readyRead(messages, authors);
     }
 }
 
 QString VkPlayLive::extractChannelName(const QString &stream)
 {
     return stream;
+}
+
+void VkPlayLive::send(const QJsonDocument &data)
+{
+    //qDebug() << "send:" << data;
+    socket.sendTextMessage(QString::fromUtf8(data.toJson(QJsonDocument::JsonFormat::Compact)));
+}
+
+void VkPlayLive::sendParams(const QJsonObject &params, int method)
+{
+    info.lastMessageId++;
+
+    QJsonObject object(
+        {
+            {"params", params},
+            {"id", info.lastMessageId},
+        });
+
+    if (method != -1)
+    {
+        object.insert("method", method);
+    }
+
+    send(QJsonDocument(object));
+}
+
+void VkPlayLive::parseMessage(const QJsonObject &data)
+{
+    QList<Message> messages;
+    QList<Author> authors;
+
+    const QJsonObject rawAuthor = data.value("author").toObject();
+
+    const QString authorName = rawAuthor.value("displayName").toString();
+    const QString authorAvatarUrl = rawAuthor.value("avatarUrl").toString();
+    const QString authorId = rawAuthor.value("id").toString();
+
+    QDateTime publishedAt;
+
+    bool ok = false;
+    const int64_t rawSendTime = data.value("createdAt").toVariant().toLongLong(&ok);
+    if (ok)
+    {
+        publishedAt = QDateTime::fromSecsSinceEpoch(rawSendTime);
+    }
+    else
+    {
+        publishedAt = QDateTime::currentDateTime();
+    }
+
+    const QString messageId = QString("%1").arg(data.value("id").toVariant().toLongLong());
+
+    QList<Message::Content*> contents;
+
+    const QJsonArray messageData = data.value("data").toArray();
+    for (const QJsonValue& value : qAsConst(messageData))
+    {
+        const QJsonObject data = value.toObject();
+        const QString type = data.value("type").toString();
+
+        if (type == "text")
+        {
+            const QString rawContent = data.value("content").toString();
+            if (rawContent.isEmpty())
+            {
+                continue;
+            }
+
+            const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
+            if (rawContents.isEmpty())
+            {
+                continue;
+            }
+
+            const QString text = rawContents.at(0).toString();
+
+            contents.append(new Message::Text(text));
+        }
+        else if (type == "mention")
+        {
+            const QString text = data.value("displayName").toString() + ", ";
+
+            Message::Text::Style style;
+            style.bold = true;
+            contents.append(new Message::Text(text, style));
+        }
+        else // smile
+        {
+            qDebug() << Q_FUNC_INFO << "unknown content type" << type << ", message:";
+
+            qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+        }
+    }
+
+    Author author(getServiceType(),
+                  authorName,
+                  getServiceTypeId(serviceType) + QString("/%1").arg(authorId),
+                  authorAvatarUrl,
+                  QUrl("https://vkplay.live/" + authorName));
+
+    Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+
+    messages.append(message);
+    authors.append(author);
+
+    if (!messages.isEmpty())
+    {
+        emit readyRead(messages, authors);
+    }
 }

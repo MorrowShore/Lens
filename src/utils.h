@@ -6,6 +6,8 @@
 #include <QFile>
 #include <QDir>
 #include <QDebug>
+#include <QJsonParseError>
+#include <QJsonObject>
 #include <qwindowdefs.h>
 
 #ifdef Q_OS_WINDOWS
@@ -151,5 +153,77 @@ static void setDarkWindowFrame(const WId wid)
     ::DwmSetWindowAttribute((HWND)wid, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
 }
 #endif
+
+static std::unique_ptr<QJsonObject> findJsonObject(const QByteArray &data, const int startPos)
+{
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(data.mid(startPos), &parseError);
+    if (parseError.error == QJsonParseError::GarbageAtEnd)
+    {
+        const int offset = parseError.offset;
+        doc = QJsonDocument::fromJson(data.mid(startPos, offset), &parseError);
+    }
+
+    if (parseError.error != QJsonParseError::NoError)
+    {
+        qDebug() << "Warning: Json object error: " << parseError.errorString().toStdWString() << ", offset: " << parseError.offset;
+    }
+
+    std::unique_ptr<QJsonObject> result(new QJsonObject(doc.object()));
+    return result;
+}
+
+static std::unique_ptr<QJsonObject> findJsonObject(const QByteArray& data, const QByteArray& objectName, int& objectPosition, int startPosition = 0)
+{
+    objectPosition = -1;
+
+    // find object name
+
+    const int posStart = data.indexOf("\"" + objectName + "\"", startPosition);
+    if (posStart == -1)
+    {
+        return nullptr;
+    }
+
+    // find colon
+
+    static const int FindSymbolLength = 20;
+    const int posAfterObjectName = posStart + objectName.length() + 2;
+    int colonPosition = -1;
+    for (int pos = posAfterObjectName; pos < posAfterObjectName + FindSymbolLength; ++pos)
+    {
+        if (data[pos] == ':')
+        {
+            colonPosition = pos;
+            break;
+        }
+    }
+
+    if (colonPosition == -1)
+    {
+        return findJsonObject(data, objectName, objectPosition, posStart + objectName.length());
+    }
+
+    // find brace
+
+    int bracePosition = -1;
+    for (int pos = colonPosition + 1; pos < posAfterObjectName + FindSymbolLength; ++pos)
+    {
+        if (data[pos] == '{')
+        {
+            bracePosition = pos;
+            break;
+        }
+    }
+
+    if (bracePosition == -1)
+    {
+        return findJsonObject(data, objectName, objectPosition, posStart + objectName.length());
+    }
+
+    objectPosition = bracePosition;
+
+    return findJsonObject(data, bracePosition);
+}
 
 }

@@ -2,6 +2,7 @@
 
 #include "chatservice.h"
 #include <QTimer>
+#include <QWebSocket>
 
 class VkPlayLive : public ChatService
 {
@@ -13,14 +14,28 @@ public:
     void reconnect() override;
 
 private slots:
-    void onTimeoutRequestChat();
-    void onReplyChat();
+    void onWebSocketReceived(const QString &rawData);
 
 private:
     static QString extractChannelName(const QString& stream);
+    void send(const QJsonDocument &data);
+    void sendParams(const QJsonObject& params, int method = -1);
+    void parseMessage(const QJsonObject& data);
+
+    struct Info
+    {
+        QString token;
+        QString wsChannel;
+        int lastMessageId = 0;
+        QString version;
+    };
 
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    QTimer timerRequestChat;
+    QTimer timerRequestToken;
+
+    QWebSocket socket;
+    Info info;
+    QString lastConnectedChannelName;
 };
