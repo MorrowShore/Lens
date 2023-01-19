@@ -96,33 +96,33 @@ VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, Q
                 {
                     info.token = QString();
 
-                    std::unique_ptr<QJsonObject> object;
+                    std::unique_ptr<QJsonDocument> json;
                     int startPosition = 0;
                     do
                     {
-                        object = AxelChat::findJsonObject(data, "websocket", startPosition, startPosition);
-                        if (object)
+                        json = AxelChat::findJson(data, "websocket", QJsonValue::Type::Object, startPosition, startPosition);
+                        if (json)
                         {
-                            info.token = object->value("token").toString();
+                            info.token = json->object().value("token").toString();
                             if (!info.token.isEmpty())
                             {
                                 break;
                             }
                         }
                     }
-                    while(object);
+                    while(json);
                 }
 
                 // wsChannel
                 {
-                    std::unique_ptr<QJsonObject> object;
+                    std::unique_ptr<QJsonDocument> json;
                     int startPosition = 0;
                     do
                     {
-                        object = AxelChat::findJsonObject(data, "blog", startPosition, startPosition);
-                        if (object)
+                        json = AxelChat::findJson(data, "blog", QJsonValue::Type::Object, startPosition, startPosition);
+                        if (json)
                         {
-                            QString publicWebSocketChannel = object->value("data").toObject().value("publicWebSocketChannel").toString();
+                            QString publicWebSocketChannel = json->object().value("data").toObject().value("publicWebSocketChannel").toString();
                             if (!publicWebSocketChannel.isEmpty())
                             {
                                 const QStringList parts = publicWebSocketChannel.split(':');
@@ -136,8 +136,40 @@ VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, Q
                             }
                         }
                     }
-                    while(object);
+                    while(json);
                 }
+
+                // viewers count
+                {
+                    std::unique_ptr<QJsonDocument> json;
+                    int startPosition = 0;
+                    do
+                    {
+                        json = AxelChat::findJson(data, "stream", QJsonValue::Type::Object, startPosition, startPosition);
+                        if (json)
+                        {
+                            const QJsonObject stream = json->object().value("data").toObject().value("stream").toObject();
+                            QString wsStreamViewersChannel = stream.value("wsStreamViewersChannel").toString();
+                            if (!wsStreamViewersChannel.isEmpty())
+                            {
+                                const QStringList parts = wsStreamViewersChannel.split(':');
+                                if (!parts.isEmpty())
+                                {
+                                    wsStreamViewersChannel = "public-chat:" + parts.last();
+                                }
+
+                                if (info.wsChannel == wsStreamViewersChannel)
+                                {
+                                    state.viewersCount = stream.value("count").toObject().value("viewers").toInt(-1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    while(json);
+                }
+
+                emit stateChanged();
             });
         }
     });

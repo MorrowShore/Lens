@@ -154,7 +154,7 @@ static void setDarkWindowFrame(const WId wid)
 }
 #endif
 
-static std::unique_ptr<QJsonObject> findJsonObject(const QByteArray &data, const int startPos)
+static std::unique_ptr<QJsonDocument> findJson(const QByteArray &data, const int startPos)
 {
     QJsonParseError parseError;
     QJsonDocument doc = QJsonDocument::fromJson(data.mid(startPos), &parseError);
@@ -169,11 +169,10 @@ static std::unique_ptr<QJsonObject> findJsonObject(const QByteArray &data, const
         qDebug() << "Warning: Json object error: " << parseError.errorString().toStdWString() << ", offset: " << parseError.offset;
     }
 
-    std::unique_ptr<QJsonObject> result(new QJsonObject(doc.object()));
-    return result;
+    return std::unique_ptr<QJsonDocument>(new QJsonDocument(doc));
 }
 
-static std::unique_ptr<QJsonObject> findJsonObject(const QByteArray& data, const QByteArray& objectName, int& objectPosition, int startPosition = 0)
+static std::unique_ptr<QJsonDocument> findJson(const QByteArray& data, const QByteArray& objectName, const QJsonValue::Type type, int& objectPosition, int startPosition = 0)
 {
     objectPosition = -1;
 
@@ -201,29 +200,57 @@ static std::unique_ptr<QJsonObject> findJsonObject(const QByteArray& data, const
 
     if (colonPosition == -1)
     {
-        return findJsonObject(data, objectName, objectPosition, posStart + objectName.length());
+        return findJson(data, objectName, type, objectPosition, posStart + objectName.length());
     }
 
-    // find brace
-
-    int bracePosition = -1;
-    for (int pos = colonPosition + 1; pos < posAfterObjectName + FindSymbolLength; ++pos)
+    if (type == QJsonValue::Type::Object)
     {
-        if (data[pos] == '{')
+        // find brace
+
+        int bracePosition = -1;
+        for (int pos = colonPosition + 1; pos < posAfterObjectName + FindSymbolLength; ++pos)
         {
-            bracePosition = pos;
-            break;
+            if (data[pos] == '{')
+            {
+                bracePosition = pos;
+                break;
+            }
         }
-    }
 
-    if (bracePosition == -1)
+        if (bracePosition == -1)
+        {
+            return findJson(data, objectName, type, objectPosition, posStart + objectName.length());
+        }
+
+        objectPosition = bracePosition;
+    }
+    else if (type == QJsonValue::Type::Array)
     {
-        return findJsonObject(data, objectName, objectPosition, posStart + objectName.length());
+        // find [
+
+        int squarePosition = -1;
+        for (int pos = colonPosition + 1; pos < posAfterObjectName + FindSymbolLength; ++pos)
+        {
+            if (data[pos] == '[')
+            {
+                squarePosition = pos;
+                break;
+            }
+        }
+
+        if (squarePosition == -1)
+        {
+            return findJson(data, objectName, type, objectPosition, posStart + objectName.length());
+        }
+
+        objectPosition = squarePosition;
+    }
+    else
+    {
+        qCritical() << "unksupported json value type";
     }
 
-    objectPosition = bracePosition;
-
-    return findJsonObject(data, bracePosition);
+    return findJson(data, objectPosition);
 }
 
 }
