@@ -163,8 +163,7 @@ static std::unique_ptr<QJsonDocument> findJson(const QByteArray &data, const int
         const int offset = parseError.offset;
         doc = QJsonDocument::fromJson(data.mid(startPos, offset), &parseError);
     }
-
-    if (parseError.error != QJsonParseError::NoError)
+    else if (parseError.error != QJsonParseError::NoError && parseError.error != QJsonParseError::UnterminatedObject)
     {
         qDebug() << "Warning: Json object error: " << parseError.errorString().toStdWString() << ", offset: " << parseError.offset;
     }
