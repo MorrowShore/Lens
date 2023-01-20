@@ -393,28 +393,49 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
     {
         const QJsonObject data = value.toObject();
         const QString type = data.value("type").toString();
+        const QString modificator = data.value("modificator").toString();
+        if (modificator == "BLOCK_END")
+        {
+            continue;
+        }
 
         if (type == "text")
         {
             const QString rawContent = data.value("content").toString();
             if (rawContent.isEmpty())
             {
+                qWarning() << Q_FUNC_INFO << "text content string is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
                 continue;
             }
 
             const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
             if (rawContents.isEmpty())
             {
+                qWarning() << Q_FUNC_INFO << "text content array is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
                 continue;
             }
 
             const QString text = rawContents.at(0).toString();
+            if (text.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "text text is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                continue;
+            }
 
             contents.append(new Message::Text(text));
         }
         else if (type == "mention")
         {
             const QString text = data.value("displayName").toString() + ", ";
+            if (text.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "display name is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                continue;
+            }
 
             Message::Text::Style style;
             style.bold = true;
@@ -430,9 +451,45 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             else
             {
                 qWarning() << Q_FUNC_INFO << "image url is empty:";
-
                 qDebug("\n" + QJsonDocument(data).toJson() + "\n");
             }
+        }
+        else if (type == "link")
+        {
+            const QString rawContent = data.value("content").toString();
+            if (rawContent.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "link content is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                continue;
+            }
+
+            const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
+            if (rawContents.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "link content string is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                continue;
+            }
+
+            const QString text = rawContents.at(0).toString();
+            const QUrl url = data.value("url").toString();
+
+            if (text.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "link text is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                continue;
+            }
+
+            if (url.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "link url is empty:";
+                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                continue;
+            }
+
+            contents.append(new Message::Hyperlink(text, url));
         }
         else
         {
