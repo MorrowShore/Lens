@@ -194,12 +194,12 @@ QString VkPlayLive::getStateDescription() const
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())
         {
-            return tr("Stream not specified");
+            return tr("Channel not specified");
         }
 
         if (state.streamId.isEmpty())
         {
-            return tr("The stream is not correct");
+            return tr("The channel is not correct");
         }
 
         return tr("Not connected");
@@ -221,8 +221,6 @@ void VkPlayLive::reconnect()
 
     state = State();
     info = Info();
-
-    state.connected = false;
 
     state.streamId = extractChannelName(stream.get().trimmed());
 
