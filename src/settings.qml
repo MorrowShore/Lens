@@ -131,7 +131,7 @@ Window {
         height: parent.height
         Layout.minimumWidth: 124
         Layout.preferredWidth: parent.width / 3
-        Layout.maximumWidth: 300
+        Layout.maximumWidth: 330
         Layout.fillWidth: true
         Layout.fillHeight: true
         focus: true
@@ -154,9 +154,11 @@ Window {
                 Component.onCompleted: {
                     for (var i = chatHandler.getServicesCount() - 1; i >= 0; --i) {
                         var service = chatHandler.getServiceAtIndex(i)
-                        model.insert(0, {
+                        model.insert(0,
+                                     {
                                          name: service.getName(),
-                                         category: "service"
+                                         category: "service",
+                                         iconSource: service.getIconUrl().toString()
                                      })
                     }
 
@@ -167,30 +169,37 @@ Window {
                     ListElement {
                         name: qsTr("Common")
                         category: "common"
+                        iconSource: ""
                     }
                     /*ListElement {
                         name: qsTr("Widgets")
                         category: "widgets"
+                        iconSource: ""
                     }*/
                     ListElement {
                         name: qsTr("Appearance")
                         category: "appearance"
+                        iconSource: ""
                     }
                     /*ListElement {
                         name: qsTr("Members")
                         category: "members"
+                        iconSource: ""
                     }*/
                     ListElement {
                         name: qsTr("Chat Commands")
                         category: "chat_commands"
+                        iconSource: ""
                     }
                     ListElement {
                         name: qsTr("Output to Files")
                         category: "output_to_files"
+                        iconSource: ""
                     }
                     ListElement {
                         name: qsTr("About AxelChat")
                         category: "about_software"
+                        iconSource: ""
                     }
                 }
 
@@ -198,15 +207,39 @@ Window {
                     id: categoryDelegate
                     width: listViewCategories.width
                     text: model.name
+                    property var iconSource: model.iconSource
+                    property string category: model.category
+                    highlighted: ListView.isCurrentItem
 
-                    contentItem: Item {
+                    onClicked: {
+                        listViewCategories.forceActiveFocus();
+                        listViewCategories.currentIndex = model.index;
+                    }
+
+                    contentItem: Row {
                         anchors.fill: parent
 
+                        spacing: 8
+                        leftPadding: 8
+
+                        Rectangle {
+                            visible: categoryDelegate.highlighted
+                            width: 4
+                            color: categoryDelegate.Material.accentColor
+                        }
+
+                        Image {
+                            mipmap: true
+                            height: 24
+                            width: height
+                            anchors.verticalCenter: parent.verticalCenter
+                            source: categoryDelegate.iconSource
+                            fillMode: Image.PreserveAspectFit
+                            visible: categoryDelegate.iconSource.length > 0
+                        }
+
                         Text {
-                            anchors.fill: parent
-                            anchors.margins: {
-                                left: 12
-                            }
+                            anchors.verticalCenter: parent.verticalCenter
 
                             text: categoryDelegate.text
                             font: categoryDelegate.font
@@ -219,27 +252,12 @@ Window {
                         }
 
                         Rectangle {
-                            visible: categoryDelegate.highlighted
-                            width: 4
-                            height: categoryDelegate.height
-                            color: categoryDelegate.Material.accentColor
-                        }
-
-                        Rectangle {
                             visible: category === "common"
                             width: categoryDelegate.width
                             height: 1
                             color: Material.foreground
                             opacity: 0.25
                         }
-                    }
-
-                    property string category: model.category
-                    highlighted: ListView.isCurrentItem
-
-                    onClicked: {
-                        listViewCategories.forceActiveFocus();
-                        listViewCategories.currentIndex = model.index;
                     }
                 }
 
