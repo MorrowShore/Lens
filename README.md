@@ -74,6 +74,10 @@ The AxelChat application collects chat from various streaming platforms and disp
 - Check that the OAuth-token is correct. Update the OAuth-token, if necessary, by pressing the corresponding button in the AxelChat
 - Check in the settings of your Twitch account if the permission to use the twitch account has not been revoked. Update the OAuth-token, if necessary, by pressing the corresponding button in the AxelChat
 
+### Control panel web page does not open correctly
+- Make sure you're logged into your streaming site in your default browser
+- Make sure that you have specified a stream in AxelChat that belongs to your streaming platform account in the default browser, and not someone else's stream
+
 # Build AxelChat from source for Windows 7 and newer, x64
 ### Installing Qt
 1. Download [Open Source Qt online installer](https://www.qt.io/download-qt-installer) or you can also find the offline installers
