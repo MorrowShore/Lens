@@ -69,7 +69,7 @@ private:
 
     Setting<bool> enabled;
     Setting<QString> outputDirectory;
-    QString _sessionFolder;
+    QString _relativeSessionFolder;
 
     QFile* _fileMessagesCount           = nullptr;
     QFile* _fileMessages                = nullptr;

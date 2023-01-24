@@ -704,24 +704,26 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
         _fileMessagesCount = nullptr;
     }
 
-    if (forceUpdateOutputFolder || _sessionFolder.isEmpty())
+    if (forceUpdateOutputFolder || _relativeSessionFolder.isEmpty())
     {
-        _sessionFolder = outputDirectory.get() + "/sessions/" + _startupDateTime.toString(DateTimeFileNameFormat);
+        _relativeSessionFolder = "sessions/" + _startupDateTime.toString(DateTimeFileNameFormat);
     }
+
+    const QString absoluteSessionFolder = outputDirectory.get() + "/" + _relativeSessionFolder;
 
     if (enabled.get())
     {
         QDir dir;
 
-        dir = QDir(_sessionFolder);
+        dir = QDir(absoluteSessionFolder);
         if (!dir.exists())
         {
-            dir.mkpath(_sessionFolder);
+            dir.mkpath(absoluteSessionFolder);
         }
     }
 
-    _fileMessages               = new QFile(_sessionFolder + "/" + MessagesFileName,       this);
-    _fileMessagesCount          = new QFile(_sessionFolder + "/" + MessagesCountFileName,  this);
+    _fileMessages               = new QFile(absoluteSessionFolder + "/" + MessagesFileName,       this);
+    _fileMessagesCount          = new QFile(absoluteSessionFolder + "/" + MessagesCountFileName,  this);
 
     writeApplicationState(true, -1);
 }
@@ -754,7 +756,7 @@ void OutputToFile::writeApplicationState(const bool started, const int viewersTo
     file.write("[application]\n");
     file.write(QString("started=%1\n").arg(started ? "true" : "false").toUtf8());
     file.write(QString("version=%1\n").arg(QCoreApplication::applicationVersion()).toUtf8());
-    file.write(QString("session_directory=%1\n").arg(_sessionFolder).toUtf8());
+    file.write(QString("session_directory=%1\n").arg(_relativeSessionFolder).toUtf8());
     file.write(QString("viewers_count_total=%1\n").arg(viewersTotalCount).toUtf8());
 
     for (const ChatService* service : qAsConst(services))
