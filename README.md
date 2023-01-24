@@ -14,7 +14,12 @@ The AxelChat application collects chat from various streaming platforms and disp
 </p>
 
 # Features
+
 - Display messages from multiple streaming platforms at once
+<p align="center">
+  <img src="images/settings.png">
+</p>
+
 - Display avatars of participants of chat
 - Displaying the number of viewers both total and for individual platforms
 - Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
