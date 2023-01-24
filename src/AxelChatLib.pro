@@ -15,24 +15,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 HEADERS += \
-    abstractchatservice.hpp \
-    applicationinfo.hpp \
-    axelchatlib_api.hpp \
-    chathandler.hpp \
-    chatmessage.hpp \
-    goodgame.h \
-    twitch.hpp \
-    types.hpp \
-    utils_axelchat.hpp \
-    youtube.hpp
+    chat_services/apikeys.h \
+    chat_services/chatservice.h \
+    chat_services/chatservicestypes.h \
+    chat_services/trovo.h \
+    chat_services/vkplaylive.h \
+    chat_services/goodgame.h \
+    chat_services/twitch.h \
+    chat_services/youtube.h \
+    models/author.h \
+    models/message.h \
+    models/messagesmodel.h \
+    applicationinfo.h \
+    axelchatlib_api.h \
+    chathandler.h \
+    utils.h
 
 SOURCES += \
+    chat_services/trovo.cpp \
+    chat_services/vkplaylive.cpp \
+    chat_services/goodgame.cpp \
+    chat_services/twitch.cpp \
+    chat_services/youtube.cpp \
+    models/author.cpp \
+    models/message.cpp \
+    models/messagesmodel.cpp \
     chathandler.cpp \
-    chatmessage.cpp \
-    goodgame.cpp \
-    main.cpp \
-    twitch.cpp \
-    youtube.cpp
+    main.cpp
 
 RESOURCES +=
 

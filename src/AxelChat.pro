@@ -16,54 +16,54 @@ DEFINES += QT_DEPRECATED_WARNINGS
 HEADERS += \
     chat_services/apikeys.h \
     chat_services/chatservice.h \
-    applicationinfo.h \
-    authorqmlprovider.h \
-    botaction.h \
     chat_services/chatservicestypes.h \
     chat_services/trovo.h \
     chat_services/vkplaylive.h \
+    chat_services/goodgame.h \
+    chat_services/twitch.h \
+    chat_services/youtube.h \
+    models/author.h \
+    models/message.h \
+    models/messagesmodel.h \
+    applicationinfo.h \
+    authorqmlprovider.h \
+    botaction.h \
     chatbot.h \
     chathandler.h \
     clipboardqml.h \
     commandseditor.h \
     commandsingleeditor.h \
-    models/author.h \
     githubapi.h \
-    chat_services/goodgame.h \
     i18n.h \
-    models/message.h \
-    models/messagesmodel.h \
     outputtofile.h \
     qmlutils.h \
     setting.h \
     tray.h \
-    chat_services/twitch.h \
     utils.h \
-    chat_services/youtube.h \
     websocket.h
 
 SOURCES += \
-        authorqmlprovider.cpp \
-        botaction.cpp \
         chat_services/trovo.cpp \
         chat_services/vkplaylive.cpp \
+        chat_services/goodgame.cpp \
+        chat_services/twitch.cpp \
+        chat_services/youtube.cpp \
+        models/author.cpp \
+        models/message.cpp \
+        models/messagesmodel.cpp \
+        authorqmlprovider.cpp \
+        botaction.cpp \
         chatbot.cpp \
         chathandler.cpp \
         clipboardqml.cpp \
         commandseditor.cpp \
         commandsingleeditor.cpp \
-        models/author.cpp \
         githubapi.cpp \
-        chat_services/goodgame.cpp \
         i18n.cpp \
         main.cpp \
-        models/message.cpp \
-        models/messagesmodel.cpp \
         outputtofile.cpp \
         qmlutils.cpp \
         tray.cpp \
-        chat_services/twitch.cpp \
-        chat_services/youtube.cpp \
         websocket.cpp
 
 RESOURCES += qml.qrc \
