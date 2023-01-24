@@ -25,6 +25,10 @@ Author::Author(AxelChat::ServiceType serviceType_,
     , customNicknameColor(customNicknameColor_)
     , customNicknameBackgroundColor(customNicknameBackgroundColor_)
 {
+    if (authorId.isEmpty())
+    {
+        authorId = ChatService::getServiceTypeId(serviceType);
+    }
 }
 
 const Author &Author::getSoftwareAuthor()
