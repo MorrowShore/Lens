@@ -32,6 +32,10 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] YouTube support
 - [x] Trovo support
 - [x] GoodGame support
+- [x] VK Play Live support
+- [ ] TikTok/Douyin support
+- [ ] WASD support
+- [ ] Telegram support
 - [x] Display avatars of participants of chat
 - [x] Displaying the number of viewers both total and for individual platforms
 - [x] Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
