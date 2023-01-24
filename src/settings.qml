@@ -254,7 +254,16 @@ Window {
                                 border.width: 2
                                 radius: width / 2
                                 border.color: root.color
-                                visible: status === Global._ConnectedConnectionStateType
+                                visible: {
+                                    switch (status)
+                                    {
+                                    case Global._ConnectedConnectionStateType:
+                                    case Global._ConnectingConnectionStateType:
+                                        return true
+                                    }
+
+                                    return false
+                                }
 
                                 property var status: serviceIndex >= 0 ? chatHandler.getServiceAtIndex(serviceIndex).connectionStateType : -1
 
@@ -262,10 +271,10 @@ Window {
                                     switch (status)
                                     {
                                     case Global._ConnectedConnectionStateType: return "lime"
-                                    //case Global._ConnectingConnectionStateType: return "orange"
+                                    case Global._ConnectingConnectionStateType: return "red"
                                     }
 
-                                    return "red"
+                                    return "orange"
                                 }
                             }
                         }
