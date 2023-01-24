@@ -7,6 +7,7 @@ import AxelChat.OutputToFile 1.0
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import "my_components" as MyComponents
+import "."
 
 Window {
     id: root
@@ -158,7 +159,8 @@ Window {
                                      {
                                          name: service.getName(),
                                          category: "service",
-                                         iconSource: service.getIconUrl().toString()
+                                         iconSource: service.getIconUrl().toString(),
+                                         serviceIndex: i
                                      })
                     }
 
@@ -170,36 +172,43 @@ Window {
                         name: qsTr("Common")
                         category: "common"
                         iconSource: ""
+                        serviceIndex: -1
                     }
                     /*ListElement {
                         name: qsTr("Widgets")
                         category: "widgets"
                         iconSource: ""
+                        serviceIndex: -1
                     }*/
                     ListElement {
                         name: qsTr("Appearance")
                         category: "appearance"
                         iconSource: ""
+                        serviceIndex: -1
                     }
                     /*ListElement {
                         name: qsTr("Members")
                         category: "members"
                         iconSource: ""
+                        serviceIndex: -1
                     }*/
                     ListElement {
                         name: qsTr("Chat Commands")
                         category: "chat_commands"
                         iconSource: ""
+                        serviceIndex: -1
                     }
                     ListElement {
                         name: qsTr("Output to Files")
                         category: "output_to_files"
                         iconSource: ""
+                        serviceIndex: -1
                     }
                     ListElement {
                         name: qsTr("About AxelChat")
                         category: "about_software"
                         iconSource: ""
+                        serviceIndex: -1
                     }
                 }
 
@@ -236,6 +245,29 @@ Window {
                             source: categoryDelegate.iconSource
                             fillMode: Image.PreserveAspectFit
                             visible: categoryDelegate.iconSource.length > 0
+
+                            Rectangle {
+                                width: 14
+                                height: width
+                                x: parent.width - width / 2
+                                y: parent.height - height / 2
+                                border.width: 2
+                                radius: width / 2
+                                border.color: root.color
+                                visible: status === Global._ConnectedConnectionStateType
+
+                                property var status: serviceIndex >= 0 ? chatHandler.getServiceAtIndex(serviceIndex).connectionStateType : -1
+
+                                color: {
+                                    switch (status)
+                                    {
+                                    case Global._ConnectedConnectionStateType: return "lime"
+                                    //case Global._ConnectingConnectionStateType: return "orange"
+                                    }
+
+                                    return "red"
+                                }
+                            }
                         }
 
                         Text {

@@ -436,7 +436,7 @@ int ChatHandler::getServicesCount() const
 
 ChatService *ChatHandler::getServiceAtIndex(int index) const
 {
-    if (index >= services.count())
+    if (index >= services.count() || index < 0)
     {
         return nullptr;
     }
