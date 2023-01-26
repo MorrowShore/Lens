@@ -16,6 +16,7 @@ enum class ServiceType
     Trovo = 102,
     GoodGame = 103,
     VkPlayLive = 104,
+    Telegram = 105,
 };
 
 }

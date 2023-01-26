@@ -61,6 +61,7 @@ public:
         case AxelChat::ServiceType::Trovo: return "trovo";
         case AxelChat::ServiceType::GoodGame: return "goodgame";
         case AxelChat::ServiceType::VkPlayLive: return "vkplaylive";
+        case AxelChat::ServiceType::Telegram: return "telegram";
         }
 
         return "unknown";
@@ -78,6 +79,7 @@ public:
         case AxelChat::ServiceType::Trovo: return tr("Trovo");
         case AxelChat::ServiceType::GoodGame: return tr("GoodGame");
         case AxelChat::ServiceType::VkPlayLive: return tr("VK Play Live");
+        case AxelChat::ServiceType::Telegram: return tr("Telegram");
         }
 
         return tr("Unknown");
@@ -95,6 +97,7 @@ public:
         case AxelChat::ServiceType::Trovo: return QUrl("qrc:/resources/images/trovo-icon.svg");
         case AxelChat::ServiceType::GoodGame: return QUrl("qrc:/resources/images/goodgame-icon.svg");
         case AxelChat::ServiceType::VkPlayLive: return QUrl("qrc:/resources/images/vkplaylive-icon.svg");
+        case AxelChat::ServiceType::Telegram: return QUrl("qrc:/resources/images/telegram-icon.svg");
         }
 
         return QUrl();

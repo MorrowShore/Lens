@@ -17,6 +17,7 @@ HEADERS += \
     chat_services/apikeys.h \
     chat_services/chatservice.h \
     chat_services/chatservicestypes.h \
+    chat_services/telegram.h \
     chat_services/trovo.h \
     chat_services/vkplaylive.h \
     chat_services/goodgame.h \
@@ -43,6 +44,7 @@ HEADERS += \
     websocket.h
 
 SOURCES += \
+        chat_services/telegram.cpp \
         chat_services/trovo.cpp \
         chat_services/vkplaylive.cpp \
         chat_services/goodgame.cpp \
