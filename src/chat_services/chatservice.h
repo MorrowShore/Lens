@@ -1,5 +1,4 @@
-#ifndef CHATSERVICE_H
-#define CHATSERVICE_H
+#pragma once
 
 #include "utils.h"
 #include "setting.h"
@@ -170,7 +169,7 @@ public:
     Q_INVOKABLE int getParametersCount() const { return parameters.count(); }
     Q_INVOKABLE QString getParameterName(int index) const
     {
-        if (index < parameters.count())
+        if (index >= 0 && index < parameters.count())
         {
             return parameters[index].getName();
         }
@@ -182,7 +181,7 @@ public:
 
     Q_INVOKABLE QString getParameterValue(int index) const
     {
-        if (index < parameters.count())
+        if (index >= 0 && index < parameters.count())
         {
             return parameters[index].getSetting()->get();
         }
@@ -194,7 +193,7 @@ public:
 
     Q_INVOKABLE int getParameterType(int index) const
     {
-        if (index < parameters.count())
+        if (index >= 0 && index < parameters.count())
         {
             return (int)parameters[index].getType();
         }
@@ -206,7 +205,7 @@ public:
 
     Q_INVOKABLE bool isParameterHasFlag(int index, int flag) const
     {
-        if (index < parameters.count())
+        if (index >= 0 && index < parameters.count())
         {
             const std::set<Parameter::Flag>& flags = parameters[index].getFlags();
 
@@ -220,7 +219,7 @@ public:
 
     Q_INVOKABLE void setParameterValue(int index, const QString& value)
     {
-        if (index < parameters.count())
+        if (index >= 0 && index < parameters.count())
         {
             if (parameters[index].getSetting()->set(value))
             {
@@ -236,7 +235,7 @@ public:
 
     Q_INVOKABLE QString getParameterPlaceholder(int index) const
     {
-        if (index < parameters.count())
+        if (index >= 0 && index < parameters.count())
         {
             return parameters[index].getPlaceholder();
         }
@@ -246,6 +245,20 @@ public:
         }
 
         return QString();
+    }
+
+    Q_INVOKABLE bool executeParameterInvoke(int index)
+    {
+        if (index >= 0 && index < parameters.count())
+        {
+            return parameters[index].executeInvokeCallback();
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+        }
+
+        return false;
     }
 
 #ifdef QT_QUICK_LIB
@@ -267,7 +280,7 @@ protected:
         {
             Unknown = -1,
             String = 10,
-            ButtonUrl = 20,
+            Button = 20,
             Label = 21,
         };
 
@@ -276,21 +289,38 @@ protected:
             PasswordEcho = 10
         };
 
-        Parameter(Setting<QString>* setting_, const QString& name_, const Type type_, const std::set<Flag> flags_)
+        Parameter(Setting<QString>* setting_, const QString& name_, const Type type_, const std::set<Flag> flags_ = std::set<Flag>(), std::function<void(const QVariant&)> invokeCalback_ = nullptr, const QVariant& invokeCallbackArgument_ = QVariant())
             : setting(setting_)
             , name(name_)
             , type(type_)
             , flags(flags_)
+            , invokeCalback(invokeCalback_)
+            , invokeCallbackArgument(invokeCallbackArgument_)
         {}
 
         Setting<QString>* getSetting() { return setting; }
         const Setting<QString>* getSetting() const { return setting; }
         QString getName() const { return name; }
+        void setName(const QString& name_) { name = name_; }
         Type getType() const { return type; }
         const std::set<Flag>& getFlags() const { return flags; }
+        void setFlag(const Flag flag) { flags.insert(flag); }
 
         void setPlaceholder(const QString& placeHolder_) { placeHolder = placeHolder_; }
         QString getPlaceholder() const { return placeHolder; }
+
+        bool executeInvokeCallback()
+        {
+            if (!invokeCalback)
+            {
+                qCritical() << Q_FUNC_INFO << "invoke callback not setted";
+                return false;
+            }
+
+            invokeCalback(invokeCallbackArgument);
+
+            return true;
+        }
 
     private:
         Setting<QString>* setting;
@@ -298,6 +328,8 @@ protected:
         Type type;
         std::set<Flag> flags;
         QString placeHolder;
+        std::function<void(const QVariant&)> invokeCalback;
+        QVariant invokeCallbackArgument;
     };
 
     void onParameterChanged(Parameter& parameter)
@@ -339,5 +371,3 @@ protected:
     Setting<QString> stream;
     Setting<QString> lastSavedMessageId;
 };
-
-#endif // CHATSERVICE_H

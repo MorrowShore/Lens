@@ -64,9 +64,12 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 {
     getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
 
-    parameters.append(Parameter(new Setting<QString>(settings, QString(), requesGetAOuthTokenUrl().toString()), tr("To display avatars and complete work, specify the OAuth-token:"), Parameter::Type::Label, {}));
+    parameters.append(Parameter(new Setting<QString>(settings, QString()), tr("To display avatars and complete work, specify the OAuth-token:"), Parameter::Type::Label));
     parameters.append(Parameter(&oauthToken, tr("OAuth token"), Parameter::Type::String, { Parameter::Flag::PasswordEcho }));
-    parameters.append(Parameter(new Setting<QString>(settings, QString(), requesGetAOuthTokenUrl().toString()), tr("Get token"), Parameter::Type::ButtonUrl, {}));
+    parameters.append(Parameter(new Setting<QString>(settings, QString()), tr("Get token"), Parameter::Type::Button, {}, [this](const QVariant&)
+    {
+        QDesktopServices::openUrl(requesGetAOuthTokenUrl());
+    }));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)

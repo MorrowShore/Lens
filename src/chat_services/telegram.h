@@ -3,6 +3,7 @@
 #include "chatservice.h"
 #include <QSettings>
 #include <QNetworkAccessManager>
+#include <QTimer>
 
 class Telegram : public ChatService
 {
@@ -17,4 +18,6 @@ public:
 private:
     QSettings& settings;
     QNetworkAccessManager& network;
+
+    QTimer reconnectTimer;
 };

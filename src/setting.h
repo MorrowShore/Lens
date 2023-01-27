@@ -1,5 +1,4 @@
-#ifndef SETTING_H
-#define SETTING_H
+#pragma once
 
 #include <QSettings>
 #include <QDebug>
@@ -44,18 +43,17 @@ public:
 
     bool set(const T& value_)
     {
-        if (key.isEmpty())
-        {
-            return false;
-        }
-
         if (value_ == value)
         {
             return false;
         }
 
         value = value_;
-        settings.setValue(key, QVariant::fromValue(value));
+
+        if (!key.isEmpty())
+        {
+            settings.setValue(key, QVariant::fromValue(value));
+        }
 
         return true;
     }
@@ -70,5 +68,3 @@ private:
     const QString key;
     T value;
 };
-
-#endif // SETTING_H

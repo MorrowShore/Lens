@@ -96,10 +96,9 @@ ScrollView {
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
-
 Label {
     text: chatService.getParameterName(" + String("%1").arg(i) + ") + ':'
-    font.pixelSize: 20
+    font.pixelSize: 18
     anchors.verticalCenter: parent.verticalCenter
     font.bold: true
     color: '" + Material.accentColor + "'
@@ -113,33 +112,27 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import AxelChat.ChatService 1.0
 import '../my_components' as MyComponents
-
 Row {
     spacing: 6
-
     MyComponents.MyTextField {
         id: textField
         width: 400
         anchors.verticalCenter: parent.verticalCenter
         echoMode: chatService.isParameterHasFlag(" + String("%1").arg(i) + ", " + String("%1").arg(Global._PasswordEchoParameterFlag) + ") ? TextInput.Password : TextInput.Normal
-
         Component.onCompleted: {
             text = chatService.getParameterValue(" + String("%1").arg(i) + ")
             placeholderText = chatService.getParameterPlaceholder(" + String("%1").arg(i) + ")
         }
-
         onTextChanged: {
             chatService.setParameterValue(" + String("%1").arg(i) + ", text)
         }
     }
-
     Button {
         highlighted: " + (i == 0 ? "true" : "false") + "
         anchors.verticalCenter: parent.verticalCenter
         display: AbstractButton.TextBesideIcon
         icon.source: 'qrc:/resources/images/clipboard-paste-button.svg'
         text: '" + qsTr("Paste") + "'
-
         onClicked: {
             if (clipboard.text.length !== 0)
             {
@@ -151,21 +144,19 @@ Row {
 }
 ", row)
                 }
-                else if (type === Global._ButtonUrlParameterType)
+                else if (type === Global._ButtonParameterType)
                 {
                     Qt.createQmlObject(
 "
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
-
 Button {
     text: chatService.getParameterName(" + String("%1").arg(i) + ")
     anchors.verticalCenter: parent.verticalCenter
     display: AbstractButton.TextBesideIcon
-
     onClicked: {
-        Qt.openUrlExternally(chatService.getParameterValue(" + String("%1").arg(i) + "))
+        chatService.executeParameterInvoke(" + String("%1").arg(i) + ")
     }
 }
 ", row)
@@ -177,13 +168,11 @@ Button {
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
-
 Label {
     text: chatService.getParameterName(" + String("%1").arg(i) + ")
-    font.pixelSize: 20
+    font.pixelSize: 16
     anchors.verticalCenter: parent.verticalCenter
-    font.bold: true
-    color: '" + Material.accentColor + "'
+    color: '" + Material.foreground + "'
 }
 ", row)
                 }

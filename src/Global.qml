@@ -10,6 +10,8 @@ QtObject {
     readonly property int _TwitchServiceType: 101
     readonly property int _TrovoServiceType: 102
     readonly property int _GoodGameServiceType: 103
+    readonly property int _VkPlayLiveServiceType: 104
+    readonly property int _TelegramServiceType: 105
 
     readonly property int _NotConnectedConnectionStateType: 10
     readonly property int _ConnectingConnectionStateType: 20
@@ -17,7 +19,7 @@ QtObject {
 
     readonly property int _UnknownParameterType: -1
     readonly property int _StringParameterType: 10
-    readonly property int _ButtonUrlParameterType: 20
+    readonly property int _ButtonParameterType: 20
     readonly property int _LabelParameterType: 21
 
     readonly property int _PasswordEchoParameterFlag: 10

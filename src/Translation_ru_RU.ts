@@ -37,7 +37,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="144"/>
+        <location filename="chathandler.cpp" line="146"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -75,17 +75,17 @@
         <translation type="vanished">Twitch отключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="245"/>
+        <location filename="chathandler.cpp" line="247"/>
         <source>%1 connected: %2</source>
         <translation>%1 подключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="249"/>
+        <location filename="chathandler.cpp" line="251"/>
         <source>%1 disconnected: %2</source>
         <translation>%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="264"/>
+        <location filename="chathandler.cpp" line="266"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -95,7 +95,7 @@
     <name>ChatService</name>
     <message>
         <location filename="chat_services/chatservice.h" line="73"/>
-        <location filename="chat_services/chatservice.h" line="83"/>
+        <location filename="chat_services/chatservice.h" line="84"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
@@ -125,7 +125,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="109"/>
+        <location filename="chat_services/chatservice.h" line="81"/>
+        <source>Telegram</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.h" line="111"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -499,6 +504,57 @@
     </message>
 </context>
 <context>
+    <name>Telegram</name>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="9"/>
+        <source>Bot token</source>
+        <translation>Токен бота</translation>
+    </message>
+    <message>
+        <source>Create bot</source>
+        <translation type="vanished">Создать бота</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="13"/>
+        <source>1. Create a bot with @BotFather
+2. Add the bot to the desired group/channel and give it admin rights
+3. Specify your bot token above</source>
+        <translation>1. Создайте бота с помощью @BotFather
+2. Добавьте бота в нужную группу/канал и дайте ему права администратора
+3. Укажите токен вашего бота выше</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="15"/>
+        <source>Create bot with @BotFather</source>
+        <translation>Создать бота с помощью @BotFather</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="49"/>
+        <source>Bot token not specified</source>
+        <translation>Токен бота не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="54"/>
+        <source>Bot token is not correct</source>
+        <translation>Токен бота некорректен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="57"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="60"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="63"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
+    </message>
+</context>
+<context>
     <name>Trovo</name>
     <message>
         <location filename="chat_services/trovo.cpp" line="54"/>
@@ -552,32 +608,32 @@
         <translation>Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="134"/>
+        <location filename="chat_services/twitch.cpp" line="137"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="196"/>
+        <location filename="chat_services/twitch.cpp" line="199"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="201"/>
+        <location filename="chat_services/twitch.cpp" line="204"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="204"/>
+        <location filename="chat_services/twitch.cpp" line="207"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="207"/>
+        <location filename="chat_services/twitch.cpp" line="210"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="210"/>
+        <location filename="chat_services/twitch.cpp" line="213"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1298,17 +1354,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка...</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="144"/>
+        <location filename="setting_pages/service.qml" line="138"/>
         <source>Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="206"/>
+        <location filename="setting_pages/service.qml" line="195"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="216"/>
+        <location filename="setting_pages/service.qml" line="205"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1317,7 +1373,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="225"/>
+        <location filename="setting_pages/service.qml" line="214"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>
@@ -1325,27 +1381,27 @@ Latest version available: %2</oldsource>
 <context>
     <name>settings</name>
     <message>
-        <location filename="settings.qml" line="13"/>
+        <location filename="settings.qml" line="14"/>
         <source>AxelChat Settings</source>
         <translation>Настройки AxelChat</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="46"/>
+        <location filename="settings.qml" line="47"/>
         <source>Changes will take effect after restarting the program</source>
         <translation>Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="51"/>
+        <location filename="settings.qml" line="52"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="59"/>
+        <location filename="settings.qml" line="60"/>
         <source>Restart</source>
         <translation>Перезапуск</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="89"/>
+        <location filename="settings.qml" line="90"/>
         <source>Ok</source>
         <translation>Ок</translation>
     </message>
@@ -1354,7 +1410,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="176"/>
+        <location filename="settings.qml" line="184"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -1363,17 +1419,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="168"/>
+        <location filename="settings.qml" line="172"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="184"/>
+        <location filename="settings.qml" line="196"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="188"/>
+        <location filename="settings.qml" line="202"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -1382,7 +1438,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="192"/>
+        <location filename="settings.qml" line="208"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
