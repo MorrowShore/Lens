@@ -225,6 +225,14 @@ Window {
                         listViewCategories.currentIndex = model.index;
                     }
 
+                    Rectangle {
+                        visible: category === "common"
+                        width: parent.width
+                        height: 1
+                        color: Material.foreground
+                        opacity: 0.25
+                    }
+
                     contentItem: Row {
                         anchors.fill: parent
 
@@ -290,14 +298,6 @@ Window {
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
                             wrapMode: Text.Wrap
-                        }
-
-                        Rectangle {
-                            visible: category === "common"
-                            width: categoryDelegate.width
-                            height: 1
-                            color: Material.foreground
-                            opacity: 0.25
                         }
                     }
                 }
