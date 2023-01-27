@@ -14,7 +14,10 @@ ScrollView {
     contentHeight: column.implicitHeight
     contentWidth: column.implicitWidth
 
-    property var chatService: chatHandler.getServiceAtIndex(Global.windowSettingsServiceIndex)
+    property var chatService: 0
+    Component.onCompleted: {
+        chatService = chatHandler.getServiceAtIndex(Global.windowSettingsServiceIndex)
+    }
 
     Column {
         id: column
