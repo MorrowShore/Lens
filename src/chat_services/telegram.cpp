@@ -21,9 +21,9 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     getParameter(stream)->setPlaceholder("0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     getParameter(stream)->setFlag(Parameter::Flag::PasswordEcho);
 
-    parameters.append(Parameter(nullptr, tr("1. Create a bot with @BotFather\n2. Add the bot to the desired groups or channels\n3. Give admin rights to the bot in these groups/channels\n4. Specify your bot token above"), Parameter::Type::Label));
+    parameters.append(Parameter::createLabel(tr("1. Create a bot with @BotFather\n2. Add the bot to the desired groups or channels\n3. Give admin rights to the bot in these groups/channels\n4. Specify your bot token above")));
 
-    parameters.append(Parameter(nullptr, tr("Create bot with @BotFather"), Parameter::Type::Button, {}, [](const QVariant&)
+    parameters.append(Parameter::createButton(tr("Create bot with @BotFather"), [](const QVariant&)
     {
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     }));

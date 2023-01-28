@@ -108,7 +108,7 @@ public:
         , stream(settings, settingsGroupPath + "/stream")
         , lastSavedMessageId(settings, settingsGroupPath + "/lastSavedMessageId")
     {
-        parameters.append(Parameter(&stream, tr("Stream"), Parameter::Type::String, {}));
+        parameters.append(Parameter::createLineEdit(&stream, tr("Stream")));
     }
 
     QUrl getChatUrl() const { return state.chatUrl; }
@@ -295,7 +295,7 @@ protected:
         enum class Type
         {
             Unknown = -1,
-            String = 10,
+            LineEdit = 10,
             Button = 20,
             Label = 21,
             Switch = 22,
@@ -306,14 +306,40 @@ protected:
             PasswordEcho = 10
         };
 
-        Parameter(Setting<QString>* setting_, const QString& name_, const Type type_, const std::set<Flag> flags_ = std::set<Flag>(), std::function<void(const QVariant&)> invokeCalback_ = nullptr, const QVariant& invokeCallbackArgument_ = QVariant())
-            : setting(setting_)
-            , name(name_)
-            , type(type_)
-            , flags(flags_)
-            , invokeCalback(invokeCalback_)
-            , invokeCallbackArgument(invokeCallbackArgument_)
-        {}
+        static Parameter createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const std::set<Flag>& flags = std::set<Flag>())
+        {
+            Parameter parameter;
+
+            parameter.type = Type::LineEdit;
+            parameter.setting = setting;
+            parameter.name = name;
+            parameter.placeHolder = placeHolder;
+            parameter.flags = flags;
+
+            return parameter;
+        }
+
+        static Parameter createButton(const QString& text, std::function<void(const QVariant&)> invokeCalback, const QVariant& invokeCallbackArgument_ = QVariant())
+        {
+            Parameter parameter;
+
+            parameter.type = Type::Button;
+            parameter.name = text;
+            parameter.invokeCalback = invokeCalback;
+            parameter.invokeCallbackArgument = invokeCallbackArgument_;
+
+            return parameter;
+        }
+
+        static Parameter createLabel(const QString& text)
+        {
+            Parameter parameter;
+
+            parameter.type = Type::Label;
+            parameter.name = text;
+
+            return parameter;
+        }
 
         Setting<QString>* getSetting() { return setting; }
         const Setting<QString>* getSetting() const { return setting; }
@@ -340,6 +366,8 @@ protected:
         }
 
     private:
+        Parameter(){}
+
         Setting<QString>* setting;
         QString name;
         Type type;

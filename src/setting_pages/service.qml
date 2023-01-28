@@ -92,8 +92,8 @@ ScrollView {
                 var row = Qt.createQmlObject("import QtQuick 2.0; Row { spacing: 6 }", parametersColumn)
 
                 var type = chatService.getParameterType(i)
-                if (type === Global._StringParameterType)
-                {//isParameterHasFlag _PasswordEchoParameterFlag
+                if (type === Global._LineEditParameterType)
+                {
                     Qt.createQmlObject(
 "
 import QtQuick 2.0
