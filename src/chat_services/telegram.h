@@ -16,7 +16,7 @@ public:
     QString getStateDescription() const override;
 
 private:
-    void requestChat();
+    void requestUpdates();
     void processBadChatReply();
     void parseUpdates(const QJsonArray& updates);
     void parseMessage(const QJsonObject& jsonMessage, QList<Message>& messages, QList<Author>& authors);
@@ -31,11 +31,12 @@ private:
         int64_t botUserId = 0;
         QString botUserName;
         int badChatReplies = 0;
+        int64_t lastUpdateId = -1;
     };
 
     Info info;
 
-    QTimer timerRequestChat;
+    QTimer timerRequestUpdates;
 
     Setting<bool> allowPrivateChat;
 

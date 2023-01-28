@@ -7,8 +7,8 @@ namespace
 {
 
 static const int MaxBadChatReplies = 10;
-static const int RequestChatInterval = 3000;
-static const int RequestChatTimeoutSeconds = 2;
+static const int RequestChatInterval = 4000;
+static const int RequestChatTimeoutSeconds = 3;
 }
 
 Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
@@ -36,8 +36,8 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
 
     parameters.append(Parameter::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)")));
 
-    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &Telegram::requestChat);
-    timerRequestChat.start(RequestChatInterval);
+    QObject::connect(&timerRequestUpdates, &QTimer::timeout, this, &Telegram::requestUpdates);
+    timerRequestUpdates.start(RequestChatInterval);
 
     reconnect();
 }
@@ -56,7 +56,7 @@ void Telegram::reconnect()
 
     emit stateChanged();
 
-    requestChat();
+    requestUpdates();
 }
 
 ChatService::ConnectionStateType Telegram::getConnectionStateType() const
@@ -122,7 +122,7 @@ void Telegram::processBadChatReply()
     }
 }
 
-void Telegram::requestChat()
+void Telegram::requestUpdates()
 {
     if (state.streamId.isEmpty())
     {
@@ -187,13 +187,16 @@ void Telegram::requestChat()
     }
     else
     {
-        QNetworkRequest request(
-                    QUrl(
-                        QString("https://api.telegram.org/bot%1/getUpdates?timeout=%2&allowed_updates=message")
-                        .arg(state.streamId)
-                        .arg(RequestChatTimeoutSeconds)
-                        ));
-        QNetworkReply* reply = network.get(request);
+        QString url = QString("https://api.telegram.org/bot%1/getUpdates?timeout=%2&allowed_updates=message")
+                .arg(state.streamId)
+                .arg(RequestChatTimeoutSeconds);
+
+        if (info.lastUpdateId != -1)
+        {
+            url += QString("&offset=%1").arg(info.lastUpdateId + 1);
+        }
+
+        QNetworkReply* reply = network.get(QNetworkRequest(QUrl(url)));
         if (!reply)
         {
             qDebug() << Q_FUNC_INFO << ": !reply";
@@ -256,9 +259,11 @@ void Telegram::parseUpdates(const QJsonArray& updates)
             {
                 parseMessage(jsonUpdate.value(key).toObject(), messages, authors);
             }
-            else if (key == "update_id" ||
-                     key == "my_chat_member" // TODO
-                     )
+            else if (key == "update_id")
+            {
+                info.lastUpdateId = jsonUpdate.value("update_id").toVariant().toLongLong();
+            }
+            else if (key == "my_chat_member") // TODO
             {
                 // ignore
             }
