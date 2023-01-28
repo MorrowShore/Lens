@@ -790,76 +790,119 @@ ApplicationWindow {
     Rectangle {
         id: bottomPanel
         visible: Global.windowChatShowViewersCount
-        height: 22
+        height: 26
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         color: "transparent"
 
-        Text {
-            id: textViewersCount
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: textViewersTotalCount.left
-            anchors.margins: 2
-            style: Text.Outline
-            font.pointSize: 10
-            color: "white"
-            text:{
-                if (chatHandler.connectedCount === 0)
-                {
-                    return ""
-                }
-
-                var text = ""
-
-                for (var i = 0; i < chatHandler.getServicesCount(); ++i)
-                {
-                    var service = chatHandler.getServiceAtIndex(i)
-
-                    if (service.connectionStateType === Global._ConnectedConnectionStateType)
-                    {
-                        text += createImgHtmlTag(service.getIconUrl(), 20)
-
-                        if (service.viewersCount !== -1)
-                            text += String("%1   ").arg(service.viewersCount)
-                        else
-                            text += "?   "
-                    }
-                }
-
-                return text
-            }
-
+        Row {
+            id: bottomPanelRow
+            anchors.fill: parent
+            spacing: 8
+            leftPadding: 4
+            rightPadding: 4
+            topPadding: 2
+            bottomPadding: 6
         }
 
-        Text {
-            id: textViewersTotalCount
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.margins: 2
-            style: Text.Outline
-            font.pointSize: 10
-            color: "white"
-            text:{
-                if (chatHandler.connectedCount <= 1 || chatHandler.viewersTotalCount < 0)
+        Component.onCompleted: {
+            for (var i = 0; i < chatHandler.getServicesCount(); i++)
+            {
+
+            Qt.createQmlObject(
+"
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.12
+
+Row {
+    property var chatService: chatHandler.getServiceAtIndex(" + String("%1").arg(i) + ")
+
+    anchors.verticalCenter: parent.verticalCenter
+    spacing: 8
+
+    visible: {
+        switch (chatService.connectionStateType)
+        {
+        case Global._ConnectedConnectionStateType:
+        case Global._ConnectingConnectionStateType:
+            return true
+        }
+
+        return false
+    }
+
+    Image {
+        mipmap: true
+        height: 18
+        width: height
+        anchors.verticalCenter: parent.verticalCenter
+        source: chatService.getIconUrl()
+        fillMode: Image.PreserveAspectFit
+
+        Rectangle {
+            id: stateIndicator
+            width: 10
+            height: width
+            x: parent.width - width * 0.6
+            y: parent.height - height * 0.6
+            border.width: 2
+            radius: width / 2
+            border.color: \"black\"
+
+            property var status: chatService.connectionStateType
+
+            color: {
+                switch (status)
                 {
-                    return ""
+                case Global._ConnectedConnectionStateType: return \"lime\"
+                case Global._ConnectingConnectionStateType: return \"red\"
                 }
 
-                var text = ""
-                var size = 20
+                return \"orange\"
+            }
+        }
+    }
 
-                text += createImgHtmlTag("qrc:/resources/images/viewer.svg", 20)
+    Text {
+        anchors.verticalCenter: parent.verticalCenter
+        style: Text.Outline
+        font.pointSize: 10
+        color: \"white\"
+        visible: chatService.viewersCount != -1
 
-                if (chatHandler.viewersTotalCount !== -1)
-                    text += String("%1   ").arg(chatHandler.viewersTotalCount)
-                else
-                    text += "?"
+        text: String(\"%1\").arg(chatService.viewersCount)
+    }
+}
+", bottomPanelRow)
 
-                return text
+            }
+        }
+
+        Row {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 4
+            spacing: 8
+            visible: chatHandler.viewersTotalCount !== -1 && chatHandler.connectedCount > 1
+
+            Image {
+                mipmap: true
+                height: 18
+                width: height
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/resources/images/viewer.svg"
+                fillMode: Image.PreserveAspectFit
+            }
+
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                style: Text.Outline
+                font.pointSize: 10
+                color: "white"
+
+                text: String("%1").arg(chatHandler.viewersTotalCount)
             }
         }
     }
