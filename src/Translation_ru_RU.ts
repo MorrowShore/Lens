@@ -506,7 +506,7 @@
 <context>
     <name>Telegram</name>
     <message>
-        <location filename="chat_services/telegram.cpp" line="9"/>
+        <location filename="chat_services/telegram.cpp" line="18"/>
         <source>Bot token</source>
         <translation>Токен бота</translation>
     </message>
@@ -515,41 +515,55 @@
         <translation type="vanished">Создать бота</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="13"/>
         <source>1. Create a bot with @BotFather
 2. Add the bot to the desired group/channel and give it admin rights
 3. Specify your bot token above</source>
-        <translation>1. Создайте бота с помощью @BotFather
+        <translation type="vanished">1. Создайте бота с помощью @BotFather
 2. Добавьте бота в нужную группу/канал и дайте ему права администратора
 3. Укажите токен вашего бота выше</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="15"/>
+        <location filename="chat_services/telegram.cpp" line="22"/>
+        <source>1. Create a bot with @BotFather
+2. Add the bot to the desired groups or channels
+3. Give admin rights to the bot in these groups/channels
+4. Specify your bot token above</source>
+        <oldsource>1. Create a bot with @BotFather
+2. Add the bot to the desired groups or channels
+3. Give admin rights to the bot
+4. Specify your bot token above</oldsource>
+        <translation>1. Создайте бота с помощью @BotFather
+2. Добавьте бота в нужные группы или каналы
+3. Дайте боту права администратора в этих группах/каналах
+4. Укажите токен вашего бота выше</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="24"/>
         <source>Create bot with @BotFather</source>
         <translation>Создать бота с помощью @BotFather</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="49"/>
+        <location filename="chat_services/telegram.cpp" line="73"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="54"/>
+        <location filename="chat_services/telegram.cpp" line="78"/>
         <source>Bot token is not correct</source>
         <translation>Токен бота некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="57"/>
+        <location filename="chat_services/telegram.cpp" line="81"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="60"/>
+        <location filename="chat_services/telegram.cpp" line="84"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="63"/>
+        <location filename="chat_services/telegram.cpp" line="87"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1354,17 +1368,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка...</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="138"/>
+        <location filename="setting_pages/service.qml" line="141"/>
         <source>Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="195"/>
+        <location filename="setting_pages/service.qml" line="198"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="205"/>
+        <location filename="setting_pages/service.qml" line="208"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1373,7 +1387,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="214"/>
+        <location filename="setting_pages/service.qml" line="217"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

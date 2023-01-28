@@ -18,6 +18,7 @@ public:
 private:
     void requestChat();
     void processBadChatReply();
+    void parseUpdates(const QJsonArray& updates);
 
     QSettings& settings;
     QNetworkAccessManager& network;
@@ -32,4 +33,6 @@ private:
     Info info;
 
     QTimer timerRequestChat;
+
+    Setting<bool> allowPrivateChat;
 };

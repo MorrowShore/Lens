@@ -1,4 +1,5 @@
 #include "telegram.h"
+#include "models/message.h"
 #include <QDesktopServices>
 #include <QNetworkReply>
 
@@ -6,20 +7,21 @@ namespace
 {
 
 static const int MaxBadChatReplies = 10;
-static const int RequestChatInterval = 2000;
-
+static const int RequestChatInterval = 3000;
+static const int RequestChatTimeoutSeconds = 2;
 }
 
 Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
     , settings(settings_)
     , network(network_)
+    , allowPrivateChat(settings_, "allow_private_chat", false)
 {
     getParameter(stream)->setName(tr("Bot token"));
     getParameter(stream)->setPlaceholder("0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     getParameter(stream)->setFlag(Parameter::Flag::PasswordEcho);
 
-    parameters.append(Parameter(new Setting<QString>(settings, QString()), tr("1. Create a bot with @BotFather\n2. Add the bot to the desired group/channel and give it admin rights\n3. Specify your bot token above"), Parameter::Type::Label));
+    parameters.append(Parameter(new Setting<QString>(settings, QString()), tr("1. Create a bot with @BotFather\n2. Add the bot to the desired groups or channels\n3. Give admin rights to the bot in these groups/channels\n4. Specify your bot token above"), Parameter::Type::Label));
 
     parameters.append(Parameter(new Setting<QString>(settings, QString()), tr("Create bot with @BotFather"), Parameter::Type::Button, {}, [](const QVariant&)
     {
@@ -148,7 +150,14 @@ void Telegram::requestChat()
                 return;
             }
 
-            const QJsonObject jsonUser = QJsonDocument::fromJson(rawData).object().value("result").toObject();
+            const QJsonObject root = QJsonDocument::fromJson(rawData).object();
+            if (!root.value("ok").toBool())
+            {
+                qDebug() << Q_FUNC_INFO << "error:" << root;;
+                return;
+            }
+
+            const QJsonObject jsonUser = root.value("result").toObject();
 
             const int64_t botUserId = jsonUser.value("id").toVariant().toLongLong(0);
             const QString botUserName = jsonUser.value("username").toString();
@@ -167,5 +176,115 @@ void Telegram::requestChat()
                 }
             }
         });
+    }
+    else
+    {
+        QNetworkRequest request(
+                    QUrl(
+                        QString("https://api.telegram.org/bot%1/getUpdates?timeout=%2&allowed_updates=message")
+                        .arg(state.streamId)
+                        .arg(RequestChatTimeoutSeconds)
+                        ));
+        QNetworkReply* reply = network.get(request);
+        if (!reply)
+        {
+            qDebug() << Q_FUNC_INFO << ": !reply";
+            return;
+        }
+
+        QObject::connect(reply, &QNetworkReply::finished, this, [this]()
+        {
+            QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
+            if (!reply)
+            {
+                qDebug() << Q_FUNC_INFO << "!reply";
+                return;
+            }
+
+            const QByteArray rawData = reply->readAll();
+            reply->deleteLater();
+
+            if (rawData.isEmpty())
+            {
+                processBadChatReply();
+                qDebug() << Q_FUNC_INFO << ":rawData is empty";
+                return;
+            }
+
+            const QJsonObject root = QJsonDocument::fromJson(rawData).object();
+            if (!root.value("ok").toBool())
+            {
+                qDebug() << Q_FUNC_INFO << "error:" << root;;
+                return;
+            }
+
+            if (!state.connected)
+            {
+                state.connected = true;
+                emit connectedChanged(true, info.botUserName);
+                emit stateChanged();
+            }
+
+            parseUpdates(root.value("result").toArray());
+        });
+    }
+}
+
+void Telegram::parseUpdates(const QJsonArray& updates)
+{
+    QList<Message> messages;
+    QList<Author> authors;
+
+    for (const QJsonValue& v : updates)
+    {
+        const QJsonObject jsonUpdate = v.toObject();
+
+        //qDebug() << "\n" << jsonUpdate << "\n";
+
+        const QJsonObject jsonMessage = jsonUpdate.value("message").toObject();
+        if (jsonMessage.isEmpty())
+        {
+            continue;
+        }
+
+        const QJsonObject jsonChat = jsonMessage.value("chat").toObject();
+        const QString chatId = QString("%1").arg(jsonChat.value("id").toVariant().toLongLong());
+        const QString chatType = jsonChat.value("type").toString();
+
+        if (chatType == "private" && !allowPrivateChat.get())
+        {
+            continue;
+        }
+
+        const QJsonObject jsonFrom = jsonMessage.value("from").toObject();
+
+        const QString authorId = QString("%1").arg(jsonFrom.value("id").toVariant().toLongLong());
+
+        QString authorName = jsonFrom.value("first_name").toString();
+
+        const QString lastName = jsonFrom.value("last_name").toString();
+        if (!lastName.isEmpty())
+        {
+            authorName += " " + lastName;
+        }
+
+        const Author author(getServiceType(), authorName, authorId);
+
+        const QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(jsonMessage.value("date").toVariant().toLongLong());
+
+        const QString messageId = chatId + "/" + QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
+        const QString messageText = jsonMessage.value("text").toString();
+
+        const QList<Message::Content*> contents = { new Message::Text(messageText) };
+
+        const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
+
+        messages.append(message);
+        authors.append(author);
+    }
+
+    if (!authors.isEmpty() && !messages.isEmpty())
+    {
+        emit readyRead(messages, authors);
     }
 }
