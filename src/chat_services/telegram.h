@@ -19,6 +19,7 @@ private:
     void requestChat();
     void processBadChatReply();
     void parseUpdates(const QJsonArray& updates);
+    void parseMessage(const QJsonObject& jsonMessage, QList<Message>& messages, QList<Author>& authors);
 
     QSettings& settings;
     QNetworkAccessManager& network;
