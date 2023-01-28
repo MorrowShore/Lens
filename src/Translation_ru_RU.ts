@@ -527,49 +527,58 @@
         <source>1. Create a bot with @BotFather
 2. Add the bot to the desired groups or channels
 3. Give admin rights to the bot in these groups/channels
-4. Specify your bot token above</source>
+4. Specify your bot token above
+
+It is not recommended to use a bot that is already being used for other purposes
+It is not recommended to run more than one %1 with the same bot</source>
         <oldsource>1. Create a bot with @BotFather
 2. Add the bot to the desired groups or channels
-3. Give admin rights to the bot
-4. Specify your bot token above</oldsource>
+3. Give admin rights to the bot in these groups/channels
+4. Specify your bot token above
+
+It is not recommended to use a bot that is already being used for other purposes
+It is not recommended to run more than one %1</oldsource>
         <translation>1. Создайте бота с помощью @BotFather
 2. Добавьте бота в нужные группы или каналы
 3. Дайте боту права администратора в этих группах/каналах
-4. Укажите токен вашего бота выше</translation>
+4. Укажите токен вашего бота выше
+
+Не рекомендуется использовать бота, который уже используются для других целей
+Не рекомендуется запускать более одного %1 с одним и тем же ботом</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="26"/>
+        <location filename="chat_services/telegram.cpp" line="32"/>
         <source>Create bot with @BotFather</source>
         <translation>Создать бота с помощью @BotFather</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="31"/>
+        <location filename="chat_services/telegram.cpp" line="37"/>
         <source>Allow private chats (at one&apos;s own risk)</source>
         <oldsource>Allow private chats (turn on at your own risk)</oldsource>
         <translation>Разрешить приватные чаты (на свой страх и риск)</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="77"/>
+        <location filename="chat_services/telegram.cpp" line="83"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="82"/>
+        <location filename="chat_services/telegram.cpp" line="88"/>
         <source>Bot token is not correct</source>
         <translation>Токен бота некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="85"/>
+        <location filename="chat_services/telegram.cpp" line="91"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="88"/>
+        <location filename="chat_services/telegram.cpp" line="94"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="91"/>
+        <location filename="chat_services/telegram.cpp" line="97"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

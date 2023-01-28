@@ -21,7 +21,13 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     getParameter(stream)->setPlaceholder("0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     getParameter(stream)->setFlag(Parameter::Flag::PasswordEcho);
 
-    parameters.append(Parameter::createLabel(tr("1. Create a bot with @BotFather\n2. Add the bot to the desired groups or channels\n3. Give admin rights to the bot in these groups/channels\n4. Specify your bot token above")));
+    parameters.append(Parameter::createLabel(tr("1. Create a bot with @BotFather\n"
+                                                "2. Add the bot to the desired groups or channels\n"
+                                                "3. Give admin rights to the bot in these groups/channels\n"
+                                                "4. Specify your bot token above\n"
+                                                "\n"
+                                                "It is not recommended to use a bot that is already being used for other purposes\n"
+                                                "It is not recommended to run more than one %1 with the same bot").arg(QCoreApplication::applicationName())));
 
     parameters.append(Parameter::createButton(tr("Create bot with @BotFather"), [](const QVariant&)
     {
