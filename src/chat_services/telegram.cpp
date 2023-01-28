@@ -306,7 +306,7 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
 
     const Author author(getServiceType(), authorName, QString("%1").arg(userId));
 
-    const QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(jsonMessage.value("date").toVariant().toLongLong());
+    const QDateTime dateTime = QDateTime::fromSecsSinceEpoch(jsonMessage.value("date").toVariant().toLongLong());
 
     const QString messageId = chatId + "/" + QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
 
