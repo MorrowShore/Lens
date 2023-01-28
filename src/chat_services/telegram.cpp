@@ -366,7 +366,7 @@ void Telegram::requestUserPhoto(const QString& authorId, const int64_t& userId)
         const QJsonArray jsonPhotos = root.value("result").toObject().value("photos").toArray();
         if (jsonPhotos.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "photos is empty";
+            //qWarning() << Q_FUNC_INFO << "photos is empty";
             return;
         }
 
