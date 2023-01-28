@@ -6,7 +6,7 @@
 
 Author::Author(AxelChat::ServiceType serviceType_,
                const QString &name_,
-               const QString &authorId_,
+               const QString &rawAuthorId,
                const QUrl &avatarUrl_,
                const QUrl &pageUrl_,
                const QStringList &leftBadgesUrls_,
@@ -16,7 +16,7 @@ Author::Author(AxelChat::ServiceType serviceType_,
                const QColor &customNicknameBackgroundColor_)
     : serviceType(serviceType_)
     , name(name_)
-    , authorId(authorId_)
+    , authorId(generateId(serviceType_, rawAuthorId))
     , avatarUrl(avatarUrl_)
     , pageUrl(pageUrl_)
     , leftBadgesUrls(leftBadgesUrls_)
@@ -25,10 +25,7 @@ Author::Author(AxelChat::ServiceType serviceType_,
     , customNicknameColor(customNicknameColor_)
     , customNicknameBackgroundColor(customNicknameBackgroundColor_)
 {
-    if (authorId.isEmpty())
-    {
-        authorId = ChatService::getServiceTypeId(serviceType);
-    }
+
 }
 
 const Author &Author::getSoftwareAuthor()
@@ -39,6 +36,11 @@ const Author &Author::getSoftwareAuthor()
                             authorId);
 
     return author;
+}
+
+QString Author::generateId(const AxelChat::ServiceType serviceType, const QString &rawId)
+{
+    return ChatService::getServiceTypeId(serviceType) + "_" + rawId;
 }
 
 bool Author::setValue(const Role role, const QVariant &value)

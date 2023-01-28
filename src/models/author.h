@@ -42,7 +42,7 @@ public:
     Author() { };
     Author(AxelChat::ServiceType serviceType,
            const QString& name,
-           const QString& authorId,
+           const QString& rawAuthorId,
            const QUrl& avatarUrl = QUrl(),
            const QUrl& pageUrl = QUrl(),
            const QStringList& leftBadgesUrls = {},
@@ -52,6 +52,7 @@ public:
            const QColor& customNicknameBackgroundColor = QColor());
 
     static const Author& getSoftwareAuthor();
+    static QString generateId(const AxelChat::ServiceType serviceType, const QString& rawId);
 
     inline const QString& getId() const
     {

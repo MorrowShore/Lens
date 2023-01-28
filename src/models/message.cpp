@@ -9,24 +9,17 @@ Message::Message(const QList<Message::Content*>& contents_,
                          const Author& author,
                          const QDateTime &publishedAt_,
                          const QDateTime &receivedAt_,
-                         const QString &messageId_,
+                         const QString &rawMessageId,
                          const std::set<Flag> &flags_,
                          const QHash<ColorRole, QColor> &forcedColors_)
     : contents(contents_)
-    , messageId(messageId_)
+    , messageId(generateId(author, rawMessageId))
     , publishedAt(publishedAt_)
     , receivedAt(receivedAt_)
     , authorId(author.getId())
     , flags(flags_)
     , forcedColors(forcedColors_)
 {
-    if (messageId.isEmpty())
-    {
-        messageId = authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
-    }
-
-    messageId = ChatService::getServiceTypeId(author.getServiceType()) + "/" + messageId;
-
     updateHtml();
 }
 
@@ -103,6 +96,22 @@ QString Message::getForcedColorRoleToQMLString(const ColorRole &role) const
     }
 
     return QString();
+}
+
+QString Message::generateId(const Author& author, const QString& rawId)
+{
+    QString result = author.getId() + " ";
+
+    if (rawId.isEmpty())
+    {
+        result += QUuid::createUuid().toString(QUuid::Id128);
+    }
+    else
+    {
+        result += rawId;
+    }
+
+    return result;
 }
 
 QJsonObject Message::toJson(const Author& author) const

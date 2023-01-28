@@ -1,6 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include "chat_services/chatservicestypes.h"
 #include <QObject>
 #include <QDateTime>
 #include <QColor>
@@ -215,9 +216,11 @@ public:
                 const Author& author,
                 const QDateTime& publishedAt = QDateTime::currentDateTime(),
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
-                const QString& messageId = QString(),
+                const QString& rawMessageId = QString(),
                 const std::set<Flag>& flags = {},
                 const QHash<ColorRole, QColor>& forcedColors = {});
+
+    static QString generateId(const Author& author, const QString& rawId);
 
     inline const QString& getId() const
     {
