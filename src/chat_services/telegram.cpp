@@ -28,7 +28,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
                                                 "4. Specify your bot token above\n"
                                                 "\n"
                                                 "It is not recommended to use a bot that is already being used for other purposes\n"
-                                                "It is not recommended to run more than one %1 with the same bot").arg(QCoreApplication::applicationName())));
+                                                "It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName())));
 
     parameters.append(Parameter::createButton(tr("Create bot with @BotFather"), [](const QVariant&)
     {

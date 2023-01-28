@@ -540,21 +540,21 @@
 4. Specify your bot token above
 
 It is not recommended to use a bot that is already being used for other purposes
-It is not recommended to run more than one %1 with the same bot</source>
+It is not recommended to use more than one %1 with the same bot</source>
         <oldsource>1. Create a bot with @BotFather
 2. Add the bot to the desired groups or channels
 3. Give admin rights to the bot in these groups/channels
 4. Specify your bot token above
 
 It is not recommended to use a bot that is already being used for other purposes
-It is not recommended to run more than one %1</oldsource>
+It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation>1. Создайте бота с помощью @BotFather
 2. Добавьте бота в нужные группы или каналы
 3. Дайте боту права администратора в этих группах/каналах
 4. Укажите токен вашего бота выше
 
 Не рекомендуется использовать бота, который уже используются для других целей
-Не рекомендуется запускать более одного %1 с одним и тем же ботом</translation>
+Не рекомендуется использовать более одного %1 с одним и тем же ботом</translation>
     </message>
     <message>
         <location filename="chat_services/telegram.cpp" line="33"/>
@@ -1374,12 +1374,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="756"/>
+        <location filename="main.qml" line="766"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="760"/>
+        <location filename="main.qml" line="770"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
