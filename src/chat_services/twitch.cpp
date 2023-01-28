@@ -228,7 +228,7 @@ QUrl Twitch::requesGetAOuthTokenUrl() const
 
 void Twitch::onParameterChangedImpl(Parameter& parameter)
 {
-    Setting<QString>* setting = parameter.getSetting();
+    Setting<QString>* setting = parameter.getSettingString();
     if (!setting)
     {
         return;

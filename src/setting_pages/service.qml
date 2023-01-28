@@ -123,11 +123,11 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         echoMode: chatService.isParameterHasFlag(" + String("%1").arg(i) + ", " + String("%1").arg(Global._PasswordEchoParameterFlag) + ") ? TextInput.Password : TextInput.Normal
         Component.onCompleted: {
-            text = chatService.getParameterValue(" + String("%1").arg(i) + ")
+            text = chatService.getParameterValueString(" + String("%1").arg(i) + ")
             placeholderText = chatService.getParameterPlaceholder(" + String("%1").arg(i) + ")
         }
         onTextChanged: {
-            chatService.setParameterValue(" + String("%1").arg(i) + ", text)
+            chatService.setParameterValueString(" + String("%1").arg(i) + ", text)
         }
     }
     Button {

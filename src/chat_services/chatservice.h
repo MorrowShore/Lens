@@ -167,114 +167,142 @@ public:
     }
 
     Q_INVOKABLE int getParametersCount() const { return parameters.count(); }
+
     Q_INVOKABLE QString getParameterName(int index) const
     {
-        if (index >= 0 && index < parameters.count())
+        if (index < 0 || index >= parameters.count())
         {
-            return parameters[index].getName();
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return QString();
         }
 
-        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
-
-        return QString();
+        return parameters[index].getName();
     }
 
-    Q_INVOKABLE QString getParameterValue(int index) const
+    Q_INVOKABLE QString getParameterValueString(int index) const
     {
-        if (index >= 0 && index < parameters.count())
+        if (index < 0 || index >= parameters.count())
         {
-            const auto* setting = parameters[index].getSetting();
-            if (setting)
-            {
-                return setting->get();
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting is null";
-                return QString();
-            }
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return QString();
         }
 
-        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
-        return QString();
+        const Setting<QString>* setting = parameters[index].getSettingString();
+        if (!setting)
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting string is null";
+            return QString();
+        }
+
+        return setting->get();
+    }
+
+    Q_INVOKABLE void setParameterValueString(int index, const QString& value)
+    {
+        if (index < 0 || index >= parameters.count())
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return;
+        }
+
+        Setting<QString>* setting = parameters[index].getSettingString();
+        if (!setting)
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting string is null";
+            return;
+        }
+
+        if (setting->set(value))
+        {
+            onParameterChanged(parameters[index]);
+            emit stateChanged();
+        }
+    }
+
+    Q_INVOKABLE bool getParameterValueBool(int index) const
+    {
+        if (index < 0 || index >= parameters.count())
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return false;
+        }
+
+        const Setting<bool>* setting = parameters[index].getSettingBool();
+        if (!setting)
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting bool is null";
+            return false;
+        }
+
+        return setting->get();
+    }
+
+    Q_INVOKABLE void setParameterValueBool(int index, const bool value)
+    {
+        if (index < 0 || index >= parameters.count())
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return;
+        }
+
+        Setting<bool>* setting = parameters[index].getSettingBool();
+        if (!setting)
+        {
+            qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting bool is null";
+            return;
+        }
+
+        if (setting->set(value))
+        {
+            onParameterChanged(parameters[index]);
+            emit stateChanged();
+        }
     }
 
     Q_INVOKABLE int getParameterType(int index) const
     {
-        if (index >= 0 && index < parameters.count())
+        if (index < 0 || index >= parameters.count())
         {
-            return (int)parameters[index].getType();
+            qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return (int)Parameter::Type::Unknown;
         }
 
-        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
-
-        return (int)Parameter::Type::Unknown;
+        return (int)parameters[index].getType();
     }
 
     Q_INVOKABLE bool isParameterHasFlag(int index, int flag) const
     {
-        if (index >= 0 && index < parameters.count())
-        {
-            const std::set<Parameter::Flag>& flags = parameters[index].getFlags();
-
-            return flags.find((Parameter::Flag)flag) != flags.end();
-        }
-
-        qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
-
-        return false;
-    }
-
-    Q_INVOKABLE void setParameterValue(int index, const QString& value)
-    {
-        if (index >= 0 && index < parameters.count())
-        {
-            auto* setting = parameters[index].getSetting();
-            if (setting)
-            {
-                if (setting->set(value))
-                {
-                    onParameterChanged(parameters[index]);
-                    emit stateChanged();
-                }
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting is null";
-            }
-        }
-        else
+        if (index < 0 || index >= parameters.count())
         {
             qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return false;
         }
+
+        const std::set<Parameter::Flag>& flags = parameters[index].getFlags();
+
+        return flags.find((Parameter::Flag)flag) != flags.end();
     }
 
     Q_INVOKABLE QString getParameterPlaceholder(int index) const
     {
-        if (index >= 0 && index < parameters.count())
-        {
-            return parameters[index].getPlaceholder();
-        }
-        else
+        if (index < 0 || index >= parameters.count())
         {
             qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return QString();
         }
 
-        return QString();
+        return parameters[index].getPlaceholder();
     }
 
     Q_INVOKABLE bool executeParameterInvoke(int index)
     {
-        if (index >= 0 && index < parameters.count())
-        {
-            return parameters[index].executeInvokeCallback();
-        }
-        else
+        if (index < 0 || index >= parameters.count())
         {
             qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
+            return false;
         }
 
-        return false;
+        return parameters[index].executeInvokeCallback();
     }
 
 #ifdef QT_QUICK_LIB
@@ -311,7 +339,7 @@ protected:
             Parameter parameter;
 
             parameter.type = Type::LineEdit;
-            parameter.setting = setting;
+            parameter.settingString = setting;
             parameter.name = name;
             parameter.placeHolder = placeHolder;
             parameter.flags = flags;
@@ -319,7 +347,7 @@ protected:
             return parameter;
         }
 
-        static Parameter createButton(const QString& text, std::function<void(const QVariant&)> invokeCalback, const QVariant& invokeCallbackArgument_ = QVariant())
+        static Parameter createButton(const QString& text, std::function<void(const QVariant& argument)> invokeCalback, const QVariant& invokeCallbackArgument_ = QVariant())
         {
             Parameter parameter;
 
@@ -341,8 +369,23 @@ protected:
             return parameter;
         }
 
-        Setting<QString>* getSetting() { return setting; }
-        const Setting<QString>* getSetting() const { return setting; }
+        static Parameter createSwitch(Setting<bool>* settingBool, const QString& name)
+        {
+            Parameter parameter;
+
+            parameter.type = Type::Switch;
+            parameter.settingBool = settingBool;
+            parameter.name = name;
+
+            return parameter;
+        }
+
+        Setting<QString>* getSettingString() { return settingString; }
+        const Setting<QString>* getSettingString() const { return settingString; }
+
+        Setting<bool>* getSettingBool() { return settingBool; }
+        const Setting<bool>* getSettingBool() const { return settingBool; }
+
         QString getName() const { return name; }
         void setName(const QString& name_) { name = name_; }
         Type getType() const { return type; }
@@ -368,18 +411,20 @@ protected:
     private:
         Parameter(){}
 
-        Setting<QString>* setting;
+        Setting<QString>* settingString;
+        Setting<bool>* settingBool;
+
         QString name;
         Type type;
         std::set<Flag> flags;
         QString placeHolder;
-        std::function<void(const QVariant&)> invokeCalback;
+        std::function<void(const QVariant& argument)> invokeCalback;
         QVariant invokeCallbackArgument;
     };
 
     void onParameterChanged(Parameter& parameter)
     {
-        Setting<QString>* setting = parameter.getSetting();
+        Setting<QString>* setting = parameter.getSettingString();
 
         if (setting && *&setting == &stream)
         {
@@ -401,7 +446,7 @@ protected:
     {
         for (Parameter& parameter : parameters)
         {
-            if (parameter.getSetting() == &setting)
+            if (parameter.getSettingString() == &setting)
             {
                 return &parameter;
             }

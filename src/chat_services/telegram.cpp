@@ -15,7 +15,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
     , settings(settings_)
     , network(network_)
-    , allowPrivateChat(settings_, "allow_private_chat", false)
+    , allowPrivateChat(settings_, "allow_private_chats", false)
 {
     getParameter(stream)->setName(tr("Bot token"));
     getParameter(stream)->setPlaceholder("0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -27,6 +27,8 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     {
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     }));
+
+    parameters.append(Parameter::createSwitch(&allowPrivateChat, tr("Allow private chats")));
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &Telegram::requestChat);
     timerRequestChat.start(RequestChatInterval);
