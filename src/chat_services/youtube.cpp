@@ -325,7 +325,7 @@ void YouTube::onReplyChatPage()
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
     {
-        qDebug() << "!reply";
+        qDebug() << Q_FUNC_INFO << "!reply";
         return;
     }
 

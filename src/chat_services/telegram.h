@@ -16,8 +16,20 @@ public:
     QString getStateDescription() const override;
 
 private:
+    void requestChat();
+    void processBadChatReply();
+
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    QTimer reconnectTimer;
+    struct Info
+    {
+        int64_t botUserId = 0;
+        QString botUserName;
+        int badChatReplies = 0;
+    };
+
+    Info info;
+
+    QTimer timerRequestChat;
 };
