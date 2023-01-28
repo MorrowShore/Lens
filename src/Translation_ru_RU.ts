@@ -583,14 +583,93 @@ It is not recommended to run more than one %1</oldsource>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="338"/>
+        <location filename="chat_services/telegram.cpp" line="334"/>
+        <source>animation</source>
+        <translation>анимация</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="335"/>
+        <source>audio</source>
+        <translation>аудио</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="336"/>
+        <source>document</source>
+        <translation>документ</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="337"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="489"/>
+        <location filename="chat_services/telegram.cpp" line="338"/>
+        <source>sticker</source>
+        <translation>стикер</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="339"/>
+        <source>video</source>
+        <translation>видео</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="340"/>
+        <source>video note</source>
+        <translation>видеосообщение</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="341"/>
+        <source>voice note</source>
+        <translation>голосовое сообщение</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="342"/>
+        <source>contact</source>
+        <translation>контакт</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="343"/>
+        <source>dice</source>
+        <translation>игральная кость</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="344"/>
+        <source>game</source>
+        <translation>игра</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="345"/>
+        <source>poll</source>
+        <translation>голосование</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="346"/>
+        <source>venue</source>
+        <translation>место проведения</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="347"/>
+        <source>location</source>
+        <translation>локация</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="348"/>
+        <source>video chat scheduled</source>
+        <translation>видеочат запланирован</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="349"/>
+        <source>video chat started</source>
+        <translation>видеочат начался</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="350"/>
+        <source>video chat ended</source>
+        <translation>видеочат завершён</translation>
+    </message>
+    <message>
         <source>Attached %1</source>
-        <translation>Прикреплено %1</translation>
+        <translation type="vanished">Прикреплено %1</translation>
     </message>
     <message>
         <source>Image</source>

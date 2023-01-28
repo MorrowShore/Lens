@@ -331,12 +331,23 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
         contents.append(new Message::Text(messageText));
     }
 
-    if (jsonMessage.contains("photo"))
-    {
-        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
-
-        addAttachContent(contents, tr("image"));
-    }
+    if (jsonMessage.contains("animation")) { addServiceContent(contents, tr("animation")); }
+    if (jsonMessage.contains("audio")) { addServiceContent(contents, tr("audio")); }
+    if (jsonMessage.contains("document")) { addServiceContent(contents, tr("document")); }
+    if (jsonMessage.contains("photo")) { addServiceContent(contents, tr("image")); }
+    if (jsonMessage.contains("sticker")) { addServiceContent(contents, tr("sticker")); }
+    if (jsonMessage.contains("video")) { addServiceContent(contents, tr("video")); }
+    if (jsonMessage.contains("video_note")) { addServiceContent(contents, tr("video note")); }
+    if (jsonMessage.contains("voice")) { addServiceContent(contents, tr("voice note")); }
+    if (jsonMessage.contains("contact")) { addServiceContent(contents, tr("contact")); }
+    if (jsonMessage.contains("dice")) { addServiceContent(contents, tr("dice")); }
+    if (jsonMessage.contains("game")) { addServiceContent(contents, tr("game")); }
+    if (jsonMessage.contains("poll")) { addServiceContent(contents, tr("poll")); }
+    if (jsonMessage.contains("venue")) { addServiceContent(contents, tr("venue")); }
+    if (jsonMessage.contains("location")) { addServiceContent(contents, tr("location")); }
+    if (jsonMessage.contains("video_chat_scheduled")) { addServiceContent(contents, tr("video chat scheduled")); }
+    if (jsonMessage.contains("video_chat_started")) { addServiceContent(contents, tr("video chat started")); }
+    if (jsonMessage.contains("video_chat_ended")) { addServiceContent(contents, tr("video chat ended")); }
 
     if (!contents.isEmpty())
     {
@@ -482,9 +493,18 @@ void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &file
     });
 }
 
-void Telegram::addAttachContent(QList<Message::Content *>& contents, const QString &attachTypeName)
+void Telegram::addServiceContent(QList<Message::Content *>& contents, const QString &name_)
 {
+    if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+
+    QString name = name_;
+
+    if (!name.isEmpty())
+    {
+        name.replace(0, 1, name.at(0).toUpper());
+    }
+
     Message::Text::Style style;
     style.italic = true;
-    contents.append(new Message::Text("[" + tr("Attached %1").arg(attachTypeName) + "]", style));
+    contents.append(new Message::Text("[" + name + "]", style));
 }
