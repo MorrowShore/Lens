@@ -16,6 +16,7 @@ const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>
     {(int)Message::Role::MarkedAsDeleted ,              "messageMarkedAsDeleted"},
     {(int)Message::Role::CustomAuthorAvatarUrl,         "messageCustomAuthorAvatarUrl"},
     {(int)Message::Role::CustomAuthorName,              "messageCustomAuthorName"},
+    {(int)Message::Role::Destination,                   "messageDestination"},
 
     {(int)Message::Role::IsDonateSimple,                "messageIsDonateSimple"},
     {(int)Message::Role::IsDonateWithText,              "messageIsDonateWithText"},
@@ -405,6 +406,8 @@ QVariant MessagesModel::dataByRole(const Message &message, int role) const
         return message.getCustomAuthorAvatarUrl();
     case Message::Role::CustomAuthorName:
         return message.getCustomAuthorName();
+    case Message::Role::Destination:
+        return message.getDestination();
 
     case Message::Role::IsDonateSimple:
         return message.isHasFlag(Message::Flag::DonateSimple);

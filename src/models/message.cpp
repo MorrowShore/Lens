@@ -11,7 +11,8 @@ Message::Message(const QList<Message::Content*>& contents_,
                          const QDateTime &receivedAt_,
                          const QString &messageId_,
                          const std::set<Flag> &flags_,
-                         const QHash<ColorRole, QColor> &forcedColors_)
+                         const QHash<ColorRole, QColor> &forcedColors_,
+                         const QString& destination_)
     : contents(contents_)
     , messageId(messageId_)
     , publishedAt(publishedAt_)
@@ -19,6 +20,7 @@ Message::Message(const QList<Message::Content*>& contents_,
     , authorId(author.getId())
     , flags(flags_)
     , forcedColors(forcedColors_)
+    , destination(destination_)
 {
     if (messageId.isEmpty())
     {

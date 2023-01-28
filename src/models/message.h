@@ -26,6 +26,7 @@ public:
         MarkedAsDeleted,
         CustomAuthorAvatarUrl,
         CustomAuthorName,
+        Destination,
 
         IsDonateSimple,
         IsDonateWithText,
@@ -217,7 +218,8 @@ public:
                 const QDateTime& receivedAt = QDateTime::currentDateTime(),
                 const QString& messageId = QString(),
                 const std::set<Flag>& flags = {},
-                const QHash<ColorRole, QColor>& forcedColors = {});
+                const QHash<ColorRole, QColor>& forcedColors = {},
+                const QString& destination = QString());
 
     inline const QString& getId() const
     {
@@ -267,6 +269,10 @@ public:
     {
         return flags.find(flag) != flags.end();
     }
+    inline const QString& getDestination() const
+    {
+        return destination;
+    }
     void setPlainText(const QString& text);
 
     void setFlag(const Flag flag, bool enable);
@@ -298,6 +304,7 @@ private:
     QHash<ColorRole, QColor> forcedColors;
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
+    QString destination;
 
     uint64_t idNum = 0;
 };

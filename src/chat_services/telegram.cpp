@@ -15,7 +15,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
     , settings(settings_)
     , network(network_)
-    , showChatTitle(settings_, "show_chat_title", false)
+    , showChatTitle(settings_, "show_chat_title", true)
     , allowPrivateChat(settings_, "allow_private_chats", false)
 {
     getParameter(stream)->setName(tr("Bot token"));
@@ -250,7 +250,7 @@ void Telegram::parseUpdates(const QJsonArray& updates)
     {
         const QJsonObject jsonUpdate = v.toObject();
 
-        qDebug() << "\n" << jsonUpdate << "\n";
+        //qDebug() << "\n" << jsonUpdate << "\n";
 
         const QStringList keys = jsonUpdate.keys();
         for (const QString& key : qAsConst(keys))
@@ -351,20 +351,14 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
 
     if (!contents.isEmpty())
     {
+        QString destination;
+
         if (showChatTitle.get())
         {
-            QString chatTitle = jsonChat.value("title").toString();
-
-            if (!chatTitle.isEmpty())
-            {
-                Message::Text::Style style;
-                style.italic = true;
-
-                contents.append(new Message::Text(" -> " + chatTitle, style));
-            }
+            destination = jsonChat.value("title").toString().trimmed();
         }
 
-        const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
+        const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId, {}, {}, destination);
 
         messages.append(message);
         authors.append(author);

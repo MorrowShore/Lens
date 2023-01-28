@@ -549,6 +549,16 @@ ApplicationWindow {
                         return prefix + name + postfix
                     }
                 }
+
+                //Message destination
+                Text {
+                    id: destination
+                    anchors.verticalCenter: authorNameText.verticalCenter
+                    text: " → " + messageDestination
+                    color: "silver"
+                    font.pointSize: authorNameText.font.pointSize * 0.8
+                    visible: messageDestination.length > 0
+                }
             }
 
             //Time
