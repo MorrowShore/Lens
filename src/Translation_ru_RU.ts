@@ -506,7 +506,7 @@
 <context>
     <name>Telegram</name>
     <message>
-        <location filename="chat_services/telegram.cpp" line="18"/>
+        <location filename="chat_services/telegram.cpp" line="20"/>
         <source>Bot token</source>
         <translation>Токен бота</translation>
     </message>
@@ -523,7 +523,7 @@
 3. Укажите токен вашего бота выше</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="22"/>
+        <location filename="chat_services/telegram.cpp" line="24"/>
         <source>1. Create a bot with @BotFather
 2. Add the bot to the desired groups or channels
 3. Give admin rights to the bot in these groups/channels
@@ -538,32 +538,38 @@
 4. Укажите токен вашего бота выше</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="24"/>
+        <location filename="chat_services/telegram.cpp" line="26"/>
         <source>Create bot with @BotFather</source>
         <translation>Создать бота с помощью @BotFather</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="73"/>
+        <location filename="chat_services/telegram.cpp" line="31"/>
+        <source>Allow private chats (at one&apos;s own risk)</source>
+        <oldsource>Allow private chats (turn on at your own risk)</oldsource>
+        <translation>Разрешить приватные чаты (на свой страх и риск)</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="77"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="78"/>
+        <location filename="chat_services/telegram.cpp" line="82"/>
         <source>Bot token is not correct</source>
         <translation>Токен бота некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="81"/>
+        <location filename="chat_services/telegram.cpp" line="85"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="84"/>
+        <location filename="chat_services/telegram.cpp" line="88"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="87"/>
+        <location filename="chat_services/telegram.cpp" line="91"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -616,38 +622,38 @@
         <translation>OAuth-токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="69"/>
+        <location filename="chat_services/twitch.cpp" line="70"/>
         <source>Get token</source>
         <oldsource>Get Token</oldsource>
         <translation>Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="137"/>
+        <location filename="chat_services/twitch.cpp" line="138"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="199"/>
+        <location filename="chat_services/twitch.cpp" line="200"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="204"/>
+        <location filename="chat_services/twitch.cpp" line="205"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="207"/>
+        <location filename="chat_services/twitch.cpp" line="208"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="210"/>
+        <location filename="chat_services/twitch.cpp" line="211"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="213"/>
+        <location filename="chat_services/twitch.cpp" line="214"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1373,12 +1379,12 @@ Latest version available: %2</oldsource>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="198"/>
+        <location filename="setting_pages/service.qml" line="217"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="208"/>
+        <location filename="setting_pages/service.qml" line="227"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1387,7 +1393,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="217"/>
+        <location filename="setting_pages/service.qml" line="236"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

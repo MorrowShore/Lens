@@ -28,7 +28,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     }));
 
-    parameters.append(Parameter::createSwitch(&allowPrivateChat, tr("Allow private chats")));
+    parameters.append(Parameter::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)")));
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &Telegram::requestChat);
     timerRequestChat.start(RequestChatInterval);

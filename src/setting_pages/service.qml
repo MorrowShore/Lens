@@ -156,7 +156,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 Button {
     text: chatService.getParameterName(" + String("%1").arg(i) + ")
-    anchors.verticalCenter: parent.verticalCenter
     display: AbstractButton.TextBesideIcon
     onClicked: {
         chatService.executeParameterInvoke(" + String("%1").arg(i) + ")
@@ -174,8 +173,27 @@ import QtQuick.Controls.Material 2.12
 Label {
     text: chatService.getParameterName(" + String("%1").arg(i) + ")
     font.pixelSize: 16
-    anchors.verticalCenter: parent.verticalCenter
     color: '" + Material.foreground + "'
+}
+", row)
+                }
+                else if (type === Global._SwitchParameterType)
+                {
+                    Qt.createQmlObject(
+"
+import QtQuick 2.0
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.12
+Switch {
+    text: chatService.getParameterName(" + String("%1").arg(i) + ")
+
+    Component.onCompleted: {
+        checked = chatService.getParameterValueBool(" + String("%1").arg(i) + ")
+    }
+
+    onClicked: {
+        chatService.setParameterValueBool(" + String("%1").arg(i) + ", checked)
+    }
 }
 ", row)
                 }
