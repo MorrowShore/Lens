@@ -1,4 +1,4 @@
-# AxelChat <img width="32" height="32" src="src/resources/images/youtube-icon.svg"> <img width="32" height="32" src="src/resources/images/twitch-icon.svg"> <img width="32" height="32" src="src/resources/images/trovo-icon.svg"> <img width="32" height="32" src="src/resources/images/goodgame-icon.svg"> <img width="32" height="32" src="src/resources/images/vkplaylive-icon.svg">
+# AxelChat <img width="32" height="32" src="src/resources/images/youtube-icon.svg"> <img width="32" height="32" src="src/resources/images/twitch-icon.svg"> <img width="32" height="32" src="src/resources/images/trovo-icon.svg"> <img width="32" height="32" src="src/resources/images/goodgame-icon.svg"> <img width="32" height="32" src="src/resources/images/vkplaylive-icon.svg"> <img width="32" height="32" src="src/resources/images/telegram-icon.svg">
 The AxelChat application collects chat from various streaming platforms and displays it in one window. Has a user-friendly interface and various useful features
 
 [Download](https://github.com/3dproger/axelchat/releases/latest/) |
@@ -40,7 +40,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] VK Play Live support
 - [ ] TikTok/Douyin support
 - [ ] WASD support
-- [ ] Telegram support
+- [x] Telegram support
 - [x] Display avatars of participants of chat
 - [x] Displaying the number of viewers both total and for individual platforms
 - [x] Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
