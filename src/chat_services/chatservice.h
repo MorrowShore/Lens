@@ -183,11 +183,19 @@ public:
     {
         if (index >= 0 && index < parameters.count())
         {
-            return parameters[index].getSetting()->get();
+            const auto* setting = parameters[index].getSetting();
+            if (setting)
+            {
+                return setting->get();
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting is null";
+                return QString();
+            }
         }
 
         qWarning() << Q_FUNC_INFO << ": parameter index" << index << "not valid";
-
         return QString();
     }
 
@@ -221,10 +229,18 @@ public:
     {
         if (index >= 0 && index < parameters.count())
         {
-            if (parameters[index].getSetting()->set(value))
+            auto* setting = parameters[index].getSetting();
+            if (setting)
             {
-                onParameterChanged(parameters[index]);
-                emit stateChanged();
+                if (setting->set(value))
+                {
+                    onParameterChanged(parameters[index]);
+                    emit stateChanged();
+                }
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << ": parameter" << index << "setting is null";
             }
         }
         else
@@ -282,6 +298,7 @@ protected:
             String = 10,
             Button = 20,
             Label = 21,
+            Switch = 22,
         };
 
         enum class Flag
@@ -334,9 +351,9 @@ protected:
 
     void onParameterChanged(Parameter& parameter)
     {
-        Setting<QString>& setting = *parameter.getSetting();
+        Setting<QString>* setting = parameter.getSetting();
 
-        if (&setting == &stream)
+        if (setting && *&setting == &stream)
         {
             stream.set(stream.get().trimmed());
             reconnect();
