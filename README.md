@@ -66,6 +66,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - YouTube: messages that YouTube may find inappropriate are not displayed
 - YouTube: works only with open access broadcasts or available via the link. Private broadcasts are not supported
 - YouTube: Doesn't work for streams with age and possibly other restrictions
+- Telegram: avatars of users who have disabled the display of avatars in the privacy settings are not displayed
 
 # Troubleshooting
 ### Doesn't connect (General)
