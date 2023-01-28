@@ -244,11 +244,26 @@ void ChatHandler::onConnectedChanged(const bool connected, const QString& name)
 
     if (connected)
     {
-        sendSoftwareMessage(tr("%1 connected: %2").arg(service->getName()).arg(name));
+        if (name.isEmpty())
+        {
+            sendSoftwareMessage(tr("%1 connected").arg(service->getName()));
+        }
+        else
+        {
+            sendSoftwareMessage(tr("%1 connected: %2").arg(service->getName()).arg(name));
+        }
+
     }
     else
     {
-        sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getName()).arg(name));
+        if (name.isEmpty())
+        {
+            sendSoftwareMessage(tr("%1 disconnected").arg(service->getName()));
+        }
+        else
+        {
+            sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getName()).arg(name));
+        }
 
         if (_enabledClearMessagesOnLinkChange)
         {

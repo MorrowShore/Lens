@@ -30,8 +30,7 @@ private:
 
     struct Info
     {
-        int64_t botUserId = 0;
-        QString botUserName;
+        int64_t botUserId = -1;
         int badChatReplies = 0;
         int64_t lastUpdateId = -1;
     };

@@ -75,17 +75,27 @@
         <translation type="vanished">Twitch отключён: %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="247"/>
+        <location filename="chathandler.cpp" line="249"/>
+        <source>%1 connected</source>
+        <translation>%1 подключено</translation>
+    </message>
+    <message>
+        <location filename="chathandler.cpp" line="253"/>
         <source>%1 connected: %2</source>
         <translation>%1 подключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="251"/>
+        <location filename="chathandler.cpp" line="261"/>
+        <source>%1 disconnected</source>
+        <translation>%1 отключено</translation>
+    </message>
+    <message>
+        <location filename="chathandler.cpp" line="265"/>
         <source>%1 disconnected: %2</source>
         <translation>%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="266"/>
+        <location filename="chathandler.cpp" line="281"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -589,94 +599,93 @@ It is not recommended to run more than one %1</oldsource>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="336"/>
+        <location filename="chat_services/telegram.cpp" line="334"/>
         <source>animation</source>
         <translation>анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="337"/>
+        <location filename="chat_services/telegram.cpp" line="335"/>
         <source>audio</source>
         <translation>аудио</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="338"/>
+        <location filename="chat_services/telegram.cpp" line="336"/>
         <source>document</source>
         <translation>документ</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="339"/>
+        <location filename="chat_services/telegram.cpp" line="337"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="340"/>
+        <location filename="chat_services/telegram.cpp" line="338"/>
         <source>sticker</source>
         <translation>стикер</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="341"/>
+        <location filename="chat_services/telegram.cpp" line="339"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="342"/>
+        <location filename="chat_services/telegram.cpp" line="340"/>
         <source>video note</source>
         <translation>видеосообщение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="343"/>
+        <location filename="chat_services/telegram.cpp" line="341"/>
         <source>voice note</source>
         <translation>голосовое сообщение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="344"/>
+        <location filename="chat_services/telegram.cpp" line="342"/>
         <source>contact</source>
         <translation>контакт</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="345"/>
+        <location filename="chat_services/telegram.cpp" line="343"/>
         <source>dice</source>
         <translation>игральная кость</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="346"/>
+        <location filename="chat_services/telegram.cpp" line="344"/>
         <source>game</source>
         <translation>игра</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="347"/>
+        <location filename="chat_services/telegram.cpp" line="345"/>
         <source>poll</source>
         <translation>голосование</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="348"/>
+        <location filename="chat_services/telegram.cpp" line="346"/>
         <source>venue</source>
         <translation>место проведения</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="349"/>
+        <location filename="chat_services/telegram.cpp" line="347"/>
         <source>location</source>
         <translation>локация</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="350"/>
+        <location filename="chat_services/telegram.cpp" line="348"/>
         <source>video chat scheduled</source>
         <translation>видеочат запланирован</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="351"/>
+        <location filename="chat_services/telegram.cpp" line="349"/>
         <source>video chat started</source>
         <translation>видеочат начался</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="352"/>
+        <location filename="chat_services/telegram.cpp" line="350"/>
         <source>video chat ended</source>
         <translation>видеочат завершён</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="364"/>
         <source>Bot</source>
-        <translation>Бот</translation>
+        <translation type="vanished">Бот</translation>
     </message>
     <message>
         <source>Attached %1</source>

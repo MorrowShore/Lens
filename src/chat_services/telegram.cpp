@@ -48,7 +48,7 @@ void Telegram::reconnect()
 {
     if (state.connected)
     {
-        emit connectedChanged(false, info.botUserName);
+        emit connectedChanged(false, QString());
     }
 
     state = State();
@@ -117,7 +117,7 @@ void Telegram::processBadChatReply()
 
             state.connected = false;
 
-            emit connectedChanged(false, info.botUserName);
+            emit connectedChanged(false, QString());
 
             reconnect();
         }
@@ -131,7 +131,7 @@ void Telegram::requestUpdates()
         return;
     }
 
-    if (info.botUserName.isEmpty())
+    if (info.botUserId == -1)
     {
         QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getMe").arg(state.streamId)));
         QNetworkReply* reply = network.get(request);
@@ -170,18 +170,16 @@ void Telegram::requestUpdates()
             const QJsonObject jsonUser = root.value("result").toObject();
 
             const int64_t botUserId = jsonUser.value("id").toVariant().toLongLong(0);
-            const QString botUserName = jsonUser.value("username").toString();
 
-            if (botUserId != 0 && !botUserName.isEmpty())
+            if (botUserId != 0)
             {
                 info.badChatReplies = 0;
                 info.botUserId = botUserId;
-                info.botUserName = botUserName;
 
                 if (!state.connected)
                 {
                     state.connected = true;
-                    emit connectedChanged(true, info.botUserName);
+                    emit connectedChanged(true, QString());
                     emit stateChanged();
                 }
             }
@@ -234,7 +232,7 @@ void Telegram::requestUpdates()
             if (!state.connected)
             {
                 state.connected = true;
-                emit connectedChanged(true, info.botUserName);
+                emit connectedChanged(true, QString());
                 emit stateChanged();
             }
 
@@ -356,14 +354,6 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
         if (showChatTitle.get())
         {
             QString chatTitle = jsonChat.value("title").toString();
-
-            if (chatTitle.isEmpty())
-            {
-                if (jsonChat.contains("first_name"))
-                {
-                    chatTitle = info.botUserName;
-                }
-            }
 
             if (!chatTitle.isEmpty())
             {
