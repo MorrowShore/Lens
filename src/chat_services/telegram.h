@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include "models/message.h"
 #include <QSettings>
 #include <QNetworkAccessManager>
 #include <QTimer>
@@ -22,6 +23,7 @@ private:
     void parseMessage(const QJsonObject& jsonMessage, QList<Message>& messages, QList<Author>& authors);
     void requestUserPhoto(const QString& authorId, const int64_t& userId);
     void requestPhotoFileInfo(const QString& authorId, const QString& fileId);
+    void addAttachContent(QList<Message::Content*>& contents, const QString& attachTypeName);
 
     QSettings& settings;
     QNetworkAccessManager& network;

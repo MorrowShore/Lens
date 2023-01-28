@@ -582,6 +582,25 @@ It is not recommended to run more than one %1</oldsource>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="338"/>
+        <source>image</source>
+        <translation>изображение</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="489"/>
+        <source>Attached %1</source>
+        <translation>Прикреплено %1</translation>
+    </message>
+    <message>
+        <source>Image</source>
+        <translation type="vanished">Изображение</translation>
+    </message>
+    <message>
+        <source>Attached: %1</source>
+        <oldsource>Attachment: %1</oldsource>
+        <translation type="vanished">Прикреплено: %1</translation>
+    </message>
 </context>
 <context>
     <name>Trovo</name>

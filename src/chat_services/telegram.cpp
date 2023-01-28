@@ -250,7 +250,7 @@ void Telegram::parseUpdates(const QJsonArray& updates)
     {
         const QJsonObject jsonUpdate = v.toObject();
 
-        //qDebug() << "\n" << jsonUpdate << "\n";
+        qDebug() << "\n" << jsonUpdate << "\n";
 
         const QStringList keys = jsonUpdate.keys();
         for (const QString& key : qAsConst(keys))
@@ -310,23 +310,45 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
 
     const QString messageId = chatId + "/" + QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
 
-    if (!jsonMessage.contains("text"))
+    QList<Message::Content*> contents;
+
+    if (jsonMessage.contains("caption"))
     {
-        return;
+        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+
+        Message::Text::Style style;
+        style.bold = true;
+
+        const QString text = jsonMessage.value("caption").toString();
+        contents.append(new Message::Text(text, style));
     }
 
-    const QString messageText = jsonMessage.value("text").toString();
-
-    const QList<Message::Content*> contents = { new Message::Text(messageText) };
-
-    const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
-
-    messages.append(message);
-    authors.append(author);
-
-    if (!usersPhotoUpdated.contains(userId))
+    if (jsonMessage.contains("text"))
     {
-        requestUserPhoto(author.getId(), userId);
+        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+
+        const QString messageText = jsonMessage.value("text").toString();
+        contents.append(new Message::Text(messageText));
+    }
+
+    if (jsonMessage.contains("photo"))
+    {
+        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+
+        addAttachContent(contents, tr("image"));
+    }
+
+    if (!contents.isEmpty())
+    {
+        const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
+
+        messages.append(message);
+        authors.append(author);
+
+        if (!usersPhotoUpdated.contains(userId))
+        {
+            requestUserPhoto(author.getId(), userId);
+        }
     }
 }
 
@@ -412,12 +434,7 @@ void Telegram::requestUserPhoto(const QString& authorId, const int64_t& userId)
 
 void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &fileId)
 {
-    QNetworkRequest request(
-                QUrl(
-                    QString("https://api.telegram.org/bot%1/getFile?file_id=%2")
-                    .arg(state.streamId)
-                    .arg(fileId)
-                    ));
+    const QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getFile?file_id=%2").arg(state.streamId, fileId)));
 
     QNetworkReply* reply = network.get(request);
     if (!reply)
@@ -459,8 +476,15 @@ void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &file
             return;
         }
 
-        const QUrl avatarUrl = QUrl(QString("https://api.telegram.org/file/bot%1/%2").arg(state.streamId).arg(filePath));
+        const QUrl avatarUrl = QUrl(QString("https://api.telegram.org/file/bot%1/%2").arg(state.streamId, filePath));
 
         emit authorDataUpdated(authorId, { {Author::Role::AvatarUrl, avatarUrl} });
     });
+}
+
+void Telegram::addAttachContent(QList<Message::Content *>& contents, const QString &attachTypeName)
+{
+    Message::Text::Style style;
+    style.italic = true;
+    contents.append(new Message::Text("[" + tr("Attached %1").arg(attachTypeName) + "]", style));
 }
