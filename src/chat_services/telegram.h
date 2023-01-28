@@ -20,6 +20,8 @@ private:
     void processBadChatReply();
     void parseUpdates(const QJsonArray& updates);
     void parseMessage(const QJsonObject& jsonMessage, QList<Message>& messages, QList<Author>& authors);
+    void requestUserPhoto(const QString& authorId, const int64_t& userId);
+    void requestPhotoFileInfo(const QString& authorId, const QString& fileId);
 
     QSettings& settings;
     QNetworkAccessManager& network;
@@ -36,4 +38,6 @@ private:
     QTimer timerRequestChat;
 
     Setting<bool> allowPrivateChat;
+
+    QSet<int64_t> usersPhotoUpdated;
 };

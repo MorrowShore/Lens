@@ -283,7 +283,7 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
 
     const QJsonObject jsonFrom = jsonMessage.value("from").toObject();
 
-    const QString authorId = QString("%1").arg(jsonFrom.value("id").toVariant().toLongLong());
+    const int64_t userId = jsonFrom.value("id").toVariant().toLongLong();
 
     QString authorName = jsonFrom.value("first_name").toString();
 
@@ -293,7 +293,7 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
         authorName += " " + lastName;
     }
 
-    const Author author(getServiceType(), authorName, authorId);
+    const Author author(getServiceType(), authorName, QString("%1").arg(userId));
 
     const QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(jsonMessage.value("date").toVariant().toLongLong());
 
@@ -312,4 +312,144 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
 
     messages.append(message);
     authors.append(author);
+
+    if (!usersPhotoUpdated.contains(userId))
+    {
+        requestUserPhoto(author.getId(), userId);
+    }
+}
+
+void Telegram::requestUserPhoto(const QString& authorId, const int64_t& userId)
+{
+    QNetworkRequest request(
+                QUrl(
+                    QString("https://api.telegram.org/bot%1/getUserProfilePhotos?user_id=%2&limit=1")
+                    .arg(state.streamId)
+                    .arg(userId)
+                    ));
+
+    QNetworkReply* reply = network.get(request);
+    if (!reply)
+    {
+        qDebug() << Q_FUNC_INFO << ": !reply";
+        return;
+    }
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, authorId, userId]()
+    {
+        QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
+        if (!reply)
+        {
+            qDebug() << Q_FUNC_INFO << "!reply";
+            return;
+        }
+
+        const QByteArray rawData = reply->readAll();
+        reply->deleteLater();
+
+        if (rawData.isEmpty())
+        {
+            processBadChatReply();
+            qDebug() << Q_FUNC_INFO << ":rawData is empty";
+            return;
+        }
+
+        const QJsonObject root = QJsonDocument::fromJson(rawData).object();
+        if (!root.value("ok").toBool())
+        {
+            qDebug() << Q_FUNC_INFO << "error:" << root;;
+            return;
+        }
+
+        usersPhotoUpdated.insert(userId);
+
+        const QJsonArray jsonPhotos = root.value("result").toObject().value("photos").toArray();
+        if (jsonPhotos.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "photos is empty";
+            return;
+        }
+
+        const QJsonArray jsonPhotosSizes = jsonPhotos.at(0).toArray();
+        if (jsonPhotosSizes.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "photos sizes is empty";
+            return;
+        }
+
+        static const int PhotoSupportedMaxSize = 640;
+        int maxSize = 0;
+        int maxSizeIndex = 0;
+
+        for (int i = 0; i < jsonPhotosSizes.count(); i++)
+        {
+            const QJsonValue v = jsonPhotosSizes[i];
+            const QJsonObject jsonPhoto = v.toObject();
+            const int size = jsonPhoto.value("height").toInt();
+
+            if (size > maxSize && size <= PhotoSupportedMaxSize)
+            {
+                maxSize = size;
+                maxSizeIndex = i;
+            }
+        }
+
+        const QString fileId = jsonPhotosSizes[maxSizeIndex].toObject().value("file_id").toString();
+        requestPhotoFileInfo(authorId, fileId);
+    });
+}
+
+void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &fileId)
+{
+    QNetworkRequest request(
+                QUrl(
+                    QString("https://api.telegram.org/bot%1/getFile?file_id=%2")
+                    .arg(state.streamId)
+                    .arg(fileId)
+                    ));
+
+    QNetworkReply* reply = network.get(request);
+    if (!reply)
+    {
+        qDebug() << Q_FUNC_INFO << ": !reply";
+        return;
+    }
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, authorId]()
+    {
+        QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
+        if (!reply)
+        {
+            qDebug() << Q_FUNC_INFO << "!reply";
+            return;
+        }
+
+        const QByteArray rawData = reply->readAll();
+        reply->deleteLater();
+
+        if (rawData.isEmpty())
+        {
+            processBadChatReply();
+            qDebug() << Q_FUNC_INFO << ":rawData is empty";
+            return;
+        }
+
+        const QJsonObject root = QJsonDocument::fromJson(rawData).object();
+        if (!root.value("ok").toBool())
+        {
+            qDebug() << Q_FUNC_INFO << "error:" << root;;
+            return;
+        }
+
+        const QString filePath = root.value("result").toObject().value("file_path").toString();
+        if (filePath.isEmpty())
+        {
+            qDebug() << Q_FUNC_INFO << "file path os empty";
+            return;
+        }
+
+        const QUrl avatarUrl = QUrl(QString("https://api.telegram.org/file/bot%1/%2").arg(state.streamId).arg(filePath));
+
+        emit authorDataUpdated(authorId, { {Author::Role::AvatarUrl, avatarUrl} });
+    });
 }
