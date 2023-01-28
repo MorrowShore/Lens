@@ -40,6 +40,7 @@ private:
 
     QTimer timerRequestUpdates;
 
+    Setting<bool> showChatTitle;
     Setting<bool> allowPrivateChat;
 
     QSet<int64_t> usersPhotoUpdated;

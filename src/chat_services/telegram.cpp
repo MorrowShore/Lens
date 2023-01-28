@@ -15,6 +15,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
     , settings(settings_)
     , network(network_)
+    , showChatTitle(settings_, "show_chat_title", false)
     , allowPrivateChat(settings_, "allow_private_chats", false)
 {
     getParameter(stream)->setName(tr("Bot token"));
@@ -34,6 +35,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     }));
 
+    parameters.append(Parameter::createSwitch(&showChatTitle, tr("Show chat name when possible")));
     parameters.append(Parameter::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)")));
 
     QObject::connect(&timerRequestUpdates, &QTimer::timeout, this, &Telegram::requestUpdates);
@@ -351,6 +353,27 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
 
     if (!contents.isEmpty())
     {
+        if (showChatTitle.get())
+        {
+            QString chatTitle = jsonChat.value("title").toString();
+
+            if (chatTitle.isEmpty())
+            {
+                if (jsonChat.contains("first_name"))
+                {
+                    chatTitle = info.botUserName;
+                }
+            }
+
+            if (!chatTitle.isEmpty())
+            {
+                Message::Text::Style style;
+                style.italic = true;
+
+                contents.append(new Message::Text(" -> " + chatTitle, style));
+            }
+        }
+
         const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
 
         messages.append(message);
