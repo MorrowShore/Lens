@@ -40,6 +40,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] VK Play Live support
 - [ ] TikTok/Douyin support
 - [ ] WASD support
+- [ ] Discord support
 - [x] Telegram support
 - [x] Display avatars of participants of chat
 - [x] Displaying the number of viewers both total and for individual platforms
