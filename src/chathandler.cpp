@@ -48,8 +48,8 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
 
-    addService(new Twitch       (settings, SettingsGroupPath + "/twitch",       network, this));
     addService(new YouTube      (settings, SettingsGroupPath + "/youtube",      network, this));
+    addService(new Twitch       (settings, SettingsGroupPath + "/twitch",       network, this));
     addService(new Trovo        (settings, SettingsGroupPath + "/trovo",        network, this));
     addService(new GoodGame     (settings, SettingsGroupPath + "/goodgame",     network, this));
     addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));
