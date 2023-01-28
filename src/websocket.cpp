@@ -66,7 +66,7 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
 
     if (server.listen(QHostAddress::LocalHost, Port))
     {
-        qInfo() << "Web socket server started" << server.serverUrl().toString();
+        //qInfo() << "Web socket server started" << server.serverUrl().toString();
     }
     else
     {
