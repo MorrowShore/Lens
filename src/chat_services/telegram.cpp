@@ -243,46 +243,60 @@ void Telegram::parseUpdates(const QJsonArray& updates)
 
         //qDebug() << "\n" << jsonUpdate << "\n";
 
-        const QJsonObject jsonMessage = jsonUpdate.value("message").toObject();
-        if (jsonMessage.isEmpty())
+        const QStringList keys = jsonUpdate.keys();
+        for (const QString& key : qAsConst(keys))
         {
-            continue;
+            if (key == "message")
+            {
+                const QJsonObject jsonMessage = jsonUpdate.value(key).toObject();
+
+                const QJsonObject jsonChat = jsonMessage.value("chat").toObject();
+
+                const QString chatId = QString("%1").arg(jsonChat.value("id").toVariant().toLongLong());
+                const QString chatType = jsonChat.value("type").toString();
+
+                if (chatType == "private" && !allowPrivateChat.get())
+                {
+                    continue;
+                }
+
+                const QJsonObject jsonFrom = jsonMessage.value("from").toObject();
+
+                const QString authorId = QString("%1").arg(jsonFrom.value("id").toVariant().toLongLong());
+
+                QString authorName = jsonFrom.value("first_name").toString();
+
+                const QString lastName = jsonFrom.value("last_name").toString();
+                if (!lastName.isEmpty())
+                {
+                    authorName += " " + lastName;
+                }
+
+                const Author author(getServiceType(), authorName, authorId);
+
+                const QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(jsonMessage.value("date").toVariant().toLongLong());
+
+                const QString messageId = chatId + "/" + QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
+                const QString messageText = jsonMessage.value("text").toString();
+
+                const QList<Message::Content*> contents = { new Message::Text(messageText) };
+
+                const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
+
+                messages.append(message);
+                authors.append(author);
+            }
+            else if (key == "update_id" ||
+                     key == "my_chat_member" // TODO
+                     )
+            {
+                // ignore
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "unknown key" << key;
+            }
         }
-
-        const QJsonObject jsonChat = jsonMessage.value("chat").toObject();
-        const QString chatId = QString("%1").arg(jsonChat.value("id").toVariant().toLongLong());
-        const QString chatType = jsonChat.value("type").toString();
-
-        if (chatType == "private" && !allowPrivateChat.get())
-        {
-            continue;
-        }
-
-        const QJsonObject jsonFrom = jsonMessage.value("from").toObject();
-
-        const QString authorId = QString("%1").arg(jsonFrom.value("id").toVariant().toLongLong());
-
-        QString authorName = jsonFrom.value("first_name").toString();
-
-        const QString lastName = jsonFrom.value("last_name").toString();
-        if (!lastName.isEmpty())
-        {
-            authorName += " " + lastName;
-        }
-
-        const Author author(getServiceType(), authorName, authorId);
-
-        const QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(jsonMessage.value("date").toVariant().toLongLong());
-
-        const QString messageId = chatId + "/" + QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
-        const QString messageText = jsonMessage.value("text").toString();
-
-        const QList<Message::Content*> contents = { new Message::Text(messageText) };
-
-        const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
-
-        messages.append(message);
-        authors.append(author);
     }
 
     if (!authors.isEmpty() && !messages.isEmpty())
