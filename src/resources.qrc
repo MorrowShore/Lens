@@ -67,5 +67,6 @@
         <file>resources/images/goodgame/undead.svg</file>
         <file>resources/images/vkplaylive-icon.svg</file>
         <file>resources/images/telegram-icon.svg</file>
+        <file>resources/images/discord-icon.svg</file>
     </qresource>
 </RCC>

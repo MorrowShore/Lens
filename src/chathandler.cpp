@@ -5,6 +5,7 @@
 #include "chat_services/goodgame.h"
 #include "chat_services/vkplaylive.h"
 #include "chat_services/telegram.h"
+#include "chat_services/discord.h"
 #include "models/author.h"
 #include "models/message.h"
 #include <QCoreApplication>
@@ -54,6 +55,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(new GoodGame     (settings, SettingsGroupPath + "/goodgame",     network, this));
     addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));
     addService(new Telegram     (settings, SettingsGroupPath + "/telegram",     network, this));
+    //addService(new Discord      (settings, SettingsGroupPath + "/discord",      network, this));
 }
 
 void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)

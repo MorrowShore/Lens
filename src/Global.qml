@@ -12,6 +12,7 @@ QtObject {
     readonly property int _GoodGameServiceType: 103
     readonly property int _VkPlayLiveServiceType: 104
     readonly property int _TelegramServiceType: 105
+    readonly property int _DiscordServiceType: 106
 
     readonly property int _NotConnectedConnectionStateType: 10
     readonly property int _ConnectingConnectionStateType: 20

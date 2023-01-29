@@ -17,6 +17,7 @@ enum class ServiceType
     GoodGame = 103,
     VkPlayLive = 104,
     Telegram = 105,
+    Discord = 106,
 };
 
 }
