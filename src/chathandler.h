@@ -116,6 +116,7 @@ private slots:
 private:
     void updateProxy();
     void addService(ChatService* service);
+    void addTestMessages();
 
     MessagesModel messagesModel;
 

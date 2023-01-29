@@ -56,6 +56,12 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));
     addService(new Telegram     (settings, SettingsGroupPath + "/telegram",     network, this));
     //addService(new Discord      (settings, SettingsGroupPath + "/discord",      network, this));
+
+    QTimer::singleShot(2000, [this]()
+    {
+        Q_UNUSED(this)
+        //addTestMessages();
+    });
 }
 
 void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
@@ -314,6 +320,124 @@ void ChatHandler::addService(ChatService* service)
     connect(service, &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
 
     services.append(service);
+}
+
+void ChatHandler::addTestMessages()
+{
+    QList<Message> messages;
+    QList<Author> authors;
+
+    {
+        Author author(AxelChat::ServiceType::YouTube, "Mario", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Hello it's me Mario!"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::Twitch, "BigSmoke", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/gtawiki/images/b/bf/BigSmoke-GTASAde.png/revision/latest/scale-to-width-down/350?cb=20211113214309"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("i’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::Trovo, "Luigi", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/mario/images/7/72/MPSS_Luigi.png/revision/latest/scale-to-width-down/254?cb=20220705200355"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Mamma mia!"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::GoodGame, "Old gamer", QUuid::createUuid().toString(), QUrl("https://static.goodgame.ru/files/avatars/av_avatar_jojo.png"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Hi streamer!"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::VkPlayLive, "Music listener", QUuid::createUuid().toString(), QUrl("https://images.boosty.to/user/14143646/avatar?change_time=1674595754&croped=1&mh=140&mw=140"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Nice music"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::Telegram, "Your only subscriber", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/witcher/images/5/51/Netflix_geralt_shirt.jpg/revision/latest/scale-to-width-down/350?cb=20191228182240"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Hello, how do you donate?"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::YouTube, "Lofi Girl", QUuid::createUuid().toString(), QUrl("https://yt3.googleusercontent.com/KNYElmLFGAOSZoBmxYGKKXhGHrT2e7Hmz3WsBerbam5uaDXFADAmT7htj3OcC-uK1O88lC9fQg=s88-c-k-c0x00ffffff-no-rj"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Hi guys!"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::Twitch, "TwitchGaming", QUuid::createUuid().toString(), QUrl("https://static-cdn.jtvnw.net/jtv_user_pictures/77eb821f-2fb6-44c4-94e1-380c008c8a4c-profile_image-70x70.jpeg"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("How are you"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::Trovo, "Trovo viewer", QUuid::createUuid().toString(), QUrl("https://astatic.trovocdn.net/cat/img/e8ec087.webp?max_age=31536000&imageView2/1/w/64/h/64"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("What game will be next?"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::GoodGame, "CJ", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Here We Go Again"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    {
+        Author author(AxelChat::ServiceType::VkPlayLive, "Kenneth Rosenberg", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/p__/images/b/b2/Ken_rosenberg.jpg/revision/latest?cb=20130915190559&path-prefix=protagonist"));
+        authors.append(author);
+
+        QList<Message::Content*> contents;
+        contents.append(new Message::Text("Hey, Just Like Old Times, Huh, Tommy?"));
+
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+    }
+
+    onReadyRead(messages, authors);
 }
 
 #ifndef AXELCHAT_LIBRARY
