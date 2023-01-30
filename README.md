@@ -59,6 +59,12 @@ The AxelChat application collects chat from various streaming platforms and disp
 - Does AxelChat work with YouTube premieres? - Yes
 - Can I download a YouTube chat for an already past stream using the AxelChat? - No, use something else instead. For example, use the browser extension [Save Live Streaming Chats for YouTube™](https://chrome.google.com/webstore/detail/save-live-streaming-chats/bcclhcedlelimlnmcpfeiabljbpahnef)
 
+# How can I help the development of the project
+- Create new features and fix bugs. For those who know how to C++. Just make a pull request or fork
+- You can report a bug or suggest a new feature here: [Issues](https://github.com/3dproger/AxelChat/issues)
+- Help with translations into other languages using the Qt Linguist
+- Financial support is temporarily unavailable
+
 # Known Issues
 - YouTube: messages that YouTube may find inappropriate are not displayed
 - YouTube: works only with open access broadcasts or available via the link. Private broadcasts are not supported
@@ -84,12 +90,6 @@ The AxelChat application collects chat from various streaming platforms and disp
 ### Control panel web page does not open correctly
 - Make sure you're logged into your streaming site in your default browser
 - Make sure that you have specified a stream in AxelChat that belongs to your streaming platform account in the default browser, and not someone else's stream
-
-# How can I help the development of the project
-- Create new features and fix bugs. For those who know how to C++. Just make a pull request or fork
-- You can report a bug or suggest a new feature here: [Issues](https://github.com/3dproger/AxelChat/issues)
-- Help with translations into other languages using the Qt Linguist
-- Financial support is temporarily unavailable
 
 # Build AxelChat from source for Windows 7 and newer, x64
 ### Installing Qt
