@@ -85,6 +85,12 @@ The AxelChat application collects chat from various streaming platforms and disp
 - Make sure you're logged into your streaming site in your default browser
 - Make sure that you have specified a stream in AxelChat that belongs to your streaming platform account in the default browser, and not someone else's stream
 
+# How can I help the development of the project
+- Create new features and fix bugs. For those who know how to C++. Just make a pull request or fork
+- You can report a bug or suggest a new feature here: [Issues](https://github.com/3dproger/AxelChat/issues)
+- Help with translations into other languages using the Qt Linguist
+- Financial support is temporarily unavailable
+
 # Build AxelChat from source for Windows 7 and newer, x64
 ### Installing Qt
 1. Download [Open Source Qt online installer](https://www.qt.io/download-qt-installer) or you can also find the offline installers
