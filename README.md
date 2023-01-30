@@ -61,7 +61,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 
 # How can I help the development of the project
 - Create new features and fix bugs. For those who know how to C++. Just make a pull request or fork
-- You can report a bug or suggest a new feature here: [Issues](https://github.com/3dproger/AxelChat/issues)
+- You can report a bug or suggest a new feature in [Issues](https://github.com/3dproger/AxelChat/issues)
 - Help with translations into other languages using the [Qt Linguist](https://doc.qt.io/qt-5/qtlinguist-index.html). I can send you translation blank files, just write to me about it
 - Financial support is temporarily unavailable
 
