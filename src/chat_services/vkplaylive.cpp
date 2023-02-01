@@ -74,6 +74,11 @@ VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, Q
 
     QObject::connect(&timerRequestToken, &QTimer::timeout, this, [this]()
     {
+        if (!enabled.get())
+        {
+            return;
+        }
+
         if (!info.token.isEmpty())
         {
             if (socket.state() == QAbstractSocket::SocketState::UnconnectedState)
@@ -157,6 +162,11 @@ VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, Q
 
     QObject::connect(&timerRequestChatPage, &QTimer::timeout, this, [this]()
     {
+        if (!enabled.get())
+        {
+            return;
+        }
+
         QNetworkRequest request(state.chatUrl);
         QNetworkReply* reply = network.get(request);
         if (reply)
@@ -179,7 +189,7 @@ ChatService::ConnectionStateType VkPlayLive::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!state.streamId.isEmpty())
+    else if (enabled.get() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -215,7 +225,7 @@ QString VkPlayLive::getStateDescription() const
     return "<unknown_state>";
 }
 
-void VkPlayLive::reconnect()
+void VkPlayLive::reconnectImpl()
 {
     socket.close();
 
@@ -235,13 +245,16 @@ void VkPlayLive::reconnect()
     state.chatUrl = QUrl(QString("https://vkplay.live/%1/only-chat").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://vkplay.live/%1").arg(state.streamId));
     state.controlPanelUrl = QUrl(QString("https://vkplay.live/%1/studio").arg(state.streamId));
-
-    emit stateChanged();
 }
 
 void VkPlayLive::onWebSocketReceived(const QString &rawData)
 {
     //qDebug("\nreceived: " + rawData.toUtf8() + "\n");
+
+    if (!enabled.get())
+    {
+        return;
+    }
 
     const QJsonObject result = QJsonDocument::fromJson(rawData.toUtf8()).object().value("result").toObject();
 

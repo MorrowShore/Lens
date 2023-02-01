@@ -45,7 +45,7 @@ QString Discord::getStateDescription() const
     return "<unknown_state>";
 }
 
-void Discord::reconnect()
+void Discord::reconnectImpl()
 {
 
 }

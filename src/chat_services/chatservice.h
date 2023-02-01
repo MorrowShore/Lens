@@ -21,7 +21,8 @@ class ChatService : public QObject
     Q_OBJECT
 
 public:
-    Q_PROPERTY(QUrl                 streamUrl                    READ getStreamUrl                         NOTIFY stateChanged)
+    Q_PROPERTY(bool                 enabled                      READ isEnabled     WRITE setEnabled     NOTIFY stateChanged)
+    Q_PROPERTY(QUrl                 streamUrl                    READ getStreamUrl                       NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 chatUrl                      READ getChatUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 controlPanelUrl              READ getControlPanelUrl                 NOTIFY stateChanged)
 
@@ -108,9 +109,13 @@ public:
     explicit ChatService(QSettings& settings, const QString& settingsGroupPath, AxelChat::ServiceType serviceType_, QObject *parent = nullptr)
         : QObject(parent)
         , serviceType(serviceType_)
+        , enabled(settings, settingsGroupPath + "/enabled", false)
         , stream(settings, settingsGroupPath + "/stream")
         , lastSavedMessageId(settings, settingsGroupPath + "/lastSavedMessageId")
     {
+        parameters.append(Parameter::createSwitch(&enabled, tr("Enabled")));
+        parameters.back().resetFlag(Parameter::Flag::Visible);
+
         parameters.append(Parameter::createLineEdit(&stream, tr("Stream")));
     }
 
@@ -122,7 +127,21 @@ public:
     virtual QString getStateDescription() const  = 0;
     AxelChat::ServiceType getServiceType() const { return serviceType; }
 
+    void reconnect()
+    {
+        reconnectImpl();
+        emit stateChanged();
+    }
+
     int getViewersCount() const { return state.viewersCount; }
+
+    bool isEnabled() { return enabled.get(); }
+    void setEnabled(const bool enabled_)
+    {
+        enabled.set(enabled_);
+        onParameterChanged(parameters[0]);
+        emit stateChanged();
+    }
 
     const Setting<QString>& getLastSavedMessageId() const { return lastSavedMessageId; }
     void setLastSavedMessageId(const QString& messageId) { lastSavedMessageId.set(messageId); }
@@ -154,8 +173,6 @@ public:
 
         return root;
     }
-
-    virtual void reconnect() = 0;
 
     const State& getState() const { return state; }
 
@@ -334,10 +351,11 @@ protected:
 
         enum class Flag
         {
-            PasswordEcho = 10
+            Visible = 1,
+            PasswordEcho = 10,
         };
 
-        static Parameter createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const std::set<Flag>& flags = std::set<Flag>())
+        static Parameter createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const std::set<Flag>& additionalFlags = std::set<Flag>())
         {
             Parameter parameter;
 
@@ -345,7 +363,7 @@ protected:
             parameter.settingString = setting;
             parameter.name = name;
             parameter.placeHolder = placeHolder;
-            parameter.flags = flags;
+            parameter.flags.insert(additionalFlags.begin(), additionalFlags.end());
 
             return parameter;
         }
@@ -394,6 +412,7 @@ protected:
         Type getType() const { return type; }
         const std::set<Flag>& getFlags() const { return flags; }
         void setFlag(const Flag flag) { flags.insert(flag); }
+        void resetFlag(const Flag flag) { flags.erase(flag); }
 
         void setPlaceholder(const QString& placeHolder_) { placeHolder = placeHolder_; }
         QString getPlaceholder() const { return placeHolder; }
@@ -419,19 +438,26 @@ protected:
 
         QString name;
         Type type;
-        std::set<Flag> flags;
+        std::set<Flag> flags = { Flag::Visible };
         QString placeHolder;
         std::function<void(const QVariant& argument)> invokeCalback;
         QVariant invokeCallbackArgument;
     };
 
+    virtual void reconnectImpl() = 0;
+
     void onParameterChanged(Parameter& parameter)
     {
-        Setting<QString>* setting = parameter.getSettingString();
+        Setting<QString>* settingString = parameter.getSettingString();
+        Setting<bool>* settingBool = parameter.getSettingBool();
 
-        if (setting && *&setting == &stream)
+        if (settingString && *&settingString == &stream)
         {
             stream.set(stream.get().trimmed());
+            reconnect();
+        }
+        else if (settingBool && *&settingBool == &enabled)
+        {
             reconnect();
         }
         else
@@ -461,6 +487,7 @@ protected:
     QList<Parameter> parameters;
     const AxelChat::ServiceType serviceType;
     State state;
+    Setting<bool> enabled;
     Setting<QString> stream;
     Setting<QString> lastSavedMessageId;
 };

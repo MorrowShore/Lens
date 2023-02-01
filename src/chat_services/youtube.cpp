@@ -224,7 +224,7 @@ QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeigh
     return sourceAvatarUrl;
 }
 
-void YouTube::reconnect()
+void YouTube::reconnectImpl()
 {
     const bool preConnected = state.connected;
     const QString preBroadcastId = state.streamId;
@@ -234,7 +234,10 @@ void YouTube::reconnect()
     badChatReplies = 0;
     badLivePageReplies = 0;
 
-    state.connected = false;
+    if (preConnected && !preBroadcastId.isEmpty())
+    {
+        emit connectedChanged(false, preBroadcastId);
+    }
 
     state.streamId = extractBroadcastId(stream.get().trimmed());
 
@@ -247,12 +250,10 @@ void YouTube::reconnect()
         state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
     }
 
-    if (preConnected && !preBroadcastId.isEmpty())
+    if (!enabled.get())
     {
-        emit connectedChanged(false, preBroadcastId);
+        return;
     }
-
-    emit stateChanged();
 
     onTimeoutRequestChat();
     onTimeoutRequestStreamPage();
@@ -264,7 +265,7 @@ ChatService::ConnectionStateType YouTube::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!state.streamId.isEmpty())
+    else if (enabled.get() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -302,7 +303,7 @@ QString YouTube::getStateDescription() const
 
 void YouTube::onTimeoutRequestChat()
 {
-    if (state.chatUrl.isEmpty())
+    if (!enabled.get() || state.chatUrl.isEmpty())
     {
         return;
     }
@@ -388,8 +389,7 @@ void YouTube::onReplyChatPage()
 
 void YouTube::onTimeoutRequestStreamPage()
 {
-    //return;//ToDo:
-    if (state.streamUrl.isEmpty())
+    if (!enabled.get() || state.streamUrl.isEmpty())
     {
         return;
     }
@@ -441,7 +441,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 {
     //AxelChat::saveDebugDataToFile(FolderLogs, "debug.json", data);
 
-    if (!state.connected && !state.streamId.isEmpty())
+    if (!state.connected && !state.streamId.isEmpty() && enabled.get())
     {
         state.connected = true;
 
@@ -572,12 +572,12 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 }
                 else if (iconType.isEmpty())
                 {
-                    printData(Q_FUNC_INFO + QString(": iconType is empty of object \"%1\"").arg(iconType).arg("liveChatViewerEngagementMessageRenderer"), data);
+                    printData(Q_FUNC_INFO + QString(": iconType is empty of object \"%1\"").arg(iconType, "liveChatViewerEngagementMessageRenderer"), data);
                     valid = false;
                 }
                 else
                 {
-                    printData(Q_FUNC_INFO + QString(": Unknown iconType \"%1\" of object \"%2\"").arg(iconType).arg("liveChatViewerEngagementMessageRenderer"), data);
+                    printData(Q_FUNC_INFO + QString(": Unknown iconType \"%1\" of object \"%2\"").arg(iconType, "liveChatViewerEngagementMessageRenderer"), data);
                     valid = false;
                 }
             }
@@ -955,7 +955,7 @@ void YouTube::tryAppedToText(QList<Message::Content*>& contents, const QJsonObje
         }
     }
 
-    for (Message::Content* content : newContents)
+    for (Message::Content* content : qAsConst(newContents))
     {
         if (content->getType() == Message::Content::Type::Text)
         {

@@ -14,11 +14,13 @@ class YouTube : public ChatService
 public:
     explicit YouTube(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
 
-    void reconnect() override;
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
 
     Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
+
+protected:
+    void reconnectImpl() override;
 
 private slots:
     void onTimeoutRequestChat();

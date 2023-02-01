@@ -822,16 +822,7 @@ Row {
     anchors.verticalCenter: parent.verticalCenter
     spacing: 8
 
-    visible: {
-        switch (chatService.connectionStateType)
-        {
-        case Global._ConnectedConnectionStateType:
-        case Global._ConnectingConnectionStateType:
-            return true
-        }
-
-        return false
-    }
+    visible: chatService.enabled
 
     Image {
         mipmap: true
@@ -854,13 +845,11 @@ Row {
             property var status: chatService.connectionStateType
 
             color: {
-                switch (status)
-                {
-                case Global._ConnectedConnectionStateType: return \"lime\"
-                case Global._ConnectingConnectionStateType: return \"red\"
+                if (status === Global._ConnectedConnectionStateType) {
+                    return \"lime\"
                 }
 
-                return \"orange\"
+                return \"red\"
             }
         }
     }

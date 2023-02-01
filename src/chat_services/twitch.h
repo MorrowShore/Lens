@@ -18,7 +18,6 @@ public:
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-    void reconnect() override;
 
     QUrl requesGetAOuthTokenUrl() const;
 
@@ -28,6 +27,7 @@ public slots:
 
 protected:
     void onParameterChangedImpl(Parameter& parameter) override;
+    void reconnectImpl() override;
 
 private slots:
     void sendIRCMessage(const QString& message);

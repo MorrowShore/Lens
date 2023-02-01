@@ -12,7 +12,9 @@ public:
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-    void reconnect() override;
+
+protected:
+    void reconnectImpl() override;
 
 private slots:
     void onWebSocketReceived(const QString &rawData);

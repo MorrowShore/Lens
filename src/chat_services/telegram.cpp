@@ -44,7 +44,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     reconnect();
 }
 
-void Telegram::reconnect()
+void Telegram::reconnectImpl()
 {
     if (state.connected)
     {
@@ -54,9 +54,12 @@ void Telegram::reconnect()
     state = State();
     info = Info();
 
-    state.streamId = stream.get().trimmed();
+    if (!enabled.get())
+    {
+        return;
+    }
 
-    emit stateChanged();
+    state.streamId = stream.get().trimmed();
 
     requestUpdates();
 }
@@ -67,7 +70,7 @@ ChatService::ConnectionStateType Telegram::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!state.streamId.isEmpty())
+    else if (enabled.get() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -126,7 +129,7 @@ void Telegram::processBadChatReply()
 
 void Telegram::requestUpdates()
 {
-    if (state.streamId.isEmpty())
+    if (!enabled.get() || state.streamId.isEmpty())
     {
         return;
     }
@@ -152,6 +155,11 @@ void Telegram::requestUpdates()
 
             const QByteArray rawData = reply->readAll();
             reply->deleteLater();
+
+            if (!enabled.get())
+            {
+                return;
+            }
 
             if (rawData.isEmpty())
             {
@@ -214,6 +222,11 @@ void Telegram::requestUpdates()
 
             const QByteArray rawData = reply->readAll();
             reply->deleteLater();
+
+            if (!enabled.get())
+            {
+                return;
+            }
 
             if (rawData.isEmpty())
             {

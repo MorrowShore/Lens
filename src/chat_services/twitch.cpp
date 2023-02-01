@@ -117,6 +117,11 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
+        if (!enabled.get())
+        {
+            return;
+        }
+
         if (!state.connected && !oauthToken.get().isEmpty())
         {
             reconnect();
@@ -126,7 +131,13 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
 
     reconnect();
 
-    QObject::connect(&timerCheckPong, &QTimer::timeout, this, [this]{
+    QObject::connect(&timerCheckPong, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
         if (state.connected)
         {
             qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
@@ -156,7 +167,13 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
         }
     });
 
-    QObject::connect(&timerPing, &QTimer::timeout, this, [this]{
+    QObject::connect(&timerPing, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
         if (state.connected)
         {
             sendIRCMessage(QString("PING :") + TwitchIRCHost);
@@ -165,7 +182,13 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     });
     timerPing.start(PingPeriod);
 
-    QObject::connect(&timerUpdaetStreamInfo, &QTimer::timeout, this, [this]{
+    QObject::connect(&timerUpdaetStreamInfo, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
         if (state.connected)
         {
             requestStreamInfo(state.streamId);
@@ -182,7 +205,7 @@ ChatService::ConnectionStateType Twitch::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!oauthToken.get().isEmpty() && !state.streamId.isEmpty())
+    else if (enabled.get() && !oauthToken.get().isEmpty() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -255,7 +278,7 @@ void Twitch::sendIRCMessage(const QString &message)
     socket.sendTextMessage(message);
 }
 
-void Twitch::reconnect()
+void Twitch::reconnectImpl()
 {
     socket.close();
 
@@ -295,15 +318,21 @@ void Twitch::reconnect()
         state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
         state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(state.streamId));
 
-        socket.setProxy(network.proxy());
-        socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
+        if (enabled.get())
+        {
+            socket.setProxy(network.proxy());
+            socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
+        }
     }
-
-    emit stateChanged();
 }
 
 void Twitch::onIRCMessage(const QString &rawData)
 {
+    if (!enabled.get())
+    {
+        return;
+    }
+
     if (timerCheckPong.isActive())
     {
         timerCheckPong.stop();

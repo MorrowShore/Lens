@@ -24,6 +24,7 @@ QtObject {
     readonly property int _LabelParameterType: 21
     readonly property int _SwitchParameterType: 22
 
+    readonly property int _VisibleParameterFlag: 1
     readonly property int _PasswordEchoParameterFlag: 10
 
     property var windowChat

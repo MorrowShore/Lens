@@ -12,9 +12,11 @@ class Telegram : public ChatService
 public:
     Telegram(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
 
-    void reconnect() override;
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
+
+protected:
+    void reconnectImpl() override;
 
 private:
     void requestUpdates();

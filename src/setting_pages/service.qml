@@ -26,6 +26,24 @@ ScrollView {
         Row {
             spacing: 12
 
+            Switch {
+                property bool enableDataChanging: true
+
+                Component.onCompleted: {
+                    enableDataChanging = false
+                    checked = chatService.enabled
+                    enableDataChanging = true
+                }
+
+                onCheckedChanged: {
+                    if (!enableDataChanging) {
+                        return
+                    }
+
+                    chatService.enabled = checked
+                }
+            }
+
             Image {
                 mipmap: true
                 height: 40
@@ -45,7 +63,7 @@ ScrollView {
 
             BusyIndicator {
                 id: busyIndicator
-                visible: chatService.connectionStateType === Global._ConnectingConnectionStateType
+                visible:  chatService.connectionStateType === Global._ConnectingConnectionStateType
                 height: 40
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
@@ -60,12 +78,10 @@ ScrollView {
                 anchors.verticalCenter: parent.verticalCenter
                 mipmap: true
                 source: {
-                    if (chatService.connectionStateType === Global._NotConnectedConnectionStateType)
-                    {
+                    if (chatService.connectionStateType === Global._NotConnectedConnectionStateType) {
                         return "qrc:/resources/images/alert1.svg"
                     }
-                    else if (chatService.connectionStateType === Global._ConnectedConnectionStateType)
-                    {
+                    else if (chatService.connectionStateType === Global._ConnectedConnectionStateType) {
                         return "qrc:/resources/images/tick.svg"
                     }
 
@@ -77,7 +93,13 @@ ScrollView {
                 id: labelState
                 anchors.verticalCenter: parent.verticalCenter
                 font.pointSize: 14
-                text: chatService.stateDescription
+                text: {
+                    if (!chatService.enabled) {
+                        return qsTr("Disabled")
+                    }
+
+                    return chatService.stateDescription
+                }
             }
         }
 
@@ -89,6 +111,10 @@ ScrollView {
         Component.onCompleted: {
             for (var i = 0; i < chatService.getParametersCount(); ++i)
             {
+                if (!chatService.isParameterHasFlag(i, Global._VisibleParameterFlag)) {
+                    continue
+                }
+
                 var row = Qt.createQmlObject("import QtQuick 2.0; Row { spacing: 6 }", parametersColumn)
 
                 var type = chatService.getParameterType(i)
@@ -191,7 +217,7 @@ Switch {
         checked = chatService.getParameterValueBool(" + String("%1").arg(i) + ")
     }
 
-    onClicked: {
+    onCheckedChanged: {
         chatService.setParameterValueBool(" + String("%1").arg(i) + ", checked)
     }
 }

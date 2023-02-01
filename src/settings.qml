@@ -255,6 +255,8 @@ Window {
                             visible: categoryDelegate.iconSource.length > 0
 
                             Rectangle {
+                                property var chatService: chatHandler.getServiceAtIndex(serviceIndex)
+
                                 width: 14
                                 height: width
                                 x: parent.width - width / 2
@@ -262,27 +264,14 @@ Window {
                                 border.width: 2
                                 radius: width / 2
                                 border.color: root.color
-                                visible: {
-                                    switch (status)
-                                    {
-                                    case Global._ConnectedConnectionStateType:
-                                    case Global._ConnectingConnectionStateType:
-                                        return true
-                                    }
-
-                                    return false
-                                }
-
-                                property var status: serviceIndex >= 0 ? chatHandler.getServiceAtIndex(serviceIndex).connectionStateType : -1
+                                visible: chatService !== null && chatService.enabled
 
                                 color: {
-                                    switch (status)
-                                    {
-                                    case Global._ConnectedConnectionStateType: return "lime"
-                                    case Global._ConnectingConnectionStateType: return "red"
+                                    if (chatService !== null && chatService.connectionStateType === Global._ConnectedConnectionStateType) {
+                                        return "lime"
                                     }
 
-                                    return "orange"
+                                    return "red"
                                 }
                             }
                         }

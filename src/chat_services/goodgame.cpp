@@ -123,7 +123,7 @@ ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!state.streamId.isEmpty())
+    else if (enabled.get() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -296,7 +296,7 @@ QString GoodGame::getStreamId(const QString &stream)
     return streamId;
 }
 
-void GoodGame::reconnect()
+void GoodGame::reconnectImpl()
 {
     if (smiles.isEmpty())
     {
@@ -319,15 +319,21 @@ void GoodGame::reconnect()
     state.streamUrl = "https://goodgame.ru/channel/" + state.streamId;
     state.chatUrl = "https://goodgame.ru/chat/" + state.streamId;
 
-    socket.setProxy(network.proxy());
-    socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
-
-    emit stateChanged();
+    if (enabled.get())
+    {
+        socket.setProxy(network.proxy());
+        socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
+    }
 }
 
 void GoodGame::onWebSocketReceived(const QString &rawData)
 {
     //qDebug(rawData.toUtf8());
+
+    if (!enabled.get())
+    {
+        return;
+    }
 
     const QJsonDocument document = QJsonDocument::fromJson(rawData.toUtf8());
     const QJsonObject root = document.object();

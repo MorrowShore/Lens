@@ -39,7 +39,6 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 
 static const int RequestChannelInfoPariod = 10000;
 static const int PingPeriod = 30 * 1000;
-static const int PongTimeout = 5 * 1000;
 static const int ReconncectPeriod = 3 * 1000;
 
 static const QString NonceAuth = "AUTH";
@@ -118,7 +117,7 @@ Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAcc
     timerUpdateChannelInfo.setInterval(RequestChannelInfoPariod);
     connect(&timerUpdateChannelInfo, &QTimer::timeout, this, [this]()
     {
-        if (!state.connected)
+        if (!enabled.get() || !state.connected)
         {
             return;
         }
@@ -136,7 +135,7 @@ ChatService::ConnectionStateType Trovo::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!state.streamId.isEmpty())
+    else if (enabled.get() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -167,7 +166,7 @@ QString Trovo::getStateDescription() const
     return "<unknown_state>";
 }
 
-void Trovo::reconnect()
+void Trovo::reconnectImpl()
 {
     oauthToken.clear();
     channelId.clear();
@@ -178,24 +177,27 @@ void Trovo::reconnect()
 
     state.streamId = getChannelName(stream.get());
 
-    if (state.streamId.isEmpty())
+    if (!state.streamId.isEmpty())
     {
-        emit stateChanged();
-        return;
+        state.streamUrl = QUrl("https://trovo.live/s/" + state.streamId);
+        state.chatUrl = QUrl("https://trovo.live/chat/" + state.streamId);
+        state.controlPanelUrl = QUrl("https://studio.trovo.live/stream");
     }
 
-    state.streamUrl = QUrl("https://trovo.live/s/" + state.streamId);
-    state.chatUrl = QUrl("https://trovo.live/chat/" + state.streamId);
-    state.controlPanelUrl = QUrl("https://studio.trovo.live/stream");
-
-    requestChannelId();
-
-    emit stateChanged();
+    if (enabled.get())
+    {
+        requestChannelId();
+    }
 }
 
 void Trovo::onWebSocketReceived(const QString& rawData)
 {
     //qDebug("RECIEVE: " + rawData.toUtf8() + "\n");
+
+    if (!enabled.get())
+    {
+        return;
+    }
 
     const QJsonObject root = QJsonDocument::fromJson(rawData.toUtf8()).object();
 
