@@ -10,7 +10,6 @@
         <file>resources/images/clipboard-paste-button.svg</file>
         <file>resources/images/copy-content.svg</file>
         <file>resources/images/cut-content-button.svg</file>
-        <file>resources/images/alert1.svg</file>
         <file>resources/images/tick.svg</file>
         <file>resources/sound/ui/beep1.wav</file>
         <file>resources/images/github.svg</file>
@@ -69,5 +68,7 @@
         <file>resources/images/telegram-icon.svg</file>
         <file>resources/images/discord-icon.svg</file>
         <file>resources/images/sleep-svgrepo-com.svg</file>
+        <file>resources/images/error-alt-svgrepo-com.svg</file>
+        <file>resources/images/power-button-svgrepo-com.svg</file>
     </qresource>
 </RCC>

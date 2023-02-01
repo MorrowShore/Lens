@@ -79,11 +79,11 @@ ScrollView {
                 mipmap: true
                 source: {
                     if (!chatService.enabled) {
-                        return "qrc:/resources/images/sleep-svgrepo-com.svg"
+                        return "qrc:/resources/images/power-button-svgrepo-com.svg"
                     }
 
                     if (chatService.connectionStateType === Global._NotConnectedConnectionStateType) {
-                        return "qrc:/resources/images/alert1.svg"
+                        return "qrc:/resources/images/error-alt-svgrepo-com.svg"
                     }
                     else if (chatService.connectionStateType === Global._ConnectedConnectionStateType) {
                         return "qrc:/resources/images/tick.svg"
