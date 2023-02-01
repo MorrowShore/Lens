@@ -68,5 +68,6 @@
         <file>resources/images/vkplaylive-icon.svg</file>
         <file>resources/images/telegram-icon.svg</file>
         <file>resources/images/discord-icon.svg</file>
+        <file>resources/images/sleep-svgrepo-com.svg</file>
     </qresource>
 </RCC>

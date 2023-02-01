@@ -78,6 +78,10 @@ ScrollView {
                 anchors.verticalCenter: parent.verticalCenter
                 mipmap: true
                 source: {
+                    if (!chatService.enabled) {
+                        return "qrc:/resources/images/sleep-svgrepo-com.svg"
+                    }
+
                     if (chatService.connectionStateType === Global._NotConnectedConnectionStateType) {
                         return "qrc:/resources/images/alert1.svg"
                     }
