@@ -268,8 +268,6 @@ void Twitch::onParameterChangedImpl(Parameter& parameter)
 
         reconnect();
     }
-
-    emit stateChanged();
 }
 
 void Twitch::sendIRCMessage(const QString &message)

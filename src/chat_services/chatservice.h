@@ -464,6 +464,8 @@ protected:
         {
             onParameterChangedImpl(parameter);
         }
+
+        emit stateChanged();
     }
 
     virtual void onParameterChangedImpl(Parameter& parameter)

@@ -114,8 +114,6 @@ void Telegram::onParameterChangedImpl(Parameter &parameter)
         setting->set(token);
         reconnect();
     }
-
-    emit stateChanged();
 }
 
 void Telegram::processBadChatReply()
