@@ -135,7 +135,7 @@ public:
 
     int getViewersCount() const { return state.viewersCount; }
 
-    bool isEnabled() { return enabled.get(); }
+    bool isEnabled() const { return enabled.get(); }
     void setEnabled(const bool enabled_)
     {
         enabled.set(enabled_);

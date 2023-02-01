@@ -793,6 +793,7 @@ void OutputToFile::writeServiceState(const ChatService* service) const
     file.write("[service]\n");
     file.write(QString("service_type_id=%1\n").arg(ChatService::getServiceTypeId(service->getServiceType())).toUtf8());
     file.write(QString("stream_id=%1\n").arg(service->getState().streamId).toUtf8());
+    file.write(QString("enabled=%1\n").arg(service->isEnabled() ? "true" : "false").toUtf8());
     file.write(QString("connected=%1\n").arg(service->getConnectionStateType() == ChatService::ConnectionStateType::Connected ? "true" : "false").toUtf8());
     file.write(QString("stream_url=%1\n").arg(service->getStreamUrl().toString()).toUtf8());
     file.write(QString("chat_url=%1\n").arg(service->getChatUrl().toString()).toUtf8());
