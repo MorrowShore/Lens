@@ -15,12 +15,13 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
     , settings(settings_)
     , network(network_)
+    , botToken(settings_, settingsGroupPath + "/bot_token")
     , showChatTitle(settings_, "show_chat_title", true)
     , allowPrivateChat(settings_, "allow_private_chats", false)
 {
-    getParameter(stream)->setName(tr("Bot token"));
-    getParameter(stream)->setPlaceholder("0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    getParameter(stream)->setFlag(Parameter::Flag::PasswordEcho);
+    getParameter(stream)->resetFlag(Parameter::Flag::Visible);
+
+    parameters.append(Parameter::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", { Parameter::Flag::PasswordEcho }));
 
     parameters.append(Parameter::createLabel(tr("1. Create a bot with @BotFather\n"
                                                 "2. Add the bot to the desired groups or channels\n"
@@ -59,8 +60,6 @@ void Telegram::reconnectImpl()
         return;
     }
 
-    state.streamId = stream.get().trimmed();
-
     requestUpdates();
 }
 
@@ -70,7 +69,7 @@ ChatService::ConnectionStateType Telegram::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (enabled.get() && !botToken.get().isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -83,14 +82,9 @@ QString Telegram::getStateDescription() const
     switch (getConnectionStateType())
     {
     case ConnectionStateType::NotConnected:
-        if (stream.get().isEmpty())
+        if (botToken.get().isEmpty())
         {
             return tr("Bot token not specified");
-        }
-
-        if (state.streamId.isEmpty())
-        {
-            return tr("Bot token is not correct");
         }
 
         return tr("Not connected");
@@ -112,7 +106,7 @@ void Telegram::processBadChatReply()
 
     if (info.badChatReplies >= MaxBadChatReplies)
     {
-        if (state.connected && !state.streamId.isEmpty())
+        if (state.connected && !botToken.get().isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "too many bad chat replies! Disonnecting...";
 
@@ -129,14 +123,14 @@ void Telegram::processBadChatReply()
 
 void Telegram::requestUpdates()
 {
-    if (!enabled.get() || state.streamId.isEmpty())
+    if (!enabled.get() || botToken.get().isEmpty())
     {
         return;
     }
 
     if (info.botUserId == -1)
     {
-        QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getMe").arg(state.streamId)));
+        QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getMe").arg(botToken.get())));
         QNetworkReply* reply = network.get(request);
         if (!reply)
         {
@@ -196,7 +190,7 @@ void Telegram::requestUpdates()
     else
     {
         QString url = QString("https://api.telegram.org/bot%1/getUpdates?timeout=%2&allowed_updates=message")
-                .arg(state.streamId)
+                .arg(botToken.get())
                 .arg(RequestChatTimeoutSeconds);
 
         if (info.lastUpdateId != -1)
@@ -388,7 +382,7 @@ void Telegram::requestUserPhoto(const QString& authorId, const int64_t& userId)
     QNetworkRequest request(
                 QUrl(
                     QString("https://api.telegram.org/bot%1/getUserProfilePhotos?user_id=%2&limit=1")
-                    .arg(state.streamId)
+                    .arg(botToken.get())
                     .arg(userId)
                     ));
 
@@ -465,7 +459,7 @@ void Telegram::requestUserPhoto(const QString& authorId, const int64_t& userId)
 
 void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &fileId)
 {
-    const QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getFile?file_id=%2").arg(state.streamId, fileId)));
+    const QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getFile?file_id=%2").arg(botToken.get(), fileId)));
 
     QNetworkReply* reply = network.get(request);
     if (!reply)
@@ -507,7 +501,7 @@ void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &file
             return;
         }
 
-        const QUrl avatarUrl = QUrl(QString("https://api.telegram.org/file/bot%1/%2").arg(state.streamId, filePath));
+        const QUrl avatarUrl = QUrl(QString("https://api.telegram.org/file/bot%1/%2").arg(botToken.get(), filePath));
 
         emit authorDataUpdated(authorId, { {Author::Role::AvatarUrl, avatarUrl} });
     });

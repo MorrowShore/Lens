@@ -41,6 +41,7 @@ private:
 
     QTimer timerRequestUpdates;
 
+    Setting<QString> botToken;
     Setting<bool> showChatTitle;
     Setting<bool> allowPrivateChat;
 
