@@ -372,22 +372,48 @@
 <context>
     <name>Discord</name>
     <message>
-        <location filename="chat_services/discord.cpp" line="32"/>
+        <location filename="chat_services/discord.cpp" line="29"/>
+        <source>Login</source>
+        <translation>Войти</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="34"/>
+        <source>Logout</source>
+        <translation>Выйти</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="76"/>
+        <source>Error, please try again or report the problem to the developer</source>
+        <translation>Ошибка, повторите попытку или сообщите разработчику о проблеме</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="81"/>
+        <source>Now you can close the page and return to %1</source>
+        <oldsource>You can close the page and return to %1</oldsource>
+        <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="113"/>
+        <source>Not authorized</source>
+        <translation>Не авторизован</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="121"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="35"/>
+        <location filename="chat_services/discord.cpp" line="124"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="38"/>
+        <location filename="chat_services/discord.cpp" line="127"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="41"/>
+        <location filename="chat_services/discord.cpp" line="130"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -740,27 +766,27 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
 <context>
     <name>Trovo</name>
     <message>
-        <location filename="chat_services/trovo.cpp" line="53"/>
+        <location filename="chat_services/trovo.cpp" line="56"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="153"/>
+        <location filename="chat_services/trovo.cpp" line="156"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="156"/>
+        <location filename="chat_services/trovo.cpp" line="159"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="159"/>
+        <location filename="chat_services/trovo.cpp" line="162"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="162"/>
+        <location filename="chat_services/trovo.cpp" line="165"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -768,55 +794,55 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="chat_services/twitch.cpp" line="65"/>
+        <location filename="chat_services/twitch.cpp" line="68"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="67"/>
+        <location filename="chat_services/twitch.cpp" line="70"/>
         <source>To display avatars and complete work, specify the OAuth-token:</source>
         <oldsource>To display avatars and complete work, specify the token</oldsource>
         <translation>Для отображения аватарок и полноценной работы укажите OAuth-токен:</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="68"/>
+        <location filename="chat_services/twitch.cpp" line="71"/>
         <source>OAuth token</source>
         <oldsource>Token</oldsource>
         <translation>OAuth-токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="70"/>
+        <location filename="chat_services/twitch.cpp" line="73"/>
         <source>Get token</source>
         <oldsource>Get Token</oldsource>
         <translation>Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="149"/>
+        <location filename="chat_services/twitch.cpp" line="152"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="223"/>
+        <location filename="chat_services/twitch.cpp" line="226"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="228"/>
+        <location filename="chat_services/twitch.cpp" line="231"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="231"/>
+        <location filename="chat_services/twitch.cpp" line="234"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="234"/>
+        <location filename="chat_services/twitch.cpp" line="237"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="237"/>
+        <location filename="chat_services/twitch.cpp" line="240"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

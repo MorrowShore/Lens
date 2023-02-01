@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include <QTcpServer>
 
 class Discord : public ChatService
 {
@@ -17,4 +18,8 @@ protected:
 private:
     QSettings& settings;
     QNetworkAccessManager& network;
+
+    QTcpServer server;
+
+    Setting<QString> oauthToken;
 };
