@@ -100,6 +100,24 @@ QString Telegram::getStateDescription() const
     return "<unknown_state>";
 }
 
+void Telegram::onParameterChangedImpl(Parameter &parameter)
+{
+    Setting<QString>* setting = parameter.getSettingString();
+    if (!setting)
+    {
+        return;
+    }
+
+    if (*&setting == &botToken)
+    {
+        const QString token = setting->get().trimmed();
+        setting->set(token);
+        reconnect();
+    }
+
+    emit stateChanged();
+}
+
 void Telegram::processBadChatReply()
 {
     info.badChatReplies++;
@@ -178,7 +196,7 @@ void Telegram::requestUpdates()
                 info.badChatReplies = 0;
                 info.botUserId = botUserId;
 
-                if (!state.connected)
+                if (!state.connected || !botToken.get().trimmed().isEmpty())
                 {
                     state.connected = true;
                     emit connectedChanged(true, QString());
@@ -234,13 +252,6 @@ void Telegram::requestUpdates()
             {
                 qDebug() << Q_FUNC_INFO << "error:" << root;;
                 return;
-            }
-
-            if (!state.connected)
-            {
-                state.connected = true;
-                emit connectedChanged(true, QString());
-                emit stateChanged();
             }
 
             parseUpdates(root.value("result").toArray());
