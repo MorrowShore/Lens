@@ -40,6 +40,8 @@ HEADERS += \
     outputtofile.h \
     qmlutils.h \
     setting.h \
+    string_obfuscator/meta_random.hpp \
+    string_obfuscator/obfuscator.hpp \
     tray.h \
     utils.h \
     websocket.h

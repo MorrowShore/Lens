@@ -2,6 +2,7 @@
 #include "apikeys.h"
 #include "models/message.h"
 #include "models/author.h"
+#include "string_obfuscator/obfuscator.hpp"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -42,6 +43,8 @@ static const int PingPeriod = 30 * 1000;
 static const int ReconncectPeriod = 3 * 1000;
 
 static const QString NonceAuth = "AUTH";
+
+static const QString ClientID = OBFUSCATE(TROVO_CLIENT_ID);
 
 }
 
@@ -448,7 +451,7 @@ void Trovo::requestChannelId()
     QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/getusers"));
     request.setRawHeader("Accept", "application/json");
     request.setRawHeader("Content-type", "application/json");
-    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+    request.setRawHeader("Client-ID", ClientID.toUtf8());
 
     QJsonObject object;
     QJsonArray usersNames;
@@ -489,7 +492,7 @@ void Trovo::requestChatToken()
 {
     QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/chat/channel-token/" + channelId));
     request.setRawHeader("Accept", "application/json");
-    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+    request.setRawHeader("Client-ID", ClientID.toUtf8());
     QNetworkReply* reply = network.get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
@@ -518,7 +521,7 @@ void Trovo::requestChannelInfo()
     QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/channels/id"));
     request.setRawHeader("Accept", "application/json");
     request.setRawHeader("Content-type", "application/json");
-    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+    request.setRawHeader("Client-ID", ClientID.toUtf8());
 
     QJsonObject object;
     object.insert("channel_id", channelId);
@@ -550,7 +553,7 @@ void Trovo::requsetSmiles()
     QNetworkRequest request(QUrl("https://open-api.trovo.live/openplatform/getemotes"));
     request.setRawHeader("Accept", "application/json");
     request.setRawHeader("Content-type", "application/json");
-    request.setRawHeader("Client-ID", TROVO_CLIENT_ID);
+    request.setRawHeader("Client-ID", ClientID.toUtf8());
 
     QJsonObject object;
     QJsonArray channelIds;
