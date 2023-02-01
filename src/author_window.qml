@@ -131,7 +131,7 @@ Window {
 
                     onClicked: {
                         if (!authorQMLProvider.openAvatar()) {
-                            dialog.title = qsTr("Unknown error")
+                            dialog.title = qsTr("Link does not exist or an error occurred")
                             dialog.open()
                         }
                     }
@@ -151,7 +151,7 @@ Window {
 
                     onClicked: {
                         if (!authorQMLProvider.openPage()) {
-                            dialog.title = qsTr("Unknown error")
+                            dialog.title = qsTr("Link does not exist or an error occurred")
                             dialog.open()
                         }
                     }
