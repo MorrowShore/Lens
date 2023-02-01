@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 28 28"
+   version="1.1"
+   id="svg10"
+   sodipodi:docname="eye-svgrepo-com.svg"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+  <sodipodi:namedview
+     id="namedview12"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="1.02875"
+     inkscape:cx="401.45808"
+     inkscape:cy="400.48603"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg10" />
+  <title
+     id="title2">icon/28/icon-eye</title>
+  <desc
+     id="desc4">Created with Sketch.</desc>
+  <defs
+     id="defs6" />
+  <g
+     id="out"
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd"
+     sketch:type="MSPage"
+     transform="matrix(1.0795317,0,0,1.0795317,-1.0794212,-1.1366398)"
+     style="opacity:1;mix-blend-mode:normal;fill:#03a9f4;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1">
+    <path
+       d="M 14,5.25 C 8.1666667,5.25 3.185,8.8783333 1.1666667,14 3.185,19.121667 8.1666667,22.75 14,22.75 19.833333,22.75 24.815,19.121667 26.833333,14 24.815,8.8783333 19.833333,5.25 14,5.25 Z m 0,14.583333 C 10.78,19.833333 8.1666667,17.22 8.1666667,14 8.1666667,10.78 10.78,8.1666667 14,8.1666667 17.22,8.1666667 19.833333,10.78 19.833333,14 19.833333,17.22 17.22,19.833333 14,19.833333 Z M 14,10.5 c -1.936667,0 -3.5,1.563333 -3.5,3.5 0,1.936667 1.563333,3.5 3.5,3.5 1.936667,0 3.5,-1.563333 3.5,-3.5 0,-1.936667 -1.563333,-3.5 -3.5,-3.5 z"
+       id="path"
+       fill="#03a9f4"
+       sketch:type="MSShapeGroup"
+       style="fill:#03a9f4;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1" />
+  </g>
+  <metadata
+     id="metadata829">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>icon/28/icon-eye</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

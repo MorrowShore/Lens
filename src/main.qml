@@ -878,10 +878,10 @@ Row {
 
             Image {
                 mipmap: true
-                height: 18
+                height: 20
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/resources/images/viewer.svg"
+                source: "qrc:/resources/images/eye-svgrepo-com.svg"
                 fillMode: Image.PreserveAspectFit
             }
 
