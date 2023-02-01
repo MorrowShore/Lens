@@ -180,6 +180,10 @@ void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat:
     for (int i = firstValidMessage; i < messages.count(); ++i)
     {
         const Message& message = messages[i];
+        if (message.isHasFlag(Message::Flag::DeleterItem))
+        {
+            continue;
+        }
 
         const QString authorId = message.getAuthorId();
         const Author* author = messagesModel.getAuthor(authorId);
