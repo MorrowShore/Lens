@@ -47,6 +47,7 @@ HEADERS += \
     websocket.h
 
 SOURCES += \
+        chat_services/chatservice.cpp \
         chat_services/discord.cpp \
         chat_services/telegram.cpp \
         chat_services/trovo.cpp \

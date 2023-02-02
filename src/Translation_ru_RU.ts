@@ -372,48 +372,53 @@
 <context>
     <name>Discord</name>
     <message>
-        <location filename="chat_services/discord.cpp" line="29"/>
+        <location filename="chat_services/discord.cpp" line="32"/>
+        <source>Channel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="34"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="34"/>
+        <location filename="chat_services/discord.cpp" line="39"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="76"/>
+        <location filename="chat_services/discord.cpp" line="81"/>
         <source>Error, please try again or report the problem to the developer</source>
         <translation>Ошибка, повторите попытку или сообщите разработчику о проблеме</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="81"/>
+        <location filename="chat_services/discord.cpp" line="86"/>
         <source>Now you can close the page and return to %1</source>
         <oldsource>You can close the page and return to %1</oldsource>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="113"/>
+        <location filename="chat_services/discord.cpp" line="118"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="121"/>
+        <location filename="chat_services/discord.cpp" line="126"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="124"/>
+        <location filename="chat_services/discord.cpp" line="129"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="127"/>
+        <location filename="chat_services/discord.cpp" line="132"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="130"/>
+        <location filename="chat_services/discord.cpp" line="135"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

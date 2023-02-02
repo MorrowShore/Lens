@@ -16,10 +16,16 @@ protected:
     void reconnectImpl() override;
 
 private:
+    bool isAuthorized() const;
+    void updateAuthState();
+
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    QTcpServer server;
+    QTcpServer authServer;
+
+    Parameter authStateInfo;
 
     Setting<QString> oauthToken;
+    Setting<QString> channel;
 };

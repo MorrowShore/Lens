@@ -3,6 +3,8 @@
 #include "string_obfuscator/obfuscator.hpp"
 #include <QDesktopServices>
 #include <QTcpSocket>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 namespace
 {
@@ -24,32 +26,42 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Discord, parent)
     , settings(settings_)
     , network(network_)
+    , authStateInfo(Parameter::createLabel("Loading..."))
     , oauthToken(settings_, settingsGroupPath + "/oauth_token")
+    , channel(settings_, settingsGroupPath + "/channel")
 {
-    parameters.append(Parameter::createButton(tr("Login"), [](const QVariant&)
+    getParameter(stream)->resetFlag(Parameter::Flag::Visible);
+
+    parameters.append(Parameter::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910"));
+
+    parameters.append(authStateInfo);
+
+    parameters.append(Parameter::createButton(tr("Login"), [this](const QVariant&)
     {
         QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=messages.read").arg(ClientID)));
+        updateAuthState();
     }));
 
     parameters.append(Parameter::createButton(tr("Logout"), [this](const QVariant&)
     {
         oauthToken.set(QString());
+        updateAuthState();
         emit stateChanged();
     }));
 
-    connect(&server, &QTcpServer::acceptError, this, [](QAbstractSocket::SocketError socketError)
+    connect(&authServer, &QTcpServer::acceptError, this, [](QAbstractSocket::SocketError socketError)
     {
         qWarning() << Q_FUNC_INFO << "server error:" << socketError;
     });
 
-    if (!server.listen(QHostAddress::Any, ServerPort))
+    if (!authServer.listen(QHostAddress::Any, ServerPort))
     {
         qCritical() << Q_FUNC_INFO << "server: failed to listen port";
     }
 
-    connect(&server, &QTcpServer::newConnection, this, [this]()
+    connect(&authServer, &QTcpServer::newConnection, this, [this]()
     {
-        QTcpSocket* socket = server.nextPendingConnection();
+        QTcpSocket* socket = authServer.nextPendingConnection();
         if (!socket)
         {
             qWarning() << Q_FUNC_INFO << "socket is null";
@@ -81,6 +93,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
                                                            tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName())).toUtf8()));
                     }
 
+                    updateAuthState();
                     emit stateChanged();
                 }
             }
@@ -90,6 +103,8 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
             }
         });
     });
+
+    updateAuthState();
 }
 
 ChatService::ConnectionStateType Discord::getConnectionStateType() const
@@ -98,7 +113,7 @@ ChatService::ConnectionStateType Discord::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!oauthToken.get().isEmpty() && !state.streamId.isEmpty())
+    else if (isAuthorized() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -108,7 +123,7 @@ ChatService::ConnectionStateType Discord::getConnectionStateType() const
 
 QString Discord::getStateDescription() const
 {
-    if (oauthToken.get().isEmpty())
+    if (!isAuthorized())
     {
         return tr("Not authorized");
     }
@@ -137,4 +152,23 @@ QString Discord::getStateDescription() const
 void Discord::reconnectImpl()
 {
 
+}
+
+bool Discord::isAuthorized() const
+{
+    return !oauthToken.get().trimmed().isEmpty();
+}
+
+void Discord::updateAuthState()
+{
+    if (isAuthorized())
+    {
+        authStateInfo.setName(tr("Authorized"));
+    }
+    else
+    {
+        authStateInfo.setName(tr("Not authorized"));
+    }
+
+    emit stateChanged();
 }
