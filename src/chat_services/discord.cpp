@@ -30,19 +30,19 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     , oauthToken(settings_, settingsGroupPath + "/oauth_token")
     , channel(settings_, settingsGroupPath + "/channel")
 {
-    getParameter(stream)->resetFlag(UIElementBridge::Flag::Visible);
+    getUiElement(stream)->resetFlag(UIElementBridge::Flag::Visible);
 
-    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910")));
+    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910")));
 
-    parameters.append(authStateInfo);
+    uiElements.append(authStateInfo);
 
-    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this](const QVariant&)
+    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this](const QVariant&)
     {
         QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=messages.read").arg(ClientID)));
         updateAuthState();
     })));
 
-    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Logout"), [this](const QVariant&)
+    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Logout"), [this](const QVariant&)
     {
         oauthToken.set(QString());
         updateAuthState();

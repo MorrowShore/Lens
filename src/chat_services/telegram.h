@@ -16,7 +16,7 @@ public:
     QString getStateDescription() const override;
 
 protected:
-    void onParameterChangedImpl(UIElementBridge& parameter) override;
+    void onUiElementChangedImpl(UIElementBridge& uiElement) override;
     void reconnectImpl() override;
 
 private:

@@ -44,7 +44,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
     , settings(settings_)
     , network(network_)
 {
-    getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
+    getUiElement(stream)->setPlaceholder(tr("Link or channel name..."));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {

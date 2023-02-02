@@ -53,7 +53,7 @@ Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAcc
     , settings(settings_)
     , network(network_)
 {
-    getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
+    getUiElement(stream)->setPlaceholder(tr("Link or channel name..."));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {

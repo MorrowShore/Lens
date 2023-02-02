@@ -26,7 +26,7 @@ signals:
 public slots:
 
 protected:
-    void onParameterChangedImpl(UIElementBridge& parameter) override;
+    void onUiElementChangedImpl(UIElementBridge& uiElement) override;
     void reconnectImpl() override;
 
 private slots:

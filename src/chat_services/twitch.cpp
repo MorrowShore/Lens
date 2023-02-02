@@ -65,12 +65,12 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
   , network(network_)
   , oauthToken(Setting<QString>(settings, settingsGroupPath + "/oauth_token"))
 {
-    getParameter(stream)->setPlaceholder(tr("Link or channel name..."));
+    getUiElement(stream)->setPlaceholder(tr("Link or channel name..."));
 
-    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("To display avatars and complete work, specify the OAuth-token:"))));
-    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&oauthToken, tr("OAuth token"), "...", { UIElementBridge::Flag::PasswordEcho })));
+    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("To display avatars and complete work, specify the OAuth-token:"))));
+    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&oauthToken, tr("OAuth token"), "...", { UIElementBridge::Flag::PasswordEcho })));
 
-    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Get token"), [this](const QVariant&)
+    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Get token"), [this](const QVariant&)
     {
         QDesktopServices::openUrl(requesGetAOuthTokenUrl());
     })));
@@ -252,9 +252,9 @@ QUrl Twitch::requesGetAOuthTokenUrl() const
                         + "&scope=openid+chat:read");
 }
 
-void Twitch::onParameterChangedImpl(UIElementBridge& parameter)
+void Twitch::onUiElementChangedImpl(UIElementBridge& uiElement)
 {
-    Setting<QString>* setting = parameter.getSettingString();
+    Setting<QString>* setting = uiElement.getSettingString();
     if (!setting)
     {
         return;

@@ -46,7 +46,7 @@ YouTube::YouTube(QSettings& settings_, const QString& settingsGroupPath, QNetwor
     , settings(settings_)
     , network(network_)
 {
-    getParameter(stream)->setPlaceholder(tr("Link or broadcast ID..."));
+    getUiElement(stream)->setPlaceholder(tr("Link or broadcast ID..."));
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTube::onTimeoutRequestChat);
     timerRequestChat.start(RequestChatInterval);

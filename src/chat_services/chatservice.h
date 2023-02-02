@@ -109,10 +109,10 @@ protected:
 
     virtual void reconnectImpl() = 0;
 
-    void onParameterChanged(UIElementBridge& parameter)
+    void onUiElementChanged(UIElementBridge& uiElement)
     {
-        Setting<QString>* settingString = parameter.getSettingString();
-        Setting<bool>* settingBool = parameter.getSettingBool();
+        Setting<QString>* settingString = uiElement.getSettingString();
+        Setting<bool>* settingBool = uiElement.getSettingBool();
 
         if (settingString && *&settingString == &stream)
         {
@@ -125,31 +125,31 @@ protected:
         }
         else
         {
-            onParameterChangedImpl(parameter);
+            onUiElementChangedImpl(uiElement);
         }
 
         emit stateChanged();
     }
 
-    virtual void onParameterChangedImpl(UIElementBridge& parameter)
+    virtual void onUiElementChangedImpl(UIElementBridge& uiElement)
     {
-        Q_UNUSED(parameter)
+        Q_UNUSED(uiElement)
     }
 
-    std::shared_ptr<UIElementBridge> getParameter(const Setting<QString>& setting)
+    std::shared_ptr<UIElementBridge> getUiElement(const Setting<QString>& setting)
     {
-        for (std::shared_ptr<UIElementBridge>& parameter : parameters)
+        for (std::shared_ptr<UIElementBridge>& uiElement : uiElements)
         {
-            if (parameter->getSettingString() == &setting)
+            if (uiElement->getSettingString() == &setting)
             {
-                return parameter;
+                return uiElement;
             }
         }
 
         return nullptr;
     }
 
-    QList<std::shared_ptr<UIElementBridge>> parameters;
+    QList<std::shared_ptr<UIElementBridge>> uiElements;
     const AxelChat::ServiceType serviceType;
     State state;
     Setting<bool> enabled;
