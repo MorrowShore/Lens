@@ -43,6 +43,7 @@ HEADERS += \
     string_obfuscator/meta_random.hpp \
     string_obfuscator/obfuscator.hpp \
     tray.h \
+    uielementbridge.h \
     utils.h \
     websocket.h
 
@@ -71,6 +72,7 @@ SOURCES += \
         outputtofile.cpp \
         qmlutils.cpp \
         tray.cpp \
+        uielementbridge.cpp \
         websocket.cpp
 
 RESOURCES += qml.qrc \

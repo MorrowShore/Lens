@@ -26,28 +26,28 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Discord, parent)
     , settings(settings_)
     , network(network_)
-    , authStateInfo(Parameter::createLabel("Loading..."))
+    , authStateInfo(UIElementBridge::createLabel("Loading..."))
     , oauthToken(settings_, settingsGroupPath + "/oauth_token")
     , channel(settings_, settingsGroupPath + "/channel")
 {
-    getParameter(stream)->resetFlag(Parameter::Flag::Visible);
+    getParameter(stream)->resetFlag(UIElementBridge::Flag::Visible);
 
-    parameters.append(Parameter::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910"));
+    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910")));
 
     parameters.append(authStateInfo);
 
-    parameters.append(Parameter::createButton(tr("Login"), [this](const QVariant&)
+    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this](const QVariant&)
     {
         QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=messages.read").arg(ClientID)));
         updateAuthState();
-    }));
+    })));
 
-    parameters.append(Parameter::createButton(tr("Logout"), [this](const QVariant&)
+    parameters.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Logout"), [this](const QVariant&)
     {
         oauthToken.set(QString());
         updateAuthState();
         emit stateChanged();
-    }));
+    })));
 
     connect(&authServer, &QTcpServer::acceptError, this, [](QAbstractSocket::SocketError socketError)
     {
@@ -161,13 +161,18 @@ bool Discord::isAuthorized() const
 
 void Discord::updateAuthState()
 {
+    if (!authStateInfo)
+    {
+        qCritical() << Q_FUNC_INFO << "!authStateInfo";
+    }
+
     if (isAuthorized())
     {
-        authStateInfo.setName(tr("Authorized"));
+        authStateInfo->setName(tr("Authorized"));
     }
     else
     {
-        authStateInfo.setName(tr("Not authorized"));
+        authStateInfo->setName(tr("Not authorized"));
     }
 
     emit stateChanged();

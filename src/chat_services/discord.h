@@ -24,7 +24,7 @@ private:
 
     QTcpServer authServer;
 
-    Parameter authStateInfo;
+    std::shared_ptr<UIElementBridge> authStateInfo;
 
     Setting<QString> oauthToken;
     Setting<QString> channel;
