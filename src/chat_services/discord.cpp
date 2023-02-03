@@ -268,6 +268,10 @@ void Discord::onWebSocketReceived(const QString &rawData)
         heartbeatAcknowledgementTimer.setInterval(info.heartbeatInterval * 1.5);
         heartbeatAcknowledgementTimer.start();
     }
+    else if (opCode == HeartbeatOpCode)
+    {
+        sendHeartbeat();
+    }
     else
     {
         qWarning() << Q_FUNC_INFO << "unknown op code" << opCode;
