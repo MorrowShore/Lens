@@ -20,5 +20,9 @@
         <file>my_components/MyTextArea.qml</file>
         <file>setting_pages/service.qml</file>
         <file>setting_pages/widgets.qml</file>
+        <file>my_components/BridgedLabel.qml</file>
+        <file>my_components/BridgedLineEdit.qml</file>
+        <file>my_components/BridgedButton.qml</file>
+        <file>my_components/BridgedSwitch.qml</file>
     </qresource>
 </RCC>

@@ -2,6 +2,8 @@
 
 #include "setting.h"
 #include <QString>
+#include <QQmlEngine>
+#include <QQuickItem>
 #include <set>
 
 class UIElementBridge : public QObject
@@ -12,22 +14,18 @@ public:
     enum class Type
     {
         Unknown = -1,
-        LineEdit = 10,
-        Button = 20,
-        Label = 21,
-        Switch = 22,
+        Label = 10,
+        LineEdit = 20,
+        Button = 30,
+        Switch = 32,
     };
 
-    enum class Flag
-    {
-        Visible = 1,
-        PasswordEcho = 10,
-    };
-
-    static UIElementBridge* createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const std::set<Flag>& additionalFlags = std::set<Flag>());
-    static UIElementBridge* createButton(const QString& text, std::function<void(const QVariant& argument)> invokeCalback, const QVariant& invokeCallbackArgument_ = QVariant());
+    static UIElementBridge* createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
+    static UIElementBridge* createButton(const QString& text, std::function<void()> invokeCallback);
     static UIElementBridge* createLabel(const QString& text);
     static UIElementBridge* createSwitch(Setting<bool>* settingBool, const QString& name);
+
+    Q_INVOKABLE void bindQmlItem(QQuickItem* item);
 
     Setting<QString>* getSettingString() { return settingString; }
     const Setting<QString>* getSettingString() const { return settingString; }
@@ -35,28 +33,39 @@ public:
     Setting<bool>* getSettingBool() { return settingBool; }
     const Setting<bool>* getSettingBool() const { return settingBool; }
 
-    QString getName() const { return name; }
-    void setName(const QString& name_) { name = name_; }
-    Type getType() const { return type; }
-    const std::set<Flag>& getFlags() const { return flags; }
-    void setFlag(const Flag flag) { flags.insert(flag); }
-    void resetFlag(const Flag flag) { flags.erase(flag); }
-
-    void setPlaceholder(const QString& placeHolder_) { placeHolder = placeHolder_; }
-    QString getPlaceholder() const { return placeHolder; }
+    Q_INVOKABLE int getTypeInt() const { return (int)type; }
 
     bool executeInvokeCallback();
 
+    void setItemProperty(const QByteArray& name, const QVariant& value);
+
+#ifdef QT_QUICK_LIB
+    static void declareQml()
+    {
+        qmlRegisterUncreatableType<UIElementBridge> ("AxelChat.UIElementBridge", 1, 0, "UIElementBridge", "Type cannot be created in QML");
+    }
+#endif
+
+signals:
+    void valueChanged();
+
+protected:
+    void updateItemProperties();
+
+private slots:
+    void onInvoked();
+    void onTextChanged();
+    void onCheckedChanged();
+
 private:
-    explicit UIElementBridge(){}
+    UIElementBridge(){}
+
+    QQuickItem* item = nullptr;
 
     Setting<QString>* settingString;
     Setting<bool>* settingBool;
 
-    QString name;
     Type type;
-    std::set<Flag> flags = { Flag::Visible };
-    QString placeHolder;
-    std::function<void(const QVariant& argument)> invokeCalback;
-    QVariant invokeCallbackArgument;
+    QMap<QByteArray, QVariant> parameters;
+    std::function<void()> invokeCallback;
 };

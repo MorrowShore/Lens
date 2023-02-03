@@ -292,6 +292,10 @@ Window {
                 }
 
                 onCurrentItemChanged: {
+                    if (!currentItem) {
+                        return
+                    }
+
                     if (currentItem.category === "service")
                     {
                         Global.windowSettingsServiceIndex = currentIndex

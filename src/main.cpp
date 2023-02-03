@@ -1,22 +1,23 @@
 #if defined(AXELCHAT_LIBRARY)
 #include "axelchatlib_api.h"
 #else
-#include <QApplication>
+#include "tray.h"
 #include "applicationinfo.h"
-#include <QQmlApplicationEngine>
-#include <QSplashScreen>
 #include "chathandler.h"
 #include "githubapi.h"
 #include "clipboardqml.h"
 #include "qmlutils.h"
 #include "i18n.h"
+#include "commandseditor.h"
+#include "uielementbridge.h"
+#include <QApplication>
 #include <QIcon>
 #include <QStandardPaths>
 #include <QDir>
 #include <QQmlContext>
-#include "commandseditor.h"
-#include "tray.h"
 #include <QQuickWindow>
+#include <QQmlApplicationEngine>
+#include <QSplashScreen>
 
 int main(int argc, char *argv[])
 {
@@ -53,6 +54,8 @@ int main(int argc, char *argv[])
             settingsPath = "";
         }
     }
+
+    UIElementBridge::declareQml();
 
     ChatHandler::declareQml();
     ChatHandler chatHandler(settings, network);

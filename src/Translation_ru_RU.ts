@@ -13,6 +13,14 @@
     </message>
 </context>
 <context>
+    <name>BridgedLineEdit</name>
+    <message>
+        <location filename="my_components/BridgedLineEdit.qml" line="44"/>
+        <source>Paste</source>
+        <translation>Вставить</translation>
+    </message>
+</context>
+<context>
     <name>ChatBot</name>
     <message>
         <location filename="chatbot.cpp" line="255"/>
@@ -104,53 +112,53 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.h" line="75"/>
-        <location filename="chat_services/chatservice.h" line="87"/>
+        <location filename="chat_services/chatservice.cpp" line="40"/>
+        <location filename="chat_services/chatservice.cpp" line="52"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="78"/>
+        <location filename="chat_services/chatservice.cpp" line="43"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="79"/>
+        <location filename="chat_services/chatservice.cpp" line="44"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="80"/>
+        <location filename="chat_services/chatservice.cpp" line="45"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="81"/>
+        <location filename="chat_services/chatservice.cpp" line="46"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="82"/>
+        <location filename="chat_services/chatservice.cpp" line="47"/>
         <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="83"/>
+        <location filename="chat_services/chatservice.cpp" line="48"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="84"/>
+        <location filename="chat_services/chatservice.cpp" line="49"/>
         <source>Discord</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="116"/>
+        <location filename="chat_services/chatservice.cpp" line="10"/>
         <source>Enabled</source>
         <translation>Включено</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.h" line="119"/>
+        <location filename="chat_services/chatservice.cpp" line="14"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -372,53 +380,60 @@
 <context>
     <name>Discord</name>
     <message>
-        <location filename="chat_services/discord.cpp" line="32"/>
+        <location filename="chat_services/discord.cpp" line="35"/>
         <source>Channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="34"/>
+        <location filename="chat_services/discord.cpp" line="39"/>
+        <location filename="chat_services/discord.cpp" line="181"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="39"/>
+        <location filename="chat_services/discord.cpp" line="175"/>
+        <source>Authorized</source>
+        <translation>Авторизован</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="176"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="81"/>
+        <location filename="chat_services/discord.cpp" line="92"/>
         <source>Error, please try again or report the problem to the developer</source>
         <translation>Ошибка, повторите попытку или сообщите разработчику о проблеме</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="86"/>
+        <location filename="chat_services/discord.cpp" line="97"/>
         <source>Now you can close the page and return to %1</source>
         <oldsource>You can close the page and return to %1</oldsource>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="118"/>
+        <location filename="chat_services/discord.cpp" line="132"/>
+        <location filename="chat_services/discord.cpp" line="180"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="126"/>
+        <location filename="chat_services/discord.cpp" line="140"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="129"/>
+        <location filename="chat_services/discord.cpp" line="143"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="132"/>
+        <location filename="chat_services/discord.cpp" line="146"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="135"/>
+        <location filename="chat_services/discord.cpp" line="149"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -626,13 +641,13 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation>Создать бота с помощью @BotFather</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="39"/>
+        <location filename="chat_services/telegram.cpp" line="40"/>
         <source>Show chat name when possible</source>
         <oldsource>Show chat title</oldsource>
         <translation>Показывать название чата при возможности</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="40"/>
+        <location filename="chat_services/telegram.cpp" line="41"/>
         <source>Allow private chats (at one&apos;s own risk)</source>
         <oldsource>Allow private chats (turn on at your own risk)</oldsource>
         <translation>Разрешить приватные чаты (на свой страх и риск)</translation>
@@ -642,7 +657,7 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation type="vanished">Выключено</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="87"/>
+        <location filename="chat_services/telegram.cpp" line="88"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
@@ -651,102 +666,102 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation type="vanished">Токен бота некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="90"/>
+        <location filename="chat_services/telegram.cpp" line="91"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="93"/>
+        <location filename="chat_services/telegram.cpp" line="94"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="96"/>
+        <location filename="chat_services/telegram.cpp" line="97"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="350"/>
+        <location filename="chat_services/telegram.cpp" line="351"/>
         <source>animation</source>
         <translation>анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="351"/>
+        <location filename="chat_services/telegram.cpp" line="352"/>
         <source>audio</source>
         <translation>аудио</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="352"/>
+        <location filename="chat_services/telegram.cpp" line="353"/>
         <source>document</source>
         <translation>документ</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="353"/>
+        <location filename="chat_services/telegram.cpp" line="354"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="354"/>
+        <location filename="chat_services/telegram.cpp" line="355"/>
         <source>sticker</source>
         <translation>стикер</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="355"/>
+        <location filename="chat_services/telegram.cpp" line="356"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="356"/>
+        <location filename="chat_services/telegram.cpp" line="357"/>
         <source>video note</source>
         <translation>видеосообщение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="357"/>
+        <location filename="chat_services/telegram.cpp" line="358"/>
         <source>voice note</source>
         <translation>голосовое сообщение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="358"/>
+        <location filename="chat_services/telegram.cpp" line="359"/>
         <source>contact</source>
         <translation>контакт</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="359"/>
+        <location filename="chat_services/telegram.cpp" line="360"/>
         <source>dice</source>
         <translation>игральная кость</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="360"/>
+        <location filename="chat_services/telegram.cpp" line="361"/>
         <source>game</source>
         <translation>игра</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="361"/>
+        <location filename="chat_services/telegram.cpp" line="362"/>
         <source>poll</source>
         <translation>голосование</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="362"/>
+        <location filename="chat_services/telegram.cpp" line="363"/>
         <source>venue</source>
         <translation>место проведения</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="363"/>
+        <location filename="chat_services/telegram.cpp" line="364"/>
         <source>location</source>
         <translation>локация</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="364"/>
+        <location filename="chat_services/telegram.cpp" line="365"/>
         <source>video chat scheduled</source>
         <translation>видеочат запланирован</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="365"/>
+        <location filename="chat_services/telegram.cpp" line="366"/>
         <source>video chat started</source>
         <translation>видеочат начался</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="366"/>
+        <location filename="chat_services/telegram.cpp" line="367"/>
         <source>video chat ended</source>
         <translation>видеочат завершён</translation>
     </message>
@@ -822,32 +837,32 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation>Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="152"/>
+        <location filename="chat_services/twitch.cpp" line="153"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="226"/>
+        <location filename="chat_services/twitch.cpp" line="227"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="231"/>
+        <location filename="chat_services/twitch.cpp" line="232"/>
         <source>OAuth token not specified</source>
         <translation>OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="234"/>
+        <location filename="chat_services/twitch.cpp" line="235"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="237"/>
+        <location filename="chat_services/twitch.cpp" line="238"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="240"/>
+        <location filename="chat_services/twitch.cpp" line="241"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1572,22 +1587,21 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка...</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="102"/>
+        <location filename="setting_pages/service.qml" line="103"/>
         <source>Disabled</source>
         <translation>Выключено</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="171"/>
         <source>Paste</source>
-        <translation>Вставить</translation>
+        <translation type="vanished">Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="247"/>
+        <location filename="setting_pages/service.qml" line="163"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="257"/>
+        <location filename="setting_pages/service.qml" line="173"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1596,7 +1610,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="266"/>
+        <location filename="setting_pages/service.qml" line="182"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

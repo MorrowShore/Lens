@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QQuickItem>
 #include <set>
 
 class ChatHandler;
@@ -50,11 +51,11 @@ public:
         int viewersCount = -1;
     };
 
+    explicit ChatService(QSettings& settings, const QString& settingsGroupPath, AxelChat::ServiceType serviceType_, QObject *parent = nullptr);
+
     static QString getServiceTypeId(const AxelChat::ServiceType serviceType);
     static QString getName(const AxelChat::ServiceType serviceType);
     static QUrl getIconUrl(const AxelChat::ServiceType serviceType);
-
-    explicit ChatService(QSettings& settings, const QString& settingsGroupPath, AxelChat::ServiceType serviceType_, QObject *parent = nullptr);
 
     QUrl getChatUrl() const;
     QUrl getControlPanelUrl() const;
@@ -81,16 +82,9 @@ public:
     Q_INVOKABLE QString getName() const;
     Q_INVOKABLE QUrl getIconUrl() const;
 
-    Q_INVOKABLE int getParametersCount() const;
-    Q_INVOKABLE QString getParameterName(int index) const;
-    Q_INVOKABLE QString getParameterValueString(int index) const;
-    Q_INVOKABLE void setParameterValueString(int index, const QString& value);
-    Q_INVOKABLE bool getParameterValueBool(int index) const;
-    Q_INVOKABLE void setParameterValueBool(int index, const bool value);
-    Q_INVOKABLE int getParameterType(int index) const;
-    Q_INVOKABLE bool isParameterHasFlag(int index, int flag) const;
-    Q_INVOKABLE QString getParameterPlaceholder(int index) const;
-    Q_INVOKABLE bool executeParameterInvoke(int index);
+    Q_INVOKABLE int getUIElementBridgesCount() const;
+    Q_INVOKABLE int getUIElementBridgeType(const int index) const;
+    Q_INVOKABLE void bindQmlItem(const int index, QQuickItem* item);
 
 #ifdef QT_QUICK_LIB
     static void declareQml()
@@ -109,50 +103,22 @@ protected:
 
     virtual void reconnectImpl() = 0;
 
-    void onUiElementChanged(UIElementBridge& uiElement)
+    void addUIElement(std::shared_ptr<UIElementBridge> element);
+    void onUIElementChanged(const std::shared_ptr<UIElementBridge> element);
+
+    virtual void onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
     {
-        Setting<QString>* settingString = uiElement.getSettingString();
-        Setting<bool>* settingBool = uiElement.getSettingBool();
-
-        if (settingString && *&settingString == &stream)
-        {
-            stream.set(stream.get().trimmed());
-            reconnect();
-        }
-        else if (settingBool && *&settingBool == &enabled)
-        {
-            reconnect();
-        }
-        else
-        {
-            onUiElementChangedImpl(uiElement);
-        }
-
-        emit stateChanged();
+        Q_UNUSED(element)
     }
 
-    virtual void onUiElementChangedImpl(UIElementBridge& uiElement)
-    {
-        Q_UNUSED(uiElement)
-    }
+    std::shared_ptr<UIElementBridge> getUIElementBridgeBySetting(const Setting<QString>& setting);
 
-    std::shared_ptr<UIElementBridge> getUiElement(const Setting<QString>& setting)
-    {
-        for (std::shared_ptr<UIElementBridge>& uiElement : uiElements)
-        {
-            if (uiElement->getSettingString() == &setting)
-            {
-                return uiElement;
-            }
-        }
-
-        return nullptr;
-    }
-
-    QList<std::shared_ptr<UIElementBridge>> uiElements;
     const AxelChat::ServiceType serviceType;
     State state;
     Setting<bool> enabled;
     Setting<QString> stream;
     Setting<QString> lastSavedMessageId;
+
+private:
+    QList<std::shared_ptr<UIElementBridge>> uiElements;
 };

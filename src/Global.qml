@@ -18,15 +18,6 @@ QtObject {
     readonly property int _ConnectingConnectionStateType: 20
     readonly property int _ConnectedConnectionStateType: 30
 
-    readonly property int _UnknownParameterType: -1
-    readonly property int _LineEditParameterType: 10
-    readonly property int _ButtonParameterType: 20
-    readonly property int _LabelParameterType: 21
-    readonly property int _SwitchParameterType: 22
-
-    readonly property int _VisibleParameterFlag: 1
-    readonly property int _PasswordEchoParameterFlag: 10
-
     property var windowChat
     property var windowSettings
 

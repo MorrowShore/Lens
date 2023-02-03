@@ -30,24 +30,27 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     , oauthToken(settings_, settingsGroupPath + "/oauth_token")
     , channel(settings_, settingsGroupPath + "/channel")
 {
-    getUiElement(stream)->resetFlag(UIElementBridge::Flag::Visible);
+    getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910")));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910")));
 
-    uiElements.append(authStateInfo);
+    addUIElement(authStateInfo);
 
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this](const QVariant&)
+    loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
     {
-        QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=messages.read").arg(ClientID)));
-        updateAuthState();
-    })));
+        if (isAuthorized())
+        {
+            oauthToken.set(QString());
+        }
+        else
+        {
+            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=messages.read").arg(ClientID)));
+        }
 
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Logout"), [this](const QVariant&)
-    {
-        oauthToken.set(QString());
         updateAuthState();
         emit stateChanged();
-    })));
+    }));
+    addUIElement(loginButton);
 
     connect(&authServer, &QTcpServer::acceptError, this, [](QAbstractSocket::SocketError socketError)
     {
@@ -168,11 +171,13 @@ void Discord::updateAuthState()
 
     if (isAuthorized())
     {
-        authStateInfo->setName(tr("Authorized"));
+        authStateInfo->setItemProperty("text", tr("Authorized"));
+        loginButton->setItemProperty("text", tr("Logout"));
     }
     else
     {
-        authStateInfo->setName(tr("Not authorized"));
+        authStateInfo->setItemProperty("text", tr("Not authorized"));
+        loginButton->setItemProperty("text", tr("Login"));
     }
 
     emit stateChanged();

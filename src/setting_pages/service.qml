@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import AxelChat.ChatHandler 1.0
 import AxelChat.ChatService 1.0
+import AxelChat.UIElementBridge 1.0
 import "../my_components" as MyComponents
 import "../"
 
@@ -14,7 +15,7 @@ ScrollView {
     contentHeight: column.implicitHeight
     contentWidth: column.implicitWidth
 
-    property var chatService: 0
+    property var chatService: null
     Component.onCompleted: {
         chatService = chatHandler.getServiceAtIndex(Global.windowSettingsServiceIndex)
     }
@@ -108,128 +109,49 @@ ScrollView {
         }
 
         Column {
-            id: parametersColumn
+            id: newElementsColumn
             spacing: 6
         }
 
         Component.onCompleted: {
-            for (var i = 0; i < chatService.getParametersCount(); ++i)
-            {
-                if (!chatService.isParameterHasFlag(i, Global._VisibleParameterFlag)) {
-                    continue
-                }
-
-                var row = Qt.createQmlObject("import QtQuick 2.0; Row { spacing: 6 }", parametersColumn)
-
-                var type = chatService.getParameterType(i)
-                if (type === Global._LineEditParameterType)
-                {
-                    Qt.createQmlObject(
-"
-import QtQuick 2.0
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Material 2.12
-Label {
-    text: chatService.getParameterName(" + String("%1").arg(i) + ") + ':'
-    font.pixelSize: 18
-    anchors.verticalCenter: parent.verticalCenter
-    font.bold: true
-    color: '" + Material.accentColor + "'
-}
-", row)
-
-                    Qt.createQmlObject(
-"
-import QtQuick 2.0
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Material 2.12
-import AxelChat.ChatService 1.0
-import '../my_components' as MyComponents
-Row {
-    spacing: 6
-    MyComponents.MyTextField {
-        id: textField
-        width: 400
-        anchors.verticalCenter: parent.verticalCenter
-        echoMode: chatService.isParameterHasFlag(" + String("%1").arg(i) + ", " + String("%1").arg(Global._PasswordEchoParameterFlag) + ") ? TextInput.Password : TextInput.Normal
-        Component.onCompleted: {
-            text = chatService.getParameterValueString(" + String("%1").arg(i) + ")
-            placeholderText = chatService.getParameterPlaceholder(" + String("%1").arg(i) + ")
-        }
-        onTextChanged: {
-            chatService.setParameterValueString(" + String("%1").arg(i) + ", text)
-        }
-    }
-    Button {
-        highlighted: " + (i == 0 ? "true" : "false") + "
-        anchors.verticalCenter: parent.verticalCenter
-        display: AbstractButton.TextBesideIcon
-        icon.source: 'qrc:/resources/images/clipboard-paste-button.svg'
-        text: '" + qsTr("Paste") + "'
-        onClicked: {
-            if (clipboard.text.length !== 0)
-            {
-                textField.text = clipboard.text;
-                textField.deselect();
+            var Types = {
+                Label: 10,
+                LineEdit: 20,
+                Button: 30,
+                Switch: 32,
             }
-        }
-    }
-}
-", row)
-                }
-                else if (type === Global._ButtonParameterType)
-                {
-                    Qt.createQmlObject(
-"
-import QtQuick 2.0
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Material 2.12
-Button {
-    text: chatService.getParameterName(" + String("%1").arg(i) + ")
-    display: AbstractButton.TextBesideIcon
-    onClicked: {
-        chatService.executeParameterInvoke(" + String("%1").arg(i) + ")
-    }
-}
-", row)
-                }
-                else if (type === Global._LabelParameterType)
-                {
-                    Qt.createQmlObject(
-"
-import QtQuick 2.0
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Material 2.12
-Label {
-    text: chatService.getParameterName(" + String("%1").arg(i) + ")
-    font.pixelSize: 16
-    color: '" + Material.foreground + "'
-}
-", row)
-                }
-                else if (type === Global._SwitchParameterType)
-                {
-                    Qt.createQmlObject(
-"
-import QtQuick 2.0
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Material 2.12
-Switch {
-    text: chatService.getParameterName(" + String("%1").arg(i) + ")
 
-    Component.onCompleted: {
-        checked = chatService.getParameterValueBool(" + String("%1").arg(i) + ")
-    }
+            var container = newElementsColumn
 
-    onCheckedChanged: {
-        chatService.setParameterValueBool(" + String("%1").arg(i) + ", checked)
-    }
-}
-", row)
-                }
-                else
+            var labelComponent = Qt.createComponent("../my_components/BridgedLabel.qml")
+            var lineEditComponent = Qt.createComponent("../my_components/BridgedLineEdit.qml")
+            var buttonComponent = Qt.createComponent("../my_components/BridgedButton.qml")
+            var switchComponent = Qt.createComponent("../my_components/BridgedSwitch.qml")
+
+            for (var i = 0; i < chatService.getUIElementBridgesCount(); ++i)
+            {
+                var type = chatService.getUIElementBridgeType(i)
+                switch (type)
                 {
-                    console.log("Unknown parameter type ", type)
+                case Types.Label:
+                    chatService.bindQmlItem(i, labelComponent.createObject(container))
+                    break
+
+                case Types.LineEdit:
+                    chatService.bindQmlItem(i, lineEditComponent.createObject(container))
+                    break
+
+                case Types.Button:
+                    chatService.bindQmlItem(i, buttonComponent.createObject(container))
+                    break
+
+                case Types.Switch:
+                    chatService.bindQmlItem(i, switchComponent.createObject(container))
+                    break
+
+                default:
+                    console.error("Unknown bridge type ", type)
+                    break
                 }
             }
         }

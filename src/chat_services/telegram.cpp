@@ -19,11 +19,11 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     , showChatTitle(settings_, "show_chat_title", true)
     , allowPrivateChat(settings_, "allow_private_chats", false)
 {
-    getUiElement(stream)->resetFlag(UIElementBridge::Flag::Visible);
+    getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", { UIElementBridge::Flag::PasswordEcho })));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
 
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("1. Create a bot with @BotFather\n"
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("1. Create a bot with @BotFather\n"
                                                 "2. Add the bot to the desired groups or channels\n"
                                                 "3. Give admin rights to the bot in these groups/channels\n"
                                                 "4. Specify your bot token above\n"
@@ -31,13 +31,13 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
                                                 "It is not recommended to use a bot that is already being used for other purposes\n"
                                                 "It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()))));
 
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Create bot with @BotFather"), [](const QVariant&)
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Create bot with @BotFather"), []()
     {
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     })));
 
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showChatTitle, tr("Show chat name when possible"))));
-    uiElements.append(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showChatTitle, tr("Show chat name when possible"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"))));
 
     QObject::connect(&timerRequestUpdates, &QTimer::timeout, this, &Telegram::requestUpdates);
     timerRequestUpdates.start(RequestChatInterval);
@@ -100,9 +100,15 @@ QString Telegram::getStateDescription() const
     return "<unknown_state>";
 }
 
-void Telegram::onUiElementChangedImpl(UIElementBridge &uiElement)
+void Telegram::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
 {
-    Setting<QString>* setting = uiElement.getSettingString();
+    if (!element)
+    {
+        qCritical() << Q_FUNC_INFO << "!element";
+        return;
+    }
+
+    Setting<QString>* setting = element->getSettingString();
     if (!setting)
     {
         return;

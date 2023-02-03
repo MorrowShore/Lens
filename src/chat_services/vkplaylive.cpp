@@ -20,7 +20,7 @@ VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, Q
     , network(network_)
     , socket("https://vkplay.live")
 {
-    getUiElement(stream)->setPlaceholder(tr("Link or channel name..."));
+    getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
