@@ -104,7 +104,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 
 ### Build source for Windows x64
 1. Clone repo or download source
-1. Create file `src/chat_services/apikeys.h` with contents:
+1. Create file `src/secrets.h` with contents:
 ```
 #pragma once
 #define TWITCH_CLIENT_ID "<Paste Twitch client ID here>"

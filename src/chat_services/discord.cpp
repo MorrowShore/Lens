@@ -1,5 +1,5 @@
 #include "discord.h"
-#include "apikeys.h"
+#include "secrets.h"
 #include "string_obfuscator/obfuscator.hpp"
 #include <QDesktopServices>
 #include <QTcpSocket>

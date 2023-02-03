@@ -1,5 +1,5 @@
 #include "trovo.h"
-#include "apikeys.h"
+#include "secrets.h"
 #include "models/message.h"
 #include "models/author.h"
 #include "string_obfuscator/obfuscator.hpp"
