@@ -312,7 +312,7 @@ void Discord::sendIdentify()
 
     const QJsonObject data =
     {
-        { "token", oauthToken.get() },
+        { "token", OBFUSCATE(DISCORD_BOT_TOKEN) },
         { "properties", QJsonObject(
           {
               { "os", QSysInfo::productType() },
@@ -455,6 +455,8 @@ void Discord::revokeToken()
     requestedMeSuccess = false;
 
     updateAuthState();
+
+    reconnect();
 }
 
 void Discord::send(const int opCode, const QJsonValue &data)

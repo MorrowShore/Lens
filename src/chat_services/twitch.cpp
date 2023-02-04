@@ -813,6 +813,8 @@ void Twitch::revokeToken()
     login = QString();
 
     updateAuthState();
+
+    reconnect();
 }
 
 void Twitch::validateToken()
