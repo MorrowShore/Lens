@@ -93,7 +93,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 
 # Build AxelChat from source for Windows 7 and newer, x64
 ### Installing Qt
-1. Download [Open Source Qt online installer](https://www.qt.io/download-qt-installer) or you can also find the offline installers. Use vpn if necessary
+1. Download [Open Source Qt online installer](https://www.qt.io/download-qt-installer) or you can also find the offline installers. Use VPN if necessary
 1. Run Qt installer and login/sign-up if required
 1. While installing select components:
     * Qt / Qt 5.15.x / MinGW x.x.x 64-bit
