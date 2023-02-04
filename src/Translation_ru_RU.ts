@@ -887,10 +887,9 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation>Вошёл как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="778"/>
         <source>Login to display avatars</source>
         <oldsource>Log in to display avatars</oldsource>
-        <translation>Для отображения аватарок войдите</translation>
+        <translation type="vanished">Для отображения аватарок войдите</translation>
     </message>
     <message>
         <location filename="chat_services/twitch.cpp" line="44"/>
@@ -925,6 +924,11 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <location filename="chat_services/twitch.cpp" line="255"/>
         <source>Now you can close the page and return to %1</source>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="778"/>
+        <source>Login for full functionality</source>
+        <translation>Для полноценной работы войдите</translation>
     </message>
     <message>
         <source>Not logged in</source>

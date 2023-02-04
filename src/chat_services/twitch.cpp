@@ -775,7 +775,7 @@ void Twitch::updateAuthState()
     }
     else
     {
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Login to display avatars"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Login for full functionality"));
         loginButton->setItemProperty("text", tr("Login"));
     }
 
