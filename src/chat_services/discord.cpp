@@ -212,7 +212,7 @@ void Discord::reconnectImpl()
 
 void Discord::onWebSocketReceived(const QString &rawData)
 {
-    qDebug("\nreceived:\n" + rawData.toUtf8() + "\n");
+    qDebug("received:\n" + rawData.toUtf8() + "\n");
 
     if (!enabled.get())
     {
@@ -414,7 +414,7 @@ void Discord::send(const int opCode, const QJsonValue &data)
         { "d", data },
     };
 
-    qDebug("\nsend:\n" + QJsonDocument(message).toJson() + "\n");
+    qDebug("send:\n" + QJsonDocument(message).toJson() + "\n");
 
     socket.sendTextMessage(QString::fromUtf8(QJsonDocument(message).toJson()));
 }
