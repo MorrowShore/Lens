@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QSysInfo>
 
 namespace
 {
@@ -13,7 +14,10 @@ static const QString ClientID = OBFUSCATE(DISCORD_CLIENT_ID);
 static const int ServerPort = 8356;
 
 static const int ReconncectPeriod = 3 * 1000;
+
+static const int DispatchOpCode = 0;
 static const int HeartbeatOpCode = 1;
+static const int IdentifyOpCode = 2;
 static const int HelloOpCode = 10;
 static const int HeartAckbeatOpCode = 11;
 
@@ -37,8 +41,6 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&channel, tr("Channel"), "https://discord.com/channels/12345/678910")));
-
     addUIElement(authStateInfo);
 
     loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
@@ -49,7 +51,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
         }
         else
         {
-            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=messages.read").arg(ClientID)));
+            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=guilds%20messages.read").arg(ClientID)));
         }
 
         updateAuthState();
@@ -117,7 +119,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
@@ -253,13 +255,17 @@ void Discord::onWebSocketReceived(const QString &rawData)
         const QJsonValue s = root.value("s");
         if (!s.isNull())
         {
-            info.lastSequenceNumber = s;
+            info.lastSequence = s;
         }
     }
 
     const int opCode = root.value("op").toInt();
 
-    if (opCode == HelloOpCode)
+    if (opCode == DispatchOpCode)
+    {
+        parseDispatch(root.value("t").toString(), root.value("d").toObject());
+    }
+    else if (opCode == HelloOpCode)
     {
         parseHello(root.value("d").toObject());
     }
@@ -285,13 +291,31 @@ void Discord::sendHeartbeat()
         return;
     }
 
+    send(HeartbeatOpCode, info.lastSequence);
+}
+
+void Discord::sendIdentify()
+{
+    if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+    {
+        return;
+    }
+
     const QJsonObject data =
     {
-        { "op", QJsonValue(HeartbeatOpCode) },
-        { "d", info.lastSequenceNumber  },
+        { "token", QString(OBFUSCATE(DISCORD_BOT_TOKEN)) }, //oauthToken.get() },
+        { "properties", QJsonObject(
+          {
+              { "os", QSysInfo::productType() },
+              { "browser", QCoreApplication::applicationName() },
+              { "device", QCoreApplication::applicationName() },
+          })
+        },
+
+        { "intents", 1024 },
     };
 
-    send(data);
+    send(IdentifyOpCode, data);
 }
 
 bool Discord::isAuthorized() const
@@ -330,11 +354,17 @@ void Discord::processDisconnected()
     }
 }
 
-void Discord::send(const QJsonObject &data)
+void Discord::send(const int opCode, const QJsonValue &data)
 {
-    qDebug("\nsend:\n" + QJsonDocument(data).toJson() + "\n");
+    QJsonObject message =
+    {
+        { "op", opCode},
+        { "d", data },
+    };
 
-    socket.sendTextMessage(QString::fromUtf8(QJsonDocument(data).toJson()));
+    qDebug("\nsend:\n" + QJsonDocument(message).toJson() + "\n");
+
+    socket.sendTextMessage(QString::fromUtf8(QJsonDocument(message).toJson()));
 }
 
 void Discord::parseHello(const QJsonObject &data)
@@ -347,4 +377,20 @@ void Discord::parseHello(const QJsonObject &data)
 
     heartbeatTimer.setInterval(info.heartbeatInterval);
     heartbeatTimer.start();
+
+    sendHeartbeat();
+
+    sendIdentify();
+}
+
+void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
+{
+    if (eventType == "READY")
+    {
+
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unkown event type" << eventType;
+    }
 }

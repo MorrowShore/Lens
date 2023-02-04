@@ -20,19 +20,22 @@ protected:
 private slots:
     void onWebSocketReceived(const QString& rawData);
     void sendHeartbeat();
+    void sendIdentify();
 
 private:
     bool isAuthorized() const;
     void updateAuthState();
     void processDisconnected();
 
-    void send(const QJsonObject& data);
+    void send(const int opCode, const QJsonValue& data);
+
     void parseHello(const QJsonObject& data);
+    void parseDispatch(const QString& eventType, const QJsonObject& data);
 
     struct Info
     {
         int heartbeatInterval = 30000;
-        QJsonValue  lastSequenceNumber;
+        QJsonValue lastSequence;
     };
 
     QSettings& settings;
