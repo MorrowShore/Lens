@@ -384,18 +384,23 @@
         <translation type="vanished">Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="45"/>
-        <location filename="chat_services/discord.cpp" line="305"/>
+        <location filename="chat_services/discord.cpp" line="65"/>
+        <location filename="chat_services/discord.cpp" line="337"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="299"/>
+        <location filename="chat_services/discord.cpp" line="325"/>
         <source>Authorized</source>
         <translation>Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="300"/>
+        <location filename="chat_services/discord.cpp" line="328"/>
+        <source>Authorized as %1</source>
+        <translation>Авторизован как %1</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="332"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -404,34 +409,34 @@
         <translation type="vanished">Ошибка, повторите попытку или сообщите разработчику о проблеме</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="183"/>
+        <location filename="chat_services/discord.cpp" line="209"/>
         <source>Now you can close the page and return to %1</source>
         <oldsource>You can close the page and return to %1</oldsource>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="144"/>
-        <location filename="chat_services/discord.cpp" line="304"/>
+        <location filename="chat_services/discord.cpp" line="169"/>
+        <location filename="chat_services/discord.cpp" line="336"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="152"/>
+        <location filename="chat_services/discord.cpp" line="177"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="155"/>
+        <location filename="chat_services/discord.cpp" line="180"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="158"/>
+        <location filename="chat_services/discord.cpp" line="183"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="161"/>
+        <location filename="chat_services/discord.cpp" line="186"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -590,7 +595,7 @@
     <message>
         <location filename="tcpreply.h" line="17"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
 </context>
 <context>
@@ -827,7 +832,7 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="chat_services/twitch.cpp" line="78"/>
+        <location filename="chat_services/twitch.cpp" line="40"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
@@ -847,12 +852,12 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation type="vanished">Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="174"/>
+        <location filename="chat_services/twitch.cpp" line="136"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="255"/>
+        <location filename="chat_services/twitch.cpp" line="217"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -861,24 +866,24 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation type="vanished">OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="77"/>
+        <location filename="chat_services/twitch.cpp" line="39"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="811"/>
+        <location filename="chat_services/twitch.cpp" line="773"/>
         <source>Logged in as %1</source>
         <translation>Вошёл как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="816"/>
+        <location filename="chat_services/twitch.cpp" line="778"/>
         <source>Login to display avatars</source>
         <oldsource>Log in to display avatars</oldsource>
         <translation>Для отображения аватарок войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="82"/>
-        <location filename="chat_services/twitch.cpp" line="817"/>
+        <location filename="chat_services/twitch.cpp" line="44"/>
+        <location filename="chat_services/twitch.cpp" line="779"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
@@ -891,22 +896,22 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="257"/>
+        <location filename="chat_services/twitch.cpp" line="219"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="260"/>
+        <location filename="chat_services/twitch.cpp" line="222"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="263"/>
+        <location filename="chat_services/twitch.cpp" line="225"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="293"/>
+        <location filename="chat_services/twitch.cpp" line="255"/>
         <source>Now you can close the page and return to %1</source>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
@@ -919,7 +924,7 @@ It is not recommended to run more than one %1 with the same bot</oldsource>
         <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="812"/>
+        <location filename="chat_services/twitch.cpp" line="774"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>

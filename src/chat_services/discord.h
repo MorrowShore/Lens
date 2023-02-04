@@ -52,6 +52,7 @@ private:
 
     Setting<QString> oauthToken;
     bool requestedMeSuccess = false;
+    QString userName;
 
     QWebSocket socket;
 

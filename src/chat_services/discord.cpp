@@ -11,7 +11,6 @@ namespace
 {
 
 static const QString ClientID = OBFUSCATE(DISCORD_CLIENT_ID);
-static const int ServerPort = 8356;
 
 static const int ReconncectPeriod = 3 * 1000;
 
@@ -20,6 +19,27 @@ static const int HeartbeatOpCode = 1;
 static const int IdentifyOpCode = 2;
 static const int HelloOpCode = 10;
 static const int HeartAckbeatOpCode = 11;
+
+// https://discord.com/developers/docs/topics/gateway#gateway-intents
+static const int INTENT_GUILDS = 1 << 0;
+static const int INTENT_GUILD_MEMBERS = 1 << 1;
+static const int INTENT_GUILD_MODERATION = 1 << 2;
+static const int INTENT_GUILD_EMOJIS_AND_STICKERS = 1 << 3;
+static const int INTENT_GUILD_INTEGRATIONS = 1 << 4;
+static const int INTENT_GUILD_WEBHOOKS = 1 << 5;
+static const int INTENT_GUILD_INVITES = 1 << 6;
+static const int INTENT_GUILD_VOICE_STATES = 1 << 7;
+static const int INTENT_GUILD_PRESENCES = 1 << 8;
+static const int INTENT_GUILD_MESSAGES = 1 << 9;
+static const int INTENT_GUILD_MESSAGE_REACTIONS = 1 << 10;
+static const int INTENT_GUILD_MESSAGE_TYPING = 1 << 11;
+static const int INTENT_DIRECT_MESSAGES = 1 << 12;
+static const int INTENT_DIRECT_MESSAGE_REACTIONS = 1 << 13;
+static const int INTENT_DIRECT_MESSAGE_TYPING = 1 << 14;
+static const int INTENT_MESSAGE_CONTENT = 1 << 15;
+static const int INTENT_GUILD_SCHEDULED_EVENTS = 1 << 16;
+static const int INTENT_AUTO_MODERATION_CONFIGURATION = 1 << 20;
+static const int INTENT_AUTO_MODERATION_EXECUTION = 1 << 21;
 
 static const QByteArray makeHttpResponse(const QByteArray& data)
 {
@@ -50,7 +70,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
         }
         else
         {
-            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/v10/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&&response_type=code&scope=guilds%20messages.read").arg(ClientID)));
+            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/v10/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&&response_type=code&scope=messages.read%20guilds%20identify").arg(ClientID)));
         }
 
         updateAuthState();
@@ -206,8 +226,30 @@ void Discord::reconnectImpl()
         return;
     }
 
-    socket.setProxy(network.proxy());
-    socket.open(QUrl("wss://gateway.discord.gg/?v=10&encoding=json"));
+    QNetworkReply* reply = network.get(QNetworkRequest(QUrl("https://discord.com/api/v10/gateway")));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QByteArray data = reply->readAll();
+        reply->deleteLater();
+
+        QString url = QJsonDocument::fromJson(data).object().value("url").toString();
+        if (url.isEmpty())
+        {
+
+        }
+        else
+        {
+            if (url.back() != '/')
+            {
+                url += '/';
+            }
+
+            url += "?v=10&encoding=json";
+
+            socket.setProxy(network.proxy());
+            socket.open(QUrl(url));
+        }
+    });
 }
 
 void Discord::onWebSocketReceived(const QString &rawData)
@@ -266,7 +308,7 @@ void Discord::sendHeartbeat()
 
 void Discord::sendIdentify()
 {
-    if (socket.state() != QAbstractSocket::SocketState::ConnectedState || oauthToken.get().isEmpty())
+    if (!isAuthorized() || socket.state() != QAbstractSocket::SocketState::ConnectedState)
     {
         return;
     }
@@ -282,7 +324,7 @@ void Discord::sendIdentify()
           })
         },
 
-        { "intents", 1024 },
+        { "intents", INTENT_GUILD_MESSAGES },
     };
 
     send(IdentifyOpCode, data);
@@ -302,7 +344,13 @@ void Discord::updateAuthState()
 
     if (isAuthorized())
     {
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Authorized"));
+        QString text = tr("Authorized");
+        if (!userName.isEmpty())
+        {
+            text = tr("Authorized as %1").arg("<b>" + userName + "</b>");
+        }
+
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text);
         loginButton->setItemProperty("text", tr("Logout"));
     }
     else
@@ -373,6 +421,11 @@ void Discord::requestMe()
             revokeToken();
         }
 
+        if (root.contains("user"))
+        {
+            userName = root.value("user").toObject().value("username").toString();
+        }
+
         updateAuthState();
     });
 }
@@ -401,6 +454,7 @@ void Discord::revokeToken()
     }
 
     oauthToken.set(QString());
+    userName = QString();
     requestedMeSuccess = false;
 
     updateAuthState();
@@ -432,7 +486,7 @@ void Discord::parseHello(const QJsonObject &data)
 
     sendHeartbeat();
 
-    //sendIdentify();
+    sendIdentify();
 }
 
 void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
