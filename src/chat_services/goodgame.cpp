@@ -44,6 +44,7 @@ GoodGame::GoodGame(QSettings& settings_, const QString& settingsGroupPath, QNetw
     , settings(settings_)
     , network(network_)
 {
+    getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)

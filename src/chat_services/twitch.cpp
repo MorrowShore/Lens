@@ -18,11 +18,8 @@ namespace
 
 static const QByteArray AcceptLanguageNetworkHeaderName = ""; // "en-US;q=0.5,en;q=0.3";
 
-static const QString RedirectUri = "https://twitchapps.com/tmi/";//"https://localhost";
 static const QString TwitchIRCHost = "tmi.twitch.tv";
-
 static const QString FolderLogs = "logs_twitch";
-
 static const QString ClientID = OBFUSCATE(TWITCH_CLIENT_ID);
 
 static const int ReconncectPeriod = 3 * 1000;
@@ -63,17 +60,32 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
   : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Twitch, parent)
   , settings(settings_)
   , network(network_)
+  , authStateInfo(UIElementBridge::createLabel("Loading..."))
   , oauthToken(Setting<QString>(settings, settingsGroupPath + "/oauth_token"))
 {
+    getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("To display avatars and complete work, specify the OAuth-token:"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&oauthToken, tr("OAuth token"), "...", true)));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("Login to display avatars"))));
+    addUIElement(authStateInfo);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Get token"), [this]()
+    loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
     {
-        QDesktopServices::openUrl(requesGetAOuthTokenUrl());
-    })));
+        if (isAuthorized())
+        {
+            oauthToken.set(QString());
+        }
+        else
+        {
+            QDesktopServices::openUrl(QUrl("https://id.twitch.tv/oauth2/authorize?client_id=" + QString(ClientID)
+                                + "&redirect_uri=" + getRedirectUri()
+                                + "&response_type=code"
+                                + "&scope=openid+chat:read"));
+        }
+
+        updateAuthState();
+    }));
+    addUIElement(loginButton);
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
@@ -125,7 +137,7 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
             return;
         }
 
-        if (!state.connected && !oauthToken.get().isEmpty())
+        if (!state.connected && !isAuthorized())
         {
             reconnect();
         }
@@ -200,6 +212,8 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
     requestForGlobalBadges();
+
+    updateAuthState();
 }
 
 ChatService::ConnectionStateType Twitch::getConnectionStateType() const
@@ -208,7 +222,7 @@ ChatService::ConnectionStateType Twitch::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (enabled.get() && !oauthToken.get().isEmpty() && !state.streamId.isEmpty())
+    else if (enabled.get() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -225,12 +239,6 @@ QString Twitch::getStateDescription() const
         {
             return tr("Channel not specified");
         }
-
-        if (oauthToken.get().isEmpty())
-        {
-            return tr("OAuth token not specified");
-        }
-
         return tr("Not connected");
 
     case ConnectionStateType::Connecting:
@@ -244,12 +252,24 @@ QString Twitch::getStateDescription() const
     return "<unknown_state>";
 }
 
-QUrl Twitch::requesGetAOuthTokenUrl() const
+TcpReply Twitch::processTcpRequest(const TcpRequest &request)
 {
-    return QUrl("https://id.twitch.tv/oauth2/authorize?client_id=" + QString(ClientID)
-                        + "&redirect_uri=" + RedirectUri
-                        + "&response_type=token"
-                        + "&scope=openid+chat:read");
+    const QString path = request.getUrl().path().toLower();
+
+    if (path == "/auth_code")
+    {
+        const QString code = request.getUrlQuery().queryItemValue("code");
+        if (code.isEmpty())
+        {
+            return TcpReply::createTextHtmlOK("Error: code is empty");
+        }
+
+        requestOAuthToken(code);
+
+        return TcpReply::createTextHtmlOK(tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName()));
+    }
+
+    return TcpReply::createTextHtmlOK("Unknown path");
 }
 
 void Twitch::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
@@ -264,18 +284,6 @@ void Twitch::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> eleme
     if (!setting)
     {
         return;
-    }
-
-    if (*&setting == &oauthToken)
-    {
-        QString token = setting->get();
-        if (token.startsWith("oauth:", Qt::CaseSensitivity::CaseInsensitive))
-        {
-            token = token.mid(6);
-            setting->set(token);
-        }
-
-        reconnect();
     }
 }
 
@@ -705,6 +713,34 @@ void Twitch::onReplyBadges()
     parseBadgesJson(data);
 }
 
+void Twitch::requestOAuthToken(const QString &code)
+{
+    QNetworkRequest request(QUrl("https://id.twitch.tv/oauth2/token"));
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+    QNetworkReply* reply = network.post(request,
+                                        ("client_id=" + ClientID +
+                                        "&client_secret=" + OBFUSCATE(TWITCH_SECRET) +
+                                        "&code=" + code +
+                                        "&grant_type=authorization_code"
+                                        "&redirect_uri=" + getRedirectUri()).toUtf8());
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
+
+        const QString token = root.value("access_token").toString();
+        if (token.isEmpty())
+        {
+            qCritical() << Q_FUNC_INFO << "token ith empty";
+            return;
+        }
+
+        oauthToken.set(token);
+        updateAuthState();
+    });
+}
+
 void Twitch::parseBadgesJson(const QByteArray &data)
 {
     if (data.isEmpty())
@@ -731,8 +767,39 @@ void Twitch::parseBadgesJson(const QByteArray &data)
     }
 }
 
+void Twitch::updateAuthState()
+{
+    if (!authStateInfo)
+    {
+        qCritical() << Q_FUNC_INFO << "!authStateInfo";
+    }
+
+    if (isAuthorized())
+    {
+        authStateInfo->setItemProperty("text", tr("Authorized"));
+        loginButton->setItemProperty("text", tr("Logout"));
+    }
+    else
+    {
+        authStateInfo->setItemProperty("text", tr("Not authorized"));
+        loginButton->setItemProperty("text", tr("Login"));
+    }
+
+    emit stateChanged();
+}
+
+QString Twitch::getRedirectUri() const
+{
+    return "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
+}
+
 void Twitch::requestUserInfo(const QString& login)
 {
+    if (!isAuthorized())
+    {
+        return;
+    }
+
     QNetworkRequest request(QString("https://api.twitch.tv/helix/users?login=%1").arg(login));
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
@@ -789,11 +856,17 @@ void Twitch::onReplyUserInfo()
 
 void Twitch::requestStreamInfo(const QString &login)
 {
+    if (!isAuthorized())
+    {
+        return;
+    }
+
     QNetworkRequest request(QString("https://api.twitch.tv/helix/streams?user_login=%1").arg(login));
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     request.setRawHeader("Authorization", QByteArray("Bearer ") + oauthToken.get().toUtf8());
+
     QNetworkReply* reply = network.get(request);
     if (!reply)
     {
@@ -843,5 +916,10 @@ void Twitch::onReplyStreamInfo()
         state.viewersCount = -1;
         emit stateChanged();
     }
+}
+
+bool Twitch::isAuthorized() const
+{
+    return !oauthToken.get().trimmed().isEmpty();
 }
 

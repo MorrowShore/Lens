@@ -4,6 +4,9 @@
 #include "setting.h"
 #include "chatservicestypes.h"
 #include "uielementbridge.h"
+#include "tcprequest.h"
+#include "tcpreply.h"
+#include "tcpserver.h"
 #include "models/author.h"
 #include <QSettings>
 #include <QObject>
@@ -63,6 +66,7 @@ public:
 
     virtual ConnectionStateType getConnectionStateType() const = 0;
     virtual QString getStateDescription() const  = 0;
+    virtual TcpReply processTcpRequest(const TcpRequest& request);
     AxelChat::ServiceType getServiceType() const;
 
     void reconnect();

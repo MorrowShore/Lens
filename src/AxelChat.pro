@@ -14,6 +14,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    tcpreply.h \
+    tcprequest.h \
     chat_services/chatservice.h \
     chat_services/chatservicestypes.h \
     chat_services/discord.h \
@@ -42,6 +44,7 @@ HEADERS += \
     setting.h \
     string_obfuscator/meta_random.hpp \
     string_obfuscator/obfuscator.hpp \
+    tcpserver.h \
     tray.h \
     uielementbridge.h \
     utils.h \
@@ -71,6 +74,7 @@ SOURCES += \
         main.cpp \
         outputtofile.cpp \
         qmlutils.cpp \
+        tcpserver.cpp \
         tray.cpp \
         uielementbridge.cpp \
         websocket.cpp

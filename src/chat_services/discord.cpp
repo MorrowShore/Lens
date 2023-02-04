@@ -37,7 +37,6 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     , network(network_)
     , authStateInfo(UIElementBridge::createLabel("Loading..."))
     , oauthToken(settings_, settingsGroupPath + "/oauth_token")
-    , channel(settings_, settingsGroupPath + "/channel")
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
@@ -51,68 +50,12 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
         }
         else
         {
-            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356&response_type=code&scope=guilds%20messages.read").arg(ClientID)));
+            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&&response_type=code&scope=guilds%20messages.read").arg(ClientID)));
         }
 
         updateAuthState();
-        emit stateChanged();
     }));
     addUIElement(loginButton);
-
-    connect(&authServer, &QTcpServer::acceptError, this, [](QAbstractSocket::SocketError socketError)
-    {
-        qWarning() << Q_FUNC_INFO << "server error:" << socketError;
-    });
-
-    if (!authServer.listen(QHostAddress::Any, ServerPort))
-    {
-        qCritical() << Q_FUNC_INFO << "server: failed to listen port";
-    }
-
-    connect(&authServer, &QTcpServer::newConnection, this, [this]()
-    {
-        QTcpSocket* socket = authServer.nextPendingConnection();
-        if (!socket)
-        {
-            qWarning() << Q_FUNC_INFO << "socket is null";
-            return;
-        }
-
-        connect(socket, &QTcpSocket::readyRead, this, [this, socket]()
-        {
-            const QByteArray data = socket->readAll();
-            if (data.startsWith("GET /?code="))
-            {
-                static const QRegExp rx("GET /\\?code=([a-zA-Z0-9_\\-]+)");
-                if (rx.indexIn(data) != -1)
-                {
-                    const QString code = rx.cap(1).trimmed();
-
-                    oauthToken.set(code);
-
-                    if (code.isEmpty())
-                    {
-                        qWarning() << Q_FUNC_INFO << "socket code is mepty";
-
-                        socket->write(makeHttpResponse(QString("<html><body><h1>%1</h1></body></html>").arg(
-                                                           tr("Error, please try again or report the problem to the developer")).toUtf8()));
-                    }
-                    else
-                    {
-                        socket->write(makeHttpResponse(QString("<html><body><h1>%1</h1></body></html>").arg(
-                                                           tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName())).toUtf8()));
-                    }
-
-                    updateAuthState();
-                    emit stateChanged();
-                }
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << "socket unknown received data";
-            }
-        });
-    });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Discord::onWebSocketReceived);
 
@@ -220,6 +163,27 @@ QString Discord::getStateDescription() const
     }
 
     return "<unknown_state>";
+}
+
+TcpReply Discord::processTcpRequest(const TcpRequest &request)
+{
+    const QString path = request.getUrl().path().toLower();
+
+    if (path == "/auth_code")
+    {
+        const QString code = request.getUrlQuery().queryItemValue("code");
+        if (code.isEmpty())
+        {
+            return TcpReply::createTextHtmlOK("Error: code is empty");
+        }
+
+        oauthToken.set(code);
+        updateAuthState();
+
+        return TcpReply::createTextHtmlOK(tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName()));
+    }
+
+    return TcpReply::createTextHtmlOK("Unknown path");
 }
 
 void Discord::reconnectImpl()

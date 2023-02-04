@@ -11,15 +11,13 @@
 class Twitch : public ChatService
 {
     Q_OBJECT
-    Q_PROPERTY(QUrl     requesGetAOuthTokenUrl      READ requesGetAOuthTokenUrl     CONSTANT)
 
 public:
     explicit Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-
-    QUrl requesGetAOuthTokenUrl() const;
+    TcpReply processTcpRequest(const TcpRequest &request) override;
 
 signals:
 
@@ -37,6 +35,8 @@ private slots:
     void requestForChannelBadges(const QString& broadcasterId);
     void onReplyBadges();
 
+    void requestOAuthToken(const QString& code);
+
     void requestUserInfo(const QString& login);
     void onReplyUserInfo();
 
@@ -44,7 +44,10 @@ private slots:
     void onReplyStreamInfo();
 
 private:
+    bool isAuthorized() const;
     void parseBadgesJson(const QByteArray& data);
+    void updateAuthState();
+    QString getRedirectUri() const;
 
     struct MessageEmoteInfo
     {
@@ -61,6 +64,9 @@ private:
     QNetworkAccessManager& network;
 
     QWebSocket socket;
+
+    std::shared_ptr<UIElementBridge> authStateInfo;
+    std::shared_ptr<UIElementBridge> loginButton;
 
     Setting<QString> oauthToken;
 

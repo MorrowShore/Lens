@@ -36,6 +36,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     , bot(settings, SettingsGroupPath + "/chat_bot")
     , authorQMLProvider(*this, messagesModel, outputToFile)
     , webSocket(*this)
+    , tcpServer(services)
 {
     connect(&outputToFile, &OutputToFile::authorNameChanged, this, &ChatHandler::onAuthorNameChanged);
 

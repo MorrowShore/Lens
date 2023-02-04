@@ -1,7 +1,6 @@
 #pragma once
 
 #include "chatservice.h"
-#include <QTcpServer>
 #include <QWebSocket>
 #include <QTimer>
 
@@ -13,6 +12,7 @@ public:
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
+    TcpReply processTcpRequest(const TcpRequest &request) override;
 
 protected:
     void reconnectImpl() override;
@@ -41,15 +41,12 @@ private:
     QSettings& settings;
     QNetworkAccessManager& network;
 
-    QTcpServer authServer;
-
     Info info;
 
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> loginButton;
 
     Setting<QString> oauthToken;
-    Setting<QString> channel;
 
     QWebSocket socket;
 

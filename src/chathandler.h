@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "authorqmlprovider.h"
 #include "websocket.h"
+#include "tcpserver.h"
 #include <QSettings>
 #include <QMap>
 #include <QDateTime>
@@ -142,5 +143,7 @@ private:
 
     bool _enabledProxy = false;
     QNetworkProxy _proxy = QNetworkProxy(QNetworkProxy::ProxyType::Socks5Proxy/*HttpProxy*/);
+
+    TcpServer tcpServer;
 };
 

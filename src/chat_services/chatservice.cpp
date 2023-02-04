@@ -1,4 +1,5 @@
 #include "chatservice.h"
+#include "tcpserver.h"
 
 ChatService::ChatService(QSettings& settings, const QString& settingsGroupPath, AxelChat::ServiceType serviceType_, QObject *parent)
     : QObject(parent)
@@ -84,6 +85,13 @@ QUrl ChatService::getControlPanelUrl() const
 QUrl ChatService::getStreamUrl() const
 {
     return state.streamUrl;
+}
+
+TcpReply ChatService::processTcpRequest(const TcpRequest&)
+{
+    qCritical() << Q_FUNC_INFO << "not implemented for" << getServiceTypeId(getServiceType());
+
+    return TcpReply::createTextHtmlOK(QString("Not implemented for %1 (%2)").arg(getName(), getServiceTypeId(getServiceType())));
 }
 
 AxelChat::ServiceType ChatService::getServiceType() const
