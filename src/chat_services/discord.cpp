@@ -122,6 +122,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     timerValidateToken.setInterval(60 * 60 * 1000);
     timerValidateToken.start();
 
+    requestMe();
     updateAuthState();
 
     reconnect();
@@ -301,12 +302,12 @@ void Discord::updateAuthState()
 
     if (isAuthorized())
     {
-        authStateInfo->setItemProperty("text", tr("Authorized"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Authorized"));
         loginButton->setItemProperty("text", tr("Logout"));
     }
     else
     {
-        authStateInfo->setItemProperty("text", tr("Not authorized"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Not authorized"));
         loginButton->setItemProperty("text", tr("Login"));
     }
 

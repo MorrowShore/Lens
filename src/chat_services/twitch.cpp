@@ -770,12 +770,12 @@ void Twitch::updateAuthState()
 
     if (isAuthorized())
     {
-        authStateInfo->setItemProperty("text", tr("Logged in as %1").arg(login));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg(login));
         loginButton->setItemProperty("text", tr("Logout"));
     }
     else
     {
-        authStateInfo->setItemProperty("text", tr("Login to display avatars"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Login to display avatars"));
         loginButton->setItemProperty("text", tr("Login"));
     }
 
