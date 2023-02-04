@@ -46,7 +46,7 @@ TcpServer::TcpServer(QList<ChatService*>& services_, QObject *parent)
                 }
                 else
                 {
-                    socket->write(TcpReply::createTextHtmlOK("Bad header").getData());
+                    socket->write(TcpReply::createTextHtmlError("Bad header").getData());
                     qWarning() << Q_FUNC_INFO << "bad header";
                     return;
                 }
@@ -73,13 +73,13 @@ TcpServer::TcpServer(QList<ChatService*>& services_, QObject *parent)
                     if (!found)
                     {
                         qWarning() << Q_FUNC_INFO << "service id" << serviceId << "not found";
-                        socket->write(TcpReply::createTextHtmlOK(QString("Service id \"%1\" not found").arg(serviceId)).getData());
+                        socket->write(TcpReply::createTextHtmlError(QString("Service id \"%1\" not found").arg(serviceId)).getData());
                     }
                 }
                 else
                 {
                     qWarning() << Q_FUNC_INFO << "unknown chat_service url";
-                    socket->write(TcpReply::createTextHtmlOK("Unknown chat_service url").getData());
+                    socket->write(TcpReply::createTextHtmlError("Unknown chat_service url").getData());
                 }
             }
             else if (url == "/favicon.ico")
@@ -89,7 +89,7 @@ TcpServer::TcpServer(QList<ChatService*>& services_, QObject *parent)
             else
             {
                 qWarning() << Q_FUNC_INFO << "unknown root url";
-                socket->write(TcpReply::createTextHtmlOK("Unknown root url").getData());
+                socket->write(TcpReply::createTextHtmlError("Unknown root url").getData());
             }
         });
     });

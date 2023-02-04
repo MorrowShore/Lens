@@ -43,11 +43,16 @@ private slots:
     void requestStreamInfo(const QString& login);
     void onReplyStreamInfo();
 
+    void validateToken();
+
 private:
+    bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
+
     bool isAuthorized() const;
     void parseBadgesJson(const QByteArray& data);
     void updateAuthState();
     QString getRedirectUri() const;
+    void revokeToken();
 
     struct MessageEmoteInfo
     {
@@ -69,6 +74,7 @@ private:
     std::shared_ptr<UIElementBridge> loginButton;
 
     Setting<QString> oauthToken;
+    QString login;
 
     QString lastConnectedChannelName;
 
@@ -77,6 +83,7 @@ private:
     QTimer timerCheckPong;
 
     QTimer timerUpdaetStreamInfo;
+    QTimer timerValidateToken;
 
     QSet<QString> usersInfoUpdated;
     QHash<QString, QString> badgesUrls;

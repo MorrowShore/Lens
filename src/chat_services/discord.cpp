@@ -174,7 +174,7 @@ TcpReply Discord::processTcpRequest(const TcpRequest &request)
         const QString code = request.getUrlQuery().queryItemValue("code");
         if (code.isEmpty())
         {
-            return TcpReply::createTextHtmlOK("Error: code is empty");
+            return TcpReply::createTextHtmlError("Code is empty");
         }
 
         oauthToken.set(code);
@@ -183,7 +183,7 @@ TcpReply Discord::processTcpRequest(const TcpRequest &request)
         return TcpReply::createTextHtmlOK(tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName()));
     }
 
-    return TcpReply::createTextHtmlOK("Unknown path");
+    return TcpReply::createTextHtmlError("Unknown path");
 }
 
 void Discord::reconnectImpl()

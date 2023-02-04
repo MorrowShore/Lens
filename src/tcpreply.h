@@ -2,6 +2,7 @@
 
 #include <QUrl>
 #include <QByteArray>
+#include <QTranslator>
 
 class TcpReply
 {
@@ -9,6 +10,11 @@ public:
     static TcpReply createTextHtmlOK(const QString& text)
     {
         return TcpReply(QString("<html><body><h1>%1</h1></body></html>").arg(text).toUtf8());
+    }
+
+    static TcpReply createTextHtmlError(const QString& text)
+    {
+        return TcpReply(QString("<html><body><h1 style=\"color:red;\">%1</h1></body></html>").arg(QTranslator::tr("Error") + ": " + text).toUtf8());
     }
 
     const QByteArray getData() const

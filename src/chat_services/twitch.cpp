@@ -27,33 +27,6 @@ static const int PingPeriod = 60 * 1000;
 static const int PongTimeout = 5 * 1000;
 static const int UpdateStreamInfoPeriod = 10 * 1000;
 
-static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
-{
-    resultData.clear();
-
-    if (!reply)
-    {
-        qWarning() << tag << ": !reply";
-        return false;
-    }
-
-    resultData = reply->readAll();
-    if (resultData.isEmpty())
-    {
-        qWarning() << tag << ": data is empty";
-        return false;
-    }
-
-    const QJsonObject root = QJsonDocument::fromJson(resultData).object();
-    if (root.contains("error"))
-    {
-        qWarning() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
-        return false;
-    }
-
-    return true;
-}
-
 }
 
 Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
@@ -66,14 +39,13 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("Login to display avatars"))));
     addUIElement(authStateInfo);
 
     loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
     {
         if (isAuthorized())
         {
-            oauthToken.set(QString());
+            revokeToken();
         }
         else
         {
@@ -211,9 +183,14 @@ Twitch::Twitch(QSettings& settings_, const QString& settingsGroupPath, QNetworkA
     });
     timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
+    QObject::connect(&timerValidateToken, &QTimer::timeout, this, &Twitch::validateToken);
+    timerValidateToken.setInterval(60 * 60 * 1000);
+    timerValidateToken.start();
+
     requestForGlobalBadges();
 
     updateAuthState();
+    validateToken();
 }
 
 ChatService::ConnectionStateType Twitch::getConnectionStateType() const
@@ -259,9 +236,18 @@ TcpReply Twitch::processTcpRequest(const TcpRequest &request)
     if (path == "/auth_code")
     {
         const QString code = request.getUrlQuery().queryItemValue("code");
+        const QString errorDescription = request.getUrlQuery().queryItemValue("error_description").replace('+', ' ');
+
         if (code.isEmpty())
         {
-            return TcpReply::createTextHtmlOK("Error: code is empty");
+            if (errorDescription.isEmpty())
+            {
+                return TcpReply::createTextHtmlError("Code is empty");
+            }
+            else
+            {
+                return TcpReply::createTextHtmlError(errorDescription);
+            }
         }
 
         requestOAuthToken(code);
@@ -269,7 +255,7 @@ TcpReply Twitch::processTcpRequest(const TcpRequest &request)
         return TcpReply::createTextHtmlOK(tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName()));
     }
 
-    return TcpReply::createTextHtmlOK("Unknown path");
+    return TcpReply::createTextHtmlError("Unknown path");
 }
 
 void Twitch::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
@@ -727,7 +713,15 @@ void Twitch::requestOAuthToken(const QString &code)
 
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
 
         const QString token = root.value("access_token").toString();
         if (token.isEmpty())
@@ -737,7 +731,7 @@ void Twitch::requestOAuthToken(const QString &code)
         }
 
         oauthToken.set(token);
-        updateAuthState();
+        validateToken();
     });
 }
 
@@ -776,12 +770,12 @@ void Twitch::updateAuthState()
 
     if (isAuthorized())
     {
-        authStateInfo->setItemProperty("text", tr("Authorized"));
+        authStateInfo->setItemProperty("text", tr("Logged in as %1").arg(login));
         loginButton->setItemProperty("text", tr("Logout"));
     }
     else
     {
-        authStateInfo->setItemProperty("text", tr("Not authorized"));
+        authStateInfo->setItemProperty("text", tr("Login to display avatars"));
         loginButton->setItemProperty("text", tr("Login"));
     }
 
@@ -791,6 +785,115 @@ void Twitch::updateAuthState()
 QString Twitch::getRedirectUri() const
 {
     return "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
+}
+
+void Twitch::revokeToken()
+{
+    if (!oauthToken.get().isEmpty())
+    {
+        QNetworkRequest request(QUrl("https://id.twitch.tv/oauth2/revoke"));
+        request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+        QNetworkReply* reply = network.post(request,
+                                            ("client_id=" + ClientID +
+                                            "&token=" + oauthToken.get()).toUtf8());
+        connect(reply, &QNetworkReply::finished, this, [this, reply]()
+        {
+            QByteArray data;
+            if (!checkReply(reply, Q_FUNC_INFO, data))
+            {
+                return;
+            }
+
+            reply->deleteLater();
+        });
+    }
+
+    oauthToken.set(QString());
+    login = QString();
+
+    updateAuthState();
+}
+
+void Twitch::validateToken()
+{
+    if (oauthToken.get().isEmpty())
+    {
+        return;
+    }
+
+    QNetworkRequest request(QUrl("https://id.twitch.tv/oauth2/validate"));
+    request.setRawHeader("Authorization", QString("OAuth %1").arg(oauthToken.get()).toUtf8());
+
+    QNetworkReply* reply = network.get(request);
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+        if (root.contains("login") && !root.contains("status"))
+        {
+            login = root.value("login").toString();
+        }
+        else
+        {
+            revokeToken();
+        }
+
+        updateAuthState();
+    });
+}
+
+bool Twitch::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
+{
+    resultData.clear();
+
+    if (!reply)
+    {
+        qWarning() << tag << ": !reply";
+        return false;
+    }
+
+    int statusCode = 200;
+    const QVariant rawStatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (rawStatusCode.isValid())
+    {
+        statusCode = rawStatusCode.toInt();
+        if (statusCode != 200)
+        {
+            qWarning() << tag << ": status code:" << statusCode;
+        }
+    }
+
+    resultData = reply->readAll();
+    if (resultData.isEmpty() && statusCode != 200)
+    {
+        qWarning() << tag << ": data is empty";
+        return false;
+    }
+
+    const QJsonObject root = QJsonDocument::fromJson(resultData).object();
+    if (root.contains("error"))
+    {
+        qWarning() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
+
+        if (statusCode == 401 && root.value("error").toString().toLower().trimmed() == "unauthorized")
+        {
+            revokeToken();
+        }
+
+        return false;
+    }
+
+    return true;
 }
 
 void Twitch::requestUserInfo(const QString& login)
@@ -920,6 +1023,6 @@ void Twitch::onReplyStreamInfo()
 
 bool Twitch::isAuthorized() const
 {
-    return !oauthToken.get().trimmed().isEmpty();
+    return !oauthToken.get().trimmed().isEmpty() && !login.isEmpty();
 }
 
