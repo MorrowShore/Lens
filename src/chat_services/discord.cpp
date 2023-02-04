@@ -154,7 +154,7 @@ ChatService::ConnectionStateType Discord::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (isAuthorized() && !state.streamId.isEmpty())
+    else if (isAuthorized() && enabled.get())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -172,11 +172,6 @@ QString Discord::getStateDescription() const
     switch (getConnectionStateType())
     {
     case ConnectionStateType::NotConnected:
-        if (state.streamId.isEmpty())
-        {
-            return tr("Channel not specified");
-        }
-
         return tr("Not connected");
 
     case ConnectionStateType::Connecting:
@@ -197,14 +192,21 @@ TcpReply Discord::processTcpRequest(const TcpRequest &request)
     if (path == "/auth_code")
     {
         const QString code = request.getUrlQuery().queryItemValue("code");
+        const QString errorDescription = request.getUrlQuery().queryItemValue("error_description").replace('+', ' ');
+
         if (code.isEmpty())
         {
-            return TcpReply::createTextHtmlError("Code is empty");
+            if (errorDescription.isEmpty())
+            {
+                return TcpReply::createTextHtmlError("Code is empty");
+            }
+            else
+            {
+                return TcpReply::createTextHtmlError(errorDescription);
+            }
         }
-        else
-        {
-            requestOAuthToken(code);
-        }
+
+        requestOAuthToken(code);
 
         return TcpReply::createTextHtmlOK(tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName()));
     }
