@@ -41,14 +41,6 @@ static const int INTENT_GUILD_SCHEDULED_EVENTS = 1 << 16;
 static const int INTENT_AUTO_MODERATION_CONFIGURATION = 1 << 20;
 static const int INTENT_AUTO_MODERATION_EXECUTION = 1 << 21;
 
-static const QByteArray makeHttpResponse(const QByteArray& data)
-{
-    return QString("HTTP/1.1 200 OK\n"
-           "Content-Length: %1\n"
-           "Content-Type: text/html;charset=UTF-8\n"
-           "\n").arg(data.length()).toUtf8() + data;
-}
-
 }
 
 Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
@@ -70,7 +62,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
         }
         else
         {
-            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/v10/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&&response_type=code&scope=messages.read").arg(ClientID)));
+            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/v10/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&&response_type=code&scope=messages.read%20identify%20guilds").arg(ClientID)));
         }
 
         updateAuthState();
