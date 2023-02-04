@@ -235,7 +235,7 @@ void Discord::reconnectImpl()
         QString url = QJsonDocument::fromJson(data).object().value("url").toString();
         if (url.isEmpty())
         {
-
+            qCritical() << Q_FUNC_INFO << "url is empty";
         }
         else
         {
