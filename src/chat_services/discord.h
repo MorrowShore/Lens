@@ -21,11 +21,15 @@ private slots:
     void onWebSocketReceived(const QString& rawData);
     void sendHeartbeat();
     void sendIdentify();
+    void requestMe();
 
 private:
     bool isAuthorized() const;
     void updateAuthState();
     void processDisconnected();
+    void requestOAuthToken(const QString& code);
+    QString getRedirectUri() const;
+    void revokeToken();
 
     void send(const int opCode, const QJsonValue& data);
 
@@ -47,10 +51,12 @@ private:
     std::shared_ptr<UIElementBridge> loginButton;
 
     Setting<QString> oauthToken;
+    bool requestedMeSuccess = false;
 
     QWebSocket socket;
 
     QTimer timerReconnect;
     QTimer heartbeatTimer;
     QTimer heartbeatAcknowledgementTimer;
+    QTimer timerValidateToken;
 };
