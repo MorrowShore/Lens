@@ -385,22 +385,20 @@
     </message>
     <message>
         <location filename="chat_services/discord.cpp" line="65"/>
-        <location filename="chat_services/discord.cpp" line="337"/>
+        <location filename="chat_services/discord.cpp" line="361"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="325"/>
         <source>Authorized</source>
-        <translation>Авторизован</translation>
+        <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="328"/>
         <source>Authorized as %1</source>
-        <translation>Авторизован как %1</translation>
+        <translation type="vanished">Авторизован как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="332"/>
+        <location filename="chat_services/discord.cpp" line="356"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -409,36 +407,49 @@
         <translation type="vanished">Ошибка, повторите попытку или сообщите разработчику о проблеме</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="209"/>
+        <location filename="chat_services/discord.cpp" line="211"/>
         <source>Now you can close the page and return to %1</source>
         <oldsource>You can close the page and return to %1</oldsource>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
         <location filename="chat_services/discord.cpp" line="169"/>
-        <location filename="chat_services/discord.cpp" line="336"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="177"/>
         <source>Channel not specified</source>
-        <translation>Канал не указан</translation>
+        <translation type="vanished">Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="180"/>
+        <location filename="chat_services/discord.cpp" line="175"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="183"/>
+        <location filename="chat_services/discord.cpp" line="178"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="186"/>
+        <location filename="chat_services/discord.cpp" line="181"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="349"/>
+        <source>Logged in</source>
+        <translation>Вошёл</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="352"/>
+        <source>Logged in as %1</source>
+        <translation>Вошёл как %1</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="360"/>
+        <source>Not logged in</source>
+        <translation>Не вошёл</translation>
     </message>
 </context>
 <context>

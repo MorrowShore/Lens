@@ -80,7 +80,7 @@ ScrollView {
                 mipmap: true
                 source: {
                     if (!chatService.enabled) {
-                        return "qrc:/resources/images/power-button-svgrepo-com.svg"
+                        return "qrc:/resources/images/close.svg"
                     }
 
                     if (chatService.connectionStateType === Global._NotConnectedConnectionStateType) {

@@ -71,5 +71,6 @@
         <file>resources/images/error-alt-svgrepo-com.svg</file>
         <file>resources/images/power-button-svgrepo-com.svg</file>
         <file>resources/images/eye-svgrepo-com.svg</file>
+        <file>resources/images/close.svg</file>
     </qresource>
 </RCC>

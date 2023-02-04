@@ -70,7 +70,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
         }
         else
         {
-            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/v10/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&&response_type=code&scope=messages.read%20guilds%20identify").arg(ClientID)));
+            QDesktopServices::openUrl(QUrl(QString("https://discord.com/api/v10/oauth2/authorize?client_id=%1&redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&&response_type=code&scope=messages.read").arg(ClientID)));
         }
 
         updateAuthState();
@@ -346,10 +346,10 @@ void Discord::updateAuthState()
 
     if (isAuthorized())
     {
-        QString text = tr("Authorized");
+        QString text = tr("Logged in");
         if (!userName.isEmpty())
         {
-            text = tr("Authorized as %1").arg("<b>" + userName + "</b>");
+            text = tr("Logged in as %1").arg("<b>" + userName + "</b>");
         }
 
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text);
@@ -357,7 +357,7 @@ void Discord::updateAuthState()
     }
     else
     {
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Not authorized"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Not logged in"));
         loginButton->setItemProperty("text", tr("Login"));
     }
 
