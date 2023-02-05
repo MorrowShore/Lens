@@ -28,6 +28,7 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
                                                 "3. Give admin rights to the bot in these groups/channels\n"
                                                 "4. Specify your bot token above\n"
                                                 "\n"
+                                                "Don't disclose the bot's token\n"
                                                 "It is not recommended to use a bot that is already being used for other purposes\n"
                                                 "It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()))));
 
