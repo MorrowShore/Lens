@@ -20,25 +20,8 @@ static const int HelloOpCode = 10;
 static const int HeartAckbeatOpCode = 11;
 
 // https://discord.com/developers/docs/topics/gateway#gateway-intents
-static const int INTENT_GUILDS = 1 << 0;
-static const int INTENT_GUILD_MEMBERS = 1 << 1;
-static const int INTENT_GUILD_MODERATION = 1 << 2;
-static const int INTENT_GUILD_EMOJIS_AND_STICKERS = 1 << 3;
-static const int INTENT_GUILD_INTEGRATIONS = 1 << 4;
-static const int INTENT_GUILD_WEBHOOKS = 1 << 5;
-static const int INTENT_GUILD_INVITES = 1 << 6;
-static const int INTENT_GUILD_VOICE_STATES = 1 << 7;
-static const int INTENT_GUILD_PRESENCES = 1 << 8;
 static const int INTENT_GUILD_MESSAGES = 1 << 9;
-static const int INTENT_GUILD_MESSAGE_REACTIONS = 1 << 10;
-static const int INTENT_GUILD_MESSAGE_TYPING = 1 << 11;
-static const int INTENT_DIRECT_MESSAGES = 1 << 12;
-static const int INTENT_DIRECT_MESSAGE_REACTIONS = 1 << 13;
-static const int INTENT_DIRECT_MESSAGE_TYPING = 1 << 14;
 static const int INTENT_MESSAGE_CONTENT = 1 << 15;
-static const int INTENT_GUILD_SCHEDULED_EVENTS = 1 << 16;
-static const int INTENT_AUTO_MODERATION_CONFIGURATION = 1 << 20;
-static const int INTENT_AUTO_MODERATION_EXECUTION = 1 << 21;
 
 }
 
