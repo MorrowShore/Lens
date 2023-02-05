@@ -21,15 +21,14 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create a bot with @BotFather"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open @BotFather"), []()
     {
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     })));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Copy and paste bot token") + ":")));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("<b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("3. " + tr("Add the bot to the desired groups or channels"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Copy and paste bot token above") + ". <b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("3. " + tr("Add the bot to the desired groups/channels"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("4. " + tr("Give admin rights to the bot in these groups/channels"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(" ")));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("It is not recommended to use a bot that is already being used for other purposes"))));
