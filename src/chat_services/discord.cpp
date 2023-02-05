@@ -539,12 +539,11 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 
     static const int AvatarSize = 256;
 
-    Author author(getServiceType(),
+    const Author author(getServiceType(),
                   authorName,
                   userId,
                   QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(userId, avatarHash).arg(AvatarSize)),
                   QUrl("https://discordapp.com/users/" + userId));
-
     authors.append(author);
 
     const QString messageId = jsonMessage.value("id").toString();
