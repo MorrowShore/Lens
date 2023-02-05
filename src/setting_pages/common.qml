@@ -53,6 +53,8 @@ ScrollView {
                         i18n.setLanguage("C");
                     if (currentIndex == 1)
                         i18n.setLanguage("ru");
+
+                    Global.windowSettings.showRestartDialog()
                 }
             }
 
