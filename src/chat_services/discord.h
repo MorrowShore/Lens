@@ -31,6 +31,8 @@ private:
     {
         int heartbeatInterval = 30000;
         QJsonValue lastSequence;
+        QString userName;
+        QString userDiscriminator;
     };
 
     struct Guild
@@ -75,6 +77,7 @@ private:
 
     Setting<QString> applicationId;
     Setting<QString> botToken;
+    std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> connectBotToGuild;
     Setting<bool> showNsfwChannels;
     Setting<bool> showGuildName;

@@ -40,7 +40,8 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
 
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true)));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "AbCdEfGhIjKlMnOpQrStUvWxYz.0123456789", true)));
-
+    authStateInfo = std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("Loading..."));
+    addUIElement(authStateInfo);
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create an app in the Discord Developer Portal"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open Discord Developer Portal"), []()
     {
@@ -131,6 +132,8 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     timerReconnect.start(ReconncectPeriod);
 
     reconnect();
+
+    updateUI();
 }
 
 ChatService::ConnectionStateType Discord::getConnectionStateType() const
@@ -395,6 +398,8 @@ void Discord::processDisconnected()
         emit stateChanged();
         emit connectedChanged(false, QString());
     }
+
+    updateUI();
 }
 
 void Discord::processConnected()
@@ -405,6 +410,8 @@ void Discord::processConnected()
         emit stateChanged();
         emit connectedChanged(true, QString());
     }
+
+    updateUI();
 }
 
 void Discord::send(const int opCode, const QJsonValue &data)
@@ -441,6 +448,12 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
     if (eventType == "READY")
     {
         processConnected();
+
+        const QJsonObject jsonUser = data.value("user").toObject();
+        info.userName = jsonUser.value("username").toString();
+        info.userDiscriminator = jsonUser.value("discriminator").toString();
+
+        updateUI();
     }
     else if (eventType == "MESSAGE_CREATE")
     {
@@ -551,6 +564,26 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 void Discord::updateUI()
 {
     connectBotToGuild->setItemProperty("enabled", isCanConnect());
+
+    QString botStatus = tr("Bot status") + ": ";
+
+    if (state.connected)
+    {
+        QString displayName = "<b>" + info.userName + "</b>";
+        if (!info.userDiscriminator.isEmpty())
+        {
+            displayName += "#" + info.userDiscriminator;
+        }
+
+        botStatus += tr("connected as %1").arg(displayName);
+
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + botStatus);
+    }
+    else
+    {
+        botStatus += tr("not connected");
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + botStatus);
+    }
 }
 
 void Discord::requestGuild(const QString &guildId)

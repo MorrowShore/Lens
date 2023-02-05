@@ -112,53 +112,52 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="41"/>
-        <location filename="chat_services/chatservice.cpp" line="53"/>
+        <location filename="chat_services/chatservice.cpp" line="37"/>
+        <location filename="chat_services/chatservice.cpp" line="49"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="44"/>
+        <location filename="chat_services/chatservice.cpp" line="40"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="45"/>
+        <location filename="chat_services/chatservice.cpp" line="41"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="46"/>
+        <location filename="chat_services/chatservice.cpp" line="42"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="47"/>
+        <location filename="chat_services/chatservice.cpp" line="43"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="48"/>
+        <location filename="chat_services/chatservice.cpp" line="44"/>
         <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="49"/>
+        <location filename="chat_services/chatservice.cpp" line="45"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="50"/>
+        <location filename="chat_services/chatservice.cpp" line="46"/>
         <source>Discord</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="11"/>
         <source>Enabled</source>
-        <translation>Включено</translation>
+        <translation type="vanished">Включено</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="15"/>
+        <location filename="chat_services/chatservice.cpp" line="11"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -427,12 +426,12 @@
         <translation>Токен бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="44"/>
+        <location filename="chat_services/discord.cpp" line="45"/>
         <source>Create an app in the Discord Developer Portal</source>
         <translation>Создайте приложение в Discord Developer Portal</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="45"/>
+        <location filename="chat_services/discord.cpp" line="46"/>
         <source>Open Discord Developer Portal</source>
         <translation>Открыть Discord Developer Portal</translation>
     </message>
@@ -442,17 +441,17 @@
         <translation type="vanished">Найдите и вставьте ID приложения (Application ID)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="50"/>
+        <location filename="chat_services/discord.cpp" line="51"/>
         <source>Create a bot (in Bot section)</source>
         <translation>Создайте бота (в разделе Bot)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="51"/>
+        <location filename="chat_services/discord.cpp" line="52"/>
         <source>Allow the bot to read the message content (Message Content Intent checkbox)</source>
         <translation>Разрешите боту чтение содержания сообщейний (галочка Message Content Intent)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="52"/>
+        <location filename="chat_services/discord.cpp" line="53"/>
         <source>Reset the token (button Reset Token). The bot&apos;s previous token will become invalid</source>
         <translation>Сбросьте токен (кнопка Reset Token). Предыдущий токен бота станет недействительным</translation>
     </message>
@@ -462,81 +461,97 @@
         <translation type="vanished">Скопируйте и вставьте токен бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="49"/>
+        <location filename="chat_services/discord.cpp" line="50"/>
         <source>Copy the Application ID and paste above</source>
         <oldsource>Copy Application ID and paste above</oldsource>
         <translation>Скопируйте ID приложения (Application ID) и вставьте выше</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="53"/>
+        <location filename="chat_services/discord.cpp" line="54"/>
         <source>DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
         <translation>НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="53"/>
+        <location filename="chat_services/discord.cpp" line="54"/>
         <source>Copy the bot token and paste above</source>
         <oldsource>Copy bot token and paste above</oldsource>
         <translation>Скопируйте токен бота и вставьте выше</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="54"/>
+        <location filename="chat_services/discord.cpp" line="55"/>
         <source>Add the bot to the servers you need</source>
         <oldsource>Add the bot to the servers you need, while allowing reading messages</oldsource>
         <translation>Добавьте бота к нужным вам серверам</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="55"/>
+        <location filename="chat_services/discord.cpp" line="56"/>
         <source>Add bot to server</source>
         <oldsource>Connect bot to server</oldsource>
         <translation>Добавить бота на сервер</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="63"/>
+        <location filename="chat_services/discord.cpp" line="64"/>
         <source>To display private chats/channels, add the bot
 to these chats/channels in access rights (at your own risk)</source>
         <translation>Для отображения приватных чатов/каналов добавьте бота
 в эти чаты/каналы в прав доступа (на свой страх и риск)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="65"/>
+        <location filename="chat_services/discord.cpp" line="66"/>
         <source>Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord</source>
         <oldsource>Show NSFW channels (at your own risk)</oldsource>
         <translation>Показывать NSFW каналы (на свой страх и риск). Перезапустите %1, если статус канала изменён в Discord</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="66"/>
+        <location filename="chat_services/discord.cpp" line="67"/>
         <source>Show server name</source>
         <translation>Показывать имя сервера</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="67"/>
+        <location filename="chat_services/discord.cpp" line="68"/>
         <source>Show channel name</source>
         <translation>Показывать имя канала</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="154"/>
+        <location filename="chat_services/discord.cpp" line="157"/>
         <source>Application ID not specified</source>
         <translation>ID приложения не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="159"/>
+        <location filename="chat_services/discord.cpp" line="162"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="165"/>
+        <location filename="chat_services/discord.cpp" line="168"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="168"/>
+        <location filename="chat_services/discord.cpp" line="171"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="171"/>
+        <location filename="chat_services/discord.cpp" line="174"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="568"/>
+        <source>Bot status</source>
+        <translation>Статус бота</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="578"/>
+        <source>connected as %1</source>
+        <oldsource>Connected as %1</oldsource>
+        <translation>подключено как %1</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="584"/>
+        <source>not connected</source>
+        <translation>не подключено</translation>
     </message>
     <message>
         <source>Logged in</source>
@@ -1107,39 +1122,39 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>VkPlayLive</name>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="23"/>
+        <location filename="chat_services/vkplaylive.cpp" line="24"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="24"/>
+        <location filename="chat_services/vkplaylive.cpp" line="25"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="208"/>
+        <location filename="chat_services/vkplaylive.cpp" line="228"/>
         <source>Channel not specified</source>
         <oldsource>Stream not specified</oldsource>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="213"/>
+        <location filename="chat_services/vkplaylive.cpp" line="233"/>
         <source>The channel is not correct</source>
         <oldsource>The stream is not correct</oldsource>
         <translation>Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="216"/>
+        <location filename="chat_services/vkplaylive.cpp" line="236"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="219"/>
+        <location filename="chat_services/vkplaylive.cpp" line="239"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="222"/>
+        <location filename="chat_services/vkplaylive.cpp" line="242"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1213,7 +1228,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>about</name>
     <message>
-        <location filename="setting_pages/about.qml" line="300"/>
+        <location filename="setting_pages/about.qml" line="302"/>
         <source>You are using the most current version!
 
 Current version: %1
@@ -1227,48 +1242,48 @@ Latest version available: %2</oldsource>
 Последняя доступная версия: %2</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="308"/>
+        <location filename="setting_pages/about.qml" line="310"/>
         <source>Failed to connect to server. Check your internet connection!</source>
         <translation>Не удалось подключиться к серверу. Проверьте подключение к интернету!</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="313"/>
+        <location filename="setting_pages/about.qml" line="315"/>
         <source>Request limits exceeded! Please try again later</source>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="52"/>
+        <location filename="setting_pages/about.qml" line="54"/>
         <source>32-bit Build</source>
         <translation>32-битная сборка</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="54"/>
+        <location filename="setting_pages/about.qml" line="56"/>
         <source>64-bit Build</source>
         <translation>64-битная сборка</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="56"/>
+        <location filename="setting_pages/about.qml" line="58"/>
         <source>Build Architecture: %1</source>
         <oldsource>Build Architecture: </oldsource>
         <translation>Архитектура сборки: %1</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="83"/>
+        <location filename="setting_pages/about.qml" line="85"/>
         <source>YouTube Channel</source>
         <translation>YouTube канал</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="127"/>
+        <location filename="setting_pages/about.qml" line="129"/>
         <source>Check for Updates</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="165"/>
+        <location filename="setting_pages/about.qml" line="167"/>
         <source>subscribe</source>
         <translation>подпишись</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="245"/>
+        <location filename="setting_pages/about.qml" line="247"/>
         <source>Support the developer</source>
         <translation>Поддержать разработчика</translation>
     </message>
@@ -1277,12 +1292,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Форум (Discussions)</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="177"/>
+        <location filename="setting_pages/about.qml" line="179"/>
         <source>Releases</source>
         <translation>Релизы</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="270"/>
+        <location filename="setting_pages/about.qml" line="272"/>
         <source>Source Code</source>
         <translation>Исходный код</translation>
     </message>
@@ -1291,7 +1306,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Лицензия</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="258"/>
+        <location filename="setting_pages/about.qml" line="260"/>
         <source>Complaints and suggestions (Issues)</source>
         <oldsource>Complaints and suggestions  (Issues)</oldsource>
         <translation>Жалобы и предложения (Issues)</translation>
@@ -1301,13 +1316,13 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Жалобы и предложения</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="191"/>
+        <location filename="setting_pages/about.qml" line="193"/>
         <source>AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</source>
         <oldsource>A free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</oldsource>
         <translation>AxelChat — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="205"/>
+        <location filename="setting_pages/about.qml" line="207"/>
         <source>GitHub</source>
         <translation></translation>
     </message>
@@ -1506,43 +1521,43 @@ Latest version available: %2</oldsource>
 <context>
     <name>chatcommands</name>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="39"/>
+        <location filename="setting_pages/chatcommands.qml" line="41"/>
         <source>Volume: %1 %</source>
         <oldsource>Volume:</oldsource>
         <translation>Громкость: %1 %</translation>
     </message>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="46"/>
+        <location filename="setting_pages/chatcommands.qml" line="48"/>
         <source>Enable Sound Commands</source>
         <translation>Включить звуковые команды</translation>
     </message>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="69"/>
+        <location filename="setting_pages/chatcommands.qml" line="71"/>
         <source>Test message...</source>
         <translation>Тестовое сообщение...</translation>
     </message>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="80"/>
+        <location filename="setting_pages/chatcommands.qml" line="82"/>
         <source>Send test message:</source>
         <translation>Отправить тестовое сообщение:</translation>
     </message>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="95"/>
+        <location filename="setting_pages/chatcommands.qml" line="97"/>
         <source>Send</source>
         <translation>Отправить</translation>
     </message>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="111"/>
+        <location filename="setting_pages/chatcommands.qml" line="113"/>
         <source>All Commands</source>
         <translation>Все команды</translation>
     </message>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="129"/>
+        <location filename="setting_pages/chatcommands.qml" line="131"/>
         <source>Commands Editor</source>
         <translation>Редактор команд</translation>
     </message>
     <message>
-        <location filename="setting_pages/chatcommands.qml" line="139"/>
+        <location filename="setting_pages/chatcommands.qml" line="141"/>
         <source>Include Built-in Sound Commands</source>
         <translation>Использовать встроенные звуковые команды</translation>
     </message>
@@ -1562,7 +1577,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прокси</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="211"/>
+        <location filename="setting_pages/common.qml" line="215"/>
         <source>Host name...</source>
         <translation>Имя хоста...</translation>
     </message>
@@ -1571,7 +1586,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Сервер...</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="232"/>
+        <location filename="setting_pages/common.qml" line="236"/>
         <source>Port...</source>
         <translation>Порт...</translation>
     </message>
@@ -1584,42 +1599,42 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Порт</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="100"/>
+        <location filename="setting_pages/common.qml" line="104"/>
         <source>Mouse clicks will be ignored by the chat window. You can return to the previous state through the tray icon</source>
         <translation>Клики мыши будут игнорироваться окном чата. Вернуться в предыдущее состояние можно через иконку в трее</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="84"/>
+        <location filename="setting_pages/common.qml" line="88"/>
         <source>Click-through window</source>
         <translation>Пропускать клики мыши</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="106"/>
+        <location filename="setting_pages/common.qml" line="110"/>
         <source>Clear Messages on Link Change</source>
         <translation>Очистить сообщения при смене ссылки</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="118"/>
+        <location filename="setting_pages/common.qml" line="122"/>
         <source>Enabled Hardware Graphics Accelerator</source>
         <translation>Включить аппаратный ускоритель графики</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="134"/>
+        <location filename="setting_pages/common.qml" line="138"/>
         <source>Enabled HighDpi scaling</source>
         <translation>Включить HighDpi масштабирование</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="170"/>
+        <location filename="setting_pages/common.qml" line="174"/>
         <source>Show when author changes name</source>
         <translation>Показывать, когда автор меняет имя</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="187"/>
+        <location filename="setting_pages/common.qml" line="191"/>
         <source>Works only when output to file is enabled</source>
         <translation>Работает только при включенном выводе в файл</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="263"/>
+        <location filename="setting_pages/common.qml" line="267"/>
         <source>Program folder</source>
         <translation>Папка программы</translation>
     </message>
@@ -1628,12 +1643,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="150"/>
+        <location filename="setting_pages/common.qml" line="154"/>
         <source>Enable Sound when New Message Received</source>
         <translation>Включить звук при получении нового сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="23"/>
+        <location filename="setting_pages/common.qml" line="25"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
@@ -1642,12 +1657,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Не обрабатывать ввод</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="196"/>
+        <location filename="setting_pages/common.qml" line="200"/>
         <source>Proxy (SOCKS5)</source>
         <translation>Прокси (SOCKS5)</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="70"/>
+        <location filename="setting_pages/common.qml" line="74"/>
         <source>Stay on Top Window</source>
         <translation>Поверх всех окон</translation>
     </message>
@@ -1740,27 +1755,27 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Не удалось сохранить!</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="32"/>
+        <location filename="setting_pages/outputtofile.qml" line="34"/>
         <source>Enable Output to ini-file</source>
         <translation>Включить вывод в ini-файл</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="46"/>
+        <location filename="setting_pages/outputtofile.qml" line="48"/>
         <source>Folder where to save:</source>
         <translation>Папка, где будет сохранено:</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="58"/>
+        <location filename="setting_pages/outputtofile.qml" line="60"/>
         <source>Folder where to save...</source>
         <translation>Папка, где сохранять...</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="71"/>
+        <location filename="setting_pages/outputtofile.qml" line="73"/>
         <source>Find</source>
         <translation>Найти</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="84"/>
+        <location filename="setting_pages/outputtofile.qml" line="86"/>
         <source>Please select a folder</source>
         <translation>Пожалуйста, выберите папку</translation>
     </message>
@@ -1777,12 +1792,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Сбросить</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="97"/>
+        <location filename="setting_pages/outputtofile.qml" line="99"/>
         <source>Show in Explorer</source>
         <translation>Показать в Проводнике</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="105"/>
+        <location filename="setting_pages/outputtofile.qml" line="107"/>
         <source>Reset Path</source>
         <translation>Сбросить путь</translation>
     </message>
@@ -1795,13 +1810,13 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Local 8 Bit</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="136"/>
+        <location filename="setting_pages/outputtofile.qml" line="138"/>
         <source>ANSI and UTF-8 numbers</source>
         <oldsource>Latin-1 and UTF-8 numbers</oldsource>
         <translation>ANSI и UTF-8 номера</translation>
     </message>
     <message>
-        <location filename="setting_pages/outputtofile.qml" line="121"/>
+        <location filename="setting_pages/outputtofile.qml" line="123"/>
         <source>Codec:</source>
         <translation>Кодировка:</translation>
     </message>
@@ -1889,7 +1904,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="184"/>
+        <location filename="settings.qml" line="187"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -1898,17 +1913,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="172"/>
+        <location filename="settings.qml" line="175"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="196"/>
+        <location filename="settings.qml" line="199"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="202"/>
+        <location filename="settings.qml" line="205"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -1917,7 +1932,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="208"/>
+        <location filename="settings.qml" line="211"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
@@ -2118,12 +2133,12 @@ Latest version available: %2</oldsource>
 <context>
     <name>widgets</name>
     <message>
-        <location filename="setting_pages/widgets.qml" line="28"/>
+        <location filename="setting_pages/widgets.qml" line="30"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="48"/>
+        <location filename="setting_pages/widgets.qml" line="50"/>
         <source>Viewers</source>
         <translation>Зрители</translation>
     </message>
