@@ -463,9 +463,9 @@
     </message>
     <message>
         <location filename="chat_services/discord.cpp" line="55"/>
-        <source>Add the bot to the servers you need, while allowing reading messages</source>
-        <oldsource>Connect the bot to the servers you need, while allowing reading messages</oldsource>
-        <translation>Добавьте бота к нужным вам серверам, при этом разрешите чтение сообщений</translation>
+        <source>Add the bot to the servers you need</source>
+        <oldsource>Add the bot to the servers you need, while allowing reading messages</oldsource>
+        <translation>Добавьте бота к нужным вам серверам</translation>
     </message>
     <message>
         <location filename="chat_services/discord.cpp" line="56"/>

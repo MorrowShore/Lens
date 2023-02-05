@@ -52,7 +52,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("6. " + tr("Copy the token and paste below. DON'T DISCLOSE THE BOT'S TOKEN!"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000AAAAAAAAAAA0000000000BBBBBBBBBBBB000000000CCCCCCCCCC0000000000000", true)));
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("7. " + tr("Add the bot to the servers you need, while allowing reading messages"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("7. " + tr("Add the bot to the servers you need"))));
     connectBotToGuild = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Add bot to server"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://discord.com/api/oauth2/authorize"
