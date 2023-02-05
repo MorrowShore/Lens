@@ -423,7 +423,7 @@ void Discord::send(const int opCode, const QJsonValue &data)
         { "d", data },
     };
 
-    qDebug("send:\n" + QJsonDocument(message).toJson() + "\n");
+    //qDebug("send:\n" + QJsonDocument(message).toJson() + "\n");
 
     socket.sendTextMessage(QString::fromUtf8(QJsonDocument(message).toJson()));
 }
@@ -667,7 +667,8 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
     {
         channelId = *channelId_;
 
-        if (requestedGuildsChannels.values().contains(*channelId_))
+        const QList<QString> values = requestedGuildsChannels.values();
+        if (values.contains(*channelId_))
         {
             guildId = requestedGuildsChannels.key(*channelId_);
         }
@@ -758,6 +759,7 @@ bool Discord::isValidForShow(const Message &message, const Author &author, const
 {
     Q_UNUSED(message)
     Q_UNUSED(author)
+    Q_UNUSED(guild)
 
     if (!showNsfwChannels.get() && channel.nsfw)
     {
