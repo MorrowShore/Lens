@@ -11,7 +11,8 @@ namespace
 {
 
 static const int RequestStreamInterval = 20000;
-
+static const int HeartbeatAcknowledgementTimeout = 40 * 1000;
+static const int HeartbeatSendTimeout = 30 * 1000;
 }
 
 VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
@@ -34,6 +35,9 @@ VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, Q
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+
+        heartbeatAcknowledgementTimer.setInterval(HeartbeatAcknowledgementTimeout);
+        heartbeatAcknowledgementTimer.start();
 
         if (state.connected)
         {
@@ -181,6 +185,22 @@ VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, Q
     });
     timerRequestChatPage.start(RequestStreamInterval);
 
+    QObject::connect(&heartbeatAcknowledgementTimer, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        {
+            heartbeatAcknowledgementTimer.stop();
+            return;
+        }
+
+        qDebug() << Q_FUNC_INFO << "heartbeat acknowledgement timeout, disconnect";
+        socket.close();
+    });
+
+    QObject::connect(&heartbeatTimer, &QTimer::timeout, this, &VkPlayLive::sendHeartbeat);
+    heartbeatTimer.setInterval(HeartbeatSendTimeout);
+    heartbeatTimer.start();
+
     reconnect();
 }
 
@@ -256,6 +276,9 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
     {
         return;
     }
+
+    heartbeatAcknowledgementTimer.setInterval(HeartbeatAcknowledgementTimeout);
+    heartbeatAcknowledgementTimer.start();
 
     const QJsonObject result = QJsonDocument::fromJson(rawData.toUtf8()).object().value("result").toObject();
 
@@ -346,8 +369,8 @@ void VkPlayLive::sendParams(const QJsonObject &params, int method)
 
     QJsonObject object(
         {
-            {"params", params},
-            {"id", info.lastMessageId},
+            { "params", params },
+            { "id", info.lastMessageId },
         });
 
     if (method != -1)
@@ -356,6 +379,24 @@ void VkPlayLive::sendParams(const QJsonObject &params, int method)
     }
 
     send(QJsonDocument(object));
+}
+
+void VkPlayLive::sendHeartbeat()
+{
+    if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+    {
+        return;
+    }
+
+    static const int MethodHeartbeat = 7;
+
+    info.lastMessageId++;
+
+    send(QJsonDocument(QJsonObject(
+                           {
+                               { "method", MethodHeartbeat },
+                               { "id", info.lastMessageId },
+                           })));
 }
 
 void VkPlayLive::parseMessage(const QJsonObject &data)

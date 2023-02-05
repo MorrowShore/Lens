@@ -81,7 +81,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     {
         //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
 
-        heartbeatAcknowledgementTimer.setInterval(60 * 10000);
+        heartbeatAcknowledgementTimer.setInterval(60 * 1000);
         heartbeatAcknowledgementTimer.start();
     });
 
