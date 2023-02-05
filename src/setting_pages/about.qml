@@ -9,6 +9,8 @@ ScrollView {
     clip: true
     contentHeight: 480
     contentWidth: 640
+    ScrollBar.horizontal.policy: ScrollBar.AsNeeded
+    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
     Item {
         id: element5

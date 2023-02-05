@@ -7,6 +7,8 @@ ScrollView {
     clip: true
     contentHeight: 480
     contentWidth: 480
+    ScrollBar.horizontal.policy: ScrollBar.AsNeeded
+    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
     property var allCommandsWindow;
 
