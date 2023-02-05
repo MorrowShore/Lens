@@ -1,5 +1,6 @@
 #include "discord.h"
 #include "secrets.h"
+#include "models/message.h"
 #include "string_obfuscator/obfuscator.hpp"
 #include <QDesktopServices>
 #include <QTcpSocket>
@@ -64,7 +65,8 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
         {
             QDesktopServices::openUrl(QUrl("https://discord.com/api/oauth2/authorize"
                                            "?redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&response_type=code"
-                                           "&scope=messages.read%20identify%20guilds"
+                                           "&permissions=1024"
+                                           "&scope=bot"
                                            "&client_id=" + ClientID));
         }
 
@@ -82,7 +84,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+        //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
 
         heartbeatAcknowledgementTimer.setInterval(60 * 10000);
         heartbeatAcknowledgementTimer.start();
@@ -90,7 +92,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
+        //qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
         processDisconnected();
     });
 
@@ -251,7 +253,7 @@ void Discord::reconnectImpl()
 
 void Discord::onWebSocketReceived(const QString &rawData)
 {
-    qDebug("received:\n" + rawData.toUtf8() + "\n");
+    //qDebug("received:\n" + rawData.toUtf8() + "\n");
 
     if (!enabled.get())
     {
@@ -321,7 +323,7 @@ void Discord::sendIdentify()
           })
         },
 
-        { "intents", INTENT_GUILD_MESSAGES },
+        { "intents", INTENT_GUILD_MESSAGES | INTENT_MESSAGE_CONTENT },
     };
 
     send(IdentifyOpCode, data);
@@ -366,6 +368,16 @@ void Discord::processDisconnected()
         state.connected = false;
         emit stateChanged();
         emit connectedChanged(false, QString());
+    }
+}
+
+void Discord::processConnected()
+{
+    if (!state.connected)
+    {
+        state.connected = true;
+        emit stateChanged();
+        emit connectedChanged(true, QString());
     }
 }
 
@@ -467,7 +479,7 @@ void Discord::send(const int opCode, const QJsonValue &data)
         { "d", data },
     };
 
-    qDebug("send:\n" + QJsonDocument(message).toJson() + "\n");
+    //qDebug("send:\n" + QJsonDocument(message).toJson() + "\n");
 
     socket.sendTextMessage(QString::fromUtf8(QJsonDocument(message).toJson()));
 }
@@ -492,10 +504,63 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
 {
     if (eventType == "READY")
     {
-
+        processConnected();
+    }
+    else if (eventType == "MESSAGE_CREATE")
+    {
+        parseMessageCreate(data);
     }
     else
     {
         qWarning() << Q_FUNC_INFO << "unkown event type" << eventType;
     }
+}
+
+void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
+{
+    QList<Message> messages;
+    QList<Author> authors;
+
+    const QJsonObject jsonAuthor = jsonMessage.value("author").toObject();
+
+    const QString userName = jsonAuthor.value("username").toString();
+    const QString displayName = jsonAuthor.value("display_name").toString();
+    const QString authorName = displayName.isEmpty() ? userName : displayName;
+    const QString userId = jsonAuthor.value("id").toString();
+    const QString avatarHash = jsonAuthor.value("avatar").toString();
+
+    //TODO: user page
+    //TODO: timestamp
+    //TODO: type
+    //TODO: flags
+    //TODO: etc
+    //TODO: channel name
+    //TODO: guild name
+
+    static const int AvatarSize = 256;
+
+    Author author(getServiceType(),
+                  authorName,
+                  userId,
+                  QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(userId, avatarHash).arg(AvatarSize)),
+                  QUrl("https://discordapp.com/users/" + userId));
+
+    authors.append(author);
+
+    const QString messageId = jsonMessage.value("id").toString();
+    const QString messageContent = jsonMessage.value("content").toString();
+
+    if (messageContent.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "message content is empty";
+        qDebug() << jsonMessage;
+        return;
+    }
+
+    QList<Message::Content*> contents;
+    contents.append(new Message::Text(messageContent));
+
+    messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), messageId));
+
+    emit readyRead(messages, authors);
 }

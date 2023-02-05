@@ -27,6 +27,7 @@ private:
     bool isAuthorized() const;
     void updateAuthState();
     void processDisconnected();
+    void processConnected();
     void requestOAuthToken(const QString& code);
     QString getRedirectUri() const;
     void revokeToken();
@@ -35,6 +36,7 @@ private:
 
     void parseHello(const QJsonObject& data);
     void parseDispatch(const QString& eventType, const QJsonObject& data);
+    void parseMessageCreate(const QJsonObject& jsonMessage);
 
     struct Info
     {
