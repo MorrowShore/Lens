@@ -70,6 +70,10 @@ private:
     QString getDestination(const Guild& guild, const Channel& channel) const;
     bool isValidForShow(const Message& message, const Author& author, const Guild& guild, const Channel& channel) const;
 
+    static QString getEmbedTypeName(const QString& type);
+    static QList<Message::Content*> parseEmbed(const QJsonObject& jsonEmbed);
+    static QList<Message::Content*> parseAttachment(const QJsonObject& jsonAttachment);
+
     QSettings& settings;
     QNetworkAccessManager& network;
 

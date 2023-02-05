@@ -24,6 +24,34 @@ static const int INTENT_MESSAGE_CONTENT = 1 << 15;
 
 static const QString ApiUrlPrefix = "https://discord.com/api/v10";
 
+static const int MESSAGE_TYPE_DEFAULT = 0;
+static const int MESSAGE_TYPE_RECIPIENT_ADD = 1;
+static const int MESSAGE_TYPE_RECIPIENT_REMOVE = 2;
+static const int MESSAGE_TYPE_CALL = 3;
+static const int MESSAGE_TYPE_CHANNEL_NAME_CHANGE = 4;
+static const int MESSAGE_TYPE_CHANNEL_ICON_CHANGE = 5;
+static const int MESSAGE_TYPE_CHANNEL_PINNED_MESSAGE = 6;
+static const int MESSAGE_TYPE_USER_JOIN = 7;
+static const int MESSAGE_TYPE_GUILD_BOOST = 8;
+static const int MESSAGE_TYPE_GUILD_BOOST_TIER_1 = 9;
+static const int MESSAGE_TYPE_GUILD_BOOST_TIER_2 = 10;
+static const int MESSAGE_TYPE_GUILD_BOOST_TIER_3 = 11;
+static const int MESSAGE_TYPE_CHANNEL_FOLLOW_ADD = 12;
+static const int MESSAGE_TYPE_GUILD_DISCOVERY_DISQUALIFIED = 14;
+static const int MESSAGE_TYPE_GUILD_DISCOVERY_REQUALIFIED = 15;
+static const int MESSAGE_TYPE_GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING = 16;
+static const int MESSAGE_TYPE_GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING = 17;
+static const int MESSAGE_TYPE_THREAD_CREATED = 18;
+static const int MESSAGE_TYPE_REPLY = 19;
+static const int MESSAGE_TYPE_CHAT_INPUT_COMMAND = 20;
+static const int MESSAGE_TYPE_THREAD_STARTER_MESSAGE = 21;
+static const int MESSAGE_TYPE_GUILD_INVITE_REMINDER = 22;
+static const int MESSAGE_TYPE_CONTEXT_MENU_COMMAND = 23;
+static const int MESSAGE_TYPE_AUTO_MODERATION_ACTION = 24;
+static const int MESSAGE_TYPE_ROLE_SUBSCRIPTION_PURCHASE = 25;
+static const int MESSAGE_TYPE_INTERACTION_PREMIUM_UPSELL = 26;
+static const int MESSAGE_TYPE_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32;
+
 }
 
 Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
@@ -474,6 +502,12 @@ void Discord::parseInvalidSession(const bool resumableSession)
 
 void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 {
+    const int messageType = jsonMessage.value("type").toInt();
+    if (messageType != MESSAGE_TYPE_DEFAULT)
+    {
+        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType;
+    }
+
     const QString guildId = jsonMessage.value("guild_id").toString();
     const QString channelId = jsonMessage.value("channel_id").toString();
 
@@ -485,13 +519,9 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     const QString userId = jsonAuthor.value("id").toString();
     const QString avatarHash = jsonAuthor.value("avatar").toString();
 
-    //TODO: user page
     //TODO: timestamp
-    //TODO: type
     //TODO: flags
     //TODO: etc
-    //TODO: channel name
-    //TODO: guild name
 
     static const int AvatarSize = 256;
 
@@ -502,16 +532,68 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
                   QUrl("https://discordapp.com/users/" + userId));
 
     const QString messageId = jsonMessage.value("id").toString();
-    const QString messageContent = jsonMessage.value("content").toString();
-
-    if (messageContent.isEmpty())
-    {
-        qWarning() << Q_FUNC_INFO << "message content is empty";
-        return;
-    }
 
     QList<Message::Content*> contents;
-    contents.append(new Message::Text(messageContent));
+
+    {
+        //text
+        contents.append(new Message::Text(jsonMessage.value("content").toString()));
+    }
+
+    {
+        //embeds
+        const QJsonArray embeds = jsonMessage.value("embeds").toArray();
+        for (const QJsonValue& v : embeds)
+        {
+            const QList<Message::Content*> embedContents = parseEmbed(v.toObject());
+            if (!embedContents.isEmpty())
+            {
+                if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+            }
+
+            for (Message::Content* embedContent : qAsConst(embedContents))
+            {
+                contents.append(embedContent);
+            }
+        }
+    }
+
+    {
+        //attachments
+        const QJsonArray attachments = jsonMessage.value("attachments").toArray();
+        for (const QJsonValue& v : attachments)
+        {
+            const QList<Message::Content*> attachmentContents = parseAttachment(v.toObject());
+            if (!attachmentContents.isEmpty())
+            {
+                if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+            }
+
+            for (Message::Content* embedContent : qAsConst(attachmentContents))
+            {
+                contents.append(embedContent);
+            }
+        }
+    }
+
+    {
+        //stickers
+        const QJsonArray stickerItems = jsonMessage.value("sticker_items").toArray();
+        if (!stickerItems.isEmpty())
+        {
+            if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+
+            Message::Text::Style style;
+            style.italic = true;
+            contents.append(new Message::Text("[" + tr("Sticker(s)") + "]", style));
+        }
+    }
+
+    if (contents.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "contents is empty";
+        return;
+    }
 
     Message message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), messageId);
 
@@ -767,4 +849,73 @@ bool Discord::isValidForShow(const Message &message, const Author &author, const
     }
 
     return true;
+}
+
+QString Discord::getEmbedTypeName(const QString& type)
+{
+    if (type == "rich") { return tr("generic"); }
+    if (type == "image") { return tr("image"); }
+    if (type == "video") { return tr("video"); }
+    if (type == "gifv") { return tr("gif-animation"); }
+    if (type == "article") { return tr("article"); }
+    if (type == "link") { return tr("link"); }
+
+    return tr("unknown \"%1\"").arg(type);
+}
+
+QList<Message::Content *> Discord::parseEmbed(const QJsonObject &jsonEmbed)
+{
+    QList<Message::Content *> contents;
+
+    const QString type = jsonEmbed.value("type").toString();
+    QString typeName = getEmbedTypeName(type);
+
+    if (!typeName.isEmpty())
+    {
+        typeName.replace(0, 1, typeName.at(0).toUpper());
+    }
+
+    Message::Text::Style style;
+    style.italic = true;
+
+    if (type != "link")
+    {
+        const QString title = jsonEmbed.value("title").toString();
+        const QString description = jsonEmbed.value("description").toString();
+
+        if (!title.isEmpty())
+        {
+            if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+            contents.append(new Message::Text(title, style));
+        }
+
+        if (!description.isEmpty())
+        {
+            if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+            contents.append(new Message::Text(description, style));
+        }
+    }
+
+    if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+    contents.append(new Message::Text("[" + typeName + "]", style));
+
+    return contents;
+}
+
+QList<Message::Content *> Discord::parseAttachment(const QJsonObject &jsonAttachment)
+{
+    QList<Message::Content *> contents;
+
+    const QString fileName = jsonAttachment.value("filename").toString();
+
+    Message::Text::Style style;
+    style.italic = true;
+
+    if (!fileName.isEmpty())
+    {
+        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+        contents.append(new Message::Text("[" + tr("File: %1").arg(fileName) + "]", style));
+    }
+
+    return contents;
 }
