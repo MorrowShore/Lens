@@ -8,10 +8,6 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPath, 
     , stream(settings, settingsGroupPath + "/stream")
     , lastSavedMessageId(settings, settingsGroupPath + "/lastSavedMessageId")
 {
-    std::shared_ptr<UIElementBridge> enabledElement(UIElementBridge::createSwitch(&enabled, tr("Enabled")));
-    enabledElement->setItemProperty("visible", false);
-    addUIElement(enabledElement);
-
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&stream, tr("Stream"))));
 }
 

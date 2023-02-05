@@ -37,11 +37,9 @@ ScrollView {
                 }
 
                 onCheckedChanged: {
-                    if (!enableDataChanging) {
-                        return
+                    if (enableDataChanging) {
+                        chatService.enabled = checked
                     }
-
-                    chatService.enabled = checked
                 }
             }
 
