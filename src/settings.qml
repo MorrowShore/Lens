@@ -150,7 +150,10 @@ Window {
                 keyNavigationWraps: true
                 clip: true
                 focus: true
-                ScrollBar.vertical: ScrollBar { }
+                ScrollBar.vertical: ScrollBar {
+                    interactive: false
+                    policy: ScrollBar.AlwaysOn
+                }
 
                 Component.onCompleted: {
                     for (var i = chatHandler.getServicesCount() - 1; i >= 0; --i) {
