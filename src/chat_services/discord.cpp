@@ -4,7 +4,6 @@
 #include "string_obfuscator/obfuscator.hpp"
 #include <QDesktopServices>
 #include <QTcpSocket>
-#include <QNetworkRequest>
 #include <QSysInfo>
 
 namespace
@@ -204,11 +203,7 @@ void Discord::reconnectImpl()
         return;
     }
 
-    QNetworkRequest request(QUrl("https://discord.com/api/v10/gateway/bot"));
-    request.setRawHeader("Authorization", ("Bot " + botToken.get().trimmed()).toUtf8());
-    request.setRawHeader("User-Agent", ("DiscordBot (" + QCoreApplication::applicationName() + ", " + QCoreApplication::applicationVersion() + ")").toUtf8());
-
-    QNetworkReply* reply = network.get(request);
+    QNetworkReply* reply = network.get(createRequestAsBot(QUrl("https://discord.com/api/v10/gateway/bot")));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
@@ -220,8 +215,6 @@ void Discord::reconnectImpl()
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
         reply->deleteLater();
-
-        qDebug() << root;
 
         QString url = root.value("url").toString();
         if (url.isEmpty())
@@ -323,6 +316,22 @@ void Discord::sendIdentify()
     };
 
     send(IdentifyOpCode, data);
+}
+
+QNetworkRequest Discord::createRequestAsBot(const QUrl &url) const
+{
+    if (!isCanConnect())
+    {
+        qWarning() << Q_FUNC_INFO << "can not connect";
+        return QNetworkRequest();
+    }
+
+    QNetworkRequest request(url);
+
+    request.setRawHeader("Authorization", ("Bot " + botToken.get().trimmed()).toUtf8());
+    request.setRawHeader("User-Agent", ("DiscordBot (" + QCoreApplication::applicationName() + ", " + QCoreApplication::applicationVersion() + ")").toUtf8());
+
+    return request;
 }
 
 bool Discord::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)

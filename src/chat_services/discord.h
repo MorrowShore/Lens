@@ -4,6 +4,7 @@
 #include <QWebSocket>
 #include <QNetworkReply>
 #include <QTimer>
+#include <QNetworkRequest>
 
 class Discord : public ChatService
 {
@@ -24,6 +25,7 @@ private slots:
     void sendIdentify();
 
 private:
+    QNetworkRequest createRequestAsBot(const QUrl& url) const;
     bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
     bool isCanConnect() const;
     void processDisconnected();
