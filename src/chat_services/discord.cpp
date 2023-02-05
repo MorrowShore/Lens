@@ -11,8 +11,6 @@
 namespace
 {
 
-static const QString ClientID = OBFUSCATE(DISCORD_CLIENT_ID);
-
 static const int ReconncectPeriod = 3 * 1000;
 
 static const int DispatchOpCode = 0;
@@ -48,31 +46,11 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Discord, parent)
     , settings(settings_)
     , network(network_)
-    , authStateInfo(UIElementBridge::createLabel("Loading..."))
-    , oauthToken(settings_, settingsGroupPath + "/oauth_token")
+    , botToken(settings_, settingsGroupPath + "/bot_token")
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
-    addUIElement(authStateInfo);
-
-    loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
-    {
-        if (isAuthorized())
-        {
-            revokeToken();
-        }
-        else
-        {
-            QDesktopServices::openUrl(QUrl("https://discord.com/api/oauth2/authorize"
-                                           "?redirect_uri=http%3A%2F%2Flocalhost%3A8356%2Fchat_service%2Fdiscord%2Fauth_code&response_type=code"
-                                           "&permissions=1024"
-                                           "&scope=bot"
-                                           "&client_id=" + ClientID));
-        }
-
-        updateAuthState();
-    }));
-    addUIElement(loginButton);
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "000000000000000000000000000000000000000000000000000000000000000000000000", true)));
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Discord::onWebSocketReceived);
 
@@ -128,19 +106,12 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
             return;
         }
 
-        if (!state.connected && isAuthorized())
+        if (!state.connected)
         {
             reconnect();
         }
     });
     timerReconnect.start(ReconncectPeriod);
-
-    QObject::connect(&timerValidateToken, &QTimer::timeout, this, &Discord::requestMe);
-    timerValidateToken.setInterval(60 * 60 * 1000);
-    timerValidateToken.start();
-
-    requestMe();
-    updateAuthState();
 
     reconnect();
 }
@@ -151,7 +122,7 @@ ChatService::ConnectionStateType Discord::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (isAuthorized() && enabled.get())
+    else if (!botToken.get().isEmpty() && enabled.get())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -161,9 +132,9 @@ ChatService::ConnectionStateType Discord::getConnectionStateType() const
 
 QString Discord::getStateDescription() const
 {
-    if (!isAuthorized())
+    if (botToken.get().isEmpty())
     {
-        return tr("Not authorized");
+        return tr("Bot token not specified");
     }
 
     switch (getConnectionStateType())
@@ -182,33 +153,26 @@ QString Discord::getStateDescription() const
     return "<unknown_state>";
 }
 
-TcpReply Discord::processTcpRequest(const TcpRequest &request)
+void Discord::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
 {
-    const QString path = request.getUrl().path().toLower();
-
-    if (path == "/auth_code")
+    if (!element)
     {
-        const QString code = request.getUrlQuery().queryItemValue("code");
-        const QString errorDescription = request.getUrlQuery().queryItemValue("error_description").replace('+', ' ');
-
-        if (code.isEmpty())
-        {
-            if (errorDescription.isEmpty())
-            {
-                return TcpReply::createTextHtmlError("Code is empty");
-            }
-            else
-            {
-                return TcpReply::createTextHtmlError(errorDescription);
-            }
-        }
-
-        requestOAuthToken(code);
-
-        return TcpReply::createTextHtmlOK(tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName()));
+        qCritical() << Q_FUNC_INFO << "!element";
+        return;
     }
 
-    return TcpReply::createTextHtmlError("Unknown path");
+    Setting<QString>* setting = element->getSettingString();
+    if (!setting)
+    {
+        return;
+    }
+
+    if (*&setting == &botToken)
+    {
+        const QString token = setting->get().trimmed();
+        setting->set(token);
+        reconnect();
+    }
 }
 
 void Discord::reconnectImpl()
@@ -220,7 +184,7 @@ void Discord::reconnectImpl()
 
     processDisconnected();
 
-    if (!isAuthorized() || !enabled.get())
+    if (botToken.get().isEmpty() || !enabled.get())
     {
         return;
     }
@@ -253,7 +217,7 @@ void Discord::reconnectImpl()
 
 void Discord::onWebSocketReceived(const QString &rawData)
 {
-    //qDebug("received:\n" + rawData.toUtf8() + "\n");
+    qDebug("received:\n" + rawData.toUtf8() + "\n");
 
     if (!enabled.get())
     {
@@ -307,14 +271,14 @@ void Discord::sendHeartbeat()
 
 void Discord::sendIdentify()
 {
-    if (!isAuthorized() || socket.state() != QAbstractSocket::SocketState::ConnectedState)
+    if (botToken.get().isEmpty() || socket.state() != QAbstractSocket::SocketState::ConnectedState)
     {
         return;
     }
 
     const QJsonObject data =
     {
-        { "token", OBFUSCATE(DISCORD_BOT_TOKEN) },
+        { "token", botToken.get() },
         { "properties", QJsonObject(
           {
               { "os", QSysInfo::productType() },
@@ -327,38 +291,6 @@ void Discord::sendIdentify()
     };
 
     send(IdentifyOpCode, data);
-}
-
-bool Discord::isAuthorized() const
-{
-    return !oauthToken.get().trimmed().isEmpty() && requestedMeSuccess;
-}
-
-void Discord::updateAuthState()
-{
-    if (!authStateInfo)
-    {
-        qCritical() << Q_FUNC_INFO << "!authStateInfo";
-    }
-
-    if (isAuthorized())
-    {
-        QString text = tr("Logged in");
-        if (!userName.isEmpty())
-        {
-            text = tr("Logged in as %1").arg("<b>" + userName + "</b>");
-        }
-
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text);
-        loginButton->setItemProperty("text", tr("Logout"));
-    }
-    else
-    {
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Not logged in"));
-        loginButton->setItemProperty("text", tr("Login"));
-    }
-
-    emit stateChanged();
 }
 
 void Discord::processDisconnected()
@@ -381,96 +313,6 @@ void Discord::processConnected()
     }
 }
 
-void Discord::requestOAuthToken(const QString &code)
-{
-    QNetworkRequest request(QUrl("https://discord.com/api/v10/oauth2/token"));
-    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/x-www-form-urlencoded");
-
-    QNetworkReply* reply = network.post(request,
-                                        ("client_id=" + ClientID +
-                                        "&client_secret=" + OBFUSCATE(DISCORD_SECRET) +
-                                        "&code=" + code +
-                                        "&grant_type=authorization_code"
-                                        "&redirect_uri=" + getRedirectUri()).toUtf8());
-
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        const QByteArray data = reply->readAll();
-        reply->deleteLater();
-
-        const QJsonObject root = QJsonDocument::fromJson(data).object();
-
-        const QString token = root.value("access_token").toString();
-        if (token.isEmpty())
-        {
-            qCritical() << Q_FUNC_INFO << "token ith empty";
-            return;
-        }
-
-        oauthToken.set(token);
-        requestMe();
-    });
-}
-
-void Discord::requestMe()
-{
-    QNetworkRequest request(QUrl("https://discord.com/api/v10/oauth2/@me"));
-    request.setRawHeader("Authorization", QByteArray("Bearer ") + oauthToken.get().toUtf8());
-    QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        const QByteArray data = reply->readAll();
-        reply->deleteLater();
-
-        const QJsonObject root = QJsonDocument::fromJson(data).object();
-
-        requestedMeSuccess = root.contains("application");
-        if (!requestedMeSuccess)
-        {
-            revokeToken();
-        }
-
-        if (root.contains("user"))
-        {
-            userName = root.value("user").toObject().value("username").toString();
-        }
-
-        updateAuthState();
-    });
-}
-
-QString Discord::getRedirectUri() const
-{
-    return "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
-}
-
-void Discord::revokeToken()
-{
-    if (!oauthToken.get().isEmpty())
-    {
-        QNetworkRequest request(QUrl("https://discord.com/api/v10/oauth2/token/revoke"));
-        request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/x-www-form-urlencoded");
-
-        QNetworkReply* reply = network.post(request,
-                                            ("token=" + oauthToken.get()).toUtf8());
-        connect(reply, &QNetworkReply::finished, this, [this, reply]()
-        {
-            const QByteArray data = reply->readAll();
-            reply->deleteLater();
-
-            // TODO: {"error": "invalid_client"}
-        });
-    }
-
-    oauthToken.set(QString());
-    userName = QString();
-    requestedMeSuccess = false;
-
-    updateAuthState();
-
-    reconnect();
-}
-
 void Discord::send(const int opCode, const QJsonValue &data)
 {
     QJsonObject message =
@@ -479,7 +321,7 @@ void Discord::send(const int opCode, const QJsonValue &data)
         { "d", data },
     };
 
-    //qDebug("send:\n" + QJsonDocument(message).toJson() + "\n");
+    qDebug("send:\n" + QJsonDocument(message).toJson() + "\n");
 
     socket.sendTextMessage(QString::fromUtf8(QJsonDocument(message).toJson()));
 }

@@ -384,10 +384,8 @@
         <translation type="vanished">Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="58"/>
-        <location filename="chat_services/discord.cpp" line="358"/>
         <source>Login</source>
-        <translation>Войти</translation>
+        <translation type="vanished">Войти</translation>
     </message>
     <message>
         <source>Authorized</source>
@@ -398,58 +396,62 @@
         <translation type="vanished">Авторизован как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="353"/>
         <source>Logout</source>
-        <translation>Выйти</translation>
+        <translation type="vanished">Выйти</translation>
     </message>
     <message>
         <source>Error, please try again or report the problem to the developer</source>
         <translation type="vanished">Ошибка, повторите попытку или сообщите разработчику о проблеме</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="208"/>
         <source>Now you can close the page and return to %1</source>
         <oldsource>You can close the page and return to %1</oldsource>
-        <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
+        <translation type="vanished">Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="166"/>
         <source>Not authorized</source>
-        <translation>Не авторизован</translation>
+        <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
         <source>Channel not specified</source>
         <translation type="vanished">Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="172"/>
+        <location filename="chat_services/discord.cpp" line="53"/>
+        <source>Bot token</source>
+        <translation>Токен бота</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="137"/>
+        <source>Bot token not specified</source>
+        <translation>Токен бота не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="143"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="175"/>
+        <location filename="chat_services/discord.cpp" line="146"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="178"/>
+        <location filename="chat_services/discord.cpp" line="149"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="346"/>
         <source>Logged in</source>
-        <translation>Вошёл</translation>
+        <translation type="vanished">Вошёл</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="349"/>
         <source>Logged in as %1</source>
-        <translation>Вошёл как %1</translation>
+        <translation type="vanished">Вошёл как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="357"/>
         <source>Not logged in</source>
-        <translation>Не вошёл</translation>
+        <translation type="vanished">Не вошёл</translation>
     </message>
 </context>
 <context>

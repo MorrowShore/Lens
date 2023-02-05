@@ -12,25 +12,19 @@ public:
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
-    TcpReply processTcpRequest(const TcpRequest &request) override;
 
 protected:
+    void onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element) override;
     void reconnectImpl() override;
 
 private slots:
     void onWebSocketReceived(const QString& rawData);
     void sendHeartbeat();
     void sendIdentify();
-    void requestMe();
 
 private:
-    bool isAuthorized() const;
-    void updateAuthState();
     void processDisconnected();
     void processConnected();
-    void requestOAuthToken(const QString& code);
-    QString getRedirectUri() const;
-    void revokeToken();
 
     void send(const int opCode, const QJsonValue& data);
 
@@ -49,17 +43,11 @@ private:
 
     Info info;
 
-    std::shared_ptr<UIElementBridge> authStateInfo;
-    std::shared_ptr<UIElementBridge> loginButton;
-
-    Setting<QString> oauthToken;
-    bool requestedMeSuccess = false;
-    QString userName;
+    Setting<QString> botToken;
 
     QWebSocket socket;
 
     QTimer timerReconnect;
     QTimer heartbeatTimer;
     QTimer heartbeatAcknowledgementTimer;
-    QTimer timerValidateToken;
 };
