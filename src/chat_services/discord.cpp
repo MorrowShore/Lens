@@ -16,6 +16,7 @@ static const int ReconncectPeriod = 3 * 1000;
 static const int DispatchOpCode = 0;
 static const int HeartbeatOpCode = 1;
 static const int IdentifyOpCode = 2;
+static const int InvalidSessionOpCode = 9;
 static const int HelloOpCode = 10;
 static const int HeartAckbeatOpCode = 11;
 
@@ -29,11 +30,40 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Discord, parent)
     , settings(settings_)
     , network(network_)
+    , applicationId(settings_, settingsGroupPath + "/client_id")
     , botToken(settings_, settingsGroupPath + "/bot_token")
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "000000000000000000000000000000000000000000000000000000000000000000000000", true)));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create an app in the Discord Developer Portal"))));
+
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open Discord Developer Portal"), []()
+    {
+        QDesktopServices::openUrl(QUrl("https://discord.com/developers"));
+    })));
+
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Find and paste the Application ID below"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true)));
+
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("3. " + tr("Create a bot (in Bot section)"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("4. " + tr("Allow the bot to read the message content (Message Content Intent checkbox)"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("5. " + tr("Reset the token (button Reset Token). The bot's previous token will become invalid"))));
+
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("6. " + tr("Copy the token and paste below. DON'T DISCLOSE THE BOT'S TOKEN!"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000AAAAAAAAAAA0000000000BBBBBBBBBBBB000000000CCCCCCCCCC0000000000000", true)));
+
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("7. " + tr("Add the bot to the servers you need, while allowing reading messages"))));
+    connectBotToGuild = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Add bot to server"), [this]()
+    {
+        QDesktopServices::openUrl(QUrl("https://discord.com/api/oauth2/authorize"
+                                       "?permissions=1024"
+                                       "&scope=bot"
+                                       "&client_id=" + applicationId.get().trimmed()));
+    }));
+    addUIElement(connectBotToGuild);
+
+    applicationId.setCallbackValueChanged([this](const QString&) { updateUI(); });
+    botToken.setCallbackValueChanged([this](const QString&) { updateUI(); });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Discord::onWebSocketReceived);
 
@@ -105,7 +135,7 @@ ChatService::ConnectionStateType Discord::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (!botToken.get().isEmpty() && enabled.get())
+    else if (isCanConnect() && enabled.get())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -115,6 +145,11 @@ ChatService::ConnectionStateType Discord::getConnectionStateType() const
 
 QString Discord::getStateDescription() const
 {
+    if (applicationId.get().isEmpty())
+    {
+        return tr("Application ID not specified");
+    }
+
     if (botToken.get().isEmpty())
     {
         return tr("Bot token not specified");
@@ -150,10 +185,8 @@ void Discord::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> elem
         return;
     }
 
-    if (*&setting == &botToken)
+    if (*&setting == &applicationId || *&setting == &botToken)
     {
-        const QString token = setting->get().trimmed();
-        setting->set(token);
         reconnect();
     }
 }
@@ -167,7 +200,7 @@ void Discord::reconnectImpl()
 
     processDisconnected();
 
-    if (botToken.get().isEmpty() || !enabled.get())
+    if (!isCanConnect() || !enabled.get())
     {
         return;
     }
@@ -223,6 +256,14 @@ void Discord::onWebSocketReceived(const QString &rawData)
     {
         parseDispatch(root.value("t").toString(), root.value("d").toObject());
     }
+    else if (opCode == HeartbeatOpCode)
+    {
+        sendHeartbeat();
+    }
+    else if (opCode == InvalidSessionOpCode)
+    {
+        parseInvalidSession(root.value("d").toBool());
+    }
     else if (opCode == HelloOpCode)
     {
         parseHello(root.value("d").toObject());
@@ -231,10 +272,6 @@ void Discord::onWebSocketReceived(const QString &rawData)
     {
         heartbeatAcknowledgementTimer.setInterval(info.heartbeatInterval * 1.5);
         heartbeatAcknowledgementTimer.start();
-    }
-    else if (opCode == HeartbeatOpCode)
-    {
-        sendHeartbeat();
     }
     else
     {
@@ -254,7 +291,7 @@ void Discord::sendHeartbeat()
 
 void Discord::sendIdentify()
 {
-    if (botToken.get().isEmpty() || socket.state() != QAbstractSocket::SocketState::ConnectedState)
+    if (!isCanConnect() || socket.state() != QAbstractSocket::SocketState::ConnectedState)
     {
         return;
     }
@@ -274,6 +311,11 @@ void Discord::sendIdentify()
     };
 
     send(IdentifyOpCode, data);
+}
+
+bool Discord::isCanConnect() const
+{
+    return !applicationId.get().isEmpty() && !botToken.get().isEmpty();
 }
 
 void Discord::processDisconnected()
@@ -341,6 +383,12 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
     }
 }
 
+void Discord::parseInvalidSession(const bool resumableSession)
+{
+    //TODO
+    reconnect();
+}
+
 void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 {
     QList<Message> messages;
@@ -387,4 +435,9 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), messageId));
 
     emit readyRead(messages, authors);
+}
+
+void Discord::updateUI()
+{
+    connectBotToGuild->setItemProperty("enabled", isCanConnect());
 }

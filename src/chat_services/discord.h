@@ -23,14 +23,18 @@ private slots:
     void sendIdentify();
 
 private:
+    bool isCanConnect() const;
     void processDisconnected();
     void processConnected();
 
     void send(const int opCode, const QJsonValue& data);
 
-    void parseHello(const QJsonObject& data);
     void parseDispatch(const QString& eventType, const QJsonObject& data);
+    void parseHello(const QJsonObject& data);
+    void parseInvalidSession(const bool resumableSession);
     void parseMessageCreate(const QJsonObject& jsonMessage);
+
+    void updateUI();
 
     struct Info
     {
@@ -43,7 +47,9 @@ private:
 
     Info info;
 
+    Setting<QString> applicationId;
     Setting<QString> botToken;
+    std::shared_ptr<UIElementBridge> connectBotToGuild;
 
     QWebSocket socket;
 

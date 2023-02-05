@@ -417,27 +417,84 @@
         <translation type="vanished">Канал не указан</translation>
     </message>
     <message>
+        <location filename="chat_services/discord.cpp" line="46"/>
+        <source>Application ID</source>
+        <translation>ID приложения</translation>
+    </message>
+    <message>
         <location filename="chat_services/discord.cpp" line="53"/>
         <source>Bot token</source>
         <translation>Токен бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="137"/>
+        <location filename="chat_services/discord.cpp" line="38"/>
+        <source>Create an app in the Discord Developer Portal</source>
+        <translation>Создайте приложение в Discord Developer Portal</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="40"/>
+        <source>Open Discord Developer Portal</source>
+        <translation>Открыть Discord Developer Portal</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="45"/>
+        <source>Find and paste the Application ID below</source>
+        <translation>Найдите и вставьте ID приложения (Application ID) ниже</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="48"/>
+        <source>Create a bot (in Bot section)</source>
+        <translation>Создайте бота (в разделе Bot)</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="49"/>
+        <source>Allow the bot to read the message content (Message Content Intent checkbox)</source>
+        <translation>Разрешите боту чтение содержания сообщейний (галочка Message Content Intent)</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="50"/>
+        <source>Reset the token (button Reset Token). The bot&apos;s previous token will become invalid</source>
+        <translation>Сбросьте токен (кнопка Reset Token). Предыдущий токен бота станет недействительным</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="52"/>
+        <source>Copy the token and paste below. DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
+        <translation>Скопируйте токен и вставьте в поле ниже. НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="55"/>
+        <source>Add the bot to the servers you need, while allowing reading messages</source>
+        <oldsource>Connect the bot to the servers you need, while allowing reading messages</oldsource>
+        <translation>Добавьте бота к нужным вам серверам, при этом разрешите чтение сообщений</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="56"/>
+        <source>Add bot to server</source>
+        <oldsource>Connect bot to server</oldsource>
+        <translation>Добавить бота на сервер</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="150"/>
+        <source>Application ID not specified</source>
+        <translation>ID приложения не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="155"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="143"/>
+        <location filename="chat_services/discord.cpp" line="161"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="146"/>
+        <location filename="chat_services/discord.cpp" line="164"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="149"/>
+        <location filename="chat_services/discord.cpp" line="167"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

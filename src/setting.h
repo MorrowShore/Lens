@@ -55,6 +55,11 @@ public:
             settings.setValue(key, QVariant::fromValue(value));
         }
 
+        if (valueChangedCallback)
+        {
+            valueChangedCallback(value);
+        }
+
         return true;
     }
 
@@ -63,8 +68,15 @@ public:
         return key;
     }
 
+    inline void setCallbackValueChanged(const std::function<void(const T& value)> valueChangedCallback_)
+    {
+        valueChangedCallback = valueChangedCallback_;
+    }
+
 private:
     QSettings& settings;
     const QString key;
     T value;
+
+    std::function<void(const T& value)> valueChangedCallback = nullptr;
 };
