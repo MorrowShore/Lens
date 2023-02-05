@@ -21,22 +21,19 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("<b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
-
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("1. Create a bot with @BotFather\n"
-                                                "2. Add the bot to the desired groups or channels\n"
-                                                "3. Give admin rights to the bot in these groups/channels\n"
-                                                "4. Specify your bot token above\n"
-                                                "\n"
-                                                "It is not recommended to use a bot that is already being used for other purposes\n"
-                                                "It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()))));
-
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Create bot with @BotFather"), []()
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create a bot with @BotFather"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open @BotFather"), []()
     {
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     })));
-
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Copy and paste bot token") + ":")));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("<b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("3. " + tr("Add the bot to the desired groups or channels"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("4. " + tr("Give admin rights to the bot in these groups/channels"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(" ")));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("It is not recommended to use a bot that is already being used for other purposes"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showChatTitle, tr("Show chat name when possible"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"))));
 

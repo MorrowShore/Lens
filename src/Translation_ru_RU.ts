@@ -417,90 +417,91 @@
         <translation type="vanished">Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="46"/>
+        <location filename="chat_services/discord.cpp" line="43"/>
         <source>Application ID</source>
         <translation>ID приложения</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="53"/>
+        <location filename="chat_services/discord.cpp" line="48"/>
         <source>Bot token</source>
         <translation>Токен бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="38"/>
+        <location filename="chat_services/discord.cpp" line="37"/>
         <source>Create an app in the Discord Developer Portal</source>
         <translation>Создайте приложение в Discord Developer Portal</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="40"/>
+        <location filename="chat_services/discord.cpp" line="38"/>
         <source>Open Discord Developer Portal</source>
         <translation>Открыть Discord Developer Portal</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="45"/>
-        <source>Find and paste the Application ID below</source>
-        <translation>Найдите и вставьте ID приложения (Application ID) ниже</translation>
+        <location filename="chat_services/discord.cpp" line="42"/>
+        <source>Find and paste the Application ID</source>
+        <oldsource>Find and paste the Application ID below</oldsource>
+        <translation>Найдите и вставьте ID приложения (Application ID)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="48"/>
+        <location filename="chat_services/discord.cpp" line="44"/>
         <source>Create a bot (in Bot section)</source>
         <translation>Создайте бота (в разделе Bot)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="49"/>
+        <location filename="chat_services/discord.cpp" line="45"/>
         <source>Allow the bot to read the message content (Message Content Intent checkbox)</source>
         <translation>Разрешите боту чтение содержания сообщейний (галочка Message Content Intent)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="50"/>
+        <location filename="chat_services/discord.cpp" line="46"/>
         <source>Reset the token (button Reset Token). The bot&apos;s previous token will become invalid</source>
         <translation>Сбросьте токен (кнопка Reset Token). Предыдущий токен бота станет недействительным</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="52"/>
-        <source>Copy the token and paste below</source>
-        <oldsource>Copy the token and paste below. DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</oldsource>
-        <translation>Скопируйте токен и вставьте в поле ниже</translation>
+        <location filename="chat_services/discord.cpp" line="47"/>
+        <source>Copy and paste bot token</source>
+        <oldsource>Copy the token and paste</oldsource>
+        <translation>Скопируйте и вставьте токен бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="54"/>
+        <location filename="chat_services/discord.cpp" line="49"/>
         <source>DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
         <translation>НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="56"/>
+        <location filename="chat_services/discord.cpp" line="50"/>
         <source>Add the bot to the servers you need</source>
         <oldsource>Add the bot to the servers you need, while allowing reading messages</oldsource>
         <translation>Добавьте бота к нужным вам серверам</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="57"/>
+        <location filename="chat_services/discord.cpp" line="51"/>
         <source>Add bot to server</source>
         <oldsource>Connect bot to server</oldsource>
         <translation>Добавить бота на сервер</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="151"/>
+        <location filename="chat_services/discord.cpp" line="145"/>
         <source>Application ID not specified</source>
         <translation>ID приложения не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="156"/>
+        <location filename="chat_services/discord.cpp" line="150"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="162"/>
+        <location filename="chat_services/discord.cpp" line="156"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="165"/>
+        <location filename="chat_services/discord.cpp" line="159"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="168"/>
+        <location filename="chat_services/discord.cpp" line="162"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -684,7 +685,7 @@
 <context>
     <name>Telegram</name>
     <message>
-        <location filename="chat_services/telegram.cpp" line="24"/>
+        <location filename="chat_services/telegram.cpp" line="30"/>
         <source>Bot token</source>
         <translation>Токен бота</translation>
     </message>
@@ -726,18 +727,17 @@ It is not recommended to use more than one %1 with the same bot</oldsource>
 Не рекомендуется использовать более одного %1 с одним и тем же ботом</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="35"/>
         <source>Create bot with @BotFather</source>
-        <translation>Создать бота с помощью @BotFather</translation>
+        <translation type="vanished">Создать бота с помощью @BotFather</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="40"/>
+        <location filename="chat_services/telegram.cpp" line="37"/>
         <source>Show chat name when possible</source>
         <oldsource>Show chat title</oldsource>
         <translation>Показывать название чата при возможности</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="41"/>
+        <location filename="chat_services/telegram.cpp" line="38"/>
         <source>Allow private chats (at one&apos;s own risk)</source>
         <oldsource>Allow private chats (turn on at your own risk)</oldsource>
         <translation>Разрешить приватные чаты (на свой страх и риск)</translation>
@@ -747,7 +747,7 @@ It is not recommended to use more than one %1 with the same bot</oldsource>
         <translation type="vanished">Выключено</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="88"/>
+        <location filename="chat_services/telegram.cpp" line="85"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
@@ -756,12 +756,11 @@ It is not recommended to use more than one %1 with the same bot</oldsource>
         <translation type="vanished">Токен бота некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="25"/>
+        <location filename="chat_services/telegram.cpp" line="31"/>
         <source>DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
         <translation>НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="27"/>
         <source>1. Create a bot with @BotFather
 2. Add the bot to the desired groups or channels
 3. Give admin rights to the bot in these groups/channels
@@ -769,7 +768,7 @@ It is not recommended to use more than one %1 with the same bot</oldsource>
 
 It is not recommended to use a bot that is already being used for other purposes
 It is not recommended to use more than one %1 with the same bot</source>
-        <translation>1. Создайте бота с помощью @BotFather
+        <translation type="vanished">1. Создайте бота с помощью @BotFather
 2. Добавьте бота в нужные группы или каналы
 3. Дайте боту права администратора в этих группах/каналах
 4. Укажите токен вашего бота выше
@@ -778,102 +777,137 @@ It is not recommended to use more than one %1 with the same bot</source>
 Не рекомендуется использовать более одного %1 с одним и тем же ботом</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="91"/>
+        <location filename="chat_services/telegram.cpp" line="24"/>
+        <source>Create a bot with @BotFather</source>
+        <translation>Создайте бота с помощью @BotFather</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="25"/>
+        <source>Open @BotFather</source>
+        <translation>Открыть @BotFather</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="29"/>
+        <source>Copy and paste bot token</source>
+        <translation>Скопируйте и вставьте токен бота</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="32"/>
+        <source>Add the bot to the desired groups or channels</source>
+        <translation>Добавьте бота в нужные группы или каналы</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="33"/>
+        <source>Give admin rights to the bot in these groups/channels</source>
+        <translation>Дайте боту права администратора в этих группах/каналах</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="35"/>
+        <source>It is not recommended to use a bot that is already being used for other purposes</source>
+        <translation>Не рекомендуется использовать бота, который уже используются для других целей</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="36"/>
+        <source>It is not recommended to use more than one %1 with the same bot</source>
+        <translation>Не рекомендуется использовать более одного %1 с одним и тем же ботом</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="88"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="94"/>
+        <location filename="chat_services/telegram.cpp" line="91"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="97"/>
+        <location filename="chat_services/telegram.cpp" line="94"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="357"/>
+        <location filename="chat_services/telegram.cpp" line="354"/>
         <source>animation</source>
         <translation>анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="358"/>
+        <location filename="chat_services/telegram.cpp" line="355"/>
         <source>audio</source>
         <translation>аудио</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="359"/>
+        <location filename="chat_services/telegram.cpp" line="356"/>
         <source>document</source>
         <translation>документ</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="360"/>
+        <location filename="chat_services/telegram.cpp" line="357"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="361"/>
+        <location filename="chat_services/telegram.cpp" line="358"/>
         <source>sticker</source>
         <translation>стикер</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="362"/>
+        <location filename="chat_services/telegram.cpp" line="359"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="363"/>
+        <location filename="chat_services/telegram.cpp" line="360"/>
         <source>video note</source>
         <translation>видеосообщение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="364"/>
+        <location filename="chat_services/telegram.cpp" line="361"/>
         <source>voice note</source>
         <translation>голосовое сообщение</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="365"/>
+        <location filename="chat_services/telegram.cpp" line="362"/>
         <source>contact</source>
         <translation>контакт</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="366"/>
+        <location filename="chat_services/telegram.cpp" line="363"/>
         <source>dice</source>
         <translation>игральная кость</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="367"/>
+        <location filename="chat_services/telegram.cpp" line="364"/>
         <source>game</source>
         <translation>игра</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="368"/>
+        <location filename="chat_services/telegram.cpp" line="365"/>
         <source>poll</source>
         <translation>голосование</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="369"/>
+        <location filename="chat_services/telegram.cpp" line="366"/>
         <source>venue</source>
         <translation>место проведения</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="370"/>
+        <location filename="chat_services/telegram.cpp" line="367"/>
         <source>location</source>
         <translation>локация</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="371"/>
+        <location filename="chat_services/telegram.cpp" line="368"/>
         <source>video chat scheduled</source>
         <translation>видеочат запланирован</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="372"/>
+        <location filename="chat_services/telegram.cpp" line="369"/>
         <source>video chat started</source>
         <translation>видеочат начался</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="373"/>
+        <location filename="chat_services/telegram.cpp" line="370"/>
         <source>video chat ended</source>
         <translation>видеочат завершён</translation>
     </message>
