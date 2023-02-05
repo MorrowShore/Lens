@@ -886,7 +886,7 @@ It is not recommended to use more than one %1 with the same bot</oldsource>
     <message>
         <location filename="chat_services/twitch.cpp" line="773"/>
         <source>Logged in as %1</source>
-        <translation>Вошёл как %1</translation>
+        <translation>Вы вошли как %1</translation>
     </message>
     <message>
         <source>Login to display avatars</source>
