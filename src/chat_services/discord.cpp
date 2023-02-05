@@ -62,7 +62,7 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     addUIElement(connectBotToGuild);
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("To display private chats/channels, add the bot\n"
                                                                                   "to these chats/channels in access rights (at your own risk)"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showNsfwChannels, tr("Show NSFW channels"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showGuildName, tr("Show server name"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showChannelName, tr("Show channel name"))));
 
@@ -183,15 +183,21 @@ void Discord::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> elem
         return;
     }
 
-    Setting<QString>* setting = element->getSettingString();
-    if (!setting)
+    if (Setting<QString>* setting = element->getSettingString(); setting)
     {
-        return;
+        if (*&setting == &applicationId || *&setting == &botToken)
+        {
+            reconnect();
+        }
     }
 
-    if (*&setting == &applicationId || *&setting == &botToken)
+    if (Setting<bool>* setting = element->getSettingBool(); setting)
     {
-        reconnect();
+        if (*&setting == &showNsfwChannels)
+        {
+            guilds.clear();
+            channels.clear();
+        }
     }
 }
 
@@ -565,12 +571,8 @@ void Discord::requestGuild(const QString &guildId)
 
         guild.id = root.value("id").toString();
         guild.name = root.value("name").toString();
-        guild.nsfw = root.value("nsfw").toBool();
-        guild.nsfwLevel = root.value("nsfw_level").toInt();
 
         guilds.insert(guild.id, guild);
-
-        qDebug() << root;
 
         processDeferredMessages(guild.id, std::nullopt);
     });
@@ -598,8 +600,6 @@ void Discord::requestChannel(const QString &channelId)
 
         channels.insert(channel.id, channel);
 
-        qDebug() << root;
-
         processDeferredMessages(std::nullopt, channel.id);
     });
 }
@@ -617,7 +617,6 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
 
     if (guildId_)
     {
-        qDebug() << "=========== 1";
         guildId = *guildId_;
 
         if (requestedGuildsChannels.contains(*guildId_))
@@ -632,7 +631,6 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
     }
     else if (channelId_)
     {
-        qDebug() << "=========== 2";
         channelId = *channelId_;
 
         if (requestedGuildsChannels.values().contains(*channelId_))
@@ -660,6 +658,11 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
     if (channelId.isEmpty())
     {
         qWarning() << Q_FUNC_INFO << "channelId is empty";
+        return;
+    }
+
+    if (!guilds.contains(guildId) || !channels.contains(channelId))
+    {
         return;
     }
 
@@ -722,7 +725,7 @@ bool Discord::isValidForShow(const Message &message, const Author &author, const
     Q_UNUSED(message)
     Q_UNUSED(author)
 
-    if (!showNsfwChannels.get() && (guild.nsfw || channel.nsfw))
+    if (!showNsfwChannels.get() && channel.nsfw)
     {
         return false;
     }

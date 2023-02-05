@@ -499,8 +499,9 @@ to these chats/channels in access rights (at your own risk)</source>
     </message>
     <message>
         <location filename="chat_services/discord.cpp" line="65"/>
-        <source>Show NSFW channels</source>
-        <translation>Показывать NSFW каналы</translation>
+        <source>Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord</source>
+        <oldsource>Show NSFW channels (at your own risk)</oldsource>
+        <translation>Показывать NSFW каналы (на свой страх и риск). Перезапустите %1, если статус канала изменён в Discord</translation>
     </message>
     <message>
         <location filename="chat_services/discord.cpp" line="66"/>

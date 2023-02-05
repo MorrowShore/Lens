@@ -37,8 +37,6 @@ private:
     {
         QString id;
         QString name;
-        bool nsfw = false;
-        bool nsfwLevel = 0;
     };
 
     struct Channel
