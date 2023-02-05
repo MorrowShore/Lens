@@ -281,7 +281,7 @@ void Discord::reconnectImpl()
 
 void Discord::onWebSocketReceived(const QString &rawData)
 {
-    qDebug("received:\n" + rawData.toUtf8() + "\n");
+    //qDebug("received:\n" + rawData.toUtf8() + "\n");
 
     if (!enabled.get())
     {
@@ -496,7 +496,7 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
 
 void Discord::parseInvalidSession(const bool resumableSession)
 {
-    //TODO
+    Q_UNUSED(resumableSession) //TODO
     reconnect();
 }
 
@@ -532,6 +532,8 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
                   QUrl("https://discordapp.com/users/" + userId));
 
     const QString messageId = jsonMessage.value("id").toString();
+
+    const QDateTime dateTime = QDateTime::fromString(jsonMessage.value("timestamp").toString(), Qt::ISODateWithMs).toLocalTime();
 
     QList<Message::Content*> contents;
 
@@ -595,7 +597,7 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
         return;
     }
 
-    Message message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), messageId);
+    Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
 
     bool needDeffered = false;
 
