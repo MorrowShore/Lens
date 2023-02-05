@@ -32,6 +32,9 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
     , network(network_)
     , applicationId(settings_, settingsGroupPath + "/client_id")
     , botToken(settings_, settingsGroupPath + "/bot_token")
+    , showNsfwChannels(settings_, settingsGroupPath + "/show_nsfw_channels", false)
+    , showGuildName(settings_, settingsGroupPath + "/show_guild_name", true)
+    , showChannelName(settings_, settingsGroupPath + "/show_channel_name", true)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
@@ -57,6 +60,11 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
                                        "&client_id=" + applicationId.get().trimmed()));
     }));
     addUIElement(connectBotToGuild);
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("To display private chats/channels, add the bot\n"
+                                                                                  "to these chats/channels in access rights (at your own risk)"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showNsfwChannels, tr("Show NSFW channels"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showGuildName, tr("Show server name"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showChannelName, tr("Show channel name"))));
 
     applicationId.setCallbackValueChanged([this](const QString&) { updateUI(); });
     botToken.setCallbackValueChanged([this](const QString&) { updateUI(); });
@@ -522,12 +530,15 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
         const Guild& guild = guilds[guildId];
         const Channel& channel = channels[channelId];
 
-        message.setDestination(guild.name + "/" + channel.name);
+        message.setDestination(getDestination(guild, channel));
 
-        QList<Message> messages({ message });
-        QList<Author> authors({ author });
+        if (isValidForShow(message, author, guild, channel))
+        {
+            QList<Message> messages({ message });
+            QList<Author> authors({ author });
 
-        emit readyRead(messages, authors);
+            emit readyRead(messages, authors);
+        }
     }
 }
 
@@ -559,7 +570,7 @@ void Discord::requestGuild(const QString &guildId)
 
         guilds.insert(guild.id, guild);
 
-        qDebug() << guild.name;
+        qDebug() << root;
 
         processDeferredMessages(guild.id, std::nullopt);
     });
@@ -587,7 +598,7 @@ void Discord::requestChannel(const QString &channelId)
 
         channels.insert(channel.id, channel);
 
-        qDebug() << channel.name;
+        qDebug() << root;
 
         processDeferredMessages(std::nullopt, channel.id);
     });
@@ -667,13 +678,54 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
     for (const QPair<Message, Author>& messageAuthor : qAsConst(currentDeferredMessages))
     {
         Message message = messageAuthor.first;
-        message.setDestination(guild.name + "/" + channel.name);
-        messages.append(message);
-        authors.append(messageAuthor.second);
+        message.setDestination(getDestination(guild, channel));
+
+        const Author& author = messageAuthor.second;
+
+        if (isValidForShow(message, author, guild, channel))
+        {
+            messages.append(message);
+            authors.append(author);
+        }
     }
 
     if (!messages.isEmpty() && !authors.isEmpty())
     {
         emit readyRead(messages, authors);
     }
+}
+
+QString Discord::getDestination(const Guild &guild, const Channel &channel) const
+{
+    QString result;
+
+    if (showGuildName.get())
+    {
+        result += guild.name;
+    }
+
+    if (showChannelName.get())
+    {
+        if (!result.isEmpty())
+        {
+            result += " / ";
+        }
+
+        result += channel.name;
+    }
+
+    return result;
+}
+
+bool Discord::isValidForShow(const Message &message, const Author &author, const Guild &guild, const Channel &channel) const
+{
+    Q_UNUSED(message)
+    Q_UNUSED(author)
+
+    if (!showNsfwChannels.get() && (guild.nsfw || channel.nsfw))
+    {
+        return false;
+    }
+
+    return true;
 }
