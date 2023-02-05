@@ -2,6 +2,7 @@
 
 #include "chatservice.h"
 #include <QWebSocket>
+#include <QNetworkReply>
 #include <QTimer>
 
 class Discord : public ChatService
@@ -23,6 +24,7 @@ private slots:
     void sendIdentify();
 
 private:
+    bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
     bool isCanConnect() const;
     void processDisconnected();
     void processConnected();

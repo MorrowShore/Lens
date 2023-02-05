@@ -5,7 +5,6 @@
 #include <QDesktopServices>
 #include <QTcpSocket>
 #include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QSysInfo>
 
 namespace
@@ -205,13 +204,26 @@ void Discord::reconnectImpl()
         return;
     }
 
-    QNetworkReply* reply = network.get(QNetworkRequest(QUrl("https://discord.com/api/v10/gateway")));
+    QNetworkRequest request(QUrl("https://discord.com/api/v10/gateway/bot"));
+    request.setRawHeader("Authorization", ("Bot " + botToken.get().trimmed()).toUtf8());
+    request.setRawHeader("User-Agent", ("DiscordBot (" + QCoreApplication::applicationName() + ", " + QCoreApplication::applicationVersion() + ")").toUtf8());
+
+    QNetworkReply* reply = network.get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        const QByteArray data = reply->readAll();
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
         reply->deleteLater();
 
-        QString url = QJsonDocument::fromJson(data).object().value("url").toString();
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+        reply->deleteLater();
+
+        qDebug() << root;
+
+        QString url = root.value("url").toString();
         if (url.isEmpty())
         {
             qCritical() << Q_FUNC_INFO << "url is empty";
@@ -313,6 +325,43 @@ void Discord::sendIdentify()
     send(IdentifyOpCode, data);
 }
 
+bool Discord::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
+{
+    resultData.clear();
+
+    if (!reply)
+    {
+        qWarning() << tag << ": !reply";
+        return false;
+    }
+
+    int statusCode = 200;
+    const QVariant rawStatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (rawStatusCode.isValid())
+    {
+        statusCode = rawStatusCode.toInt();
+        if (statusCode != 200)
+        {
+            qWarning() << tag << ": status code:" << statusCode;
+        }
+    }
+
+    resultData = reply->readAll();
+    if (resultData.isEmpty() && statusCode != 200)
+    {
+        qWarning() << tag << ": data is empty";
+        return false;
+    }
+
+    if (resultData.startsWith("error code:"))
+    {
+        qWarning() << tag << ":" << resultData;
+        return false;
+    }
+
+    return true;
+}
+
 bool Discord::isCanConnect() const
 {
     return !applicationId.get().isEmpty() && !botToken.get().isEmpty();
@@ -394,6 +443,9 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     QList<Message> messages;
     QList<Author> authors;
 
+    const QString guildId = jsonMessage.value("guild_id").toString();
+    const QString channelId = jsonMessage.value("channel_id").toString();
+
     const QJsonObject jsonAuthor = jsonMessage.value("author").toObject();
 
     const QString userName = jsonAuthor.value("username").toString();
@@ -435,6 +487,14 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), messageId));
 
     emit readyRead(messages, authors);
+
+    QNetworkRequest request(QUrl("https://discord.com/api/v10/guilds/" + guildId));
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [reply]()
+    {
+        qDebug() << reply->readAll();
+        reply->deleteLater();
+    });
 }
 
 void Discord::updateUI()
