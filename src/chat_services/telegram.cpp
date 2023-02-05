@@ -21,6 +21,8 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
+    authStateInfo = std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("Loading..."));
+    addUIElement(authStateInfo);
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create a bot with @BotFather"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open @BotFather"), []()
@@ -40,6 +42,8 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     timerRequestUpdates.start(RequestChatInterval);
 
     reconnect();
+
+    updateUI();
 }
 
 void Telegram::reconnectImpl()
@@ -51,6 +55,8 @@ void Telegram::reconnectImpl()
 
     state = State();
     info = Info();
+
+    updateUI();
 
     if (!enabled.get())
     {
@@ -190,12 +196,14 @@ void Telegram::requestUpdates()
 
             const QJsonObject jsonUser = root.value("result").toObject();
 
+            const QString userName = jsonUser.value("username").toString();
             const int64_t botUserId = jsonUser.value("id").toVariant().toLongLong(0);
 
             if (botUserId != 0)
             {
                 info.badChatReplies = 0;
                 info.botUserId = botUserId;
+                info.botDisplayName = userName;
 
                 if (!state.connected || !botToken.get().trimmed().isEmpty())
                 {
@@ -203,6 +211,8 @@ void Telegram::requestUpdates()
                     emit connectedChanged(true, QString());
                     emit stateChanged();
                 }
+
+                updateUI();
             }
         });
     }
@@ -533,4 +543,21 @@ void Telegram::addServiceContent(QList<Message::Content *>& contents, const QStr
     Message::Text::Style style;
     style.italic = true;
     contents.append(new Message::Text("[" + name + "]", style));
+}
+
+void Telegram::updateUI()
+{
+    QString botStatus = tr("Bot status") + ": ";
+
+    if (state.connected)
+    {
+        botStatus += tr("connected as %1").arg("<b>" + info.botDisplayName + "</b>");
+
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + botStatus);
+    }
+    else
+    {
+        botStatus += tr("not connected");
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + botStatus);
+    }
 }

@@ -38,10 +38,11 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true)));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "AbCdEfGhIjKlMnOpQrStUvWxYz.0123456789", true)));
     authStateInfo = std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("Loading..."));
     addUIElement(authStateInfo);
+
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true)));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "AbCdEfGhIjKlMnOpQrStUvWxYz.0123456789", true)));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create an app in the Discord Developer Portal"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open Discord Developer Portal"), []()
     {

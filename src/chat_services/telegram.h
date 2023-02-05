@@ -27,18 +27,22 @@ private:
     void requestUserPhoto(const QString& authorId, const int64_t& userId);
     void requestPhotoFileInfo(const QString& authorId, const QString& fileId);
     void addServiceContent(QList<Message::Content*>& contents, const QString& name);
+    void updateUI();
 
     QSettings& settings;
     QNetworkAccessManager& network;
 
     struct Info
     {
+        QString botDisplayName;
         int64_t botUserId = -1;
         int badChatReplies = 0;
         int64_t lastUpdateId = -1;
     };
 
     Info info;
+
+    std::shared_ptr<UIElementBridge> authStateInfo;
 
     QTimer timerRequestUpdates;
 
