@@ -1,6 +1,8 @@
 #pragma once
 
 #include "chatservice.h"
+#include "models/message.h"
+#include "models/author.h"
 #include <QWebSocket>
 #include <QNetworkReply>
 #include <QTimer>
@@ -40,10 +42,30 @@ private:
 
     void updateUI();
 
+    void requestGuild(const QString& guildId);
+    void requestChannel(const QString& channelId);
+
+    void processDeferredMessages(const std::optional<QString>& guildId, const std::optional<QString>& channelId);
+
     struct Info
     {
         int heartbeatInterval = 30000;
         QJsonValue lastSequence;
+    };
+
+    struct Guild
+    {
+        QString id;
+        QString name;
+        bool nsfw = false;
+        bool nsfwLevel = 0;
+    };
+
+    struct Channel
+    {
+        QString id;
+        QString name;
+        bool nsfw = false;
     };
 
     QSettings& settings;
@@ -60,4 +82,10 @@ private:
     QTimer timerReconnect;
     QTimer heartbeatTimer;
     QTimer heartbeatAcknowledgementTimer;
+
+    QMap<QString, Guild> guilds;
+    QMap<QString, Channel> channels;
+
+    QMap<QString, QString> requestedGuildsChannels; // <guildId, channelId>
+    QMap<QPair<QString, QString>, QList<QPair<Message, Author>>> deferredMessages; // QMap<<guildId, channelId>, QList<QPair<Messsage, Author>>>
 };

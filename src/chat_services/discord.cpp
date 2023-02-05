@@ -22,6 +22,8 @@ static const int HeartAckbeatOpCode = 11;
 static const int INTENT_GUILD_MESSAGES = 1 << 9;
 static const int INTENT_MESSAGE_CONTENT = 1 << 15;
 
+static const QString ApiUrlPrefix = "https://discord.com/api/v10";
+
 }
 
 Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
@@ -40,15 +42,16 @@ Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetwor
         QDesktopServices::openUrl(QUrl("https://discord.com/developers"));
     })));
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Find and paste the Application ID below"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Find and paste the Application ID below") + ":")));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true)));
 
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("3. " + tr("Create a bot (in Bot section)"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("4. " + tr("Allow the bot to read the message content (Message Content Intent checkbox)"))));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("5. " + tr("Reset the token (button Reset Token). The bot's previous token will become invalid"))));
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("6. " + tr("Copy the token and paste below. DON'T DISCLOSE THE BOT'S TOKEN!"))));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("6. " + tr("Copy the token and paste below") + ":")));
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000AAAAAAAAAAA0000000000BBBBBBBBBBBB000000000CCCCCCCCCC0000000000000", true)));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("<b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
 
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("7. " + tr("Add the bot to the servers you need"))));
     connectBotToGuild = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Add bot to server"), [this]()
@@ -203,7 +206,7 @@ void Discord::reconnectImpl()
         return;
     }
 
-    QNetworkReply* reply = network.get(createRequestAsBot(QUrl("https://discord.com/api/v10/gateway/bot")));
+    QNetworkReply* reply = network.get(createRequestAsBot(QUrl(ApiUrlPrefix + "/gateway/bot")));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
@@ -214,7 +217,6 @@ void Discord::reconnectImpl()
         reply->deleteLater();
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
-        reply->deleteLater();
 
         QString url = root.value("url").toString();
         if (url.isEmpty())
@@ -449,9 +451,6 @@ void Discord::parseInvalidSession(const bool resumableSession)
 
 void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 {
-    QList<Message> messages;
-    QList<Author> authors;
-
     const QString guildId = jsonMessage.value("guild_id").toString();
     const QString channelId = jsonMessage.value("channel_id").toString();
 
@@ -478,7 +477,6 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
                   userId,
                   QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(userId, avatarHash).arg(AvatarSize)),
                   QUrl("https://discordapp.com/users/" + userId));
-    authors.append(author);
 
     const QString messageId = jsonMessage.value("id").toString();
     const QString messageContent = jsonMessage.value("content").toString();
@@ -486,27 +484,201 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     if (messageContent.isEmpty())
     {
         qWarning() << Q_FUNC_INFO << "message content is empty";
-        qDebug() << jsonMessage;
         return;
     }
 
     QList<Message::Content*> contents;
     contents.append(new Message::Text(messageContent));
 
-    messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), messageId));
+    Message message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), messageId);
 
-    emit readyRead(messages, authors);
+    bool needDeffered = false;
 
-    QNetworkRequest request(QUrl("https://discord.com/api/v10/guilds/" + guildId));
-    QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [reply]()
+    if (!guilds.contains(guildId))
     {
-        qDebug() << reply->readAll();
-        reply->deleteLater();
-    });
+        needDeffered = true;
+        requestGuild(guildId);
+    }
+
+    if (!channels.contains(channelId))
+    {
+        needDeffered = true;
+        requestChannel(channelId);
+    }
+
+    if (needDeffered)
+    {
+        const QPair<QString, QString> key = { guildId, channelId };
+        const QPair<Message, Author> value = { message, author };
+
+        if (deferredMessages.contains(key))
+        {
+            deferredMessages[key].append(value);
+        }
+        else
+        {
+            deferredMessages.insert(key, { value });
+        }
+
+        requestedGuildsChannels.insert(guildId, channelId);
+    }
+    else
+    {
+        const Guild& guild = guilds[guildId];
+        const Channel& channel = channels[channelId];
+
+        message.setDestination(guild.name + "/" + channel.name);
+
+        QList<Message> messages({ message });
+        QList<Author> authors({ author });
+
+        emit readyRead(messages, authors);
+    }
 }
 
 void Discord::updateUI()
 {
     connectBotToGuild->setItemProperty("enabled", isCanConnect());
+}
+
+void Discord::requestGuild(const QString &guildId)
+{
+    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/guilds/" + guildId));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+        Guild guild;
+
+        guild.id = root.value("id").toString();
+        guild.name = root.value("name").toString();
+        guild.nsfw = root.value("nsfw").toBool();
+        guild.nsfwLevel = root.value("nsfw_level").toInt();
+
+        guilds.insert(guild.id, guild);
+
+        qDebug() << guild.name;
+
+        processDeferredMessages(guild.id, std::nullopt);
+    });
+}
+
+void Discord::requestChannel(const QString &channelId)
+{
+    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/channels/" + channelId));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+        Channel channel;
+
+        channel.id = root.value("id").toString();
+        channel.name = root.value("name").toString();
+        channel.nsfw = root.value("nsfw").toBool();
+
+        channels.insert(channel.id, channel);
+
+        qDebug() << channel.name;
+
+        processDeferredMessages(std::nullopt, channel.id);
+    });
+}
+
+void Discord::processDeferredMessages(const std::optional<QString> &guildId_, const std::optional<QString> &channelId_)
+{
+    if (guildId_ && channelId_)
+    {
+        qWarning() << Q_FUNC_INFO << "guildId_ && channelId_";
+        return;
+    }
+
+    QString guildId;
+    QString channelId;
+
+    if (guildId_)
+    {
+        qDebug() << "=========== 1";
+        guildId = *guildId_;
+
+        if (requestedGuildsChannels.contains(*guildId_))
+        {
+            channelId = requestedGuildsChannels.value(*guildId_);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "channel of guild not exists";
+            return;
+        }
+    }
+    else if (channelId_)
+    {
+        qDebug() << "=========== 2";
+        channelId = *channelId_;
+
+        if (requestedGuildsChannels.values().contains(*channelId_))
+        {
+            guildId = requestedGuildsChannels.key(*channelId_);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "guild of channel not exists";
+            return;
+        }
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "!guildId_ && !channelId_";
+        return;
+    }
+
+    if (guildId.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "guildId is empty";
+        return;
+    }
+
+    if (channelId.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "channelId is empty";
+        return;
+    }
+
+    requestedGuildsChannels.remove(guildId);
+
+    const QPair<QString, QString> key = { guildId, channelId };
+    const QList<QPair<Message, Author>> currentDeferredMessages = deferredMessages.value(key);
+    deferredMessages.remove(key);
+
+    const Guild& guild = guilds.value(guildId);
+    const Channel& channel = channels.value(channelId);
+
+    QList<Message> messages;
+    QList<Author> authors;
+
+    for (const QPair<Message, Author>& messageAuthor : qAsConst(currentDeferredMessages))
+    {
+        Message message = messageAuthor.first;
+        message.setDestination(guild.name + "/" + channel.name);
+        messages.append(message);
+        authors.append(messageAuthor.second);
+    }
+
+    if (!messages.isEmpty() && !authors.isEmpty())
+    {
+        emit readyRead(messages, authors);
+    }
 }

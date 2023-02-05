@@ -22,13 +22,13 @@ Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetw
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("<b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
 
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("1. Create a bot with @BotFather\n"
                                                 "2. Add the bot to the desired groups or channels\n"
                                                 "3. Give admin rights to the bot in these groups/channels\n"
                                                 "4. Specify your bot token above\n"
                                                 "\n"
-                                                "Don't disclose the bot's token\n"
                                                 "It is not recommended to use a bot that is already being used for other purposes\n"
                                                 "It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()))));
 

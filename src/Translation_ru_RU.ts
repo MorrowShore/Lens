@@ -458,43 +458,49 @@
     </message>
     <message>
         <location filename="chat_services/discord.cpp" line="52"/>
-        <source>Copy the token and paste below. DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
-        <translation>Скопируйте токен и вставьте в поле ниже. НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
+        <source>Copy the token and paste below</source>
+        <oldsource>Copy the token and paste below. DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</oldsource>
+        <translation>Скопируйте токен и вставьте в поле ниже</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="55"/>
+        <location filename="chat_services/discord.cpp" line="54"/>
+        <source>DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
+        <translation>НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="56"/>
         <source>Add the bot to the servers you need</source>
         <oldsource>Add the bot to the servers you need, while allowing reading messages</oldsource>
         <translation>Добавьте бота к нужным вам серверам</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="56"/>
+        <location filename="chat_services/discord.cpp" line="57"/>
         <source>Add bot to server</source>
         <oldsource>Connect bot to server</oldsource>
         <translation>Добавить бота на сервер</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="150"/>
+        <location filename="chat_services/discord.cpp" line="151"/>
         <source>Application ID not specified</source>
         <translation>ID приложения не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="155"/>
+        <location filename="chat_services/discord.cpp" line="156"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="161"/>
+        <location filename="chat_services/discord.cpp" line="162"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="164"/>
+        <location filename="chat_services/discord.cpp" line="165"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="167"/>
+        <location filename="chat_services/discord.cpp" line="168"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -695,7 +701,6 @@
 3. Укажите токен вашего бота выше</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="26"/>
         <source>1. Create a bot with @BotFather
 2. Add the bot to the desired groups or channels
 3. Give admin rights to the bot in these groups/channels
@@ -711,7 +716,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 
 It is not recommended to use a bot that is already being used for other purposes
 It is not recommended to use more than one %1 with the same bot</oldsource>
-        <translation>1. Создайте бота с помощью @BotFather
+        <translation type="vanished">1. Создайте бота с помощью @BotFather
 2. Добавьте бота в нужные группы или каналы
 3. Дайте боту права администратора в этих группах/каналах
 4. Укажите токен вашего бота выше
@@ -749,6 +754,28 @@ It is not recommended to use more than one %1 with the same bot</oldsource>
     <message>
         <source>Bot token is not correct</source>
         <translation type="vanished">Токен бота некорректен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="25"/>
+        <source>DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
+        <translation>НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/telegram.cpp" line="27"/>
+        <source>1. Create a bot with @BotFather
+2. Add the bot to the desired groups or channels
+3. Give admin rights to the bot in these groups/channels
+4. Specify your bot token above
+
+It is not recommended to use a bot that is already being used for other purposes
+It is not recommended to use more than one %1 with the same bot</source>
+        <translation>1. Создайте бота с помощью @BotFather
+2. Добавьте бота в нужные группы или каналы
+3. Дайте боту права администратора в этих группах/каналах
+4. Укажите токен вашего бота выше
+
+Не рекомендуется использовать бота, который уже используются для других целей
+Не рекомендуется использовать более одного %1 с одним и тем же ботом</translation>
     </message>
     <message>
         <location filename="chat_services/telegram.cpp" line="91"/>

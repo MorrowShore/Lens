@@ -273,6 +273,11 @@ public:
     {
         return destination;
     }
+    inline void setDestination(const QString& destination_)
+    {
+        destination = destination_;
+    }
+
     void setPlainText(const QString& text);
 
     void setFlag(const Flag flag, bool enable);
