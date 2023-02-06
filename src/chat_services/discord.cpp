@@ -660,13 +660,13 @@ void Discord::updateUI()
             displayName += "#" + info.userDiscriminator;
         }
 
-        botStatus += tr("connected as %1").arg(displayName);
+        botStatus += tr("authorized as %1").arg(displayName);
 
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + botStatus);
     }
     else
     {
-        botStatus += tr("not connected");
+        botStatus += tr("not authorized");
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + botStatus);
     }
 }

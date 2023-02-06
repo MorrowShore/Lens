@@ -538,63 +538,71 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="588"/>
+        <location filename="chat_services/discord.cpp" line="590"/>
         <source>Sticker(s)</source>
         <translation>Стикер(ы)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="651"/>
+        <location filename="chat_services/discord.cpp" line="653"/>
         <source>Bot status</source>
         <translation>Статус бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="661"/>
+        <location filename="chat_services/discord.cpp" line="663"/>
+        <source>authorized as %1</source>
+        <translation>авторизован как %1</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="669"/>
+        <source>not authorized</source>
+        <translation>не авторизован</translation>
+    </message>
+    <message>
         <source>connected as %1</source>
         <oldsource>Connected as %1</oldsource>
-        <translation>подключено как %1</translation>
+        <translation type="vanished">подключено как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="667"/>
         <source>not connected</source>
-        <translation>не подключено</translation>
+        <translation type="vanished">не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="856"/>
+        <location filename="chat_services/discord.cpp" line="858"/>
         <source>generic</source>
         <translation>общий</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="857"/>
+        <location filename="chat_services/discord.cpp" line="859"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="858"/>
+        <location filename="chat_services/discord.cpp" line="860"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="859"/>
+        <location filename="chat_services/discord.cpp" line="861"/>
         <source>gif-animation</source>
         <translation>gif-анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="860"/>
+        <location filename="chat_services/discord.cpp" line="862"/>
         <source>article</source>
         <translation>статья</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="861"/>
+        <location filename="chat_services/discord.cpp" line="863"/>
         <source>link</source>
         <translation>ссылка</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="863"/>
+        <location filename="chat_services/discord.cpp" line="865"/>
         <source>unknown &quot;%1&quot;</source>
         <translation>неизвестно &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="917"/>
+        <location filename="chat_services/discord.cpp" line="919"/>
         <source>File: %1</source>
         <translation>Файл: %1</translation>
     </message>
@@ -1016,13 +1024,15 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="chat_services/telegram.cpp" line="554"/>
-        <source>connected as %1</source>
-        <translation>подключено как %1</translation>
+        <source>authorized as %1</source>
+        <oldsource>connected as %1</oldsource>
+        <translation>авторизован как %1</translation>
     </message>
     <message>
         <location filename="chat_services/telegram.cpp" line="560"/>
-        <source>not connected</source>
-        <translation>не подключено</translation>
+        <source>not authorized</source>
+        <oldsource>not connected</oldsource>
+        <translation>не авторизован</translation>
     </message>
     <message>
         <source>Bot</source>

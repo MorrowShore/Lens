@@ -551,13 +551,13 @@ void Telegram::updateUI()
 
     if (state.connected)
     {
-        botStatus += tr("connected as %1").arg("<b>" + info.botDisplayName + "</b>");
+        botStatus += tr("authorized as %1").arg("<b>" + info.botDisplayName + "</b>");
 
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + botStatus);
     }
     else
     {
-        botStatus += tr("not connected");
+        botStatus += tr("not authorized");
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + botStatus);
     }
 }
