@@ -7,7 +7,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 [Patreon](https://patreon.com/axel_k)
 
 [<img src="images/button-download.png">](https://github.com/3dproger/AxelChat/releases)
-[![Patreon](https://raw.githubusercontent.com/3dproger/AxelChat/main/images/button-patron.png)](https://patreon.com/axel_k)
+[![Patreon](https://raw.githubusercontent.com/3dproger/AxelChat/main/images/button-patron.png)](https://www.patreon.com/axel_k)
 
 <p align="center">
   <img src="images/github-social7.png">
