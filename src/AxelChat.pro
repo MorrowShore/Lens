@@ -14,6 +14,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    crypto/crypto.h \
+    crypto/obfuscator.h \
     tcpreply.h \
     tcprequest.h \
     chat_services/chatservice.h \
@@ -42,8 +44,6 @@ HEADERS += \
     outputtofile.h \
     qmlutils.h \
     setting.h \
-    string_obfuscator/meta_random.hpp \
-    string_obfuscator/obfuscator.hpp \
     tcpserver.h \
     tray.h \
     uielementbridge.h \
@@ -59,6 +59,7 @@ SOURCES += \
         chat_services/goodgame.cpp \
         chat_services/twitch.cpp \
         chat_services/youtube.cpp \
+        crypto/crypto.cpp \
         models/author.cpp \
         models/message.cpp \
         models/messagesmodel.cpp \
@@ -116,9 +117,11 @@ win32: {
     contains(QT_ARCH, i386) {
         #Для Windows x32
         INCLUDEPATH += $$(QTDIR)/../../Tools/OpenSSL/Win_x86/include
+        LIBS += -L$$(QTDIR)/../../Tools/OpenSSL/Win_x86/lib -llibcrypto -llibssl
     } else {
         #Для Windows x64
         INCLUDEPATH += $$(QTDIR)/../../Tools/OpenSSL/Win_x64/include
+        LIBS += -L$$(QTDIR)/../../Tools/OpenSSL/Win_x64/lib -llibcrypto -llibssl
     }
 
 

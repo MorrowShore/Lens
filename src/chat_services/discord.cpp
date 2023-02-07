@@ -1,7 +1,7 @@
 #include "discord.h"
 #include "secrets.h"
 #include "models/message.h"
-#include "string_obfuscator/obfuscator.hpp"
+#include "crypto/obfuscator.h"
 #include <QDesktopServices>
 #include <QTcpSocket>
 #include <QSysInfo>

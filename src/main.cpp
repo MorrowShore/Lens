@@ -10,6 +10,7 @@
 #include "i18n.h"
 #include "commandseditor.h"
 #include "uielementbridge.h"
+#include "crypto/crypto.h"
 #include <QApplication>
 #include <QIcon>
 #include <QStandardPaths>
@@ -18,6 +19,7 @@
 #include <QQuickWindow>
 #include <QQmlApplicationEngine>
 #include <QSplashScreen>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -32,6 +34,11 @@ int main(int argc, char *argv[])
     QMLUtils qmlUtils(settings, "qml_utils");
 
     QApplication app(argc, argv);
+
+    if (!Crypto::test())
+    {
+        qCritical() << Q_FUNC_INFO << "crypto test failed";
+    }
 
     QSplashScreen* splashScreen = new QSplashScreen(QPixmap(":/icon.ico"));
     splashScreen->show();

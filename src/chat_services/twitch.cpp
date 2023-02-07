@@ -1,9 +1,10 @@
 #include "twitch.h"
 #include "secrets.h"
+#include "crypto/crypto.h"
 #include "models/messagesmodel.h"
 #include "models/author.h"
 #include "models/message.h"
-#include "string_obfuscator/obfuscator.hpp"
+#include "crypto/obfuscator.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>

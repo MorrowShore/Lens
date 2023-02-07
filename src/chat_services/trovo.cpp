@@ -2,7 +2,7 @@
 #include "secrets.h"
 #include "models/message.h"
 #include "models/author.h"
-#include "string_obfuscator/obfuscator.hpp"
+#include "crypto/obfuscator.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
