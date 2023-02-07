@@ -131,7 +131,7 @@ static QString encrypt(const QString &password, const QByteArray &input, bool& o
     const auto key = bytes2chara(md5);
     const auto iv = bytes2chara(random(16 /* AES IV Length */).toLocal8Bit());
     const auto plain = bytes2chara(input);
-    const auto output = new unsigned char[input.size() * 2];
+    const auto output = new unsigned char[std::max(input.size() * 2, 16)];
     const auto n = encrypt_aes_256((unsigned char*)plain, (unsigned char*)key, (unsigned char*)iv, output);
 
    const QString result = n != -1 ?
@@ -148,11 +148,23 @@ static QString encrypt(const QString &password, const QByteArray &input, bool& o
     delete[] plain;
     delete[] output;
 
+    if (!ok)
+    {
+        return QByteArray();
+    }
+
     return result;
 }
 
 static QByteArray decrypt(const QString &password, const QString &input, bool& ok)
 {
+    if (!input.contains('.'))
+    {
+        qCritical() << Q_FUNC_INFO << "input not contains '.'";
+        ok = false;
+        return QByteArray();
+    }
+
     const auto md5 = QCryptographicHash::hash(password.toLocal8Bit(), QCryptographicHash::Md5).toHex();
     const auto key = bytes2chara(md5);
     const auto parts = input.split('.');
@@ -169,6 +181,11 @@ static QByteArray decrypt(const QString &password, const QString &input, bool& o
     delete[] iv;
     delete[] encrypted;
     delete[] output;
+
+    if (!ok)
+    {
+        return QByteArray();
+    }
 
     return result;
 }
@@ -203,15 +220,17 @@ std::optional<QByteArray> Crypto::decrypt(const QString &data)
 
 bool Crypto::test()
 {
-    if (!test("Тестовая строка 1")) { return false; }
-    if (!test("Тестовая строка 1 Тестовая строка 2")) { return false; }
-    if (!test("Тестовая строка 1 Тестовая строка 2 Тестовая строка 3")) { return false; }
-    if (!test("Тестовая строка 1 Тестовая строка 2 Тестовая строка 3 Тестовая строка 2 Тестовая строка 3")) { return false; }
-    if (!test("")) { return false; }
-    if (!test("\0")) { return false; }
-    if (!test("Тестовая строка 1 \0 Тестовая строка 2")) { return false; }
+    bool ok = true;
 
-    return true;
+    if (!test("Тестовая строка 1")) { ok = false; }
+    if (!test("Тестовая строка 1 Тестовая строка 2")) { ok = false; }
+    if (!test("Тестовая строка 1 Тестовая строка 2 Тестовая строка 3")) { ok = false; }
+    if (!test("Тестовая строка 1 Тестовая строка 2 Тестовая строка 3 Тестовая строка 2 Тестовая строка 3")) { ok = false; }
+    if (!test("")) { ok = false; }
+    if (!test("\0")) { ok = false; }
+    if (!test("Тестовая строка 1 \0 Тестовая строка 2")) { ok = false; }
+
+    return ok;
 }
 
 bool Crypto::test(const QByteArray &data)
@@ -223,10 +242,10 @@ bool Crypto::test(const QByteArray &data)
         return false;
     }
 
-    const std::optional<QByteArray> decrypted = decrypt(data);
+    const std::optional<QByteArray> decrypted = decrypt(*encrypted);
     if (!decrypted)
     {
-        qCritical() << Q_FUNC_INFO << "failed to decrypt" << data;
+        qCritical() << Q_FUNC_INFO << "failed to decrypt" << *encrypted;
         return false;
     }
 
