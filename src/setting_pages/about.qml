@@ -249,7 +249,7 @@ ScrollView {
             Material.background: "#DB61A2"
 
             onClicked: {
-                Qt.openUrlExternally("https://patreon.com/axel_k");
+                Qt.openUrlExternally("https://www.patreon.com/axel_k");
             }
         }
 
