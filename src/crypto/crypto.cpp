@@ -23,7 +23,7 @@ static void printError(const QString& tag, const QString& additionalText)
 
     ERR_error_string_n(errorCode, buffer, BufferSize);
 
-    //qCritical(QString(tag + ": " + additionalText + ", ssl error: " + QString::fromUtf8(buffer)).toUtf8());
+    qCritical() << QString(tag + ": " + additionalText + ", ssl error: " + QString::fromUtf8(buffer));
 
     delete[] buffer;
 }
