@@ -170,7 +170,7 @@ static QByteArray decrypt(const QString &password, const QString &input, bool& o
     const auto parts = input.split('.');
     const auto iv = bytes2chara(QByteArray::fromBase64(parts[0].toLocal8Bit(), QByteArray::OmitTrailingEquals));
     const auto encrypted = bytes2chara(QByteArray::fromBase64(parts[1].toLocal8Bit(), QByteArray::OmitTrailingEquals));
-    const auto output = new unsigned char[parts[1].size() * 2];
+    const auto output = new unsigned char[std::max(parts[1].size() * 2, 16)];
     const auto n = decrypt_aes_256((unsigned char*)encrypted, (unsigned char*)key, (unsigned char*)iv, output);
 
     const QByteArray result = n != -1 ? QByteArray::fromRawData((char*)output, n) : QByteArray();
@@ -238,20 +238,20 @@ bool Crypto::test(const QByteArray &data)
     const std::optional<QString> encrypted = encrypt(data);
     if (!encrypted)
     {
-        qCritical() << Q_FUNC_INFO << "failed to encrypt" << data;
+        qCritical() << Q_FUNC_INFO << "failed to encrypt" << QString::fromUtf8(data);
         return false;
     }
 
     const std::optional<QByteArray> decrypted = decrypt(*encrypted);
     if (!decrypted)
     {
-        qCritical() << Q_FUNC_INFO << "failed to decrypt" << *encrypted;
+        qCritical() << Q_FUNC_INFO << "failed to decrypt" << *encrypted << ", source =" << QString::fromUtf8(data);
         return false;
     }
 
     if (*decrypted != data)
     {
-        qCritical() << Q_FUNC_INFO << "decrypted data does not match, source =" << data << ", decrypted =" << *decrypted;
+        qCritical() << Q_FUNC_INFO << "decrypted data does not match, source =" << QString::fromUtf8(data) << ", decrypted =" << QString::fromUtf8(*decrypted);
         return false;
     }
 
