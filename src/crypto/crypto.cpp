@@ -57,7 +57,7 @@ static std::vector<unsigned char> validateKey(const char* rawKey)
     return result;
 }
 
-static const std::vector<unsigned char> CryptoKey = validateKey(OBFUSCATE(CRYPTO_KEY_256));
+static const std::vector<unsigned char> CryptoKey = validateKey(OBFUSCATE(CRYPTO_KEY_32_BYTES));
 
 }
 
