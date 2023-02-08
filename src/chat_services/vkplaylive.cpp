@@ -15,9 +15,8 @@ static const int HeartbeatAcknowledgementTimeout = 40 * 1000;
 static const int HeartbeatSendTimeout = 30 * 1000;
 }
 
-VkPlayLive::VkPlayLive(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::VkPlayLive, parent)
-    , settings(settings_)
+VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
+    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::VkPlayLive, parent)
     , network(network_)
     , socket("https://vkplay.live")
 {

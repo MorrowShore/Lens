@@ -74,7 +74,6 @@ private:
     static QList<Message::Content*> parseEmbed(const QJsonObject& jsonEmbed);
     static QList<Message::Content*> parseAttachment(const QJsonObject& jsonAttachment);
 
-    QSettings& settings;
     QNetworkAccessManager& network;
 
     Info info;

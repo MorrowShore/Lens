@@ -11,13 +11,12 @@ static const int RequestChatInterval = 4000;
 static const int RequestChatTimeoutSeconds = 3;
 }
 
-Telegram::Telegram(QSettings& settings_, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
-    , settings(settings_)
+Telegram::Telegram(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
+    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
     , network(network_)
-    , botToken(settings_, settingsGroupPath + "/bot_token")
-    , showChatTitle(settings_, "show_chat_title", true)
-    , allowPrivateChat(settings_, "allow_private_chats", false)
+    , botToken(settings, settingsGroupPath + "/bot_token")
+    , showChatTitle(settings, "show_chat_title", true)
+    , allowPrivateChat(settings, "allow_private_chats", false)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 

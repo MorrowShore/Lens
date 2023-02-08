@@ -30,7 +30,6 @@ private:
     void requestChannelInfo();
     void requsetSmiles();
 
-    QSettings& settings;
     QNetworkAccessManager& network;
 
     QWebSocket socket;

@@ -7,7 +7,6 @@
 #include <QWebSocket>
 #include <QTimer>
 #include <QJsonDocument>
-#include <QSettings>
 
 class GoodGame : public ChatService
 {
@@ -38,7 +37,6 @@ private:
 
     QWebSocket socket;
 
-    QSettings& settings;
     QNetworkAccessManager& network;
 
     int64_t channelId = -1;

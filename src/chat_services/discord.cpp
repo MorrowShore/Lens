@@ -54,15 +54,14 @@ static const int MESSAGE_TYPE_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32;
 
 }
 
-Discord::Discord(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
-    : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Discord, parent)
-    , settings(settings_)
+Discord::Discord(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
+    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Discord, parent)
     , network(network_)
-    , applicationId(settings_, settingsGroupPath + "/client_id")
-    , botToken(settings_, settingsGroupPath + "/bot_token")
-    , showNsfwChannels(settings_, settingsGroupPath + "/show_nsfw_channels", false)
-    , showGuildName(settings_, settingsGroupPath + "/show_guild_name", true)
-    , showChannelName(settings_, settingsGroupPath + "/show_channel_name", true)
+    , applicationId(settings, settingsGroupPath + "/client_id")
+    , botToken(settings, settingsGroupPath + "/bot_token")
+    , showNsfwChannels(settings, settingsGroupPath + "/show_nsfw_channels", false)
+    , showGuildName(settings, settingsGroupPath + "/show_guild_name", true)
+    , showChannelName(settings, settingsGroupPath + "/show_channel_name", true)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 

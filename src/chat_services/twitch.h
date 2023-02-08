@@ -3,7 +3,6 @@
 
 #include "utils.h"
 #include "chatservice.h"
-#include <QSettings>
 #include <QWebSocket>
 #include <QTimer>
 #include <QNetworkAccessManager>
@@ -65,7 +64,6 @@ private:
         }
     };
 
-    QSettings& settings;
     QNetworkAccessManager& network;
 
     QWebSocket socket;

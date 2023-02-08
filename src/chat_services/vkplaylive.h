@@ -35,7 +35,6 @@ private:
         QString version;
     };
 
-    QSettings& settings;
     QNetworkAccessManager& network;
 
     QTimer timerRequestToken;

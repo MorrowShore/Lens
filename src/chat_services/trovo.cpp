@@ -48,9 +48,8 @@ static const QString ClientID = OBFUSCATE(TROVO_CLIENT_ID);
 
 }
 
-Trovo::Trovo(QSettings &settings_, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
-    : ChatService(settings_, settingsGroupPath, AxelChat::ServiceType::Trovo, parent)
-    , settings(settings_)
+Trovo::Trovo(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
+    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Trovo, parent)
     , network(network_)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));

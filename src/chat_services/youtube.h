@@ -3,7 +3,6 @@
 
 #include "models/message.h"
 #include "chatservice.h"
-#include <QSettings>
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <memory>
@@ -41,7 +40,6 @@ private:
 
     QColor intToColor(quint64 rawColor) const;
 
-    QSettings& settings;
     QNetworkAccessManager& network;
 
     QTimer timerRequestChat;

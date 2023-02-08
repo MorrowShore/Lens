@@ -2,7 +2,6 @@
 
 #include "chatservice.h"
 #include "models/message.h"
-#include <QSettings>
 #include <QNetworkAccessManager>
 #include <QTimer>
 
@@ -29,7 +28,6 @@ private:
     void addServiceContent(QList<Message::Content*>& contents, const QString& name);
     void updateUI();
 
-    QSettings& settings;
     QNetworkAccessManager& network;
 
     struct Info
