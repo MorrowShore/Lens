@@ -1,14 +1,13 @@
 #pragma once
 
 #include <QByteArray>
-#include <QString>
 #include <optional>
 
 class Crypto
 {
 public:
-    static std::optional<QString> encrypt(const QByteArray &data);
-    static std::optional<QByteArray> decrypt(const QString &data);
+    static std::optional<QByteArray> encrypt(const QByteArray &data);
+    static std::optional<QByteArray> decrypt(const QByteArray &data);
     static bool test();
 
 private:
