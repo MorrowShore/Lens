@@ -127,6 +127,12 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
         const unsigned char addedSymbols = rawResult.empty() ? 0 : rawResult[rawResult.size() - 1];
         const int resultLength = rawResult.size() - addedSymbols;
 
+        if (resultLength < 0)
+        {
+            qWarning() << Q_FUNC_INFO << "failed to decrypt, added symbols less 0";
+            return std::nullopt;
+        }
+
         QByteArray result;
         result.reserve(resultLength);
 
