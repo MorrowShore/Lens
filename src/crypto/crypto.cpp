@@ -7,6 +7,13 @@
 #include <QStringList>
 #include <QDebug>
 
+// Encryption parts:
+// encrypted payload
+// padding the payload with random bytes so that the payload size becomes a multiple of 16
+// 14 bytes - random bytes
+// 1 byte - number of bytes to trim to leave only the payload
+// 1 byte - checksum
+
 namespace
 {
 
@@ -42,7 +49,7 @@ static std::vector<unsigned char> validateKey(const char* rawKey)
     std::vector<unsigned char> result;
     result.reserve(length);
 
-    for (size_t i = 0; i < length; i++)
+    for (size_t i = 0; i < length; ++i)
     {
         if (result.size() < rawKeySize)
         {
@@ -59,27 +66,45 @@ static std::vector<unsigned char> validateKey(const char* rawKey)
 
 static const std::vector<unsigned char> CryptoKey = validateKey(OBFUSCATE(CRYPTO_KEY_32_BYTES));
 
+static unsigned char calcChecksumWithoutLastByte(const std::vector<unsigned char>& data)
+{
+    if (data.empty())
+    {
+        return 0;
+    }
+
+    unsigned char checksum = 0;
+
+    for (size_t i = 0; i < data.size() - 1; ++i)
+    {
+        checksum += data[i];
+    }
+
+    return checksum;
+}
+
 }
 
 std::optional<QByteArray> Crypto::encrypt(const QByteArray &rawData)
 {
     std::vector<unsigned char> data;
     data.reserve(rawData.length() + 32);
-    for (int i = 0; i < rawData.length(); i++)
+    for (int i = 0; i < rawData.length(); ++i)
     {
         data.push_back((unsigned char)rawData[i]);
     }
 
-    const int needAddSymbols = (16 - data.size() % 16) + 16;
+    const int needAddSymbols = (16 - (data.size() % 16)) + 16;
 
-    for (int i = 0; i < needAddSymbols; i++)
+    for (int i = 0; i < needAddSymbols; ++i)
     {
         data.push_back((unsigned char)(33 + QRandomGenerator::global()->generate() % 143));
     }
 
-    if (!data.empty())
+    if (data.size() >= 2)
     {
-        data[data.size() - 1] = (unsigned char)needAddSymbols;
+        data[data.size() - 2] = (unsigned char)needAddSymbols;
+        data[data.size() - 1] = calcChecksumWithoutLastByte(data);
     }
 
     AES aes(AESKeyLengthType);
@@ -114,7 +139,7 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
 {
     std::vector<unsigned char> data;
     data.reserve(rawData.length());
-    for (int i = 0; i < rawData.length(); i++)
+    for (int i = 0; i < rawData.length(); ++i)
     {
         data.push_back((unsigned char)rawData[i]);
     }
@@ -124,7 +149,21 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
     try
     {
         const std::vector<unsigned char> rawResult = aes.DecryptECB(data, CryptoKey);
-        const unsigned char addedSymbols = rawResult.empty() ? 0 : rawResult[rawResult.size() - 1];
+        if (rawResult.size() < 2)
+        {
+            qWarning() << Q_FUNC_INFO << "failed to decrypt, encryption size less than 2";
+            return std::nullopt;
+        }
+
+        const unsigned char addedSymbols = rawResult[rawResult.size() - 2];
+        const unsigned char checksum = rawResult[rawResult.size() - 1];
+
+        if (checksum != calcChecksumWithoutLastByte(rawResult))
+        {
+            qWarning() << Q_FUNC_INFO << "failed to decrypt, wrong checksum";
+            return std::nullopt;
+        }
+
         const int resultLength = rawResult.size() - addedSymbols;
 
         if (resultLength < 0)
@@ -136,7 +175,7 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
         QByteArray result;
         result.reserve(resultLength);
 
-        for (int i = 0; i < resultLength; i++)
+        for (int i = 0; i < resultLength; ++i)
         {
             result.append((char)rawResult[i]);
         }
