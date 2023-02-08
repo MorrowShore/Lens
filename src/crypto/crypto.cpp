@@ -77,7 +77,10 @@ std::optional<QByteArray> Crypto::encrypt(const QByteArray &rawData)
         data.push_back((unsigned char)(33 + QRandomGenerator::global()->generate() % 143));
     }
 
-    data[data.size() - 1] = (unsigned char)needAddSymbols;
+    if (!data.empty())
+    {
+        data[data.size() - 1] = (unsigned char)needAddSymbols;
+    }
 
     AES aes(AESKeyLengthType);
 
@@ -121,7 +124,7 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
     try
     {
         const std::vector<unsigned char> rawResult = aes.DecryptECB(data, CryptoKey);
-        const unsigned char addedSymbols = rawResult[rawResult.size() - 1];
+        const unsigned char addedSymbols = rawResult.empty() ? 0 : rawResult[rawResult.size() - 1];
         const int resultLength = rawResult.size() - addedSymbols;
 
         QByteArray result;
@@ -147,6 +150,7 @@ bool Crypto::test()
     bool ok = true;
 
     if (!test("Test")) { ok = false; }
+    if (!test("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) { ok = false; }
     if (!test("Test string")) { ok = false; }
     if (!test("Test string ")) { ok = false; }
     if (!test("Test string Test string Test string Test string Test string Test string Test string Test string Test string Test string Test string")) { ok = false; }

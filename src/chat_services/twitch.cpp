@@ -34,7 +34,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
   : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Twitch, parent)
   , network(network_)
   , authStateInfo(UIElementBridge::createLabel("Loading..."))
-  , oauthToken(Setting<QString>(settings, settingsGroupPath + "/oauth_token"))
+  , oauthToken(Setting<QString>(settings, settingsGroupPath + "/oauth_token", QString(), true))
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "crypto/crypto.h"
 #include <QSettings>
 #include <QDebug>
 #include <QHash>
@@ -9,16 +10,22 @@ template<typename T>
 class Setting
 {
 public:
-    Setting(QSettings& settings_, const QString& key_, const T& defaultValue = T())
+    Setting(QSettings& settings_, const QString& key_, const T& defaultValue = T(), const bool encrypt_ = false)
         : settings(settings_)
         , key(key_)
         , value(defaultValue)
+        , encrypt(encrypt_)
     {
         bool loaded = false;
 
         if (!key.isEmpty() && settings.contains(key))
         {
-            const QVariant variant = settings.value(key);
+            QVariant variant = settings.value(key);
+            if (encrypt)
+            {
+                variant = Crypto::decrypt(variant.toByteArray()).value_or(QByteArray());
+            }
+
             if (variant.canConvert<T>())
             {
                 value = variant.value<T>();
@@ -52,7 +59,14 @@ public:
 
         if (!key.isEmpty())
         {
-            settings.setValue(key, QVariant::fromValue(value));
+            if (encrypt)
+            {
+                settings.setValue(key, Crypto::encrypt(QVariant::fromValue(value).toByteArray()).value_or(QByteArray()));
+            }
+            else
+            {
+                settings.setValue(key, QVariant::fromValue(value).toByteArray());
+            }
         }
 
         if (valueChangedCallback)
@@ -77,6 +91,7 @@ private:
     QSettings& settings;
     const QString key;
     T value;
+    const bool encrypt;
 
     std::function<void(const T& value)> valueChangedCallback = nullptr;
 };

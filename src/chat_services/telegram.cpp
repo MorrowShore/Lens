@@ -14,7 +14,7 @@ static const int RequestChatTimeoutSeconds = 3;
 Telegram::Telegram(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
     : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Telegram, parent)
     , network(network_)
-    , botToken(settings, settingsGroupPath + "/bot_token")
+    , botToken(settings, settingsGroupPath + "/bot_token", QString(), true)
     , showChatTitle(settings, "show_chat_title", true)
     , allowPrivateChat(settings, "allow_private_chats", false)
 {
