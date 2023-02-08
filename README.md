@@ -110,6 +110,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 #define TWITCH_CLIENT_ID "<Paste Twitch client ID here>"
 #define TWITCH_SECRET "<Paste Twitch secret here>"
 #define TROVO_CLIENT_ID "<Paste Trovo client ID here>"
+#define CRYPTO_KEY_32_BYTES "<think up and insert a 32-character encryption code>"
 ```
 3. Open file `<AxelChat_project_folder>/src/AxelChat.pro` with Qt Creator
 1. In Qt Creator select `Desktop Qt x.x.x MinGW 64-bit` kit
