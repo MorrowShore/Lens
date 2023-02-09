@@ -716,7 +716,7 @@ ApplicationWindow {
         y: parent.height / 2 - height / 2
         width: 100
         height: 100
-        visible: !chatHandler.connectedCount > 0 && listMessages.count == 0
+        visible: listMessages.count == 0
 
         AnimatedImage {
             id: animatedImage
@@ -758,6 +758,7 @@ ApplicationWindow {
             x: animatedImage.x + animatedImage.width - 20
             anchors.bottom: parent.top
             font.pointSize: 20
+            visible: chatHandler.connectedCount === 0
         }
     }
 

@@ -248,36 +248,13 @@ void ChatHandler::onConnectedChanged(const bool connected, const QString& name)
     ChatService* service = qobject_cast<ChatService*>(sender());
     if (!service)
     {
+        qCritical() << Q_FUNC_INFO << "!service";
         return;
     }
 
-    if (connected)
+    if (!connected && _enabledClearMessagesOnLinkChange)
     {
-        if (name.isEmpty())
-        {
-            sendSoftwareMessage(tr("%1 connected").arg(service->getName()));
-        }
-        else
-        {
-            sendSoftwareMessage(tr("%1 connected: %2").arg(service->getName()).arg(name));
-        }
-
-    }
-    else
-    {
-        if (name.isEmpty())
-        {
-            sendSoftwareMessage(tr("%1 disconnected").arg(service->getName()));
-        }
-        else
-        {
-            sendSoftwareMessage(tr("%1 disconnected: %2").arg(service->getName()).arg(name));
-        }
-
-        if (_enabledClearMessagesOnLinkChange)
-        {
-            clearMessages();
-        }
+        clearMessages();
     }
 
     emit connectedCountChanged();
