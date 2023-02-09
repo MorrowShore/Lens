@@ -724,7 +724,7 @@ ApplicationWindow {
             y: 190
             anchors.fill: parent
             playing: true
-            source: "qrc:/resources/images/sleeping_200_transparent.gif"
+            source: chatHandler.connectedCount === 0 ? "qrc:/resources/images/sleeping_200_transparent.gif" : "qrc:/resources/images/cool_200_transparent.gif"
             smooth: true
             antialiasing: true
             asynchronous: true
