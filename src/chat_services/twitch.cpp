@@ -62,7 +62,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
-        //qDebug() << "Twitch: WebSocket state changed:" << state;
+        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
@@ -80,8 +80,8 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
         sendIRCMessage("PASS SCHMOOPIIE");
         sendIRCMessage("NICK justinfan12348");
         sendIRCMessage("USER justinfan12348 8 * :justinfan12348");
-        sendIRCMessage(QString("JOIN #") + state.streamId);
-        sendIRCMessage(QString("PING :") + TwitchIRCHost);
+        sendIRCMessage("JOIN #" + state.streamId);
+        sendIRCMessage("PING :" + TwitchIRCHost);
 
         requestUserInfo(state.streamId);
         requestStreamInfo(state.streamId);
@@ -100,17 +100,17 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
-        qDebug() << "Twitch: WebSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!enabled.get() || !isAuthorized())
         {
             return;
         }
 
-        if (!state.connected && !isAuthorized())
+        if (!state.connected)
         {
             reconnect();
         }
@@ -280,7 +280,7 @@ void Twitch::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> eleme
 
 void Twitch::sendIRCMessage(const QString &message)
 {
-    //qDebug() << "Twitch: send:" << message.toUtf8() << "\n";
+    //qDebug() << Q_FUNC_INFO << "send:" << message.toUtf8() << "\n";
     socket.sendTextMessage(message);
 }
 
@@ -327,7 +327,7 @@ void Twitch::reconnectImpl()
         if (enabled.get())
         {
             socket.setProxy(network.proxy());
-            socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443")); // ToDo: use SSL? wss://irc-ws.chat.twitch.tv:443
+            socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
         }
     }
 }
@@ -358,7 +358,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             continue;
         }
 
-        //qDebug() << "Twitch: received:" << rawMessage.toUtf8() << "\n";
+        //qDebug() << Q_FUNC_INFO << "received:" << rawMessage.toUtf8() << "\n";
 
         if (rawMessage.startsWith("PING", Qt::CaseSensitivity::CaseInsensitive))
         {
@@ -651,7 +651,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             requestUserInfo(login);
         }
 
-        //qDebug() << "Twitch:" << authorName << ":" << messageText;
+        //qDebug() << Q_FUNC_INFO << authorName << ":" << messageText;
     }
 
     if (!messages.isEmpty())
@@ -922,7 +922,7 @@ bool Twitch::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resul
 
     if (!reply)
     {
-        qWarning() << tag << ": !reply";
+        qWarning() << tag << tag << ": !reply";
         return false;
     }
 
