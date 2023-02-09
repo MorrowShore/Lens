@@ -751,27 +751,25 @@ ApplicationWindow {
                 origin.y: height / 2;
             }
         }
-
-        Text {
-            text: "Z z z"
-            color: "#03A9F4"
-            x: animatedImage.x + animatedImage.width - 20
-            anchors.bottom: parent.top
-            font.pointSize: 20
-            visible: chatHandler.connectedCount === 0
-        }
     }
 
     Text {
         text: {
-            var s = qsTr("Nothing connected");
+            var s = ""
 
-            if (typeof(root.settingsWindow) == "undefined" || !root.settingsWindow.visible)
+            if (chatHandler.connectedCount === 0)
             {
-               s += "\n\n" + qsTr("Right click on the window to open the settings");
-            }
+                s += qsTr("Nothing connected");
 
-            s += "\n\n" + "(^=◕ᴥ◕=^)";
+                if (typeof(root.settingsWindow) == "undefined" || !root.settingsWindow.visible)
+                {
+                   s += "\n\n" + qsTr("Right click on the window to open the settings");
+                }
+            }
+            else
+            {
+                s += qsTr("Connected!") + "\n\n" + qsTr("but no one has written anything yet")
+            }
 
             return s;
         }
@@ -785,7 +783,7 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.top: waitAnimation.bottom
         anchors.topMargin: 20
-        visible: chatHandler.connectedCount === 0 && listMessages.count == 0
+        visible: listMessages.count == 0
     }
 
     Rectangle {
