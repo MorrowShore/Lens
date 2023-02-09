@@ -293,6 +293,8 @@ void Twitch::reconnectImpl()
 
     stream.set(stream.get().toLower().trimmed());
 
+    state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/stream-manager"));
+
     if (stream.get().isEmpty())
     {
         emit stateChanged();
@@ -323,7 +325,6 @@ void Twitch::reconnectImpl()
     {
         state.chatUrl = QUrl(QString("https://www.twitch.tv/popout/%1/chat").arg(state.streamId));
         state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
-        state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/u/%1/stream-manager").arg(state.streamId));
 
         if (enabled.get())
         {

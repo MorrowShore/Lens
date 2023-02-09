@@ -180,11 +180,12 @@ void Trovo::reconnectImpl()
 
     state.streamId = getChannelName(stream.get());
 
+    state.controlPanelUrl = QUrl("https://studio.trovo.live/stream");
+
     if (!state.streamId.isEmpty())
     {
         state.streamUrl = QUrl("https://trovo.live/s/" + state.streamId);
         state.chatUrl = QUrl("https://trovo.live/chat/" + state.streamId);
-        state.controlPanelUrl = QUrl("https://studio.trovo.live/stream");
     }
 
     if (enabled.get())
