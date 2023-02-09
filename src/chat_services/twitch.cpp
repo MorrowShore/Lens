@@ -196,6 +196,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
 
     updateUI();
     validateToken();
+    refreshToken();
 }
 
 ChatService::ConnectionStateType Twitch::getConnectionStateType() const
