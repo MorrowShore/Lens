@@ -696,6 +696,14 @@ to these chats/channels in access rights (at your own risk)</source>
     </message>
 </context>
 <context>
+    <name>OAuth2</name>
+    <message>
+        <location filename="oauth2manager.cpp" line="75"/>
+        <source>Now you can close the page and return to %1</source>
+        <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
+    </message>
+</context>
+<context>
     <name>OutputToFile</name>
     <message>
         <source>Broadcast URL: %1</source>
@@ -1084,7 +1092,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="chat_services/twitch.cpp" line="41"/>
+        <location filename="chat_services/twitch.cpp" line="40"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
@@ -1104,12 +1112,12 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="137"/>
+        <location filename="chat_services/twitch.cpp" line="144"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="223"/>
+        <location filename="chat_services/twitch.cpp" line="220"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -1118,12 +1126,17 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="40"/>
+        <location filename="chat_services/twitch.cpp" line="39"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="783"/>
+        <location filename="chat_services/twitch.cpp" line="728"/>
+        <source>Login in progress...</source>
+        <translation>Вход...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="733"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
@@ -1133,8 +1146,9 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Для отображения аватарок войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="45"/>
-        <location filename="chat_services/twitch.cpp" line="789"/>
+        <location filename="chat_services/twitch.cpp" line="57"/>
+        <location filename="chat_services/twitch.cpp" line="724"/>
+        <location filename="chat_services/twitch.cpp" line="729"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
@@ -1147,27 +1161,26 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="225"/>
+        <location filename="chat_services/twitch.cpp" line="222"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="228"/>
+        <location filename="chat_services/twitch.cpp" line="225"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="231"/>
+        <location filename="chat_services/twitch.cpp" line="228"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="261"/>
         <source>Now you can close the page and return to %1</source>
-        <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
+        <translation type="vanished">Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="788"/>
+        <location filename="chat_services/twitch.cpp" line="723"/>
         <source>Login for full functionality</source>
         <translation>Для полноценной работы войдите</translation>
     </message>
@@ -1180,7 +1193,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="784"/>
+        <location filename="chat_services/twitch.cpp" line="734"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -1800,8 +1813,12 @@ Latest version available: %2</oldsource>
     </message>
     <message>
         <location filename="main.qml" line="771"/>
+        <source>But no one has written anything yet</source>
+        <translation>Но пока никто ничего не написал</translation>
+    </message>
+    <message>
         <source>but no one has written anything yet</source>
-        <translation>но пока никто ничего не написал</translation>
+        <translation type="vanished">но пока никто ничего не написал</translation>
     </message>
     <message>
         <source>Incorrect link or broadcast ID specified</source>

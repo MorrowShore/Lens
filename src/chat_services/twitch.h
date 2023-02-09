@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "chatservice.h"
+#include "oauth2.h"
 #include <QWebSocket>
 #include <QTimer>
 #include <QNetworkAccessManager>
@@ -34,25 +35,17 @@ private slots:
     void requestForChannelBadges(const QString& broadcasterId);
     void onReplyBadges();
 
-    void requestOAuthToken(const QString& code);
-
     void requestUserInfo(const QString& login);
     void onReplyUserInfo();
 
     void requestStreamInfo(const QString& login);
     void onReplyStreamInfo();
 
+    void updateUI();
+
 private:
     bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
-
-    bool isAuthorized() const;
     void parseBadgesJson(const QByteArray& data);
-    void updateUI();
-    QString getRedirectUri() const;
-
-    void validateToken();
-    void refreshToken();
-    void revokeToken();
 
     struct MessageEmoteInfo
     {
@@ -72,21 +65,17 @@ private:
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> loginButton;
 
-    Setting<QString> oauthToken;
-    Setting<QString> oauthRefreshToken;
-    QString login;
-
     QString lastConnectedChannelName;
 
     QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerCheckPong;
-
     QTimer timerUpdaetStreamInfo;
-    QTimer timerValidateToken;
 
     QSet<QString> usersInfoUpdated;
     QHash<QString, QString> badgesUrls;
+
+    OAuth2 auth;
 };
 
 #endif // TWITCH_HPP

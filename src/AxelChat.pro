@@ -17,6 +17,7 @@ HEADERS += \
     crypto/aes.h \
     crypto/crypto.h \
     crypto/obfuscator.h \
+    oauth2.h \
     tcpreply.h \
     tcprequest.h \
     chat_services/chatservice.h \
@@ -75,6 +76,7 @@ SOURCES += \
         githubapi.cpp \
         i18n.cpp \
         main.cpp \
+        oauth2.cpp \
         outputtofile.cpp \
         qmlutils.cpp \
         tcpserver.cpp \

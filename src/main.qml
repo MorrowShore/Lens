@@ -768,7 +768,7 @@ ApplicationWindow {
             }
             else
             {
-                s += qsTr("Connected!") + "\n\n" + qsTr("but no one has written anything yet")
+                s += qsTr("Connected!") + "\n\n" + qsTr("But no one has written anything yet")
             }
 
             return s;
