@@ -534,22 +534,32 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="589"/>
+        <location filename="chat_services/discord.cpp" line="604"/>
         <source>Sticker(s)</source>
         <translation>Стикер(ы)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="652"/>
+        <location filename="chat_services/discord.cpp" line="667"/>
         <source>Bot status</source>
         <translation>Статус бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="662"/>
+        <location filename="chat_services/discord.cpp" line="677"/>
         <source>authorized as %1</source>
         <translation>авторизован как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="668"/>
+        <location filename="chat_services/discord.cpp" line="679"/>
+        <source>Located on servers:</source>
+        <translation>Находится на серверах:</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="687"/>
+        <source>Loading...</source>
+        <translation>Загрузка...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="692"/>
         <source>not authorized</source>
         <translation>не авторизован</translation>
     </message>
@@ -563,42 +573,42 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation type="vanished">не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="857"/>
+        <location filename="chat_services/discord.cpp" line="914"/>
         <source>generic</source>
         <translation>общий</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="858"/>
+        <location filename="chat_services/discord.cpp" line="915"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="859"/>
+        <location filename="chat_services/discord.cpp" line="916"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="860"/>
+        <location filename="chat_services/discord.cpp" line="917"/>
         <source>gif-animation</source>
         <translation>gif-анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="861"/>
+        <location filename="chat_services/discord.cpp" line="918"/>
         <source>article</source>
         <translation>статья</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="862"/>
+        <location filename="chat_services/discord.cpp" line="919"/>
         <source>link</source>
         <translation>ссылка</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="864"/>
+        <location filename="chat_services/discord.cpp" line="921"/>
         <source>unknown &quot;%1&quot;</source>
         <translation>неизвестно &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="918"/>
+        <location filename="chat_services/discord.cpp" line="975"/>
         <source>File: %1</source>
         <translation>Файл: %1</translation>
     </message>
@@ -698,7 +708,7 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>OAuth2</name>
     <message>
-        <location filename="oauth2manager.cpp" line="75"/>
+        <location filename="oauth2.cpp" line="75"/>
         <source>Now you can close the page and return to %1</source>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
@@ -1059,32 +1069,32 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Trovo</name>
     <message>
-        <location filename="chat_services/trovo.cpp" line="55"/>
+        <location filename="chat_services/trovo.cpp" line="56"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="56"/>
+        <location filename="chat_services/trovo.cpp" line="57"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="156"/>
+        <location filename="chat_services/trovo.cpp" line="157"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="159"/>
+        <location filename="chat_services/trovo.cpp" line="160"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="162"/>
+        <location filename="chat_services/trovo.cpp" line="163"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="165"/>
+        <location filename="chat_services/trovo.cpp" line="166"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

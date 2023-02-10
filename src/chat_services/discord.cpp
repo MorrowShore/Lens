@@ -254,7 +254,6 @@ void Discord::reconnectImpl()
         {
             return;
         }
-        reply->deleteLater();
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
 
@@ -280,7 +279,7 @@ void Discord::reconnectImpl()
 
 void Discord::onWebSocketReceived(const QString &rawData)
 {
-    //qDebug("received:\n" + rawData.toUtf8() + "\n");
+    qDebug("received:\n" + rawData.toUtf8() + "\n");
 
     if (!enabled.get())
     {
@@ -398,6 +397,8 @@ bool Discord::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resu
     }
 
     resultData = reply->readAll();
+    reply->deleteLater();
+
     if (resultData.isEmpty() && statusCode != 200)
     {
         qWarning() << tag << ": data is empty";
@@ -478,14 +479,28 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
         processConnected();
 
         const QJsonObject jsonUser = data.value("user").toObject();
+        info.userId = jsonUser.value("id").toString();
         info.userName = jsonUser.value("username").toString();
         info.userDiscriminator = jsonUser.value("discriminator").toString();
+        requestCurrentUserGuilds();
 
         updateUI();
     }
     else if (eventType == "MESSAGE_CREATE")
     {
         parseMessageCreate(data);
+    }
+    else if (eventType == "GUILD_MEMBER_UPDATE")
+    {
+        const QJsonObject jsonUser = data.value("user").toObject();
+        if (jsonUser.value("id").toString() == info.userId)
+        {
+            reconnect();
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "GUILD_MEMBER_UPDATE for unknown user";
+        }
     }
     else
     {
@@ -502,11 +517,22 @@ void Discord::parseInvalidSession(const bool resumableSession)
 void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 {
     const int messageType = jsonMessage.value("type").toInt();
-    if (messageType != MESSAGE_TYPE_DEFAULT)
+    if (messageType == MESSAGE_TYPE_DEFAULT)
+    {
+        parseMessageCreateDefault(jsonMessage);
+    }
+    else if (messageType == MESSAGE_TYPE_USER_JOIN)
+    {
+        parseMessageCreateUserJoin(jsonMessage);
+    }
+    else
     {
         qWarning() << Q_FUNC_INFO << "unknown message type" << messageType;
     }
+}
 
+void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
+{
     const QString guildId = jsonMessage.value("guild_id").toString();
     const QString channelId = jsonMessage.value("channel_id").toString();
 
@@ -645,11 +671,24 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     }
 }
 
+void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
+{
+    const QJsonObject jsonAuthor = jsonMessage.value("author").toObject();
+    const QString userId = jsonAuthor.value("id").toString();
+    if (userId == info.userId)
+    {
+        reconnect();
+        return;
+    }
+
+    //TODO: show join user
+}
+
 void Discord::updateUI()
 {
     connectBotToGuild->setItemProperty("enabled", isCanConnect());
 
-    QString botStatus = tr("Bot status") + ": ";
+    QString text = tr("Bot status") + ": ";
 
     if (state.connected)
     {
@@ -659,15 +698,58 @@ void Discord::updateUI()
             displayName += "#" + info.userDiscriminator;
         }
 
-        botStatus += tr("authorized as %1").arg(displayName);
+        text += tr("authorized as %1").arg(displayName);
+        text = "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text;
+        text += "<br>" + tr("Located on servers:") + " ";
 
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + botStatus);
+        if (info.guildsLoaded)
+        {
+            text += QString("%1").arg(info.guilds.count());
+        }
+        else
+        {
+            text += tr("Loading...");
+        }
     }
     else
     {
-        botStatus += tr("not authorized");
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + botStatus);
+        text += tr("not authorized");
+        text = "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + text;
     }
+
+    authStateInfo->setItemProperty("text", text);
+}
+
+void Discord::requestCurrentUserGuilds()
+{
+    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/users/@me/guilds"));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        info.guilds.clear();
+
+        const QJsonArray jsonGuilds = QJsonDocument::fromJson(data).array();
+        for (const QJsonValue& v : qAsConst(jsonGuilds))
+        {
+            if (const std::optional<Guild> guild = Guild::fromJson(v.toObject()); guild)
+            {
+                info.guilds.append(*guild);
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "failed to parse guild";
+            }
+        }
+
+        info.guildsLoaded = true;
+
+        updateUI();
+    });
 }
 
 void Discord::requestGuild(const QString &guildId)
@@ -680,18 +762,18 @@ void Discord::requestGuild(const QString &guildId)
         {
             return;
         }
-        reply->deleteLater();
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
 
-        Guild guild;
-
-        guild.id = root.value("id").toString();
-        guild.name = root.value("name").toString();
-
-        guilds.insert(guild.id, guild);
-
-        processDeferredMessages(guild.id, std::nullopt);
+        if (const std::optional<Guild> guild = Guild::fromJson(root); guild)
+        {
+            guilds.insert(guild->id, *guild);
+            processDeferredMessages(guild->id, std::nullopt);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "failed to parse guild";
+        }
     });
 }
 
@@ -705,19 +787,18 @@ void Discord::requestChannel(const QString &channelId)
         {
             return;
         }
-        reply->deleteLater();
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
 
-        Channel channel;
-
-        channel.id = root.value("id").toString();
-        channel.name = root.value("name").toString();
-        channel.nsfw = root.value("nsfw").toBool();
-
-        channels.insert(channel.id, channel);
-
-        processDeferredMessages(std::nullopt, channel.id);
+        if (const std::optional<Channel> channel = Channel::fromJson(root); channel)
+        {
+            channels.insert(channel->id, *channel);
+            processDeferredMessages(std::nullopt, channel->id);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "failed to parse channel";
+        }
     });
 }
 

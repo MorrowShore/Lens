@@ -27,25 +27,60 @@ private slots:
     void sendIdentify();
 
 private:
-    struct Info
-    {
-        int heartbeatInterval = 30000;
-        QJsonValue lastSequence;
-        QString userName;
-        QString userDiscriminator;
-    };
-
     struct Guild
     {
+        static std::optional<Guild> fromJson(const QJsonObject& object)
+        {
+            Guild guild;
+
+            guild.id = object.value("id").toString().trimmed();
+            guild.name = object.value("name").toString().trimmed();
+
+            if (guild.id.isEmpty() || guild.name.isEmpty())
+            {
+                return std::nullopt;
+            }
+
+            return guild;
+        }
+
         QString id;
         QString name;
     };
 
     struct Channel
     {
+        static std::optional<Channel> fromJson(const QJsonObject& object)
+        {
+            Channel channel;
+
+            channel.id = object.value("id").toString().trimmed();
+            channel.name = object.value("name").toString().trimmed();
+            channel.nsfw = object.value("nsfw").toBool(channel.nsfw);
+
+            if (channel.id.isEmpty() || channel.name.isEmpty())
+            {
+                return std::nullopt;
+            }
+
+            return channel;
+        }
+
         QString id;
         QString name;
         bool nsfw = false;
+    };
+
+    struct Info
+    {
+        int heartbeatInterval = 30000;
+        QJsonValue lastSequence;
+        QString userId;
+        QString userName;
+        QString userDiscriminator;
+
+        QList<Guild> guilds;
+        bool guildsLoaded = false;
     };
 
     QNetworkRequest createRequestAsBot(const QUrl& url) const;
@@ -60,9 +95,12 @@ private:
     void parseHello(const QJsonObject& data);
     void parseInvalidSession(const bool resumableSession);
     void parseMessageCreate(const QJsonObject& jsonMessage);
+    void parseMessageCreateDefault(const QJsonObject& jsonMessage);
+    void parseMessageCreateUserJoin(const QJsonObject& jsonMessage);
 
     void updateUI();
 
+    void requestCurrentUserGuilds();
     void requestGuild(const QString& guildId);
     void requestChannel(const QString& channelId);
 
