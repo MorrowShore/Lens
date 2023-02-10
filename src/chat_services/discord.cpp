@@ -279,7 +279,7 @@ void Discord::reconnectImpl()
 
 void Discord::onWebSocketReceived(const QString &rawData)
 {
-    qDebug("received:\n" + rawData.toUtf8() + "\n");
+    //qDebug("received:\n" + rawData.toUtf8() + "\n");
 
     if (!enabled.get())
     {
