@@ -22,6 +22,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
     }
 
     resultData = reply->readAll();
+    reply->deleteLater();
     if (resultData.isEmpty())
     {
         qWarning() << tag << ": data is empty";

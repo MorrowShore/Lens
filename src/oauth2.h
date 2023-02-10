@@ -58,7 +58,7 @@ private:
     void clear();
     void setNewState(const State state);
 
-    Config config;
+    const Config config;
     bool configSetted = false;
 
     State state = State::NotLoggedIn;

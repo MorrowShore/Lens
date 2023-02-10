@@ -30,7 +30,7 @@ void OAuth2::setConfig(const Config &config_)
         qWarning() << Q_FUNC_INFO << "don't set config more than once";
     }
 
-    config = config_;
+    const_cast<Config&>(config) = config_;
     configSetted = true;
 
     timerValidateToken.start();
@@ -162,7 +162,7 @@ void OAuth2::refresh()
         return;
     }
 
-    qDebug() << Q_FUNC_INFO << "refreshing token...";
+    //qDebug() << Q_FUNC_INFO << "refreshing token...";
 
     QNetworkRequest request(config.refreshTokenUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/x-www-form-urlencoded");
@@ -181,7 +181,7 @@ void OAuth2::refresh()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
-            qDebug() << Q_FUNC_INFO << "failed to refresh token, bad reply";
+            qWarning() << Q_FUNC_INFO << "failed to refresh token, bad reply";
             revoke();
             return;
         }
@@ -207,7 +207,7 @@ void OAuth2::refresh()
         accessToken.set(accessToken_);
         refreshToken.set(refreshToken_);
 
-        qDebug() << Q_FUNC_INFO << "token successful refreshed";
+        //qDebug() << Q_FUNC_INFO << "token successful refreshed";
 
         validate();
     });
