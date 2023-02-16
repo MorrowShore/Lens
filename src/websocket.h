@@ -14,14 +14,16 @@ class WebSocket : public QObject
 public:
     explicit WebSocket(ChatHandler& chatHandler, QObject *parent = nullptr);
     void sendMessages(const QList<Message>& messages);
-    void sendInfo();
+    void sendState();
 
 signals:
 
 private:
     void send(const QJsonObject& object, const QList<QWebSocket*>& clients);
+
+    void sendHelloToClient(QWebSocket* client);
     void sendMessagesToClient(const QList<Message>& messages, QWebSocket* client);
-    void sendInfoToClient(QWebSocket* client);
+    void sendStateToClient(QWebSocket* client);
 
     QWebSocketServer server;
     QList<QWebSocket*> clients;

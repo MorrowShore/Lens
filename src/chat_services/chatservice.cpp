@@ -227,13 +227,13 @@ std::shared_ptr<UIElementBridge> ChatService::getUIElementBridgeBySetting(const 
     return nullptr;
 }
 
-QJsonObject ChatService::toJson() const
+QJsonObject ChatService::getStateJson() const
 {
     QJsonObject root;
 
-    root.insert("type", getServiceTypeId(serviceType));
-    root.insert("icon", getIconUrl(serviceType).toString().replace("qrc:/resources/", "./"));
-    root.insert("viewersCount", getViewersCount());
+    root.insert("type_id", getServiceTypeId(serviceType));
+    root.insert("enabled", enabled.get());
+    root.insert("viewers", getViewersCount());
 
     QString connectionStateType;
 
@@ -250,7 +250,17 @@ QJsonObject ChatService::toJson() const
         break;
     }
 
-    root.insert("connectionStateType", connectionStateType);
+    root.insert("connected_state", connectionStateType);
+
+    return root;
+}
+
+QJsonObject ChatService::getStaticInfoJson() const
+{
+    QJsonObject root;
+
+    root.insert("type_id", getServiceTypeId(serviceType));
+    root.insert("name", getName());
 
     return root;
 }

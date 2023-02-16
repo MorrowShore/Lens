@@ -231,7 +231,7 @@ void ChatHandler::onStateChanged()
     }
 
     outputToFile.writeApplicationState(true, getViewersTotalCount());
-    webSocket.sendInfo();
+    webSocket.sendState();
 
     emit viewersTotalCountChanged();
 }

@@ -79,7 +79,8 @@ public:
     const Setting<QString>& getLastSavedMessageId() const;
     void setLastSavedMessageId(const QString& messageId);
 
-    QJsonObject toJson() const;
+    QJsonObject getStateJson() const;
+    QJsonObject getStaticInfoJson() const;
 
     const State& getState() const;
 

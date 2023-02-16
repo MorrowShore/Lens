@@ -53,10 +53,11 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
 
         clients.append(client);
 
-        sendInfoToClient(client);
+        sendHelloToClient(client);
+        sendStateToClient(client);
 
-        const QList<Message> lastMessages = chatHandler.getMessagesModel().getLastMessages(30);
-        sendMessagesToClient(lastMessages, client);
+        //const QList<Message> lastMessages = chatHandler.getMessagesModel().getLastMessages(30);
+        //sendMessagesToClient(lastMessages, client);
     });
 
     connect(&server, &QWebSocketServer::serverError, this, [this](QWebSocketProtocol::CloseCode closeCode)
@@ -82,11 +83,11 @@ void WebSocket::sendMessages(const QList<Message>& messages)
     }
 }
 
-void WebSocket::sendInfo()
+void WebSocket::sendState()
 {
     for (QWebSocket* client : qAsConst(clients))
     {
-        sendInfoToClient(client);
+        sendStateToClient(client);
     }
 }
 
@@ -107,10 +108,33 @@ void WebSocket::send(const QJsonObject& object, const QList<QWebSocket*>& client
     //qDebug("SENDED: " + message.toUtf8());
 }
 
+void WebSocket::sendHelloToClient(QWebSocket *client)
+{
+    QJsonObject root;
+    root.insert("type", "hello");
+
+    QJsonArray jsonServices;
+
+    for (const ChatService* service : chatHandler.getServices())
+    {
+        jsonServices.append(service->getStaticInfoJson());
+    }
+
+    QJsonObject data;
+
+    data.insert("app_name", QCoreApplication::applicationName());
+    data.insert("app_version", QCoreApplication::applicationVersion());
+    data.insert("services", jsonServices);
+
+    root.insert("data", data);
+
+    send(root, {client});
+}
+
 void WebSocket::sendMessagesToClient(const QList<Message> &messages, QWebSocket *client)
 {
     QJsonObject root;
-    root.insert("type", "chat_messages");
+    root.insert("type", "messages");
 
     QJsonArray jsonMessages;
 
@@ -140,21 +164,21 @@ void WebSocket::sendMessagesToClient(const QList<Message> &messages, QWebSocket 
     send(root, {client});
 }
 
-void WebSocket::sendInfoToClient(QWebSocket *client)
+void WebSocket::sendStateToClient(QWebSocket *client)
 {
     QJsonObject root;
-    root.insert("type", "info");
+    root.insert("type", "state");
 
     QJsonArray jsonServices;
 
     for (const ChatService* service : chatHandler.getServices())
     {
-        jsonServices.append(service->toJson());
+        jsonServices.append(service->getStateJson());
     }
 
     QJsonObject data;
     data.insert("services", jsonServices);
-    data.insert("viewersCountTotal", chatHandler.getViewersTotalCount());
+    data.insert("viewers", chatHandler.getViewersTotalCount());
 
     root.insert("data", data);
 
