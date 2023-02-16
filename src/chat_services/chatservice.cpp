@@ -250,7 +250,7 @@ QJsonObject ChatService::getStateJson() const
         break;
     }
 
-    root.insert("connected_state", connectionStateType);
+    root.insert("connection_state", connectionStateType);
 
     return root;
 }
