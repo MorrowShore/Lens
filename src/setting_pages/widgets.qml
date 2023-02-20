@@ -33,7 +33,7 @@ ScrollView {
             font.bold: true
             color: Material.accentColor
 
-            text: qsTr("Chat") + ":"
+            text: qsTr("Messages") + ":"
         }
 
         Row {
@@ -44,7 +44,7 @@ ScrollView {
                 anchors.verticalCenter: parent.verticalCenter
                 width: 400
                 readOnly: true
-                text: "file:///" + applicationDirPath + "/widgets/chat/index.html"
+                text: "file:///" + applicationDirPath + "/widgets/index.html?widget=messages"
             }
 
             Button {
@@ -81,7 +81,7 @@ ScrollView {
                 anchors.verticalCenter: parent.verticalCenter
                 width: 400
                 readOnly: true
-                text: "file:///" + applicationDirPath + "/widgets/viewers_counter/index.html"
+                text: "file:///" + applicationDirPath + "/widgets/index.html?widget=viewers_counter"
             }
 
             Button {
