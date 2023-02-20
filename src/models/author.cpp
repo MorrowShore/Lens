@@ -192,6 +192,7 @@ QJsonObject Author::toJson() const
     QJsonObject root;
 
     root.insert("serviceId", ChatService::getServiceTypeId(serviceType));
+    root.insert("id", authorId);
     root.insert("name", name);
     root.insert("avatar", avatarUrl.toString());
     root.insert("color", customNicknameColor.isValid() ? customNicknameColor.name() : QString());
