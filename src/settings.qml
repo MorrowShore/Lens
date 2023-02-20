@@ -177,12 +177,12 @@ Window {
                         iconSource: ""
                         serviceIndex: -1
                     }
-                    /*ListElement {
+                    ListElement {
                         name: qsTr("Widgets")
                         category: "widgets"
                         iconSource: ""
                         serviceIndex: -1
-                    }*/
+                    }
                     ListElement {
                         name: qsTr("Appearance")
                         category: "appearance"

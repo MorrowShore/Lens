@@ -18,43 +18,81 @@ ScrollView {
     Column {
         id: rootColumn
 
-        Row {
-            spacing: 10
+        Label {
+            text: qsTr("Copy the widget link and paste it into your streaming software")
+        }
 
-            Label {
-                anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: 20
-                font.bold: true
-                color: Material.accentColor
+        Rectangle {
+            width: 10
+            height: 30
+            color: "transparent"
+        }
 
-                text: qsTr("Chat") + ":"
-            }
+        Label {
+            font.pixelSize: 20
+            font.bold: true
+            color: Material.accentColor
 
-            MyComponents.MyTextField {
-                anchors.verticalCenter: parent.verticalCenter
-                width: 400
-                readOnly: true
-                text: "http://127.0.0.1:3000"
-            }
+            text: qsTr("Chat") + ":"
         }
 
         Row {
             spacing: 10
 
-            Label {
-                anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: 20
-                font.bold: true
-                color: Material.accentColor
-
-                text: qsTr("Viewers") + ":"
-            }
-
             MyComponents.MyTextField {
+                id: chatTextField
                 anchors.verticalCenter: parent.verticalCenter
                 width: 400
                 readOnly: true
-                text: "http://127.0.0.1:3000/viewers"
+                text: "file:///" + applicationDirPath + "/widgets/chat/index.html"
+            }
+
+            Button {
+                anchors.verticalCenter: parent.verticalCenter
+                display: AbstractButton.TextBesideIcon
+                icon.source: 'qrc:/resources/images/copy-content.svg'
+                text: qsTr("Copy")
+                onClicked: {
+                    chatTextField.selectAll()
+                    clipboard.text = chatTextField.text
+                }
+            }
+        }
+
+        Rectangle {
+            width: 10
+            height: 30
+            color: "transparent"
+        }
+
+        Label {
+            font.pixelSize: 20
+            font.bold: true
+            color: Material.accentColor
+
+            text: qsTr("Viewers counter") + ":"
+        }
+
+        Row {
+            spacing: 10
+
+            MyComponents.MyTextField {
+                id: viewersCounterTextField
+                anchors.verticalCenter: parent.verticalCenter
+                width: 400
+                readOnly: true
+                text: "file:///" + applicationDirPath + "/widgets/viewers_counter/index.html"
+            }
+
+            Button {
+                anchors.verticalCenter: parent.verticalCenter
+                display: AbstractButton.TextBesideIcon
+                icon.source: 'qrc:/resources/images/copy-content.svg'
+                text: qsTr("Copy")
+                onClicked: {
+                    viewersCounterTextField.selectAll()
+                    clipboard.text = viewersCounterTextField.text
+                }
             }
         }
     }

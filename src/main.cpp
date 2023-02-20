@@ -84,6 +84,8 @@ int main(int argc, char *argv[])
     Tray::declareQml();
     Tray tray(&engine);
 
+    engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
+
     engine.rootContext()->setContextProperty("i18n",               &i18n);
     engine.rootContext()->setContextProperty("chatHandler",        &chatHandler);
     engine.rootContext()->setContextProperty("outputToFile",       &chatHandler.getOutputToFile());
