@@ -2243,9 +2243,13 @@ Latest version available: %2</oldsource>
         <translation>Скопируйте ссылку виджета и вставьте в программу для стримминга</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="36"/>
         <source>Chat</source>
-        <translation>Чат</translation>
+        <translation type="vanished">Чат</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/widgets.qml" line="36"/>
+        <source>Messages</source>
+        <translation>Сообщения</translation>
     </message>
     <message>
         <location filename="setting_pages/widgets.qml" line="54"/>
