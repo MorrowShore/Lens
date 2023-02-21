@@ -74,6 +74,7 @@ public:
 
     QVariant getValue(const Role role) const;
 
+    static QString getJsonRoleName(const Role role);
     QJsonObject toJson() const;
 
     inline static const std::set<Role> UpdateableRoles =

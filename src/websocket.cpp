@@ -91,6 +91,14 @@ void WebSocket::sendState()
     }
 }
 
+void WebSocket::sendAuthorValues(const QString &authorId, const QMap<Author::Role, QVariant> &values)
+{
+    for (QWebSocket* client : qAsConst(clients))
+    {
+        sendAuthorValuesToClient(client, authorId, values);
+    }
+}
+
 void WebSocket::send(const QJsonObject& object, const QList<QWebSocket*>& clients)
 {
     if (clients.isEmpty())
@@ -179,6 +187,30 @@ void WebSocket::sendStateToClient(QWebSocket *client)
     QJsonObject data;
     data.insert("services", jsonServices);
     data.insert("viewers", chatHandler.getViewersTotalCount());
+
+    root.insert("data", data);
+
+    send(root, {client});
+}
+
+void WebSocket::sendAuthorValuesToClient(QWebSocket *client, const QString &authorId, const QMap<Author::Role, QVariant> &values)
+{
+    QJsonObject root;
+    root.insert("type", "author_values");
+
+    QJsonObject data;
+    data.insert("author_id", authorId);
+
+    QJsonObject jsonValues;
+    const QList<Author::Role> keys = values.keys();
+    for (const Author::Role key : qAsConst(keys))
+    {
+        const QString jsonKey = Author::getJsonRoleName(key);
+        const QJsonValue jsonValue = QJsonValue::fromVariant(values[key]);
+        jsonValues.insert(jsonKey, jsonValue);
+
+    }
+    data.insert("values", jsonValues);
 
     root.insert("data", data);
 

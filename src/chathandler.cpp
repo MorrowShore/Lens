@@ -215,6 +215,7 @@ void ChatHandler::onAuthorDataUpdated(const QString& authorId, const QMap<Author
     }
 
     messagesModel.setAuthorValues(authorId, values);
+    webSocket.sendAuthorValues(authorId, values);
 }
 
 void ChatHandler::clearMessages()
