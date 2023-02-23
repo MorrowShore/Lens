@@ -77,11 +77,11 @@ ScrollView {
             spacing: 10
 
             MyComponents.MyTextField {
-                id: viewersCounterTextField
+                id: statesTextField
                 anchors.verticalCenter: parent.verticalCenter
                 width: 400
                 readOnly: true
-                text: "file:///" + applicationDirPath + "/widgets/index.html?widget=viewers_counter"
+                text: "file:///" + applicationDirPath + "/widgets/index.html?widget=states"
             }
 
             Button {
@@ -90,8 +90,8 @@ ScrollView {
                 icon.source: 'qrc:/resources/images/copy-content.svg'
                 text: qsTr("Copy")
                 onClicked: {
-                    viewersCounterTextField.selectAll()
-                    clipboard.text = viewersCounterTextField.text
+                    statesTextField.selectAll()
+                    clipboard.text = statesTextField.text
                 }
             }
         }
