@@ -23,6 +23,7 @@ QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Trovo: return "trovo";
     case AxelChat::ServiceType::GoodGame: return "goodgame";
     case AxelChat::ServiceType::VkPlayLive: return "vkplaylive";
+    case AxelChat::ServiceType::VkVideo: return "vkvideo";
     case AxelChat::ServiceType::Telegram: return "telegram";
     case AxelChat::ServiceType::Discord: return "discord";
     }
@@ -42,6 +43,7 @@ QString ChatService::getName(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Trovo: return tr("Trovo");
     case AxelChat::ServiceType::GoodGame: return tr("GoodGame");
     case AxelChat::ServiceType::VkPlayLive: return tr("VK Play Live");
+    case AxelChat::ServiceType::VkVideo: return tr("VK Video");
     case AxelChat::ServiceType::Telegram: return tr("Telegram");
     case AxelChat::ServiceType::Discord: return tr("Discord");
     }
@@ -61,6 +63,7 @@ QUrl ChatService::getIconUrl(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Trovo: return QUrl("qrc:/resources/images/trovo-icon.svg");
     case AxelChat::ServiceType::GoodGame: return QUrl("qrc:/resources/images/goodgame-icon.svg");
     case AxelChat::ServiceType::VkPlayLive: return QUrl("qrc:/resources/images/vkplaylive-icon.svg");
+    case AxelChat::ServiceType::VkVideo: return QUrl("qrc:/resources/images/vkvideo-icon.svg");
     case AxelChat::ServiceType::Telegram: return QUrl("qrc:/resources/images/telegram-icon.svg");
     case AxelChat::ServiceType::Discord: return QUrl("qrc:/resources/images/discord-icon.svg");
     }

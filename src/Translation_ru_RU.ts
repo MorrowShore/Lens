@@ -45,7 +45,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="155"/>
+        <location filename="chathandler.cpp" line="157"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -99,7 +99,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="267"/>
+        <location filename="chathandler.cpp" line="270"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -108,43 +108,48 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="37"/>
-        <location filename="chat_services/chatservice.cpp" line="49"/>
+        <location filename="chat_services/chatservice.cpp" line="38"/>
+        <location filename="chat_services/chatservice.cpp" line="51"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="40"/>
+        <location filename="chat_services/chatservice.cpp" line="41"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="41"/>
+        <location filename="chat_services/chatservice.cpp" line="42"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="42"/>
+        <location filename="chat_services/chatservice.cpp" line="43"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="43"/>
+        <location filename="chat_services/chatservice.cpp" line="44"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="44"/>
+        <location filename="chat_services/chatservice.cpp" line="45"/>
         <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="45"/>
+        <location filename="chat_services/chatservice.cpp" line="46"/>
+        <source>VK Video</source>
+        <translation>VK Видео</translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="47"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="46"/>
+        <location filename="chat_services/chatservice.cpp" line="48"/>
         <source>Discord</source>
         <translation></translation>
     </message>
@@ -1244,6 +1249,34 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="chat_services/vkplaylive.cpp" line="241"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
+    </message>
+</context>
+<context>
+    <name>VkVideo</name>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="31"/>
+        <source>Broadcast not specified</source>
+        <translation>Трансляция не указана</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="36"/>
+        <source>The broadcast is not correct</source>
+        <translation>Трансляция указана некорректно</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="39"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="42"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="45"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

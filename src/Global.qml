@@ -4,15 +4,8 @@ import QtQuick 2.0
 QtObject {
     id: qtObject
 
-    readonly property int _UnknownServiceType: -1
-    readonly property int _SoftwareServiceType: 10
-    readonly property int _YouTubeServiceType: 100
-    readonly property int _TwitchServiceType: 101
-    readonly property int _TrovoServiceType: 102
-    readonly property int _GoodGameServiceType: 103
-    readonly property int _VkPlayLiveServiceType: 104
-    readonly property int _TelegramServiceType: 105
-    readonly property int _DiscordServiceType: 106
+    readonly property int _UnknownServiceType: 0
+    readonly property int _SoftwareServiceType: 1
 
     readonly property int _NotConnectedConnectionStateType: 10
     readonly property int _ConnectingConnectionStateType: 20

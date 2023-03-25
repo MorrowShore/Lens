@@ -14,6 +14,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    chat_services/vkvideo.h \
     crypto/aes.h \
     crypto/crypto.h \
     crypto/obfuscator.h \
@@ -60,6 +61,7 @@ SOURCES += \
         chat_services/vkplaylive.cpp \
         chat_services/goodgame.cpp \
         chat_services/twitch.cpp \
+        chat_services/vkvideo.cpp \
         chat_services/youtube.cpp \
         crypto/aes.cpp \
         crypto/crypto.cpp \

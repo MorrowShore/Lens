@@ -73,5 +73,6 @@
         <file>resources/images/eye-svgrepo-com.svg</file>
         <file>resources/images/close.svg</file>
         <file>resources/images/cool_200_transparent.gif</file>
+        <file>resources/images/vkvideo-icon.svg</file>
     </qresource>
 </RCC>
