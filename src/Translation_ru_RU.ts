@@ -1127,12 +1127,12 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="144"/>
+        <location filename="chat_services/twitch.cpp" line="145"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="220"/>
+        <location filename="chat_services/twitch.cpp" line="221"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -1146,12 +1146,12 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="728"/>
+        <location filename="chat_services/twitch.cpp" line="729"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="733"/>
+        <location filename="chat_services/twitch.cpp" line="734"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
@@ -1161,9 +1161,9 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Для отображения аватарок войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="57"/>
-        <location filename="chat_services/twitch.cpp" line="724"/>
-        <location filename="chat_services/twitch.cpp" line="729"/>
+        <location filename="chat_services/twitch.cpp" line="58"/>
+        <location filename="chat_services/twitch.cpp" line="725"/>
+        <location filename="chat_services/twitch.cpp" line="730"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
@@ -1176,17 +1176,17 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="222"/>
+        <location filename="chat_services/twitch.cpp" line="223"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="225"/>
+        <location filename="chat_services/twitch.cpp" line="226"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="228"/>
+        <location filename="chat_services/twitch.cpp" line="229"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1195,7 +1195,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="723"/>
+        <location filename="chat_services/twitch.cpp" line="724"/>
         <source>Login for full functionality</source>
         <translation>Для полноценной работы войдите</translation>
     </message>
@@ -1208,7 +1208,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="734"/>
+        <location filename="chat_services/twitch.cpp" line="735"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -1256,29 +1256,62 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>VkVideo</name>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="31"/>
+        <location filename="chat_services/vkvideo.cpp" line="51"/>
+        <source>Broadcast link...</source>
+        <translation>Ссылка трансляции..</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="66"/>
+        <location filename="chat_services/vkvideo.cpp" line="191"/>
+        <location filename="chat_services/vkvideo.cpp" line="196"/>
+        <source>Login</source>
+        <translation>Войти</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="107"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="36"/>
+        <location filename="chat_services/vkvideo.cpp" line="112"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="39"/>
+        <location filename="chat_services/vkvideo.cpp" line="115"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="42"/>
+        <location filename="chat_services/vkvideo.cpp" line="118"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="45"/>
+        <location filename="chat_services/vkvideo.cpp" line="121"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="190"/>
+        <source>You are not logged in</source>
+        <translation>Вы не вошли</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="195"/>
+        <source>Login in progress...</source>
+        <translation>Вход...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="200"/>
+        <source>Logged in</source>
+        <oldsource>Logged in as %1</oldsource>
+        <translation>Вы вошли</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="201"/>
+        <source>Logout</source>
+        <translation>Выйти</translation>
     </message>
 </context>
 <context>

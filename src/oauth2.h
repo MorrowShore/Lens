@@ -10,11 +10,14 @@ class OAuth2 : public QObject
 {
     Q_OBJECT
 public:
+    enum class FlowType { /*Implicit,*/ AuthorizationCode, /*ClientCredentials*/ };
+
     struct Config
     {
+        FlowType flowType = FlowType::AuthorizationCode;
         QString clientId;
         QString clientSecret;
-        QUrl authorizationCodeRequestPageUrl;
+        QUrl authorizationPageUrl;
         QUrl redirectUrl;
         QString scope;
         QUrl requestTokenUrl;
@@ -35,7 +38,7 @@ public:
 
     bool isLoggedIn() const;
     State getState() const;
-    TcpReply processTcpRequestAuthCode(const TcpRequest &request);
+    TcpReply processRedirect(const TcpRequest &request);
     QString getLogin() const;
     // TODO: deffered request
     QString getAccessToken() const;

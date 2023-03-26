@@ -42,10 +42,11 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
     addUIElement(authStateInfo);
 
     OAuth2::Config config;
+    config.flowType = OAuth2::FlowType::AuthorizationCode;
     config.clientId = ClientID;
     config.clientSecret = OBFUSCATE(TWITCH_SECRET);
-    config.authorizationCodeRequestPageUrl = "https://id.twitch.tv/oauth2/authorize";
-    config.redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";;
+    config.authorizationPageUrl = "https://id.twitch.tv/oauth2/authorize";
+    config.redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
     config.scope = "openid+chat:read";
     config.requestTokenUrl = "https://id.twitch.tv/oauth2/token";
     config.validateTokenUrl = "https://id.twitch.tv/oauth2/validate";
@@ -238,7 +239,7 @@ TcpReply Twitch::processTcpRequest(const TcpRequest &request)
 
     if (path == "/auth_code")
     {
-        return auth.processTcpRequestAuthCode(request);
+        return auth.processRedirect(request);
     }
 
     return TcpReply::createTextHtmlError("Unknown path");

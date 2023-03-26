@@ -51,7 +51,7 @@ OAuth2::State OAuth2::getState() const
     return state;
 }
 
-TcpReply OAuth2::processTcpRequestAuthCode(const TcpRequest &request)
+TcpReply OAuth2::processRedirect(const TcpRequest &request)
 {
     const QString code = request.getUrlQuery().queryItemValue("code");
     const QString errorDescription = request.getUrlQuery().queryItemValue("error_description").replace('+', ' ');
@@ -96,12 +96,34 @@ void OAuth2::login()
     }
 
     QUrlQuery query;
-    query.addQueryItem("response_type", "code");
+    switch (config.flowType)
+    {
+    /*case OAuth2::FlowType::Implicit:
+        query.addQueryItem("response_type", "token");
+        break;*/
+    case OAuth2::FlowType::AuthorizationCode:
+        query.addQueryItem("response_type", "code");
+        break;
+    }
+
     query.addQueryItem("client_id", config.clientId);
     query.addQueryItem("redirect_uri", config.redirectUrl.toString());
     query.addQueryItem("scope", config.scope);
 
-    if (!QDesktopServices::openUrl(config.authorizationCodeRequestPageUrl.toString() + "?" + query.toString()))
+    const QUrlQuery query2(config.authorizationPageUrl.query());
+
+    QString resultQuery = query.toString();
+    if (!query2.isEmpty())
+    {
+        if (!resultQuery.isEmpty())
+        {
+            resultQuery += "&";
+        }
+
+        resultQuery += query2.toString();
+    }
+
+    if (!QDesktopServices::openUrl(config.authorizationPageUrl.toString() + "?" + resultQuery))
     {
         qCritical() << Q_FUNC_INFO << "QDesktopServices: failed to open url";
     }
@@ -117,6 +139,20 @@ void OAuth2::logout()
 
 void OAuth2::validate()
 {
+    if (config.validateTokenUrl.isEmpty())
+    {
+        if (accessToken.get().isEmpty())
+        {
+            setNewState(State::NotLoggedIn);
+        }
+        else
+        {
+            setNewState(State::LoggedIn);
+        }
+
+        return;
+    }
+
     if (accessToken.get().isEmpty())
     {
         setNewState(State::NotLoggedIn);
@@ -155,9 +191,15 @@ void OAuth2::validate()
 
 void OAuth2::refresh()
 {
+    if (config.refreshTokenUrl.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "refresh url is empty";
+        return;
+    }
+
     if (refreshToken.get().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "refresh token is empty";
+        //qWarning() << Q_FUNC_INFO << "refresh token is empty";
         revoke();
         return;
     }
@@ -215,7 +257,7 @@ void OAuth2::refresh()
 
 void OAuth2::revoke()
 {
-    if (!accessToken.get().isEmpty())
+    if (!accessToken.get().isEmpty() && !config.revokeTokenUrl.isEmpty())
     {
         QNetworkRequest request(config.revokeTokenUrl);
         request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/x-www-form-urlencoded");
@@ -242,6 +284,12 @@ void OAuth2::revoke()
 
 void OAuth2::requestOAuthTokenByCode(const QString &code)
 {
+    if (config.requestTokenUrl.isEmpty())
+    {
+        qCritical() << Q_FUNC_INFO << "request token url is empty";
+        return;
+    }
+
     setNewState(State::LoginInProgress);
 
     QNetworkRequest request(config.requestTokenUrl);
