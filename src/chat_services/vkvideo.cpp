@@ -154,7 +154,7 @@ void VkVideo::reconnectImpl()
         return;
     }
 
-    state.streamUrl = QUrl(QString("https://vk.com/video/lives?z=video%1_%2").arg(info.ownerId, info.videoId));
+    state.streamUrl = QUrl(QString("https://vk.com/video/lives?z=video-%1_%2").arg(info.ownerId, info.videoId));
 
     onTimeoutRequestChat();
     updateUI();
