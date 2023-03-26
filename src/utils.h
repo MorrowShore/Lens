@@ -30,17 +30,17 @@ static QString simplifyUrl(const QString& url)
     withoutHttpsWWW = withoutHttpsWWW.replace('\\', '/');
 
     //https:// http://
-    if (withoutHttpsWWW.startsWith("https://"))
+    if (withoutHttpsWWW.startsWith("https://", Qt::CaseSensitivity::CaseInsensitive))
     {
         withoutHttpsWWW = withoutHttpsWWW.mid(8);
     }
-    else if (withoutHttpsWWW.startsWith("http://"))
+    else if (withoutHttpsWWW.startsWith("http://", Qt::CaseSensitivity::CaseInsensitive))
     {
         withoutHttpsWWW = withoutHttpsWWW.mid(7);
     }
 
     //www.
-    if (withoutHttpsWWW.startsWith("www."))
+    if (withoutHttpsWWW.startsWith("www.", Qt::CaseSensitivity::CaseInsensitive))
     {
         withoutHttpsWWW = withoutHttpsWWW.mid(4);
     }

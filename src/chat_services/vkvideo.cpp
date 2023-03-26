@@ -1,15 +1,16 @@
 #include "vkvideo.h"
 #include "secrets.h"
+#include "utils.h"
 #include "crypto/obfuscator.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QUrlQuery>
 
 namespace
 {
 
 static const int RequestChatInterval = 2000;
 
-static const QString ClientId = OBFUSCATE(VK_APP_ID);
 static const QString ApiVersion = "5.131";
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
@@ -54,7 +55,7 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPath, QNetwork
 
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
-    config.clientId = ClientId;
+    config.clientId = OBFUSCATE(VK_APP_ID);
     config.clientSecret = OBFUSCATE(VK_SECURE_KEY);
     config.authorizationPageUrl = QString("https://oauth.vk.com/authorize?v=%1&display=page").arg(ApiVersion);
     config.redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
@@ -171,6 +172,12 @@ void VkVideo::onTimeoutRequestChat()
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
+        if (!isCanConnect())
+        {
+            reply->deleteLater();
+            return;
+        }
+
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
@@ -210,15 +217,71 @@ void VkVideo::updateUI()
     emit stateChanged();
 }
 
-bool VkVideo::extractOwnerVideoId(const QString &videoiLink, QString &ownerId, QString &videoId)
+bool VkVideo::extractOwnerVideoId(const QString &videoiLink_, QString &ownerId, QString &videoId)
 {
     ownerId.clear();
     videoId.clear();
 
-    //TODO
+    const QString videoiLink = videoiLink_.trimmed();
+    const QString simplifyed = AxelChat::simplifyUrl(videoiLink);
 
-    ownerId = "454393491";
-    videoId = "456239750";
+    if (!simplifyed.toLower().startsWith("vk.com"))
+    {
+        return false;
+    }
+
+    QString videoPart;
+
+    if (videoiLink.contains("?"))
+    {
+        const QUrlQuery query(videoiLink.mid(videoiLink.indexOf("?") + 1));
+
+        videoPart = query.queryItemValue("z", QUrl::ComponentFormattingOption::FullyDecoded);
+        if (videoPart.isEmpty())
+        {
+            videoPart = query.queryItemValue("Z", QUrl::ComponentFormattingOption::FullyDecoded);
+        }
+
+        if (videoPart.contains("/"))
+        {
+            videoPart = videoPart.left(videoPart.indexOf("/"));
+        }
+    }
+    else
+    {
+        if (!simplifyed.contains("/"))
+        {
+            return false;
+        }
+
+        videoPart = simplifyed.mid(simplifyed.indexOf("/") + 1);
+
+        if (videoPart.contains("/"))
+        {
+            videoPart = videoPart.left(videoPart.indexOf("/"));
+        }
+    }
+
+    if (videoPart.toLower().startsWith("video-"))
+    {
+        videoPart = videoPart.mid(6);
+    }
+    else if (videoPart.toLower().startsWith("video"))
+    {
+        videoPart = videoPart.mid(5);
+    }
+    else
+    {
+        return false;
+    }
+
+    if (!videoPart.contains("_"))
+    {
+        return false;
+    }
+
+    ownerId = videoPart.left(videoPart.indexOf("_"));
+    videoId = videoPart.mid(videoPart.indexOf("_") + 1);
 
     return true;
 }
