@@ -348,7 +348,7 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
     {
         if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
 
-        Message::Text::Style style;
+        Message::TextStyle style;
         style.bold = true;
 
         const QString text = jsonMessage.value("caption").toString();
@@ -543,7 +543,7 @@ void Telegram::addServiceContent(QList<Message::Content *>& contents, const QStr
         name.replace(0, 1, name.at(0).toUpper());
     }
 
-    Message::Text::Style style;
+    Message::TextStyle style;
     style.italic = true;
     contents.append(new Message::Text("[" + name + "]", style));
 }

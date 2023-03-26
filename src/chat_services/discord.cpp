@@ -610,7 +610,7 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         {
             if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
 
-            Message::Text::Style style;
+            Message::TextStyle style;
             style.italic = true;
             contents.append(new Message::Text("[" + tr("Sticker(s)") + "]", style));
         }
@@ -957,7 +957,7 @@ QList<Message::Content *> Discord::parseEmbed(const QJsonObject &jsonEmbed)
         typeName.replace(0, 1, typeName.at(0).toUpper());
     }
 
-    Message::Text::Style style;
+    Message::TextStyle style;
     style.italic = true;
 
     if (type != "link")
@@ -990,7 +990,7 @@ QList<Message::Content *> Discord::parseAttachment(const QJsonObject &jsonAttach
 
     const QString fileName = jsonAttachment.value("filename").toString();
 
-    Message::Text::Style style;
+    Message::TextStyle style;
     style.italic = true;
 
     if (!fileName.isEmpty())

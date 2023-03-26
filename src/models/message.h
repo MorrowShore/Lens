@@ -63,6 +63,17 @@ public:
         BodyBackground
     };
 
+    struct TextStyle
+    {
+        TextStyle()
+            : bold(false)
+            , italic(false)
+        {}
+
+        bool bold;
+        bool italic;
+    };
+
     class Content
     {
     public:
@@ -101,18 +112,7 @@ public:
     class Text : public Content
     {
     public:
-        struct Style
-        {
-            Style()
-                : bold(false)
-                , italic(false)
-            {}
-
-            bool bold;
-            bool italic;
-        };
-
-        Text(const QString& text_, const Style& style_ = Style())
+        Text(const QString& text_, const TextStyle& style_ = TextStyle())
             : Content(Type::Text)
             , text(text_)
             , style(style_)
@@ -131,19 +131,19 @@ public:
             return text;
         }
 
-        const Style& getStyle() const
+        const TextStyle& getStyle() const
         {
             return style;
         }
 
-        Style& getStyle()
+        TextStyle& getStyle()
         {
             return style;
         }
 
     private:
         const QString text;
-        Style style;
+        TextStyle style;
     };
 
     class Hyperlink : public Content

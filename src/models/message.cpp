@@ -187,7 +187,7 @@ void Message::updateHtml()
             const Text* textContent = static_cast<const Text*>(content);
             if (textContent)
             {
-                const Text::Style& style = textContent->getStyle();
+                const TextStyle& style = textContent->getStyle();
 
                 QString text = textContent->getText().toHtmlEscaped();
                 text = text.replace('\n', "<br>");

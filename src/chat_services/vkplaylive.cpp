@@ -489,7 +489,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
                 continue;
             }
 
-            Message::Text::Style style;
+            Message::TextStyle style;
             style.bold = true;
             contents.append(new Message::Text(text, style));
         }

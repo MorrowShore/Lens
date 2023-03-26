@@ -447,7 +447,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
             else if (tagName == "system-msg")
             {
-                Message::Text::Style style;
+                Message::TextStyle style;
                 style.bold = true;
 
                 contents.append(new Message::Text(tagValue + "\n", style));
