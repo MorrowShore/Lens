@@ -251,6 +251,10 @@ void VkVideo::requestChat()
         {
             const QJsonObject jsonMessage = v.toObject();
 
+            qDebug() << "==================================";
+            qDebug() << jsonMessage;
+            qDebug() << "==================================";
+
             const int64_t date = jsonMessage.value("date").toVariant().toLongLong();
             const int64_t fromId = jsonMessage.value("from_id").toVariant().toLongLong();
             const int64_t rawMessageId = jsonMessage.value("id").toVariant().toLongLong();
@@ -402,7 +406,7 @@ void VkVideo::requestChat()
                           {},
                           rightBadges);
 
-            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), QString("%1").arg(rawMessageId));
+            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), QString("%1_%2").arg(date).arg(rawMessageId));
 
             messages.append(message);
             authors.append(author);
