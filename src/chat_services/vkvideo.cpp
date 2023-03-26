@@ -213,6 +213,7 @@ void VkVideo::requestVideo()
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         state.viewersCount = -1;
+        state.connected = false;
 
         if (!isCanConnect())
         {
@@ -232,7 +233,11 @@ void VkVideo::requestVideo()
         if (items.count() == 1)
         {
             const QJsonObject video = items.first().toObject();
-            if (video.value("live").toInt() != 1)
+            if (video.value("live").toInt() == 1)
+            {
+                state.connected = true;
+            }
+            else
             {
                 qWarning() << Q_FUNC_INFO << "video is not live";
             }
