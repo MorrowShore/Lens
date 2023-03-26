@@ -37,7 +37,6 @@ private:
     {
         QString id;
         QString name;
-        //TODO implement nickname
         bool verified = false;
         QString avatar;
     };

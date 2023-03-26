@@ -376,7 +376,7 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
     }
 
     const QUrl url(QString("https://api.vk.com/method/users.get?fields=photo_max,verified&access_token=%1&v=%2&user_ids=%3")
-                                .arg(auth.getAccessToken(), ApiVersion).arg(idsString));
+                                .arg(auth.getAccessToken(), ApiVersion, idsString));
 
     QNetworkRequest request(url);
     QNetworkReply* reply = network.get(request);
@@ -389,6 +389,7 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
         }
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
+
         const QJsonArray jsonUsers = root.value("response").toArray();
 
         for (const QJsonValue& v : qAsConst(jsonUsers))
