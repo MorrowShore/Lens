@@ -327,7 +327,7 @@ void VkVideo::requestChat()
                     }
                     else
                     {
-                        contents.append(new Message::Image(url, 160));
+                        contents.append(new Message::Image(url, 128));
                     }
                 }
                 else
@@ -605,7 +605,7 @@ bool VkVideo::isCanConnect() const
 
 QUrl VkVideo::parseSticker(const QJsonObject &jsonSticker)
 {
-    static const int MinHeight = 200;
+    static const int MinHeight = 128;
 
     const QJsonArray images = jsonSticker.value("images").toArray();
 
