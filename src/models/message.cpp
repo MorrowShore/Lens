@@ -230,7 +230,12 @@ void Message::updateHtml()
             const Hyperlink* hyperlink = static_cast<const Hyperlink*>(content);
             if (hyperlink)
             {
-                html += " <a href=\"" + hyperlink->getUrl().toString() + "\">" + hyperlink->getText() + "</a> ";
+                html += " <a href=\"" + hyperlink->getUrl().toString() + "\">" + hyperlink->getText() + "</a>";
+
+                if (hyperlink->isNeedSpaceAfter())
+                {
+                    html += " ";
+                }
             }
         }
             break;

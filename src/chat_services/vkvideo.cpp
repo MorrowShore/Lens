@@ -250,7 +250,7 @@ void VkVideo::requestChat()
             const int64_t date = jsonMessage.value("date").toVariant().toLongLong();
             const int64_t fromId = jsonMessage.value("from_id").toVariant().toLongLong();
             const int64_t rawMessageId = jsonMessage.value("id").toVariant().toLongLong();
-            const QString text = jsonMessage.value("text").toString();
+            QString text = jsonMessage.value("text").toString();
 
             auto userIt = users.find(fromId);
             if (userIt == users.end())
@@ -264,6 +264,25 @@ void VkVideo::requestChat()
             const QDateTime publishedAt =  QDateTime::fromSecsSinceEpoch(date);
 
             QList<Message::Content*> contents;
+
+            if (jsonMessage.contains("reply_to_user"))
+            {
+                const int64_t replyToUserId = jsonMessage.value("reply_to_user").toVariant().toLongLong();
+                if (text.contains("[") && text.contains("|") && text.contains("]"))
+                {
+                    const int pipePos = text.indexOf("|");
+                    const QString name = text.mid(pipePos + 1, text.indexOf("]") - pipePos - 1);
+
+                    text = text.mid(text.indexOf("]") + 1);
+
+                    contents.append(new Message::Hyperlink(name, QUrl(QString("https://vk.com/id%1").arg(replyToUserId)), false));
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "not found [, | or ]";
+                }
+            }
+
             contents.append(new Message::Text(text));
 
             QStringList rightBadges;
