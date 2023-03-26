@@ -71,6 +71,7 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPath, QNetwork
         if (auth.isLoggedIn())
         {
             auth.logout();
+            reconnect();
         }
         else
         {
