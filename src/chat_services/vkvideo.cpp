@@ -10,6 +10,7 @@ namespace
 {
 
 static const int RequestChatInterval = 2000;
+static const int RequestVideoInterval = 10000;
 
 static const QString ApiVersion = "5.131";
 
@@ -77,8 +78,11 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPath, QNetwork
     }));
     addUIElement(loginButton);
 
-    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &VkVideo::onTimeoutRequestChat);
+    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &VkVideo::requestChat);
     timerRequestChat.start(RequestChatInterval);
+
+    QObject::connect(&timerRequestVideo, &QTimer::timeout, this, &VkVideo::requestVideo);
+    timerRequestVideo.start(RequestVideoInterval);
 
     updateUI();
     reconnect();
@@ -154,21 +158,26 @@ void VkVideo::reconnectImpl()
         return;
     }
 
-    state.streamUrl = QUrl(QString("https://vk.com/video/lives?z=video-%1_%2").arg(info.ownerId, info.videoId));
+    state.streamUrl = QUrl(QString("https://vk.com/video/lives?z=video%1_%2").arg(info.ownerId, info.videoId));
 
-    onTimeoutRequestChat();
+    requestVideo();
+    requestChat();
     updateUI();
 }
 
-void VkVideo::onTimeoutRequestChat()
+void VkVideo::requestChat()
 {
-    if (!isCanConnect())
+    /*if (!isCanConnect())
     {
         return;
     }
 
-    QNetworkRequest request(QString("https://api.vk.com/method/video.getComments?access_token=%1&v=%2&start_comment_id=0&count=30&sort=desc&owner_id=%3&video_id=%4")
-                            .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId));
+    const QUrl url(QString("https://api.vk.com/method/video.getComments?access_token=%1&v=%2&count=30&sort=desc&owner_id=%3&video_id=%4")
+                                .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId));
+
+    qDebug() << url;
+
+    QNetworkRequest request(url);
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
@@ -184,8 +193,58 @@ void VkVideo::onTimeoutRequestChat()
             return;
         }
 
-        const QJsonObject root = QJsonDocument::fromJson(data).object().value("users").toObject();
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
         qDebug() << root;
+    });*/
+}
+
+void VkVideo::requestVideo()
+{
+    if (!isCanConnect())
+    {
+        return;
+    }
+
+    const QUrl url(QString("https://api.vk.com/method/video.get?access_token=%1&v=%2&count=1&videos=%3_%4")
+                                .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId));
+
+    QNetworkRequest request(url);
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        state.viewersCount = -1;
+
+        if (!isCanConnect())
+        {
+            reply->deleteLater();
+            return;
+        }
+
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+        const QJsonArray items = root.value("response").toObject().value("items").toArray();
+
+        if (items.count() == 1)
+        {
+            const QJsonObject video = items.first().toObject();
+            if (video.value("live").toInt() != 1)
+            {
+                qWarning() << Q_FUNC_INFO << "video is not live";
+            }
+
+            state.viewersCount = video.value("spectators").toInt();
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "items not equal 1";
+        }
+
+        emit stateChanged();
     });
 }
 
@@ -225,7 +284,7 @@ bool VkVideo::extractOwnerVideoId(const QString &videoiLink_, QString &ownerId, 
     const QString videoiLink = videoiLink_.trimmed();
     const QString simplifyed = AxelChat::simplifyUrl(videoiLink);
 
-    if (!simplifyed.toLower().startsWith("vk.com"))
+    if (!simplifyed.startsWith("vk.com", Qt::CaseSensitivity::CaseInsensitive))
     {
         return false;
     }
@@ -262,11 +321,7 @@ bool VkVideo::extractOwnerVideoId(const QString &videoiLink_, QString &ownerId, 
         }
     }
 
-    if (videoPart.toLower().startsWith("video-"))
-    {
-        videoPart = videoPart.mid(6);
-    }
-    else if (videoPart.toLower().startsWith("video"))
+    if (videoPart.startsWith("video", Qt::CaseSensitivity::CaseInsensitive))
     {
         videoPart = videoPart.mid(5);
     }

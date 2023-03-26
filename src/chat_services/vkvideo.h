@@ -18,7 +18,8 @@ protected:
     void reconnectImpl() override;
 
 private slots:
-    void onTimeoutRequestChat();
+    void requestChat();
+    void requestVideo();
     void updateUI();
 
 private:
@@ -36,6 +37,7 @@ private:
     QNetworkAccessManager& network;
 
     QTimer timerRequestChat;
+    QTimer timerRequestVideo;
 
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> loginButton;
