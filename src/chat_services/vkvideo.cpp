@@ -251,6 +251,7 @@ void VkVideo::requestChat()
             const int64_t fromId = jsonMessage.value("from_id").toVariant().toLongLong();
             const int64_t rawMessageId = jsonMessage.value("id").toVariant().toLongLong();
             QString text = jsonMessage.value("text").toString();
+            const QJsonArray jsonAttachments = jsonMessage.value("attachments").toArray();
 
             auto userIt = users.find(fromId);
             if (userIt == users.end())
@@ -286,7 +287,57 @@ void VkVideo::requestChat()
                 }
             }
 
-            contents.append(new Message::Text(text));
+            if (!text.isEmpty())
+            {
+                contents.append(new Message::Text(text));
+            }
+
+            QString attachmentsString;
+            for (const QJsonValue& v : qAsConst(jsonAttachments))
+            {
+                if (!attachmentsString.isEmpty())
+                {
+                    attachmentsString += ", ";
+                }
+
+                const QJsonObject jsonAttachment = v.toObject();
+                const QString type = jsonAttachment.value("type").toString();
+                if (type == "photo")
+                {
+                    attachmentsString += tr("image");
+                }
+                else if (type == "video")
+                {
+                    attachmentsString += tr("video");
+                }
+                else if (type == "audio")
+                {
+                    attachmentsString += tr("audio");
+                }
+                else if (type == "doc")
+                {
+                    attachmentsString += tr("document");
+                }
+                else if (type == "sticker")
+                {
+                    attachmentsString += tr("sticker");
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "unknown attachment type" << type;
+                    attachmentsString += tr("unknown(%1)").arg(type);
+                }
+            }
+
+            if (!attachmentsString.isEmpty())
+            {
+                if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+
+                Message::TextStyle style;
+                style.italic = true;
+
+                contents.append(new Message::Text("[" + attachmentsString + "]", style));
+            }
 
             QStringList rightBadges;
             if (user.verified)

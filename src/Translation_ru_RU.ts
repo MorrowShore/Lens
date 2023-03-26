@@ -1256,65 +1256,95 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>VkVideo</name>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="51"/>
+        <location filename="chat_services/vkvideo.cpp" line="54"/>
         <source>Broadcast link...</source>
         <translation>Ссылка трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="66"/>
-        <location filename="chat_services/vkvideo.cpp" line="196"/>
-        <location filename="chat_services/vkvideo.cpp" line="201"/>
+        <location filename="chat_services/vkvideo.cpp" line="69"/>
+        <location filename="chat_services/vkvideo.cpp" line="511"/>
+        <location filename="chat_services/vkvideo.cpp" line="516"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="104"/>
-        <location filename="chat_services/vkvideo.cpp" line="195"/>
+        <location filename="chat_services/vkvideo.cpp" line="110"/>
+        <location filename="chat_services/vkvideo.cpp" line="510"/>
         <source>Not logged in</source>
         <translation>Вы не вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="112"/>
+        <location filename="chat_services/vkvideo.cpp" line="118"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="117"/>
+        <location filename="chat_services/vkvideo.cpp" line="123"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="120"/>
+        <location filename="chat_services/vkvideo.cpp" line="126"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="123"/>
+        <location filename="chat_services/vkvideo.cpp" line="129"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="126"/>
+        <location filename="chat_services/vkvideo.cpp" line="132"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="307"/>
+        <source>image</source>
+        <translation>изображение</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="311"/>
+        <source>video</source>
+        <translation>видео</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="315"/>
+        <source>audio</source>
+        <translation>аудио</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="319"/>
+        <source>document</source>
+        <translation>документ</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="323"/>
+        <source>sticker</source>
+        <translation>стикер</translation>
+    </message>
+    <message>
+        <location filename="chat_services/vkvideo.cpp" line="328"/>
+        <source>unknown(%1)</source>
+        <translation>неизвестно(%1)</translation>
     </message>
     <message>
         <source>You are not logged in</source>
         <translation type="vanished">Вы не вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="200"/>
+        <location filename="chat_services/vkvideo.cpp" line="515"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="205"/>
+        <location filename="chat_services/vkvideo.cpp" line="520"/>
         <source>Logged in</source>
         <oldsource>Logged in as %1</oldsource>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="206"/>
+        <location filename="chat_services/vkvideo.cpp" line="521"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
