@@ -173,7 +173,7 @@ void VkVideo::requestChat()
         return;
     }
 
-    const QUrl url(QString("https://api.vk.com/method/video.getComments?extended=1&count=30&sort=desc&access_token=%1&v=%2&owner_id=%3&video_id=%4")
+    const QUrl url(QString("https://api.vk.com/method/video.getComments?extended=1&count=30&access_token=%1&v=%2&owner_id=%3&video_id=%4")
                                 .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId));
 
     QNetworkRequest request(url);
