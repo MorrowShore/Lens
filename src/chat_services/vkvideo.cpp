@@ -199,6 +199,8 @@ void VkVideo::requestChat()
 
         const QJsonObject response = root.value("response").toObject();
 
+        QList<int64_t> idsNeedUpdate;
+
         // TODO: implement groups
 
         const QJsonArray profiles = response.value("profiles").toArray();
@@ -227,6 +229,8 @@ void VkVideo::requestChat()
                 user.name = name;
 
                 users[id] = user;
+
+                idsNeedUpdate.append(id);
             }
             else
             {
@@ -253,7 +257,6 @@ void VkVideo::requestChat()
             {
                 qWarning() << Q_FUNC_INFO << "not found user id " << fromId;
                 continue;
-
             }
 
             const User& user = userIt->second;
@@ -279,6 +282,11 @@ void VkVideo::requestChat()
         if (!messages.isEmpty())
         {
             emit readyRead(messages, authors);
+        }
+
+        if (!idsNeedUpdate.isEmpty())
+        {
+            requsetUsers(idsNeedUpdate);
         }
 
         emit stateChanged();
@@ -337,6 +345,64 @@ void VkVideo::requestVideo()
         }
 
         emit stateChanged();
+    });
+}
+
+void VkVideo::requsetUsers(const QList<int64_t>& ids)
+{
+    if (ids.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "ids is empty";
+        return;
+    }
+
+    QString idsString;
+
+    for (const auto id : ids)
+    {
+        if (!idsString.isEmpty())
+        {
+            idsString += ",";
+        }
+
+        idsString += QString("%1").arg(id);
+    }
+
+    const QUrl url(QString("https://api.vk.com/method/users.get?fields=photo_max,verified&access_token=%1&v=%2&user_ids=%3")
+                                .arg(auth.getAccessToken(), ApiVersion).arg(idsString));
+
+    QNetworkRequest request(url);
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+        const QJsonArray jsonUsers = root.value("response").toArray();
+
+        for (const QJsonValue& v : qAsConst(jsonUsers))
+        {
+            const QJsonObject jsonUser = v.toObject();
+
+            const int64_t id = jsonUser.value("id").toVariant().toLongLong();
+
+            auto userIt = users.find(id);
+            if (userIt == users.end())
+            {
+                qWarning() << Q_FUNC_INFO << "not found user id " << id;
+                continue;
+            }
+
+            User& user = userIt->second;
+            user.avatar = jsonUser.value("photo_max").toString();
+            user.verified = jsonUser.value("verified").toInt() == 1;
+
+            emit authorDataUpdated(user.id, { {Author::Role::AvatarUrl, QUrl(user.avatar)} });
+        }
     });
 }
 

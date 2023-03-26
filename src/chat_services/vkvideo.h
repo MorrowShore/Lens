@@ -20,6 +20,7 @@ protected:
 private slots:
     void requestChat();
     void requestVideo();
+    void requsetUsers(const QList<int64_t>& ids);
     void updateUI();
 
 private:
@@ -36,6 +37,8 @@ private:
     {
         QString id;
         QString name;
+        //TODO implement nickname
+        bool verified = false;
         QString avatar;
     };
 
