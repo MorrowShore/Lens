@@ -89,7 +89,7 @@ ChatService::ConnectionStateType VkVideo::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isCanConnect() && enabled.get())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -99,6 +99,11 @@ ChatService::ConnectionStateType VkVideo::getConnectionStateType() const
 
 QString VkVideo::getStateDescription() const
 {
+    if (!auth.isLoggedIn())
+    {
+        return tr("Not logged in");
+    }
+
     switch (getConnectionStateType())
     {
     case ConnectionStateType::NotConnected:
@@ -156,7 +161,7 @@ void VkVideo::reconnectImpl()
 
 void VkVideo::onTimeoutRequestChat()
 {
-    if (!enabled.get() || !auth.isLoggedIn() || info.ownerId.isEmpty() || info.videoId.isEmpty())
+    if (!isCanConnect())
     {
         return;
     }
@@ -187,7 +192,7 @@ void VkVideo::updateUI()
     switch (auth.getState())
     {
     case OAuth2::State::NotLoggedIn:
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("You are not logged in"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Not logged in"));
         loginButton->setItemProperty("text", tr("Login"));
         break;
 
@@ -207,10 +212,18 @@ void VkVideo::updateUI()
 
 bool VkVideo::extractOwnerVideoId(const QString &videoiLink, QString &ownerId, QString &videoId)
 {
+    ownerId.clear();
+    videoId.clear();
+
     //TODO
 
     ownerId = "454393491";
     videoId = "456239750";
 
     return true;
+}
+
+bool VkVideo::isCanConnect() const
+{
+    return enabled.get() && auth.isLoggedIn() && !info.ownerId.isEmpty() && !info.videoId.isEmpty();
 }

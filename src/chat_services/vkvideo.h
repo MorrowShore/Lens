@@ -23,6 +23,7 @@ private slots:
 
 private:
     bool extractOwnerVideoId(const QString& videoiLink, QString& ownerId, QString& videoId);
+    bool isCanConnect() const;
 
     struct Info
     {
