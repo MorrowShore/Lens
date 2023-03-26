@@ -15,34 +15,6 @@ static const int RequestVideoInterval = 10000;
 
 static const QString ApiVersion = "5.131";
 
-static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
-{
-    resultData.clear();
-
-    if (!reply)
-    {
-        qWarning() << tag << ": !reply";
-        return false;
-    }
-
-    resultData = reply->readAll();
-    reply->deleteLater();
-    if (resultData.isEmpty())
-    {
-        qWarning() << tag << ": data is empty";
-        return false;
-    }
-
-    const QJsonObject root = QJsonDocument::fromJson(resultData).object();
-    if (root.contains("error"))
-    {
-        qWarning() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
-        return false;
-    }
-
-    return true;
-}
-
 }
 
 VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
@@ -631,4 +603,40 @@ QUrl VkVideo::parseSticker(const QJsonObject &jsonSticker)
     }
 
     return QUrl();
+}
+
+bool VkVideo::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
+{
+    resultData.clear();
+
+    if (!reply)
+    {
+        qWarning() << tag << ": !reply";
+        return false;
+    }
+
+    resultData = reply->readAll();
+    reply->deleteLater();
+    if (resultData.isEmpty())
+    {
+        qWarning() << tag << ": data is empty";
+        return false;
+    }
+
+    const QJsonObject root = QJsonDocument::fromJson(resultData).object();
+    if (root.contains("error"))
+    {
+        qWarning() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
+
+        const int errorCode = root.value("error").toObject().value("error_code").toInt();
+        if (errorCode == 2 || errorCode == 5 || errorCode == 27 || errorCode == 28 || errorCode == 101) // https://dev.vk.com/reference/errors
+        {
+            auth.logout();
+            emit stateChanged();
+        }
+
+        return false;
+    }
+
+    return true;
 }

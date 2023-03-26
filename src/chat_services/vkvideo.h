@@ -27,6 +27,7 @@ private:
     bool extractOwnerVideoId(const QString& videoiLink, QString& ownerId, QString& videoId);
     bool isCanConnect() const;
     static QUrl parseSticker(const QJsonObject& jsonSticker);
+    bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
 
     struct Info
     {
