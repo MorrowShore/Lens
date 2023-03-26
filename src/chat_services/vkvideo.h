@@ -32,6 +32,7 @@ private:
     {
         QString ownerId;
         QString videoId;
+        int64_t startCommentId = -1;
     };
 
     struct User

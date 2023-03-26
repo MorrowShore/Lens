@@ -173,8 +173,15 @@ void VkVideo::requestChat()
         return;
     }
 
-    const QUrl url(QString("https://api.vk.com/method/video.getComments?extended=1&count=30&access_token=%1&v=%2&owner_id=%3&video_id=%4")
-                                .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId));
+    QString rawUrl = QString("https://api.vk.com/method/video.getComments?extended=1&count=30&access_token=%1&v=%2&owner_id=%3&video_id=%4")
+                                    .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId);
+
+    if (info.startCommentId != -1)
+    {
+        rawUrl += QString("&start_comment_id=%1").arg(info.startCommentId);
+    }
+
+    const QUrl url(rawUrl);
 
     QNetworkRequest request(url);
     QNetworkReply* reply = network.get(request);
@@ -252,6 +259,8 @@ void VkVideo::requestChat()
             const int64_t rawMessageId = jsonMessage.value("id").toVariant().toLongLong();
             QString text = jsonMessage.value("text").toString();
             const QJsonArray jsonAttachments = jsonMessage.value("attachments").toArray();
+
+            info.startCommentId = rawMessageId;
 
             auto userIt = users.find(fromId);
             if (userIt == users.end())
