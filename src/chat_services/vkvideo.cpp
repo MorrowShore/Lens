@@ -262,7 +262,6 @@ void VkVideo::requestChat()
             const User& user = userIt->second;
 
             const QDateTime publishedAt =  QDateTime::fromSecsSinceEpoch(date);
-            const QString messageId = getServiceTypeId(serviceType) + QString("/%1").arg(rawMessageId);
 
             QList<Message::Content*> contents;
             contents.append(new Message::Text(text));
@@ -273,7 +272,7 @@ void VkVideo::requestChat()
                           user.avatar,
                           QUrl(QString("https://vk.com/id%1").arg(user.id))); // TODO: check for groups
 
-            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), QString("%1").arg(rawMessageId));
 
             messages.append(message);
             authors.append(author);
