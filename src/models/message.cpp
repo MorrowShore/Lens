@@ -240,17 +240,33 @@ void Message::updateHtml()
             const Hyperlink* hyperlink = static_cast<const Hyperlink*>(content);
             if (hyperlink)
             {
-                if (hyperlink->isNeedSpaces())
-                {
-                    html += " ";
-                }
+                const TextStyle& style = hyperlink->getStyle();
 
-                html += "<a href=\"" + hyperlink->getUrl().toString() + "\">" + hyperlink->getText() + "</a>";
+                QString chunk;
 
                 if (hyperlink->isNeedSpaces())
                 {
-                    html += " ";
+                    chunk += " ";
                 }
+
+                chunk += "<a href=\"" + hyperlink->getUrl().toString() + "\">" + hyperlink->getText() + "</a>";
+
+                if (hyperlink->isNeedSpaces())
+                {
+                    chunk += " ";
+                }
+
+                if (style.bold)
+                {
+                    chunk = "<b>" + chunk + "</b>";
+                }
+
+                if (style.italic)
+                {
+                    chunk = "<i>" + chunk + "</i>";
+                }
+
+                html += chunk;
             }
         }
             break;

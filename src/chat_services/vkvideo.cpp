@@ -275,7 +275,10 @@ void VkVideo::requestChat()
 
                     text = text.mid(text.indexOf("]") + 1);
 
-                    contents.append(new Message::Hyperlink(name, QUrl(QString("https://vk.com/id%1").arg(replyToUserId)), false));
+                    Message::TextStyle style;
+                    style.bold = true;
+
+                    contents.append(new Message::Hyperlink(name, QUrl(QString("https://vk.com/id%1").arg(replyToUserId)), false, style));
                 }
                 else
                 {

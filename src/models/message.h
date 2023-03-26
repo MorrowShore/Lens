@@ -149,11 +149,12 @@ public:
     class Hyperlink : public Content
     {
     public:
-        Hyperlink(const QString& text_, const QUrl& url_, const bool needSpaces_ = true)
+        Hyperlink(const QString& text_, const QUrl& url_, const bool needSpaces_ = true, const TextStyle& style_ = TextStyle())
             : Content(Type::Hyperlink)
             , text(text_)
             , url(url_)
             , needSpaces(needSpaces_)
+            , style(style_)
         {
         }
 
@@ -180,10 +181,21 @@ public:
             return needSpaces;
         }
 
+        const TextStyle& getStyle() const
+        {
+            return style;
+        }
+
+        TextStyle& getStyle()
+        {
+            return style;
+        }
+
     private:
         const QString text;
         const QUrl url;
         const bool needSpaces;
+        TextStyle style;
     };
 
     class Image : public Content
