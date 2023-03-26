@@ -42,6 +42,8 @@ private:
         QString name;
         bool verified = false;
         QString avatar;
+        bool isGroup = false;
+        QString groupType;
     };
 
     Info info;

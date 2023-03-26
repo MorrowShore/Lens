@@ -14,6 +14,7 @@ static const int RequestChatInterval = 3000;
 static const int RequestVideoInterval = 10000;
 
 static const QString ApiVersion = "5.131";
+static const int AvatarMinHeight = 128;
 
 }
 
@@ -181,17 +182,39 @@ void VkVideo::requestChat()
 
         QList<int64_t> idsNeedUpdate;
 
-        // TODO: implement groups
+        const QJsonArray groups = response.value("groups").toArray();
+        for (const QJsonValue& v : qAsConst(groups))
+        {
+            const QJsonObject group = v.toObject();
+            int64_t id = group.value("id").toVariant().toLongLong();
+            if (id >= 0)
+            {
+                id *= -1;
+            }
+
+            const QString name = group.value("name").toString();
+            const QString avatar = group.value("photo_200").toString();
+
+            User user;
+            user.id = QString("%1").arg(id);
+            user.name = name;
+            user.avatar = avatar;
+            user.isGroup = true;
+            user.groupType = group.value("type").toString();
+            user.verified = group.value("verified").toInt() == 1;
+
+            users[id] = user;
+        }
 
         const QJsonArray profiles = response.value("profiles").toArray();
         for (const QJsonValue& v : qAsConst(profiles))
         {
-            const QJsonObject jsonProfile = v.toObject();
-            const int64_t id = jsonProfile.value("id").toVariant().toLongLong();
+            const QJsonObject profile = v.toObject();
+            const int64_t id = profile.value("id").toVariant().toLongLong();
 
-            QString name = jsonProfile.value("first_name").toString().trimmed();
+            QString name = profile.value("first_name").toString().trimmed();
 
-            const QString lastName = jsonProfile.value("last_name").toString().trimmed();
+            const QString lastName = profile.value("last_name").toString().trimmed();
             if (!lastName.isEmpty())
             {
                 if (!name.isEmpty())
@@ -207,6 +230,7 @@ void VkVideo::requestChat()
                 User user;
                 user.id = QString("%1").arg(id);
                 user.name = name;
+                user.isGroup = false;
 
                 users[id] = user;
 
@@ -335,11 +359,46 @@ void VkVideo::requestChat()
                 rightBadges.append("qrc:/resources/images/verified-icon.svg");
             }
 
+            QString pageUrl;
+
+            if (user.isGroup)
+            {
+                QString id = user.id;
+                if (id.startsWith('-'))
+                {
+                    id = id.mid(1);
+                }
+
+                if (user.groupType == "page")
+                {
+                    pageUrl = "https://vk.com/public";
+                }
+                else if (user.groupType == "event")
+                {
+                    pageUrl = "https://vk.com/event";
+                }
+                else if (user.groupType == "group")
+                {
+                    pageUrl = "https://vk.com/club";
+                }
+                else
+                {
+                    pageUrl = "https://vk.com/public";
+                    qWarning() << Q_FUNC_INFO << "unknown group type" << user.groupType;
+                }
+
+                pageUrl += id;
+            }
+            else
+            {
+                pageUrl = QString("https://vk.com/id%1").arg(user.id);
+            }
+
             Author author(getServiceType(),
                           user.name,
                           user.id,
                           user.avatar,
-                          QUrl(QString("https://vk.com/id%1").arg(user.id)), // TODO: check for groups
+                          QUrl(pageUrl),
                           {},
                           rightBadges);
 
@@ -587,8 +646,6 @@ bool VkVideo::isCanConnect() const
 
 QUrl VkVideo::parseSticker(const QJsonObject &jsonSticker)
 {
-    static const int MinHeight = 128;
-
     const QJsonArray images = jsonSticker.value("images").toArray();
 
     for (const QJsonValue& v : images)
@@ -596,7 +653,7 @@ QUrl VkVideo::parseSticker(const QJsonObject &jsonSticker)
         const QJsonObject image = v.toObject();
         const int height = image.value("height").toInt();
 
-        if (height >= MinHeight)
+        if (height >= AvatarMinHeight)
         {
             return QUrl(image.value("url").toString());
         }
