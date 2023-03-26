@@ -673,7 +673,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         {
                             authorFlags.insert(Author::Flag::Verified);
                             authorNicknameColor = QColor(244, 143, 177);
-                            rightBadges.append("qrc:/resources/images/youtube-verified-icon.svg");
+                            rightBadges.append("qrc:/resources/images/verified-icon.svg");
                             foundIconType = true;
                         }
 

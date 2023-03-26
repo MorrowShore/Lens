@@ -266,11 +266,19 @@ void VkVideo::requestChat()
             QList<Message::Content*> contents;
             contents.append(new Message::Text(text));
 
+            QStringList rightBadges;
+            if (user.verified)
+            {
+                rightBadges.append("qrc:/resources/images/verified-icon.svg");
+            }
+
             Author author(getServiceType(),
                           user.name,
                           user.id,
                           user.avatar,
-                          QUrl(QString("https://vk.com/id%1").arg(user.id))); // TODO: check for groups
+                          QUrl(QString("https://vk.com/id%1").arg(user.id)), // TODO: check for groups
+                          {},
+                          rightBadges);
 
             Message message(contents, author, publishedAt, QDateTime::currentDateTime(), QString("%1").arg(rawMessageId));
 
@@ -400,7 +408,17 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
             user.avatar = jsonUser.value("photo_max").toString();
             user.verified = jsonUser.value("verified").toInt() == 1;
 
-            emit authorDataUpdated(user.id, { {Author::Role::AvatarUrl, QUrl(user.avatar)} });
+            QStringList rightBadges;
+            if (user.verified)
+            {
+                rightBadges.append("qrc:/resources/images/verified-icon.svg");
+            }
+
+            emit authorDataUpdated(user.id,
+                                   {
+                                       {Author::Role::AvatarUrl, QUrl(user.avatar)},
+                                       {Author::Role::RightBadgesUrls, rightBadges},
+                                   });
         }
     });
 }
