@@ -2,6 +2,7 @@
 #include "secrets.h"
 #include "utils.h"
 #include "crypto/obfuscator.h"
+#include "models/message.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrlQuery>
@@ -167,20 +168,20 @@ void VkVideo::reconnectImpl()
 
 void VkVideo::requestChat()
 {
-    /*if (!isCanConnect())
+    if (!isCanConnect())
     {
         return;
     }
 
-    const QUrl url(QString("https://api.vk.com/method/video.getComments?access_token=%1&v=%2&count=30&sort=desc&owner_id=%3&video_id=%4")
+    const QUrl url(QString("https://api.vk.com/method/video.getComments?extended=1&count=30&sort=desc&access_token=%1&v=%2&owner_id=%3&video_id=%4")
                                 .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId));
-
-    qDebug() << url;
 
     QNetworkRequest request(url);
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
+        state.connected = false;
+
         if (!isCanConnect())
         {
             reply->deleteLater();
@@ -194,8 +195,94 @@ void VkVideo::requestChat()
         }
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
-        qDebug() << root;
-    });*/
+        state.connected = root.contains("response");
+
+        const QJsonObject response = root.value("response").toObject();
+
+        // TODO: implement groups
+
+        const QJsonArray profiles = response.value("profiles").toArray();
+        for (const QJsonValue& v : qAsConst(profiles))
+        {
+            const QJsonObject jsonProfile = v.toObject();
+            const int64_t id = jsonProfile.value("id").toVariant().toLongLong();
+
+            QString name = jsonProfile.value("first_name").toString().trimmed();
+
+            const QString lastName = jsonProfile.value("last_name").toString().trimmed();
+            if (!lastName.isEmpty())
+            {
+                if (!name.isEmpty())
+                {
+                    name += " ";
+                }
+
+                name += lastName;
+            }
+
+            if (auto it = users.find(id); it == users.end())
+            {
+                User user;
+                user.id = QString("%1").arg(id);
+                user.name = name;
+
+                users[id] = user;
+            }
+            else
+            {
+                it->second.name = name;
+            }
+        }
+
+        const QJsonArray items = response.value("items").toArray();
+
+        QList<Message> messages;
+        QList<Author> authors;
+
+        for (const QJsonValue& v : qAsConst(items))
+        {
+            const QJsonObject jsonMessage = v.toObject();
+
+            const int64_t date = jsonMessage.value("date").toVariant().toLongLong();
+            const int64_t fromId = jsonMessage.value("from_id").toVariant().toLongLong();
+            const int64_t rawMessageId = jsonMessage.value("id").toVariant().toLongLong();
+            const QString text = jsonMessage.value("text").toString();
+
+            auto userIt = users.find(fromId);
+            if (userIt == users.end())
+            {
+                qWarning() << Q_FUNC_INFO << "not found user id " << fromId;
+                continue;
+
+            }
+
+            const User& user = userIt->second;
+
+            const QDateTime publishedAt =  QDateTime::fromSecsSinceEpoch(date);
+            const QString messageId = getServiceTypeId(serviceType) + QString("/%1").arg(rawMessageId);
+
+            QList<Message::Content*> contents;
+            contents.append(new Message::Text(text));
+
+            Author author(getServiceType(),
+                          user.name,
+                          user.id,
+                          user.avatar,
+                          QUrl(QString("https://vk.com/id%1").arg(user.id))); // TODO: check for groups
+
+            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+
+            messages.append(message);
+            authors.append(author);
+        }
+
+        if (!messages.isEmpty())
+        {
+            emit readyRead(messages, authors);
+        }
+
+        emit stateChanged();
+    });
 }
 
 void VkVideo::requestVideo()
@@ -205,7 +292,7 @@ void VkVideo::requestVideo()
         return;
     }
 
-    const QUrl url(QString("https://api.vk.com/method/video.get?access_token=%1&v=%2&count=1&videos=%3_%4")
+    const QUrl url(QString("https://api.vk.com/method/video.get?count=1&access_token=%1&v=%2&videos=%3_%4")
                                 .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId));
 
     QNetworkRequest request(url);

@@ -32,6 +32,13 @@ private:
         QString videoId;
     };
 
+    struct User
+    {
+        QString id;
+        QString name;
+        QString avatar;
+    };
+
     Info info;
 
     QNetworkAccessManager& network;
@@ -42,4 +49,6 @@ private:
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> loginButton;
     OAuth2 auth;
+
+    std::unordered_map<int64_t, User> users;
 };
