@@ -147,12 +147,16 @@ void VkVideo::requestChat()
         return;
     }
 
-    QString rawUrl = QString("https://api.vk.com/method/video.getComments?extended=1&count=30&access_token=%1&v=%2&owner_id=%3&video_id=%4")
+    QString rawUrl = QString("https://api.vk.com/method/video.getComments?extended=1&access_token=%1&v=%2&owner_id=%3&video_id=%4")
                                     .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId);
 
-    if (info.startCommentId != -1)
+    if (info.startCommentId == -1)
     {
-        rawUrl += QString("&start_comment_id=%1").arg(info.startCommentId);
+        rawUrl += "&count=1&sort=desc";
+    }
+    else
+    {
+        rawUrl += QString("&count=30&start_comment_id=%1").arg(info.startCommentId);
     }
 
     const QUrl url(rawUrl);
@@ -250,10 +254,6 @@ void VkVideo::requestChat()
         for (const QJsonValue& v : qAsConst(items))
         {
             const QJsonObject jsonMessage = v.toObject();
-
-            qDebug() << "==================================";
-            qDebug() << jsonMessage;
-            qDebug() << "==================================";
 
             const int64_t date = jsonMessage.value("date").toVariant().toLongLong();
             const int64_t fromId = jsonMessage.value("from_id").toVariant().toLongLong();
