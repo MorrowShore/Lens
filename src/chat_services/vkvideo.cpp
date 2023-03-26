@@ -320,7 +320,15 @@ void VkVideo::requestChat()
                 }
                 else if (type == "sticker")
                 {
-                    attachmentsString += tr("sticker");
+                    const QUrl url = parseSticker(jsonAttachment.value("sticker").toObject());
+                    if (url.isEmpty())
+                    {
+                        attachmentsString += tr("sticker");
+                    }
+                    else
+                    {
+                        contents.append(new Message::Image(url, 160));
+                    }
                 }
                 else
                 {
@@ -593,4 +601,24 @@ bool VkVideo::extractOwnerVideoId(const QString &videoiLink_, QString &ownerId, 
 bool VkVideo::isCanConnect() const
 {
     return enabled.get() && auth.isLoggedIn() && !info.ownerId.isEmpty() && !info.videoId.isEmpty();
+}
+
+QUrl VkVideo::parseSticker(const QJsonObject &jsonSticker)
+{
+    static const int MinHeight = 200;
+
+    const QJsonArray images = jsonSticker.value("images").toArray();
+
+    for (const QJsonValue& v : images)
+    {
+        const QJsonObject image = v.toObject();
+        const int height = image.value("height").toInt();
+
+        if (height >= MinHeight)
+        {
+            return QUrl(image.value("url").toString());
+        }
+    }
+
+    return QUrl();
 }

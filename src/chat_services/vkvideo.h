@@ -26,6 +26,7 @@ private slots:
 private:
     bool extractOwnerVideoId(const QString& videoiLink, QString& ownerId, QString& videoId);
     bool isCanConnect() const;
+    static QUrl parseSticker(const QJsonObject& jsonSticker);
 
     struct Info
     {
