@@ -10,7 +10,7 @@
 namespace
 {
 
-static const int RequestChatInterval = 2000;
+static const int RequestChatInterval = 3000;
 static const int RequestVideoInterval = 10000;
 
 static const QString ApiVersion = "5.131";
