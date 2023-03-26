@@ -149,11 +149,11 @@ public:
     class Hyperlink : public Content
     {
     public:
-        Hyperlink(const QString& text_, const QUrl& url_, const bool needSpaceAfter_ = true)
+        Hyperlink(const QString& text_, const QUrl& url_, const bool needSpaces_ = true)
             : Content(Type::Hyperlink)
             , text(text_)
             , url(url_)
-            , needSpaceAfter(needSpaceAfter_)
+            , needSpaces(needSpaces_)
         {
         }
 
@@ -175,24 +175,25 @@ public:
             return url;
         }
 
-        bool isNeedSpaceAfter() const
+        bool isNeedSpaces() const
         {
-            return needSpaceAfter;
+            return needSpaces;
         }
 
     private:
         const QString text;
         const QUrl url;
-        const bool needSpaceAfter;
+        const bool needSpaces;
     };
 
     class Image : public Content
     {
     public:
-        Image(const QUrl& url_, const int height_ = 0)
+        Image(const QUrl& url_, const int height_ = 0, const bool needSpaces_ = true)
             : Content(Type::Image)
             , url(url_)
             , height(height_)
+            , needSpaces(needSpaces_)
         {
         }
 
@@ -213,9 +214,15 @@ public:
             return height;
         }
 
+        bool isNeedSpaces() const
+        {
+            return needSpaces;
+        }
+
     private:
         QUrl url;
         const int height;
+        const bool needSpaces;
     };
 
     Message() { }

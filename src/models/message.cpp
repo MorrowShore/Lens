@@ -212,14 +212,24 @@ void Message::updateHtml()
             const Image* image = static_cast<const Image*>(content);
             if (image)
             {
+                if (image->isNeedSpaces())
+                {
+                    html += " ";
+                }
+
                 const QString url = image->getUrl().toString();
                 if (image->getHeight() == 0)
                 {
-                    html += QString(" <img align=\"top\" src=\"%1\"> ").arg(url);
+                    html += QString("<img align=\"top\" src=\"%1\">").arg(url);
                 }
                 else
                 {
-                    html += QString(" <img align=\"top\" height=\"%1\" width=\"%1\" src=\"%2\"> ").arg(image->getHeight()).arg(url);
+                    html += QString("<img align=\"top\" height=\"%1\" width=\"%1\" src=\"%2\">").arg(image->getHeight()).arg(url);
+                }
+
+                if (image->isNeedSpaces())
+                {
+                    html += " ";
                 }
             }
         }
@@ -230,9 +240,14 @@ void Message::updateHtml()
             const Hyperlink* hyperlink = static_cast<const Hyperlink*>(content);
             if (hyperlink)
             {
-                html += " <a href=\"" + hyperlink->getUrl().toString() + "\">" + hyperlink->getText() + "</a>";
+                if (hyperlink->isNeedSpaces())
+                {
+                    html += " ";
+                }
 
-                if (hyperlink->isNeedSpaceAfter())
+                html += "<a href=\"" + hyperlink->getUrl().toString() + "\">" + hyperlink->getText() + "</a>";
+
+                if (hyperlink->isNeedSpaces())
                 {
                     html += " ";
                 }
