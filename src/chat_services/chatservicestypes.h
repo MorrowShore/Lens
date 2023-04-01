@@ -16,6 +16,7 @@ enum class ServiceType
     GoodGame,
     VkPlayLive,
     VkVideo,
+    Wasd,
     Telegram,
     Discord,
 };

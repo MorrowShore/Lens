@@ -74,5 +74,6 @@
         <file>resources/images/close.svg</file>
         <file>resources/images/cool_200_transparent.gif</file>
         <file>resources/images/vkvideo-icon.svg</file>
+        <file>resources/images/wasd-icon.svg</file>
     </qresource>
 </RCC>

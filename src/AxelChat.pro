@@ -15,6 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     chat_services/vkvideo.h \
+    chat_services/wasd.h \
     crypto/aes.h \
     crypto/crypto.h \
     crypto/obfuscator.h \
@@ -62,6 +63,7 @@ SOURCES += \
         chat_services/goodgame.cpp \
         chat_services/twitch.cpp \
         chat_services/vkvideo.cpp \
+        chat_services/wasd.cpp \
         chat_services/youtube.cpp \
         crypto/aes.cpp \
         crypto/crypto.cpp \

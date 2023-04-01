@@ -7,6 +7,7 @@
 #include "chat_services/telegram.h"
 #include "chat_services/discord.h"
 #include "chat_services/vkvideo.h"
+#include "chat_services/wasd.h"
 #include "models/author.h"
 #include "models/message.h"
 #include <QCoreApplication>
@@ -57,6 +58,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(new GoodGame     (settings, SettingsGroupPath + "/goodgame",     network, this));
     addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));
     addService(new VkVideo      (settings, SettingsGroupPath + "/vkvideo",      network, this));
+    addService(new Wasd         (settings, SettingsGroupPath + "/wasd",         network, this));
     addService(new Telegram     (settings, SettingsGroupPath + "/telegram",     network, this));
     addService(new Discord      (settings, SettingsGroupPath + "/discord",      network, this));
 
