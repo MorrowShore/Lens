@@ -386,7 +386,7 @@ void Wasd::parseEvent(const QString &type, const QJsonObject &data)
     }
     else if (type == "sticker")
     {
-        // {"id":"735ed617-05e4-4340-b812-3520c834e625","date_time":"2023-04-04T20:39:09.673Z","hash":"c61b9974-0041-479d-bece-357bb087a082","channel_id":416355,"stream_id":1380773,"streamer_id":435858,"user_id":396598,"user_avatar":{"large":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","small":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","medium":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg"},"is_follower":true,"user_login":"RedArcher","user_channel_role":"CHANNEL_USER","other_roles":["CHANNEL_FOLLOWER"],"sticker":{"sticker_id":10085,"created_at":"","updated_at":null,"deleted_at":null,"sticker_pack_id":1285,"sticker_image":{"large":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/original.png","small":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/64x64.png","medium":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/128x128.png"},"sticker_name":"Archer_02","sticker_alias":"RedArcher-archer_02","sticker_status":null}}
+        parseEventSticker(data);
     }
     else if (type == "system_message")
     {
@@ -412,7 +412,7 @@ void Wasd::parseEventMessage(const QJsonObject &data)
 {
     const QString name = data.value("user_login").toString();
     const QString authorId = QString("%1").arg(data.value("user_id").toVariant().toLongLong());
-    const QUrl pageUrl = "https://wasd.tv/" + name.toLower().trimmed();
+    const QUrl pageUrl = "https://wasd.tv/" + name.trimmed();
 
     const QJsonObject jsonUserAvatar = data.value("user_avatar").toObject();
     QUrl avatarUrl = jsonUserAvatar.value("large").toString();
@@ -443,6 +443,12 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     QList<Author> authors = { author };
 
     emit readyRead(messages, authors);
+}
+
+void Wasd::parseEventSticker(const QJsonObject &data)
+{
+    // // {"id":"735ed617-05e4-4340-b812-3520c834e625","date_time":"2023-04-04T20:39:09.673Z","hash":"c61b9974-0041-479d-bece-357bb087a082","channel_id":416355,"stream_id":1380773,"streamer_id":435858,"user_id":396598,"user_avatar":{"large":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","small":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","medium":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg"},"is_follower":true,"user_login":"RedArcher","user_channel_role":"CHANNEL_USER","other_roles":["CHANNEL_FOLLOWER"],"sticker":{"sticker_id":10085,"created_at":"","updated_at":null,"deleted_at":null,"sticker_pack_id":1285,"sticker_image":{"large":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/original.png","small":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/64x64.png","medium":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/128x128.png"},"sticker_name":"Archer_02","sticker_alias":"RedArcher-archer_02","sticker_status":null}}
+    //TODO
 }
 
 QString Wasd::extractChannelName(const QString &stream)
