@@ -3,11 +3,23 @@
 #include "chatservice.h"
 #include <QTimer>
 #include <QWebSocket>
+#include <QJsonValue>
 
 class Wasd : public ChatService
 {
     Q_OBJECT
 public:
+    enum class SocketIO2Type
+    {
+        CONNECT = 0,
+        DISCONNECT = 1,
+        EVENT = 2,
+        ACK = 3,
+        CONNECT_ERROR = 4,
+        BINARY_EVENT = 5,
+        BINARY_ACK = 6,
+    };
+
     explicit Wasd(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
@@ -23,6 +35,10 @@ private slots:
 private:
     static QString extractChannelName(const QString& stream);
 
+    void send(const SocketIO2Type type, const QByteArray& id = QByteArray(), const QJsonDocument& payload = QJsonDocument());
+    void sendJoin(const QString& streamId, const QString& channelId, const QString& jwt);
+    void sendPing();
+
     struct Info
     {
         QString jwtToken;
@@ -34,4 +50,6 @@ private:
     QWebSocket socket;
 
     QTimer timerReconnect;
+    QTimer timerPing;
+    QTimer timerCheckPong; // TODO
 };

@@ -3,12 +3,16 @@
 #include "crypto/obfuscator.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QJsonParseError>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 namespace
 {
 
 static const QString ApiToken = OBFUSCATE(WASD_API_TOKEN);
 static const int ReconncectPeriod = 3 * 1000;
+static const int PingPeriod = 3 * 1000;
 
 };
 
@@ -23,7 +27,7 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Wasd::onWebSocketReceived);
@@ -31,6 +35,16 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+
+        if (info.jwtToken.isEmpty())
+        {
+            qDebug() << Q_FUNC_INFO << "jwt token is empty, disconnect";
+            socket.close();
+            return;
+        }
+
+        sendJoin("1380680", "842797", info.jwtToken); // TODO
+        sendPing();
 
         emit stateChanged();
     });
@@ -57,10 +71,30 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
         if (socket.state() == QAbstractSocket::SocketState::UnconnectedState && !info.jwtToken.isEmpty())
         {
             socket.setProxy(network.proxy());
-            socket.open(QUrl("wss://chat.wasd.tv"));
+            socket.open(QUrl("wss://chat.wasd.tv/socket.io/?EIO=3&transport=websocket"));
         }
     });
     timerReconnect.start(ReconncectPeriod);
+
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState && !info.jwtToken.isEmpty())
+        {
+            socket.setProxy(network.proxy());
+            socket.open(QUrl("wss://chat.wasd.tv/socket.io/?EIO=3&transport=websocket"));
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);
+
+
+    QObject::connect(&timerPing, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() == QAbstractSocket::SocketState::ConnectedState)
+        {
+            sendPing();
+        }
+    });
+    timerPing.start(PingPeriod);
 
     reconnect();
 }
@@ -141,6 +175,65 @@ void Wasd::onWebSocketReceived(const QString &rawData)
     {
         return;
     }
+
+    if (rawData.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "received data is empty";
+        return;
+    }
+
+    bool ok = false;
+    const SocketIO2Type type = (SocketIO2Type)QString(rawData[0]).toInt(&ok);
+    if (!ok)
+    {
+        qWarning() << Q_FUNC_INFO << "failed to get type";
+        return;
+    }
+
+    QByteArray payload;
+
+    for (int i = 1; i < rawData.length(); i++)
+    {
+        if (!rawData[i].isNumber())
+        {
+            payload = rawData.mid(i).toUtf8();
+            break;
+        }
+    }
+
+    QJsonParseError jsonError;
+    const QJsonDocument doc = payload.isEmpty() ? QJsonDocument() : QJsonDocument::fromJson(payload, &jsonError);
+    if (jsonError.error != QJsonParseError::ParseError::NoError)
+    {
+        qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << payload;
+    }
+
+    switch(type)
+    {
+    case SocketIO2Type::CONNECT:
+        break;
+
+    case SocketIO2Type::DISCONNECT:
+        break;
+
+    case SocketIO2Type::EVENT:
+        break;
+
+    case SocketIO2Type::ACK:
+        break;
+
+    case SocketIO2Type::CONNECT_ERROR:
+        break;
+
+    case SocketIO2Type::BINARY_EVENT:
+        break;
+
+    case SocketIO2Type::BINARY_ACK:
+        break;
+
+    default:
+        qWarning() << Q_FUNC_INFO << "unknown message type" << (int)type;
+    }
 }
 
 void Wasd::requestTokenJWT()
@@ -163,6 +256,41 @@ void Wasd::requestTokenJWT()
             qWarning() << Q_FUNC_INFO << "failed to get jwt token";
         }
     });
+}
+
+void Wasd::send(const SocketIO2Type type, const QByteArray& id, const QJsonDocument& payload)
+{
+    const int typeNum = (int)type;
+
+    QString message = QString("%1").arg(typeNum) + id + QString::fromUtf8(payload.toJson(QJsonDocument::JsonFormat::Compact));
+
+    qDebug("\nsend: " + message.toUtf8() + "\n");
+
+    socket.sendTextMessage(message);
+}
+
+void Wasd::sendJoin(const QString &streamId, const QString &channelId, const QString &jwt)
+{
+    const bool excludeStickers = true; // TODO
+
+    QJsonArray array =
+    {
+        "join",
+        QJsonObject(
+        {
+            { "streamId", streamId },
+            { "channelId", channelId },
+            { "jwt", jwt },
+            { "excludeStickers", excludeStickers }
+        })
+    };
+
+    send(SocketIO2Type::CONNECT_ERROR, "2", QJsonDocument(array));
+}
+
+void Wasd::sendPing()
+{
+    send(SocketIO2Type::EVENT);
 }
 
 QString Wasd::extractChannelName(const QString &stream)
