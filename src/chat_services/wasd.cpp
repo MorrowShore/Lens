@@ -1,6 +1,7 @@
 #include "wasd.h"
 #include "secrets.h"
 #include "crypto/obfuscator.h"
+#include "models/message.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QJsonParseError>
@@ -381,9 +382,7 @@ void Wasd::parseEvent(const QString &type, const QJsonObject &data)
 {
     if (type == "message")
     {
-        // {"date_time":"2023-04-04T20:39:09.091Z","channel_id":416355,"stream_id":1380773,"streamer_id":435858,"user_id":396621,"user_avatar":{"large":"https://st.wasd.tv/upload/avatars/a718dab1-01d5-4320-b8b2-788c226f7060/original.jpeg","small":"https://st.wasd.tv/upload/avatars/a718dab1-01d5-4320-b8b2-788c226f7060/original.jpeg","medium":"https://st.wasd.tv/upload/avatars/a718dab1-01d5-4320-b8b2-788c226f7060/original.jpeg"},"is_follower":true,"user_login":"Misvander","user_channel_role":"CHANNEL_USER","other_roles":["CHANNEL_FOLLOWER","CHANNEL_SUBSCRIBER"],"message":"разойдись свинопасы","id":"945f01cc-38b8-4bd1-8681-7b59d10df7da","hash":"6fca37c6-3f35-41d1-abf5-e6c3b459951e","meta":{"days_as_sub":426}}
-
-
+        parseEventMessage(data);
     }
     else if (type == "sticker")
     {
@@ -407,6 +406,43 @@ void Wasd::parseEvent(const QString &type, const QJsonObject &data)
     {
         qWarning() << Q_FUNC_INFO << "unknown event type" << type;
     }
+}
+
+void Wasd::parseEventMessage(const QJsonObject &data)
+{
+    const QString name = data.value("user_login").toString();
+    const QString authorId = QString("%1").arg(data.value("user_id").toVariant().toLongLong());
+    const QUrl pageUrl = "https://wasd.tv/" + name.toLower().trimmed();
+
+    const QJsonObject jsonUserAvatar = data.value("user_avatar").toObject();
+    QUrl avatarUrl = jsonUserAvatar.value("large").toString();
+    if (avatarUrl.isEmpty())
+    {
+        const QStringList keys = jsonUserAvatar.keys();
+        if (keys.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "user avatar sizes is empty";
+        }
+        else
+        {
+            avatarUrl = jsonUserAvatar.value(keys.first()).toString();
+        }
+    }
+
+    const Author author(getServiceType(), name, authorId, avatarUrl, pageUrl);
+
+    const QDateTime publishedAt = QDateTime::fromString(data.value("date_time").toString(), Qt::DateFormat::ISODateWithMs);
+    const QString text = data.value("message").toString();
+    const QString messageId = data.value("id").toString();
+
+    const QList<Message::Content*> contents = { new Message::Text(text) };
+
+    const Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+
+    QList<Message> messages = { message };
+    QList<Author> authors = { author };
+
+    emit readyRead(messages, authors);
 }
 
 QString Wasd::extractChannelName(const QString &stream)

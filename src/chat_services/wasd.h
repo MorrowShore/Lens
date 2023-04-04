@@ -41,6 +41,7 @@ private:
     void sendPing();
     void parseMessage(const SocketIO2Type type, const QJsonDocument& doc);
     void parseEvent(const QString& type, const QJsonObject& data);
+    void parseEventMessage(const QJsonObject& data);
 
     struct Info
     {
