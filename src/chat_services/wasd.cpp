@@ -1,8 +1,21 @@
 #include "wasd.h"
+#include "secrets.h"
+#include "crypto/obfuscator.h"
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+
+namespace
+{
+
+static const QString ApiToken = OBFUSCATE(WASD_API_TOKEN);
+static const int ReconncectPeriod = 3 * 1000;
+
+};
 
 Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
     : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Wasd, parent)
     , network(network_)
+    , socket("https://wasd.tv/")
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
@@ -38,6 +51,18 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
     {
         qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
     });
+
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState && !info.jwtToken.isEmpty())
+        {
+            socket.setProxy(network.proxy());
+            socket.open(QUrl("wss://chat.wasd.tv"));
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);
+
+    reconnect();
 }
 
 ChatService::ConnectionStateType Wasd::getConnectionStateType() const
@@ -87,6 +112,7 @@ void Wasd::reconnectImpl()
     socket.close();
 
     state = State();
+    info = Info();
 
     state.controlPanelUrl = QUrl(QString("https://wasd.tv/stream-settings"));
 
@@ -100,6 +126,11 @@ void Wasd::reconnectImpl()
 
     state.chatUrl = QUrl(QString("https://wasd.tv/chat?channel_name=%1").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://wasd.tv/%1").arg(state.streamId));
+
+    if (enabled.get())
+    {
+        requestTokenJWT();
+    }
 }
 
 void Wasd::onWebSocketReceived(const QString &rawData)
@@ -110,6 +141,28 @@ void Wasd::onWebSocketReceived(const QString &rawData)
     {
         return;
     }
+}
+
+void Wasd::requestTokenJWT()
+{
+    QNetworkRequest request(QUrl("https://wasd.tv/api/auth/chat-token"));
+    request.setRawHeader("Authorization", QString("Token %1").arg(ApiToken).toUtf8());
+
+    QNetworkReply* reply = network.post(request, QByteArray());
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QByteArray data = reply->readAll();
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+        info.jwtToken = root.value("result").toString();
+
+        if (info.jwtToken.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "failed to get jwt token";
+        }
+    });
 }
 
 QString Wasd::extractChannelName(const QString &stream)

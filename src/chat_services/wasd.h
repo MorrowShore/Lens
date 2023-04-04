@@ -18,10 +18,20 @@ protected:
 
 private slots:
     void onWebSocketReceived(const QString &rawData);
+    void requestTokenJWT();
 
 private:
     static QString extractChannelName(const QString& stream);
 
+    struct Info
+    {
+        QString jwtToken;
+    };
+
+    Info info;
+
     QNetworkAccessManager& network;
     QWebSocket socket;
+
+    QTimer timerReconnect;
 };
