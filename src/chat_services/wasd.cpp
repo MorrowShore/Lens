@@ -43,7 +43,14 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
             return;
         }
 
-        sendJoin("1380680", "842797", info.jwtToken); // TODO
+        if (info.streamId.isEmpty() || info.channelId.isEmpty())
+        {
+            qDebug() << Q_FUNC_INFO << "stream id or channel id is empty, disconnect";
+            socket.close();
+            return;
+        }
+
+        sendJoin(info.streamId, info.channelId, info.jwtToken);
         sendPing();
 
         emit stateChanged();
@@ -164,6 +171,7 @@ void Wasd::reconnectImpl()
     if (enabled.get())
     {
         requestTokenJWT();
+        requestChannelInfo(state.streamId);
     }
 }
 
@@ -208,32 +216,7 @@ void Wasd::onWebSocketReceived(const QString &rawData)
         qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << payload;
     }
 
-    switch(type)
-    {
-    case SocketIO2Type::CONNECT:
-        break;
-
-    case SocketIO2Type::DISCONNECT:
-        break;
-
-    case SocketIO2Type::EVENT:
-        break;
-
-    case SocketIO2Type::ACK:
-        break;
-
-    case SocketIO2Type::CONNECT_ERROR:
-        break;
-
-    case SocketIO2Type::BINARY_EVENT:
-        break;
-
-    case SocketIO2Type::BINARY_ACK:
-        break;
-
-    default:
-        qWarning() << Q_FUNC_INFO << "unknown message type" << (int)type;
-    }
+    parseMessage(type, doc);
 }
 
 void Wasd::requestTokenJWT()
@@ -254,6 +237,54 @@ void Wasd::requestTokenJWT()
         if (info.jwtToken.isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "failed to get jwt token";
+        }
+    });
+}
+
+void Wasd::requestChannelInfo(const QString &channelName)
+{
+    QNetworkRequest request(QUrl("https://wasd.tv/api/v2/broadcasts/public?channel_name=" + channelName));
+
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, channelName]()
+    {
+        const QByteArray data = reply->readAll();
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+        const QJsonObject result = root.value("result").toObject();
+
+        if (channelName.toLower().trimmed() == state.streamId.toLower().trimmed())
+        {
+            const QJsonObject mediaContainer = result.value("media_container").toObject();
+
+            info.channelId = QString("%1").arg(mediaContainer.value("channel_id").toVariant().toLongLong());
+
+            const QJsonArray streams = mediaContainer.value("media_container_streams").toArray();
+            if (streams.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "streams is empty";
+            }
+            else
+            {
+                if (streams.count() != 1)
+                {
+                    qWarning() << Q_FUNC_INFO << "streams count is not 1";
+                }
+
+                const QJsonObject stream = streams.first().toObject();
+
+                state.viewersCount = stream.value("stream_current_viewers").toInt();
+
+                info.streamId = QString("%1").arg(stream.value("stream_id").toVariant().toLongLong());
+            }
+
+            if (info.channelId.isEmpty() || info.streamId.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "channel id or stream id is empty";
+            }
+
+            emit stateChanged();
         }
     });
 }
@@ -291,6 +322,91 @@ void Wasd::sendJoin(const QString &streamId, const QString &channelId, const QSt
 void Wasd::sendPing()
 {
     send(SocketIO2Type::EVENT);
+}
+
+void Wasd::parseMessage(const SocketIO2Type type, const QJsonDocument &doc)
+{
+    switch(type)
+    {
+    case SocketIO2Type::CONNECT:
+        return;
+
+    case SocketIO2Type::DISCONNECT:
+        break;
+
+    case SocketIO2Type::EVENT:
+        break;
+
+    case SocketIO2Type::ACK:
+        // TODO
+        return;
+
+    case SocketIO2Type::CONNECT_ERROR:
+    {
+        const QJsonArray array = doc.array();
+        if (array.isEmpty())
+        {
+            return;
+        }
+
+        const QString eventType = array.first().toString();
+
+        if (array.count() >= 2)
+        {
+            if (array.count() != 2)
+            {
+                qWarning() << Q_FUNC_INFO << "array size not 2";
+            }
+
+            parseEvent(eventType, array[1].toObject());
+        }
+        else
+        {
+            parseEvent(eventType, QJsonObject());
+        }
+    }
+        return;
+
+    case SocketIO2Type::BINARY_EVENT:
+        break;
+
+    case SocketIO2Type::BINARY_ACK:
+        break;
+    }
+
+    qWarning() << Q_FUNC_INFO << "unknown message type" << (int)type;
+}
+
+void Wasd::parseEvent(const QString &type, const QJsonObject &data)
+{
+    if (type == "message")
+    {
+        // {"date_time":"2023-04-04T20:39:09.091Z","channel_id":416355,"stream_id":1380773,"streamer_id":435858,"user_id":396621,"user_avatar":{"large":"https://st.wasd.tv/upload/avatars/a718dab1-01d5-4320-b8b2-788c226f7060/original.jpeg","small":"https://st.wasd.tv/upload/avatars/a718dab1-01d5-4320-b8b2-788c226f7060/original.jpeg","medium":"https://st.wasd.tv/upload/avatars/a718dab1-01d5-4320-b8b2-788c226f7060/original.jpeg"},"is_follower":true,"user_login":"Misvander","user_channel_role":"CHANNEL_USER","other_roles":["CHANNEL_FOLLOWER","CHANNEL_SUBSCRIBER"],"message":"разойдись свинопасы","id":"945f01cc-38b8-4bd1-8681-7b59d10df7da","hash":"6fca37c6-3f35-41d1-abf5-e6c3b459951e","meta":{"days_as_sub":426}}
+
+
+    }
+    else if (type == "sticker")
+    {
+        // {"id":"735ed617-05e4-4340-b812-3520c834e625","date_time":"2023-04-04T20:39:09.673Z","hash":"c61b9974-0041-479d-bece-357bb087a082","channel_id":416355,"stream_id":1380773,"streamer_id":435858,"user_id":396598,"user_avatar":{"large":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","small":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","medium":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg"},"is_follower":true,"user_login":"RedArcher","user_channel_role":"CHANNEL_USER","other_roles":["CHANNEL_FOLLOWER"],"sticker":{"sticker_id":10085,"created_at":"","updated_at":null,"deleted_at":null,"sticker_pack_id":1285,"sticker_image":{"large":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/original.png","small":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/64x64.png","medium":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/128x128.png"},"sticker_name":"Archer_02","sticker_alias":"RedArcher-archer_02","sticker_status":null}}
+    }
+    else if (type == "system_message")
+    {
+        qInfo() << "WASD system message:" << data.value("message").toString();
+    }
+    else if (type == "joined")
+    {
+        if (!state.connected && !state.streamId.isEmpty())
+        {
+            state.connected = true;
+
+            emit connectedChanged(true, state.streamId);
+            emit stateChanged();
+        }
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown event type" << type;
+    }
 }
 
 QString Wasd::extractChannelName(const QString &stream)

@@ -31,6 +31,7 @@ protected:
 private slots:
     void onWebSocketReceived(const QString &rawData);
     void requestTokenJWT();
+    void requestChannelInfo(const QString& channelName);
 
 private:
     static QString extractChannelName(const QString& stream);
@@ -38,10 +39,14 @@ private:
     void send(const SocketIO2Type type, const QByteArray& id = QByteArray(), const QJsonDocument& payload = QJsonDocument());
     void sendJoin(const QString& streamId, const QString& channelId, const QString& jwt);
     void sendPing();
+    void parseMessage(const SocketIO2Type type, const QJsonDocument& doc);
+    void parseEvent(const QString& type, const QJsonObject& data);
 
     struct Info
     {
         QString jwtToken;
+        QString channelId;
+        QString streamId;
     };
 
     Info info;
