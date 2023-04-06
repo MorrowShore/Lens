@@ -153,10 +153,7 @@ QString Wasd::getStateDescription() const
 
 void Wasd::reconnectImpl()
 {
-    socket.close();
-
-    state = State();
-    info = Info();
+    disconnect();
 
     state.controlPanelUrl = QUrl(QString("https://wasd.tv/stream-settings"));
 
@@ -261,6 +258,15 @@ void Wasd::requestChannel(const QString &channelName)
 
         if (channelName.toLower().trimmed() == state.streamId.toLower().trimmed())
         {
+            const QJsonObject channel = result.value("channel").toObject();
+            const bool isLive = channel.value("channel_is_live").toBool();
+            if (!isLive)
+            {
+                qWarning() << Q_FUNC_INFO << "channel" << channelName << "is not live";
+                disconnect();
+                return;
+            }
+
             const QJsonObject mediaContainer = result.value("media_container").toObject();
 
             info.channelId = QString("%1").arg(mediaContainer.value("channel_id").toVariant().toLongLong());
@@ -315,6 +321,22 @@ void Wasd::requestSmiles()
             }
         }
     });
+}
+
+void Wasd::disconnect()
+{
+    if (state.connected)
+    {
+        state.connected = false;
+        emit connectedChanged(false);
+    }
+
+    socket.close();
+
+    state = State();
+    info = Info();
+
+    emit stateChanged();
 }
 
 void Wasd::send(const SocketIO2Type type, const QByteArray& id, const QJsonDocument& payload)
