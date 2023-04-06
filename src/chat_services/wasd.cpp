@@ -438,9 +438,62 @@ void Wasd::parseEvent(const QString &type, const QJsonObject &data)
 
 void Wasd::parseEventMessage(const QJsonObject &data)
 {
+    // https://github.com/shevernitskiy/wasdtv/blob/main/src/types/api.ts
+
+    // TODO: 'MESSAGE' | 'EVENT' | 'STICKER' | 'GIFTS' | 'YADONAT' | 'SUBSCRIBE' | 'HIGHLIGHTED_MESSAGE'
+
+    /* TODO: ChatAction
+    | 'WRITE_TO_CHAT'
+    | 'WRITE_TO_FOLLOWERS_CHAT'
+    | 'WRITE_TO_SUBSCRIPTION_CHAT'
+    | 'WRITE_NO_DELAY'
+    | 'CHANNEL_USER'
+    | 'CHAT_START_VOTING'
+    | 'CHAT_MAKE_VOTING_CHOICE'
+    | 'ASSIGN_MODERATOR'
+    | 'BAN_USER'
+    | 'DELETE_MESSAGE'
+    | 'MUTE_USER'
+    | 'REMOVE_MESSAGES'
+    | 'VIEW_BANNED_USERS'
+     */
+
+    /* TODO: Role
+    | 'CHANNEL_OWNER'
+    | 'CHANNEL_FOLLOWER'
+    | 'CHANNEL_USER'
+    | 'CHANNEL_MODERATOR'
+    | 'CHANEL_SUBSCRIBER'
+    | 'CHANNEL_BANNED'
+    | 'CHANNEL_MUTE'
+    | 'CHANNEL_HIDE'
+    | 'PROMO_CODE_WINNER'
+    | 'PROMO_CODE_CANDIDATE'
+    | 'WASD_ADMIN'
+    | 'WASD_TEAM'
+    | 'WASD_PARTNER'
+    | 'ANON'
+    */
+
     const QString name = data.value("user_login").toString();
     const QString authorId = QString("%1").arg(data.value("user_id").toVariant().toLongLong());
     const QUrl pageUrl = "https://wasd.tv/" + name.trimmed();
+
+    QColor authorNicknameColor;
+    QColor authorNicknameBackgroundColor;
+    QStringList leftBadges;
+
+    const QString role = data.value("user_channel_role").toString();
+    if (role == "CHANNEL_OWNER")
+    {
+        leftBadges.append("qrc:/resources/images/king.svg");
+        authorNicknameColor = QColor(255, 255, 255);
+        authorNicknameBackgroundColor = QColor(245, 166, 35);
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown role" << role << "of author" << name;
+    }
 
     const QJsonObject jsonUserAvatar = data.value("user_avatar").toObject();
     QUrl avatarUrl = jsonUserAvatar.value("large").toString();
@@ -457,7 +510,16 @@ void Wasd::parseEventMessage(const QJsonObject &data)
         }
     }
 
-    const Author author(getServiceType(), name, authorId, avatarUrl, pageUrl);
+    const Author author(getServiceType(),
+                        name,
+                        authorId,
+                        avatarUrl,
+                        pageUrl,
+                        leftBadges,
+                        {},
+                        {},
+                        authorNicknameColor,
+                        authorNicknameBackgroundColor);
 
     const QDateTime publishedAt = QDateTime::fromString(data.value("date_time").toString(), Qt::DateFormat::ISODateWithMs);
     const QString messageId = data.value("id").toString();
