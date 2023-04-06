@@ -473,6 +473,8 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     | 'ANON'
     */
 
+    // TODO: other roles
+
     const QString name = data.value("user_login").toString();
     const QString authorId = QString("%1").arg(data.value("user_id").toVariant().toLongLong());
     const QUrl pageUrl = "https://wasd.tv/" + name.trimmed();
@@ -493,6 +495,10 @@ void Wasd::parseEventMessage(const QJsonObject &data)
         leftBadges.append("qrc:/resources/images/youtube-moderator-icon.svg");
         authorNicknameColor = QColor(255, 255, 255);
         authorNicknameBackgroundColor = QColor(68, 72, 88);
+    }
+    else if (role == "CHANNEL_USER")
+    {
+        //
     }
     else
     {
