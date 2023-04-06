@@ -1079,32 +1079,32 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Trovo</name>
     <message>
-        <location filename="chat_services/trovo.cpp" line="56"/>
+        <location filename="chat_services/trovo.cpp" line="58"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="57"/>
+        <location filename="chat_services/trovo.cpp" line="59"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="157"/>
+        <location filename="chat_services/trovo.cpp" line="159"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="160"/>
+        <location filename="chat_services/trovo.cpp" line="162"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="163"/>
+        <location filename="chat_services/trovo.cpp" line="165"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="166"/>
+        <location filename="chat_services/trovo.cpp" line="168"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1151,12 +1151,12 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="729"/>
+        <location filename="chat_services/twitch.cpp" line="728"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="734"/>
+        <location filename="chat_services/twitch.cpp" line="733"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
@@ -1167,8 +1167,8 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="chat_services/twitch.cpp" line="58"/>
-        <location filename="chat_services/twitch.cpp" line="725"/>
-        <location filename="chat_services/twitch.cpp" line="730"/>
+        <location filename="chat_services/twitch.cpp" line="724"/>
+        <location filename="chat_services/twitch.cpp" line="729"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
@@ -1200,7 +1200,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="724"/>
+        <location filename="chat_services/twitch.cpp" line="723"/>
         <source>Login for full functionality</source>
         <translation>Для полноценной работы войдите</translation>
     </message>
@@ -1213,7 +1213,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="735"/>
+        <location filename="chat_services/twitch.cpp" line="734"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -1261,75 +1261,75 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>VkVideo</name>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="27"/>
+        <location filename="chat_services/vkvideo.cpp" line="28"/>
         <source>Broadcast link...</source>
         <translation>Ссылка трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="42"/>
-        <location filename="chat_services/vkvideo.cpp" line="564"/>
-        <location filename="chat_services/vkvideo.cpp" line="569"/>
+        <location filename="chat_services/vkvideo.cpp" line="43"/>
+        <location filename="chat_services/vkvideo.cpp" line="565"/>
+        <location filename="chat_services/vkvideo.cpp" line="570"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="84"/>
-        <location filename="chat_services/vkvideo.cpp" line="563"/>
+        <location filename="chat_services/vkvideo.cpp" line="85"/>
+        <location filename="chat_services/vkvideo.cpp" line="564"/>
         <source>Not logged in</source>
         <translation>Вы не вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="92"/>
+        <location filename="chat_services/vkvideo.cpp" line="93"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="97"/>
+        <location filename="chat_services/vkvideo.cpp" line="98"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="100"/>
+        <location filename="chat_services/vkvideo.cpp" line="101"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="103"/>
+        <location filename="chat_services/vkvideo.cpp" line="104"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="106"/>
+        <location filename="chat_services/vkvideo.cpp" line="107"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="317"/>
+        <location filename="chat_services/vkvideo.cpp" line="318"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="321"/>
+        <location filename="chat_services/vkvideo.cpp" line="322"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="325"/>
+        <location filename="chat_services/vkvideo.cpp" line="326"/>
         <source>audio</source>
         <translation>аудио</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="329"/>
+        <location filename="chat_services/vkvideo.cpp" line="330"/>
         <source>document</source>
         <translation>документ</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="336"/>
+        <location filename="chat_services/vkvideo.cpp" line="337"/>
         <source>sticker</source>
         <translation>стикер</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="346"/>
+        <location filename="chat_services/vkvideo.cpp" line="347"/>
         <source>unknown(%1)</source>
         <translation>неизвестно(%1)</translation>
     </message>
@@ -1338,18 +1338,18 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Вы не вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="568"/>
+        <location filename="chat_services/vkvideo.cpp" line="569"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="573"/>
+        <location filename="chat_services/vkvideo.cpp" line="574"/>
         <source>Logged in</source>
         <oldsource>Logged in as %1</oldsource>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="574"/>
+        <location filename="chat_services/vkvideo.cpp" line="575"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -1357,37 +1357,37 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Wasd</name>
     <message>
-        <location filename="chat_services/wasd.cpp" line="7"/>
+        <location filename="chat_services/wasd.cpp" line="27"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/wasd.cpp" line="8"/>
+        <location filename="chat_services/wasd.cpp" line="28"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/wasd.cpp" line="64"/>
+        <location filename="chat_services/wasd.cpp" line="133"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/wasd.cpp" line="69"/>
+        <location filename="chat_services/wasd.cpp" line="138"/>
         <source>The channel is not correct</source>
         <translation>Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/wasd.cpp" line="72"/>
+        <location filename="chat_services/wasd.cpp" line="141"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/wasd.cpp" line="75"/>
+        <location filename="chat_services/wasd.cpp" line="144"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/wasd.cpp" line="78"/>
+        <location filename="chat_services/wasd.cpp" line="147"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1425,7 +1425,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="747"/>
+        <location filename="chat_services/youtube.cpp" line="753"/>
         <source>Message deleted</source>
         <translation>Сообщение удалено</translation>
     </message>
@@ -2148,8 +2148,9 @@ Latest version available: %2</oldsource>
         <translation>Ок</translation>
     </message>
     <message>
+        <location filename="settings.qml" line="181"/>
         <source>Widgets</source>
-        <translation type="vanished">Виджеты</translation>
+        <translation>Виджеты</translation>
     </message>
     <message>
         <location filename="settings.qml" line="187"/>
@@ -2381,7 +2382,7 @@ Latest version available: %2</oldsource>
 <context>
     <name>widgets</name>
     <message>
-        <location filename="setting_pages/widgets.qml" line="22"/>
+        <location filename="setting_pages/widgets.qml" line="40"/>
         <source>Copy the widget link and paste it into your streaming software</source>
         <translation>Скопируйте ссылку виджета и вставьте в программу для стримминга</translation>
     </message>
@@ -2390,18 +2391,23 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Чат</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="36"/>
+        <location filename="setting_pages/widgets.qml" line="26"/>
+        <source>Part of the functionality is not yet implemented or may work with errors</source>
+        <translation>Часть функционала ещё не реализована или может работать с ошибками</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/widgets.qml" line="54"/>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="54"/>
-        <location filename="setting_pages/widgets.qml" line="91"/>
+        <location filename="setting_pages/widgets.qml" line="72"/>
+        <location filename="setting_pages/widgets.qml" line="109"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="73"/>
+        <location filename="setting_pages/widgets.qml" line="91"/>
         <source>Viewers counter</source>
         <translation>Счётчик зрителей</translation>
     </message>

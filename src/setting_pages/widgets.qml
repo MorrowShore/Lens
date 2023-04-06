@@ -19,6 +19,21 @@ ScrollView {
         id: rootColumn
 
         Label {
+            font.pixelSize: 20
+            color: "red"
+
+            text: qsTr("Part of the functionality is not yet implemented or may work with errors")
+        }
+
+        Rectangle {
+            width: 10
+            height: 30
+            color: "transparent"
+        }
+
+        Label {
+            font.pixelSize: 20
+
             text: qsTr("Copy the widget link and paste it into your streaming software")
         }
 
