@@ -467,8 +467,6 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     | 'ANON'
     */
 
-    // TODO: other roles
-
     const QString name = data.value("user_login").toString();
     const QString authorId = QString("%1").arg(data.value("user_id").toVariant().toLongLong());
     const QUrl pageUrl = "https://wasd.tv/" + name.trimmed();

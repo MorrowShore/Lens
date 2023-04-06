@@ -64,6 +64,5 @@ private:
 
     QTimer timerReconnect;
     QTimer timerPing;
-    QTimer timerCheckPong; // TODO
     QTimer timerRequestChannel;
 };
