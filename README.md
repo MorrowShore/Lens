@@ -35,6 +35,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] GoodGame support
 - [x] VK Play Live support
 - [x] VK Video support
+- [ ] kick.com support
 - [ ] TikTok/Douyin support
 - [x] WASD support
 - [x] Discord support
