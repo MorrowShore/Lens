@@ -20,7 +20,7 @@ static const int RequestStreamInterval = 20000;
 
 static const QString FolderLogs = "logs_youtube";
 
-static const QByteArray AcceptLanguageNetworkHeaderName = ""; // "en-US;q=0.5,en;q=0.3";
+static const QByteArray AcceptLanguageNetworkHeaderName = "";
 
 static const int MaxBadChatReplies = 10;
 static const int MaxBadLivePageReplies = 3;
@@ -309,7 +309,8 @@ void YouTube::onTimeoutRequestChat()
 
     QNetworkRequest request(state.chatUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("accept-language", AcceptLanguageNetworkHeaderName);
+    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
+
     QNetworkReply* reply = network.get(request);
     if (!reply)
     {
@@ -395,7 +396,7 @@ void YouTube::onTimeoutRequestStreamPage()
 
     QNetworkRequest request(state.streamUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("accept-language", AcceptLanguageNetworkHeaderName);
+    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
 
     QNetworkReply* reply = network.get(request);
     if (!reply)
@@ -476,13 +477,13 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
         QHash<Message::ColorRole, QColor> forcedColors;
 
-        const QJsonObject& actionObject = actionJson.toObject();
+        const QJsonObject actionObject = actionJson.toObject();
 
         if (actionObject.contains("addChatItemAction"))
         {
             //Message
 
-            const QJsonObject& item = actionObject.value("addChatItemAction").toObject().value("item").toObject();
+            const QJsonObject item = actionObject.value("addChatItemAction").toObject().value("item").toObject();
 
             QJsonObject itemRenderer;
 
@@ -629,7 +630,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             authorChannelId = itemRenderer
                     .value("authorExternalChannelId").toString();
 
-            const QJsonArray& authorPhotoThumbnails = itemRenderer
+            const QJsonArray authorPhotoThumbnails = itemRenderer
                     .value("authorPhoto").toObject()
                     .value("thumbnails").toArray();
 
@@ -640,11 +641,11 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
             if (itemRenderer.contains("authorBadges"))
             {
-                const QJsonArray& authorBadges = itemRenderer.value("authorBadges").toArray();
+                const QJsonArray authorBadges = itemRenderer.value("authorBadges").toArray();
 
                 for (const QJsonValue& badge : authorBadges)
                 {
-                    const QJsonObject& liveChatAuthorBadgeRenderer = badge.toObject().value("liveChatAuthorBadgeRenderer").toObject();
+                    const QJsonObject liveChatAuthorBadgeRenderer = badge.toObject().value("liveChatAuthorBadgeRenderer").toObject();
 
                     if (liveChatAuthorBadgeRenderer.contains("icon"))
                     {
@@ -687,7 +688,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                         authorFlags.insert(Author::Flag::Sponsor);
                         authorNicknameColor = QColor(16, 117, 22);
 
-                        const QJsonArray& thumbnails = liveChatAuthorBadgeRenderer.value("customThumbnail").toObject()
+                        const QJsonArray thumbnails = liveChatAuthorBadgeRenderer.value("customThumbnail").toObject()
                                 .value("thumbnails").toArray();
 
                         if (!thumbnails.isEmpty())
@@ -702,7 +703,12 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                 }
             }
 
-            const QJsonArray& stickerThumbnails = itemRenderer
+            if (const QJsonValue v = itemRenderer.value("authorUsernameColorDark"); v.isDouble() && !authorNicknameColor.isValid())
+            {
+                authorNicknameColor = v.toInt();
+            }
+
+            const QJsonArray stickerThumbnails = itemRenderer
                     .value("sticker").toObject()
                     .value("thumbnails").toArray();
 
@@ -742,7 +748,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         {
             //Message deleted
 
-            const QJsonObject& removeChatItemAction = actionObject.value("removeChatItemAction").toObject();
+            const QJsonObject removeChatItemAction = actionObject.value("removeChatItemAction").toObject();
 
             contents.append(new Message::Text(tr("Message deleted")));
 
@@ -756,7 +762,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             //ToDo: Это событие удаляет все сообщения этого пользователя
             //Deleted message by author
 
-            const QJsonObject& markChatItemsByAuthorAsDeletedAction = actionObject.value("markChatItemsByAuthorAsDeletedAction").toObject();
+            const QJsonObject markChatItemsByAuthorAsDeletedAction = actionObject.value("markChatItemsByAuthorAsDeletedAction").toObject();
 
             tryAppedToText(contents, markChatItemsByAuthorAsDeletedAction, "deletedStateMessage", false);
 
@@ -978,7 +984,7 @@ void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& co
 
     if (message.contains("runs"))
     {
-        const QJsonArray& runs = message.value("runs").toArray();
+        const QJsonArray runs = message.value("runs").toArray();
 
         for (const QJsonValue& run : runs)
         {
@@ -1017,7 +1023,7 @@ void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& co
             }
             else if (runObject.contains("emoji"))
             {
-                const QJsonArray& thumbnails = runObject.value("emoji").toObject()
+                const QJsonArray thumbnails = runObject.value("emoji").toObject()
                         .value("image").toObject()
                         .value("thumbnails").toArray();
 

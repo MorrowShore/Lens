@@ -15,6 +15,7 @@ static const int RequestVideoInterval = 10000;
 
 static const QString ApiVersion = "5.131";
 static const int AvatarMinHeight = 128;
+static const int StickerImageHeight = 128;
 
 }
 
@@ -337,7 +338,7 @@ void VkVideo::requestChat()
                     }
                     else
                     {
-                        contents.append(new Message::Image(url, 128));
+                        contents.append(new Message::Image(url, StickerImageHeight));
                     }
                 }
                 else

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include "models/message.h"
 #include <QTimer>
 #include <QWebSocket>
 #include <QJsonValue>
@@ -31,7 +32,8 @@ protected:
 private slots:
     void onWebSocketReceived(const QString &rawData);
     void requestTokenJWT();
-    void requestChannelInfo(const QString& channelName);
+    void requestChannel(const QString& channelName);
+    void requestSmiles();
 
 private:
     static QString extractChannelName(const QString& stream);
@@ -39,10 +41,12 @@ private:
     void send(const SocketIO2Type type, const QByteArray& id = QByteArray(), const QJsonDocument& payload = QJsonDocument());
     void sendJoin(const QString& streamId, const QString& channelId, const QString& jwt);
     void sendPing();
-    void parseMessage(const SocketIO2Type type, const QJsonDocument& doc);
+    void parseSocketMessage(const SocketIO2Type type, const QJsonDocument& doc);
     void parseEvent(const QString& type, const QJsonObject& data);
     void parseEventMessage(const QJsonObject& data);
-    void parseEventSticker(const QJsonObject& data);
+    void parseEventJoined(const QJsonObject& data);
+    void parseSmile(const QJsonObject& jsonSmile);
+    QList<Message::Content*> parseText(const QString& text) const;
 
     struct Info
     {
@@ -53,10 +57,13 @@ private:
 
     Info info;
 
+    QMap<QString, QUrl> smiles;
+
     QNetworkAccessManager& network;
     QWebSocket socket;
 
     QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerCheckPong; // TODO
+    QTimer timerRequestChannel;
 };

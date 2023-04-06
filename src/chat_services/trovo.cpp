@@ -47,6 +47,8 @@ static const QString NonceAuth = "AUTH";
 
 static const QString ClientID = OBFUSCATE(TROVO_CLIENT_ID);
 
+static const int EmoteImageHeight = 40;
+
 }
 
 Trovo::Trovo(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
@@ -363,7 +365,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                             text = QString();
                         }
 
-                        contents.append(new Message::Image(QUrl(smiles.value(emote)), 40));
+                        contents.append(new Message::Image(QUrl(smiles.value(emote)), EmoteImageHeight));
                     }
                     else
                     {

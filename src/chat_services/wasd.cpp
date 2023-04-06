@@ -1,7 +1,6 @@
 #include "wasd.h"
 #include "secrets.h"
 #include "crypto/obfuscator.h"
-#include "models/message.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QJsonParseError>
@@ -14,6 +13,9 @@ namespace
 static const QString ApiToken = OBFUSCATE(WASD_API_TOKEN);
 static const int ReconncectPeriod = 3 * 1000;
 static const int PingPeriod = 3 * 1000;
+static const int StickerImageHeight = 128;
+static const int SmileImageHeight = 32;
+static const int RequestChannelInterval = 10000;
 
 };
 
@@ -104,6 +106,17 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
     });
     timerPing.start(PingPeriod);
 
+    QObject::connect(&timerRequestChannel, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get() || state.streamId.isEmpty())
+        {
+            return;
+        }
+
+        requestChannel(state.streamId);
+    });
+    timerRequestChannel.start(RequestChannelInterval);
+
     reconnect();
 }
 
@@ -166,13 +179,15 @@ void Wasd::reconnectImpl()
         return;
     }
 
+    requestSmiles();
+
     state.chatUrl = QUrl(QString("https://wasd.tv/chat?channel_name=%1").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://wasd.tv/%1").arg(state.streamId));
 
     if (enabled.get())
     {
         requestTokenJWT();
-        requestChannelInfo(state.streamId);
+        requestChannel(state.streamId);
     }
 }
 
@@ -217,7 +232,7 @@ void Wasd::onWebSocketReceived(const QString &rawData)
         qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << payload;
     }
 
-    parseMessage(type, doc);
+    parseSocketMessage(type, doc);
 }
 
 void Wasd::requestTokenJWT()
@@ -242,7 +257,7 @@ void Wasd::requestTokenJWT()
     });
 }
 
-void Wasd::requestChannelInfo(const QString &channelName)
+void Wasd::requestChannel(const QString &channelName)
 {
     QNetworkRequest request(QUrl("https://wasd.tv/api/v2/broadcasts/public?channel_name=" + channelName));
 
@@ -290,6 +305,29 @@ void Wasd::requestChannelInfo(const QString &channelName)
     });
 }
 
+void Wasd::requestSmiles()
+{
+    QNetworkRequest request(QUrl("https://static.wasd.tv/settings/smiles.json"));
+
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QByteArray data = reply->readAll();
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+        const QJsonArray result = root.value("result").toArray();
+        for (const QJsonValue& v : qAsConst(result))
+        {
+            const QJsonArray jsonSmiles = v.toObject().value("smiles").toArray();
+            for (const QJsonValue& v : qAsConst(jsonSmiles))
+            {
+                parseSmile(v.toObject());
+            }
+        }
+    });
+}
+
 void Wasd::send(const SocketIO2Type type, const QByteArray& id, const QJsonDocument& payload)
 {
     const int typeNum = (int)type;
@@ -303,7 +341,7 @@ void Wasd::send(const SocketIO2Type type, const QByteArray& id, const QJsonDocum
 
 void Wasd::sendJoin(const QString &streamId, const QString &channelId, const QString &jwt)
 {
-    const bool excludeStickers = true; // TODO
+    const bool excludeStickers = true;
 
     QJsonArray array =
     {
@@ -325,7 +363,7 @@ void Wasd::sendPing()
     send(SocketIO2Type::EVENT);
 }
 
-void Wasd::parseMessage(const SocketIO2Type type, const QJsonDocument &doc)
+void Wasd::parseSocketMessage(const SocketIO2Type type, const QJsonDocument &doc)
 {
     switch(type)
     {
@@ -380,13 +418,9 @@ void Wasd::parseMessage(const SocketIO2Type type, const QJsonDocument &doc)
 
 void Wasd::parseEvent(const QString &type, const QJsonObject &data)
 {
-    if (type == "message")
+    if (type == "message" || type == "sticker")
     {
         parseEventMessage(data);
-    }
-    else if (type == "sticker")
-    {
-        parseEventSticker(data);
     }
     else if (type == "system_message")
     {
@@ -394,13 +428,7 @@ void Wasd::parseEvent(const QString &type, const QJsonObject &data)
     }
     else if (type == "joined")
     {
-        if (!state.connected && !state.streamId.isEmpty())
-        {
-            state.connected = true;
-
-            emit connectedChanged(true, state.streamId);
-            emit stateChanged();
-        }
+        parseEventJoined(data);
     }
     else
     {
@@ -432,10 +460,45 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     const Author author(getServiceType(), name, authorId, avatarUrl, pageUrl);
 
     const QDateTime publishedAt = QDateTime::fromString(data.value("date_time").toString(), Qt::DateFormat::ISODateWithMs);
-    const QString text = data.value("message").toString();
     const QString messageId = data.value("id").toString();
 
-    const QList<Message::Content*> contents = { new Message::Text(text) };
+    QList<Message::Content*> contents;
+
+    if (const QJsonValue v = data.value("message"); v.isString())
+    {
+        const QString text = v.toString();
+        const QList<Message::Content*> newContents = parseText(text);
+        for (Message::Content* content : newContents)
+        {
+            contents.append(content);
+        }
+    }
+
+    if (const QJsonValue v = data.value("sticker"); v.isObject())
+    {
+        const QJsonObject jsonStickerImage = v.toObject().value("sticker_image").toObject();
+        QUrl url = jsonStickerImage.value("medium").toString();
+        if (url.isEmpty())
+        {
+            const QStringList keys = jsonStickerImage.keys();
+            if (keys.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "sticker image sizes is empty";
+            }
+            else
+            {
+                url = jsonStickerImage.value(keys.first()).toString();
+            }
+        }
+
+        contents.append(new Message::Image(url, StickerImageHeight));
+    }
+
+    if (contents.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "contents is empty, maybe message structure is unknown";
+        return;
+    }
 
     const Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
 
@@ -445,10 +508,69 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     emit readyRead(messages, authors);
 }
 
-void Wasd::parseEventSticker(const QJsonObject &data)
+void Wasd::parseEventJoined(const QJsonObject &)
 {
-    // // {"id":"735ed617-05e4-4340-b812-3520c834e625","date_time":"2023-04-04T20:39:09.673Z","hash":"c61b9974-0041-479d-bece-357bb087a082","channel_id":416355,"stream_id":1380773,"streamer_id":435858,"user_id":396598,"user_avatar":{"large":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","small":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg","medium":"https://st.wasd.tv/upload/avatars/9def8a16-269d-4fd0-a58d-12a82a2fe07a/original.jpeg"},"is_follower":true,"user_login":"RedArcher","user_channel_role":"CHANNEL_USER","other_roles":["CHANNEL_FOLLOWER"],"sticker":{"sticker_id":10085,"created_at":"","updated_at":null,"deleted_at":null,"sticker_pack_id":1285,"sticker_image":{"large":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/original.png","small":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/64x64.png","medium":"https://st.wasd.tv/upload/stickers/3c844640-ac48-483e-aeb2-9b065ffbdbd5/128x128.png"},"sticker_name":"Archer_02","sticker_alias":"RedArcher-archer_02","sticker_status":null}}
-    //TODO
+    if (!state.connected && !state.streamId.isEmpty())
+    {
+        state.connected = true;
+
+        emit connectedChanged(true, state.streamId);
+        emit stateChanged();
+    }
+}
+
+void Wasd::parseSmile(const QJsonObject &jsonSmile)
+{
+    const QString id = jsonSmile.value("id").toString();
+    const QString token = jsonSmile.value("token").toString();
+    const QUrl url = jsonSmile.value("image_url").toString();
+
+    if (id != token)
+    {
+        // TODO
+        qWarning() << Q_FUNC_INFO << "id not equal token, id =" << id << ", token =" << token << ", url =" << url;
+    }
+
+    smiles.insert(token, url);
+}
+
+QList<Message::Content *> Wasd::parseText(const QString &rawText) const
+{
+    QList<Message::Content *> contents;
+
+    const QStringList words = rawText.split(' ', Qt::SplitBehaviorFlags::KeepEmptyParts);
+
+    QString text;
+    for (const QString& word : words)
+    {
+        if (smiles.contains(word))
+        {
+            if (!text.isEmpty())
+            {
+                contents.append(new Message::Text(text));
+                text = QString();
+            }
+
+            contents.append(new Message::Image(smiles.value(word), SmileImageHeight));
+        }
+        else
+        {
+            if (!text.isEmpty())
+            {
+                text += ' ';
+            }
+
+            text += word;
+        }
+    }
+
+    if (!text.isEmpty())
+    {
+        contents.append(new Message::Text(text));
+        text = QString();
+    }
+
+    return contents;
 }
 
 QString Wasd::extractChannelName(const QString &stream)
