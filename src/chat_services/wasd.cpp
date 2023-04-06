@@ -78,24 +78,13 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState && !info.jwtToken.isEmpty())
+        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState && !info.jwtToken.isEmpty() && !info.streamId.isEmpty() && !info.channelId.isEmpty())
         {
             socket.setProxy(network.proxy());
             socket.open(QUrl("wss://chat.wasd.tv/socket.io/?EIO=3&transport=websocket"));
         }
     });
     timerReconnect.start(ReconncectPeriod);
-
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState && !info.jwtToken.isEmpty())
-        {
-            socket.setProxy(network.proxy());
-            socket.open(QUrl("wss://chat.wasd.tv/socket.io/?EIO=3&transport=websocket"));
-        }
-    });
-    timerReconnect.start(ReconncectPeriod);
-
 
     QObject::connect(&timerPing, &QTimer::timeout, this, [this]()
     {
@@ -441,22 +430,6 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     // https://github.com/shevernitskiy/wasdtv/blob/main/src/types/api.ts
 
     // TODO: 'MESSAGE' | 'EVENT' | 'STICKER' | 'GIFTS' | 'YADONAT' | 'SUBSCRIBE' | 'HIGHLIGHTED_MESSAGE'
-
-    /* TODO: ChatAction
-    | 'WRITE_TO_CHAT'
-    | 'WRITE_TO_FOLLOWERS_CHAT'
-    | 'WRITE_TO_SUBSCRIPTION_CHAT'
-    | 'WRITE_NO_DELAY'
-    | 'CHANNEL_USER'
-    | 'CHAT_START_VOTING'
-    | 'CHAT_MAKE_VOTING_CHOICE'
-    | 'ASSIGN_MODERATOR'
-    | 'BAN_USER'
-    | 'DELETE_MESSAGE'
-    | 'MUTE_USER'
-    | 'REMOVE_MESSAGES'
-    | 'VIEW_BANNED_USERS'
-     */
 
     /* TODO: Role
     | 'CHANNEL_FOLLOWER'
