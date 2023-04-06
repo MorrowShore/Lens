@@ -274,6 +274,8 @@ void Wasd::requestChannel(const QString &channelName)
                 }
 
                 socket.close();
+                info.channelId = QString();
+                info.streamId = QString();
 
                 emit stateChanged();
 
