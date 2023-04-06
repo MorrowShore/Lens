@@ -34,7 +34,6 @@ private slots:
     void requestTokenJWT();
     void requestChannel(const QString& channelName);
     void requestSmiles();
-    void disconnect();
 
 private:
     static QString extractChannelName(const QString& stream);
