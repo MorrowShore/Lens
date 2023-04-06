@@ -649,9 +649,18 @@ QString Wasd::extractChannelName(const QString &stream)
 {
     QString channelName = stream.toLower().trimmed();
 
-    if (channelName.startsWith("https://wasd.tv/", Qt::CaseSensitivity::CaseInsensitive))
+    const QString simpleUrl = AxelChat::simplifyUrl(stream);
+
+    if (simpleUrl.startsWith("wasd.tv/", Qt::CaseSensitivity::CaseInsensitive))
     {
-        channelName = channelName.mid(16);
+        const QUrlQuery query = QUrlQuery(QUrl(stream).query());
+        const QString queryChannelName = query.queryItemValue("channel_name");
+        if (!queryChannelName.isEmpty())
+        {
+            return queryChannelName;
+        }
+
+        channelName = simpleUrl.mid(8);
 
         if (channelName.contains('?'))
         {
