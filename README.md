@@ -114,7 +114,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 #define TROVO_CLIENT_ID "<Paste Trovo client ID here>"
 #define VK_APP_ID "<Paste VK application ID here>"
 #define VK_SECURE_KEY "<Paste VK secret here>"
-#define WASD_API_TOKEN "<Paste WASD API key>"
+#define WASD_API_TOKEN "<Paste WASD API key here>"
 ```
 3. Open file `<AxelChat_project_folder>/src/AxelChat.pro` with Qt Creator
 1. In Qt Creator select `Desktop Qt x.x.x MinGW 64-bit` kit
