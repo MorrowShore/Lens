@@ -121,6 +121,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 1. Select `Release` building mode
 1. Click button `Build Project "AxelChat"`. If successful build, folder `release_win64` will appear in the project folder with AxelChat.exe and other files
 1. Unpack files from `<AxelChat_project_folder>/app_files/win64.zip` to `<AxelChat_project_folder>/release_win64`
+1. To support web widgets, build the project https://github.com/3dproger/AxelChat-react and copy the build result to `<AxelChat_project_folder>/release_win64/widgets`
 1. Run `<AxelChat_project_folder>/release_win64/AxelChat.exe` or click `Run` in Qt Creator
 1. For subsequent builds, just close `AxelChat.exe` application and click `Run` in Qt Creator
 
