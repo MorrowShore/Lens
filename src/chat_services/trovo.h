@@ -41,8 +41,6 @@ private:
     QTimer timerReconnect;
     QTimer timerUpdateChannelInfo;
 
-    QString lastConnectedChannelName;
-
     inline static const QString SmilesValidSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
     QHash<QString, QUrl> smiles;
 };

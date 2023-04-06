@@ -101,7 +101,7 @@ public:
 signals:
     void stateChanged();
     void readyRead(QList<Message>& messages, QList<Author>& authors);
-    void connectedChanged(const bool connected, const QString& name);
+    void connectedChanged(const bool connected);
     void authorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
 protected:

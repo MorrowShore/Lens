@@ -65,8 +65,6 @@ private:
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> loginButton;
 
-    QString lastConnectedChannelName;
-
     QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerCheckPong;

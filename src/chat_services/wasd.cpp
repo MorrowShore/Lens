@@ -67,7 +67,7 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccess
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false, QString());
+            emit connectedChanged(false);
         }
     });
 
@@ -586,7 +586,7 @@ void Wasd::parseEventJoined(const QJsonObject &)
     {
         state.connected = true;
 
-        emit connectedChanged(true, state.streamId);
+        emit connectedChanged(true);
         emit stateChanged();
     }
 }

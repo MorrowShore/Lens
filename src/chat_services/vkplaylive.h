@@ -44,5 +44,4 @@ private:
 
     QWebSocket socket;
     Info info;
-    QString lastConnectedChannelName;
 };

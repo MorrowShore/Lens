@@ -235,7 +235,7 @@ void YouTube::reconnectImpl()
 
     if (preConnected && !preBroadcastId.isEmpty())
     {
-        emit connectedChanged(false, preBroadcastId);
+        emit connectedChanged(false);
     }
 
     state.streamId = extractBroadcastId(stream.get().trimmed());
@@ -445,7 +445,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
     {
         state.connected = true;
 
-        emit connectedChanged(true, state.streamId);
+        emit connectedChanged(true);
         emit stateChanged();
     }
 
@@ -922,7 +922,7 @@ void YouTube::processBadChatReply()
 
             state.connected = false;
 
-            emit connectedChanged(false, preBroadcastId);
+            emit connectedChanged(false);
 
             reconnect();
         }

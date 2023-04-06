@@ -59,7 +59,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPath, QNetwo
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
         }
 
         requestChannelStatus();
@@ -72,7 +72,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPath, QNetwo
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
         }
     });
 
@@ -346,8 +346,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
         if (!state.connected)
         {
             state.connected = true;
-            lastConnectedChannelName = state.streamId;
-            emit connectedChanged(true, state.streamId);
+            emit connectedChanged(true);
             emit stateChanged();
         }
 

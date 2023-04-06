@@ -56,7 +56,7 @@ void Telegram::reconnectImpl()
 
     if (preConnected)
     {
-        emit connectedChanged(false, QString());
+        emit connectedChanged(false);
         emit stateChanged();
     }
 
@@ -141,7 +141,7 @@ void Telegram::processBadChatReply()
 
             state.connected = false;
 
-            emit connectedChanged(false, QString());
+            emit connectedChanged(false);
             emit stateChanged();
 
             reconnect();
@@ -211,7 +211,7 @@ void Telegram::requestUpdates()
                 if (!state.connected || !botToken.get().trimmed().isEmpty())
                 {
                     state.connected = true;
-                    emit connectedChanged(true, QString());
+                    emit connectedChanged(true);
                     emit stateChanged();
                 }
 

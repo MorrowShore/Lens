@@ -71,7 +71,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPath, QNetworkAcce
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
         }
 
         QJsonObject root;
@@ -98,7 +98,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPath, QNetworkAcce
             state.connected = false;
 
             emit stateChanged();
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
         }
     });
 
@@ -218,8 +218,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
         if (nonce == NonceAuth)
         {
             state.connected = true;
-            lastConnectedChannelName = state.streamId;
-            emit connectedChanged(true, state.streamId);
+            emit connectedChanged(true);
             emit stateChanged();
 
             requestChannelInfo();

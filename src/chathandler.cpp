@@ -248,7 +248,7 @@ void ChatHandler::openProgramFolder()
 }
 #endif
 
-void ChatHandler::onConnectedChanged(const bool connected, const QString& name)
+void ChatHandler::onConnectedChanged(const bool connected)
 {
     ChatService* service = qobject_cast<ChatService*>(sender());
     if (!service)

@@ -100,7 +100,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
             emit stateChanged();
         }
 
@@ -157,7 +157,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
 
             state.connected = false;
 
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
             emit stateChanged();
             reconnect();
         }
@@ -351,8 +351,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         if (!state.connected && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
         {
             state.connected = true;
-            lastConnectedChannelName = state.streamId;
-            emit connectedChanged(true, state.streamId);
+            emit connectedChanged(true);
             emit stateChanged();
         }
 

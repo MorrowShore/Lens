@@ -41,7 +41,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPath, QN
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
         }
 
         if (info.token.isEmpty())
@@ -67,7 +67,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPath, QN
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false, lastConnectedChannelName);
+            emit connectedChanged(false);
         }
     });
 
@@ -260,8 +260,6 @@ void VkPlayLive::reconnectImpl()
         return;
     }
 
-    lastConnectedChannelName = state.streamId;
-
     state.chatUrl = QUrl(QString("https://vkplay.live/%1/only-chat").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://vkplay.live/%1").arg(state.streamId));
     state.controlPanelUrl = QUrl(QString("https://vkplay.live/%1/studio").arg(state.streamId));
@@ -304,7 +302,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         {
             state.connected = true;
 
-            emit connectedChanged(true, state.streamId);
+            emit connectedChanged(true);
             emit stateChanged();
         }
     }

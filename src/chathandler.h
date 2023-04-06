@@ -111,7 +111,7 @@ public slots:
 
 private slots:
     void onAuthorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values);
-    void onConnectedChanged(const bool connected, const QString& name);
+    void onConnectedChanged(const bool connected);
     void onAuthorNameChanged(const Author& author, const QString& prevName, const QString& newName);
 
 private:

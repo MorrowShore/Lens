@@ -40,7 +40,6 @@ private:
     QNetworkAccessManager& network;
 
     int64_t channelId = -1;
-    QString lastConnectedChannelName;
 
     QTimer timerReconnect;
     QTimer timerUpdateMessages;
