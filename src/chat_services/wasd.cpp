@@ -459,10 +459,8 @@ void Wasd::parseEventMessage(const QJsonObject &data)
      */
 
     /* TODO: Role
-    | 'CHANNEL_OWNER'
     | 'CHANNEL_FOLLOWER'
     | 'CHANNEL_USER'
-    | 'CHANNEL_MODERATOR'
     | 'CHANEL_SUBSCRIBER'
     | 'CHANNEL_BANNED'
     | 'CHANNEL_MUTE'
@@ -489,6 +487,12 @@ void Wasd::parseEventMessage(const QJsonObject &data)
         leftBadges.append("qrc:/resources/images/king.svg");
         authorNicknameColor = QColor(255, 255, 255);
         authorNicknameBackgroundColor = QColor(245, 166, 35);
+    }
+    else if (role == "CHANNEL_MODERATOR")
+    {
+        leftBadges.append("qrc:/resources/images/youtube-moderator-icon.svg");
+        authorNicknameColor = QColor(255, 255, 255);
+        authorNicknameBackgroundColor = QColor(68, 72, 88);
     }
     else
     {
