@@ -48,6 +48,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] Proxy support
 - [x] Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
 - [x] Web-based widgets
+- [ ] Appearance editor for Web-based widgets
 - [ ] Support for donate platforms
 - [x] Windows builds
 - [ ] Linux builds
