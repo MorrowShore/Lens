@@ -13,6 +13,7 @@ enum class ServiceType
     YouTube,
     Twitch,
     Trovo,
+    Rumble,
     GoodGame,
     Kick,
     VkPlayLive,

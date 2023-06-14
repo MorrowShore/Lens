@@ -2,6 +2,7 @@
 #include "chat_services/youtube.h"
 #include "chat_services/twitch.h"
 #include "chat_services/trovo.h"
+#include "chat_services/rumble.h"
 #include "chat_services/goodgame.h"
 #include "chat_services/vkplaylive.h"
 #include "chat_services/telegram.h"
@@ -56,6 +57,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(new YouTube      (settings, SettingsGroupPath + "/youtube",      network, this));
     addService(new Twitch       (settings, SettingsGroupPath + "/twitch",       network, this));
     addService(new Trovo        (settings, SettingsGroupPath + "/trovo",        network, this));
+    addService(new Rumble       (settings, SettingsGroupPath + "/rumble",       network, this));
     //addService(new Kick         (settings, SettingsGroupPath + "/kick",         network, this));
     addService(new GoodGame     (settings, SettingsGroupPath + "/goodgame",     network, this));
     addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));

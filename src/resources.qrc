@@ -76,5 +76,6 @@
         <file>resources/images/vkvideo-icon.svg</file>
         <file>resources/images/wasd-icon.svg</file>
         <file>resources/images/kick-icon.svg</file>
+        <file>resources/images/rumble-icon.svg</file>
     </qresource>
 </RCC>
