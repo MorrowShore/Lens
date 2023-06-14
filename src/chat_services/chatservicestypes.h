@@ -14,6 +14,7 @@ enum class ServiceType
     Twitch,
     Trovo,
     GoodGame,
+    Kick,
     VkPlayLive,
     VkVideo,
     Wasd,

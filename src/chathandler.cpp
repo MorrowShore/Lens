@@ -8,6 +8,7 @@
 #include "chat_services/discord.h"
 #include "chat_services/vkvideo.h"
 #include "chat_services/wasd.h"
+#include "chat_services/kick.h"
 #include "models/author.h"
 #include "models/message.h"
 #include <QCoreApplication>
@@ -55,6 +56,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService(new YouTube      (settings, SettingsGroupPath + "/youtube",      network, this));
     addService(new Twitch       (settings, SettingsGroupPath + "/twitch",       network, this));
     addService(new Trovo        (settings, SettingsGroupPath + "/trovo",        network, this));
+    //addService(new Kick         (settings, SettingsGroupPath + "/kick",         network, this));
     addService(new GoodGame     (settings, SettingsGroupPath + "/goodgame",     network, this));
     addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));
     addService(new VkVideo      (settings, SettingsGroupPath + "/vkvideo",      network, this));

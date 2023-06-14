@@ -14,6 +14,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    chat_services/kick.h \
     chat_services/vkvideo.h \
     chat_services/wasd.h \
     crypto/aes.h \
@@ -57,6 +58,7 @@ HEADERS += \
 SOURCES += \
         chat_services/chatservice.cpp \
         chat_services/discord.cpp \
+        chat_services/kick.cpp \
         chat_services/telegram.cpp \
         chat_services/trovo.cpp \
         chat_services/vkplaylive.cpp \
