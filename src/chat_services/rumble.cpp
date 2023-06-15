@@ -6,6 +6,7 @@ namespace
 {
 
 static const int RequestViewersInterval = 10000;
+static const QColor DefaultHighlightedMessageColor = QColor(117, 94, 188);
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
@@ -302,12 +303,16 @@ void Rumble::startReadChat()
 
 void Rumble::onSseReceived(const QJsonObject &root)
 {
-    qDebug() << root;
-
     const QString type = root.value("type").toString();
     if (type == "init" || type == "messages")
     {
         const QJsonObject data = root.value("data").toObject();
+
+        if (type == "init")
+        {
+            parseConfig(data.value("config").toObject());
+        }
+
         const QJsonArray rawUsers = data.value("users").toArray();
 
         QMap<QString, QJsonObject> users;
@@ -370,8 +375,6 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
     const QJsonObject rant = jsonMessage.value("rant").toObject();
     if (!rant.isEmpty())
     {
-        forcedColors.insert(Message::ColorRole::BodyBackground, QColor(117, 94, 188));
-
         bool ok = false;
         const int64_t priceCents = rant.value("price_cents").toVariant().toLongLong(&ok);
         if (ok)
@@ -391,6 +394,13 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
             Message::TextStyle style;
             style.bold = true;
             contents.append(new Message::Text(text, style));
+
+            forcedColors.insert(Message::ColorRole::BodyBackground, getDonutColor(dollars));
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "failed to get price, message =" << jsonMessage;
+            forcedColors.insert(Message::ColorRole::BodyBackground, DefaultHighlightedMessageColor);
         }
     }
 
@@ -419,6 +429,83 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
     {
         emit readyRead(messages, authors);
     }
+}
+
+void Rumble::parseConfig(const QJsonObject &config)
+{
+    badgesUrls.clear();
+    donutColors.clear();
+
+    const QJsonObject badges = config.value("badges").toObject();
+    const QStringList badgesNames = badges.keys();
+    for (const QString& badgeName : qAsConst(badgesNames))
+    {
+        QString url;
+
+        const QJsonObject badge = badges.value(badgeName).toObject();
+        const QJsonObject icons = badge.value("icons").toObject();
+        if (icons.contains("48"))
+        {
+            url = icons.value("48").toString();
+        }
+        else
+        {
+            if (const QStringList keys = icons.keys(); !keys.isEmpty())
+            {
+                url = icons.value(keys.first()).toString();
+            }
+        }
+
+        if (!url.isEmpty())
+        {
+            badgesUrls.insert(badgeName, url);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "filed to find badge url for badge" << badgeName;
+        }
+    }
+
+    const QJsonArray donutLevels = config.value("rants").toObject().value("levels").toArray();
+    for (const QJsonValue& v : qAsConst(donutLevels))
+    {
+        const QJsonObject level = v.toObject();
+
+        DonutColor donutColor;
+        donutColor.color = level.value("colors").toObject().value("main").toString();
+        donutColor.priceDollars = level.value("price_dollars").toVariant().toLongLong();
+        donutColors.append(donutColor);
+    }
+
+    std::sort(donutColors.begin(), donutColors.end(), [](const DonutColor& a, const DonutColor& b)
+    {
+        return a.priceDollars < b.priceDollars;
+    });
+}
+
+QColor Rumble::getDonutColor(const int64_t priceDollars) const
+{
+    if (donutColors.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "donut colors is empty";
+        return DefaultHighlightedMessageColor;
+    }
+
+    QColor color = donutColors.first().color;
+
+    for (const DonutColor& donutColor : qAsConst(donutColors))
+    {
+        if (priceDollars >= donutColor.priceDollars)
+        {
+            color = donutColor.color;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return color;
 }
 
 Message::Content *Rumble::parseBlock(const QJsonObject &block)

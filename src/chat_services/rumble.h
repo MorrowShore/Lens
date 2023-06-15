@@ -25,6 +25,12 @@ private:
         QString videoId;
     };
 
+    struct DonutColor
+    {
+        int64_t priceDollars = 0;
+        QColor color;
+    };
+
     static QString extractLinkId(const QString& rawLink);
     static QString parseChatId(const QByteArray& html);
     static QString parseVideoId(const QByteArray& html);
@@ -34,11 +40,16 @@ private:
     void startReadChat();
     void onSseReceived(const QJsonObject& root);
     void parseMessage(const QJsonObject& user, const QJsonObject& message);
+    void parseConfig(const QJsonObject& config);
+    QColor getDonutColor(const int64_t priceDollars) const;
     static Message::Content* parseBlock(const QJsonObject& block);
 
     QNetworkAccessManager& network;
     Info info;
     SseManager sse;
+
+    QHash<QString, QString> badgesUrls;
+    QList<DonutColor> donutColors;
 
     QTimer timerRequestViewers;
     QTimer timerReconnect;
