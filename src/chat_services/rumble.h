@@ -27,7 +27,8 @@ private:
 
     void requestVideoPage();
     void startReadChat();
-    void onMessagesReceived(const QJsonObject& root);
+    void onSseReceived(const QJsonObject& root);
+    void parseMessage(const QJsonObject& user, const QJsonObject& message);
 
     QNetworkAccessManager& network;
     Info info;

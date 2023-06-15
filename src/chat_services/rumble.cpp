@@ -1,4 +1,5 @@
 #include "rumble.h"
+#include "models/message.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -86,7 +87,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
             qWarning() << Q_FUNC_INFO << "document is not object";
         }
 
-        onMessagesReceived(doc.object());
+        onSseReceived(doc.object());
     });
 
     reconnect();
@@ -210,21 +211,6 @@ void Rumble::requestVideoPage()
     });
 }
 
-void Rumble::startReadChat()
-{
-    if (!enabled.get() || info.chatId.isEmpty())
-    {
-        return;
-    }
-
-    sse.start("https://web7.rumble.com/chat/api/chat/" + info.chatId + "/stream");
-}
-
-void Rumble::onMessagesReceived(const QJsonObject &root)
-{
-    qDebug() << root;
-}
-
 QString Rumble::parseChatId(const QByteArray &html)
 {
     static const QByteArray Prefix = "class=\"rumbles-vote rumbles-vote-with-bar\" data-type=\"1\" data-id=\"";
@@ -256,4 +242,86 @@ QString Rumble::parseChatId(const QByteArray &html)
     }
 
     return QString::fromUtf8(html.mid(resultStartPos, resultLastPos - resultStartPos));
+}
+
+void Rumble::startReadChat()
+{
+    if (!enabled.get() || info.chatId.isEmpty())
+    {
+        return;
+    }
+
+    sse.start("https://web7.rumble.com/chat/api/chat/" + info.chatId + "/stream");
+}
+
+void Rumble::onSseReceived(const QJsonObject &root)
+{
+    const QString type = root.value("type").toString();
+    if (type == "init" || type == "messages")
+    {
+        const QJsonObject data = root.value("data").toObject();
+        const QJsonArray rawUsers = data.value("users").toArray();
+
+        QMap<QString, QJsonObject> users;
+
+        for (const QJsonValue& v : qAsConst(rawUsers))
+        {
+            const QJsonObject user = v.toObject();
+            const QString id = user.value("id").toString();
+            users.insert(id, user);
+        }
+
+        const QJsonArray messages = data.value("messages").toArray();
+        for (const QJsonValue& v : qAsConst(messages))
+        {
+            const QJsonObject message = v.toObject();
+            const QString userId = message.value("user_id").toString();
+            if (!users.contains(userId))
+            {
+                qWarning() << Q_FUNC_INFO << "user id" << userId << "not found of message" << message;
+                continue;
+            }
+
+            parseMessage(users.value(userId), message);
+        }
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown SSE message type" << type;
+    }
+}
+
+void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessage)
+{
+    const QString userId = user.value("id").toString();
+    const QString userName = user.value("username").toString();
+    const QColor userColor = user.value("color").toString();
+    const QString userAvatar = user.value("image.1").toString();
+    //const bool isFollower = user.value("is_follower").toBool();
+
+    const QString messageId = jsonMessage.value("id").toString();
+    const QDateTime messagePublishedTime = QDateTime::fromString(jsonMessage.value("time").toString(), Qt::DateFormat::ISODate);
+    const QDateTime messageReceivedTime = QDateTime::currentDateTime();
+
+    QList<Message> messages;
+    QList<Author> authors;
+    QList<Message::Content*> contents;
+
+    Author author(getServiceType(),
+                  userName,
+                  userId,
+                  userAvatar,
+                  "https://rumble.com/user/" + userName,
+                  {}, {}, {},
+                  userColor);
+
+    Message message(contents, author, messagePublishedTime, messageReceivedTime, getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+
+    messages.append(message);
+    authors.append(author);
+
+    if (!messages.isEmpty())
+    {
+        emit readyRead(messages, authors);
+    }
 }
