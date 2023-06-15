@@ -101,6 +101,17 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
     });
     timerRequestViewers.start(RequestViewersInterval);
 
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get() || state.connected)
+        {
+            return;
+        }
+
+        reconnect();
+    });
+    timerReconnect.start(5000);
+
     reconnect();
 }
 
@@ -249,6 +260,13 @@ void Rumble::requestViewers()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
+            if (state.connected)
+            {
+                state.connected = false;
+                emit connectedChanged(false);
+                emit stateChanged();
+            }
+
             return;
         }
 

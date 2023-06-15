@@ -41,5 +41,6 @@ private:
     SseManager sse;
 
     QTimer timerRequestViewers;
+    QTimer timerReconnect;
 };
 
