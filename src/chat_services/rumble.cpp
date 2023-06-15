@@ -364,6 +364,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
         else
         {
             qWarning() << Q_FUNC_INFO << "unknown badge" << badgeName;
+            rightBadges.append("qrc:/resources/images/unknown-badge.png");
         }
     }
 
