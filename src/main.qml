@@ -606,7 +606,7 @@ ApplicationWindow {
                         return authorAvatarUrl;
                     }
 
-                    return chatHandler.getServiceIconUrl(authorServiceType)
+                    return "" // chatHandler.getServiceIconUrl(authorServiceType)
                 }
 
                 MouseArea {
