@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include "models/message.h"
 #include "ssemanager.h"
 #include <QJsonObject>
 
@@ -29,6 +30,7 @@ private:
     void startReadChat();
     void onSseReceived(const QJsonObject& root);
     void parseMessage(const QJsonObject& user, const QJsonObject& message);
+    static Message::Content* parseBlock(const QJsonObject& block);
 
     QNetworkAccessManager& network;
     Info info;

@@ -1,5 +1,4 @@
 #include "rumble.h"
-#include "models/message.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -305,7 +304,6 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
 
     QList<Message> messages;
     QList<Author> authors;
-    QList<Message::Content*> contents;
 
     Author author(getServiceType(),
                   userName,
@@ -315,7 +313,22 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
                   {}, {}, {},
                   userColor);
 
-    Message message(contents, author, messagePublishedTime, messageReceivedTime, getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+    QList<Message::Content *> contents;
+    const QJsonArray blocks = jsonMessage.value("blocks").toArray();
+    for (const QJsonValue& v : qAsConst(blocks))
+    {
+        Message::Content* content = parseBlock(v.toObject());
+        if (content)
+        {
+            contents.append(content);
+        }
+    }
+
+    Message message(contents,
+                    author,
+                    messagePublishedTime,
+                    messageReceivedTime,
+                    getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
 
     messages.append(message);
     authors.append(author);
@@ -323,5 +336,22 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
     if (!messages.isEmpty())
     {
         emit readyRead(messages, authors);
+    }
+}
+
+Message::Content *Rumble::parseBlock(const QJsonObject &block)
+{
+    const QJsonObject data = block.value("data").toObject();
+    const QString type = block.value("type").toString();
+    if (type == "text.1")
+    {
+        const QString text = data.value("text").toString();
+
+        return new Message::Text(text);
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown block type" << type;
+        return nullptr;
     }
 }
