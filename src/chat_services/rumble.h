@@ -13,5 +13,21 @@ public:
 
 protected:
     void reconnectImpl() override;
+
+private:
+    struct Info
+    {
+        QString chatId;
+    };
+
+    static QString extractLinkId(const QString& rawLink);
+    static QString parseChatId(const QByteArray& html);
+
+    void requestVideoPage();
+    void requestChatPage();
+
+    QNetworkAccessManager& network;
+
+    Info info;
 };
 

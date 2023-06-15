@@ -45,7 +45,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="159"/>
+        <location filename="chathandler.cpp" line="163"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -99,7 +99,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="272"/>
+        <location filename="chathandler.cpp" line="276"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -108,53 +108,63 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="39"/>
-        <location filename="chat_services/chatservice.cpp" line="53"/>
+        <location filename="chat_services/chatservice.cpp" line="41"/>
+        <location filename="chat_services/chatservice.cpp" line="57"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="42"/>
+        <location filename="chat_services/chatservice.cpp" line="44"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="43"/>
+        <location filename="chat_services/chatservice.cpp" line="45"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="44"/>
+        <location filename="chat_services/chatservice.cpp" line="46"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="45"/>
-        <source>GoodGame</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="chat_services/chatservice.cpp" line="46"/>
-        <source>VK Play Live</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="chat_services/chatservice.cpp" line="47"/>
-        <source>VK Video</source>
-        <translation>VK Видео</translation>
+        <source>Rumble</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="48"/>
-        <source>WASD</source>
+        <source>Kick</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="49"/>
-        <source>Telegram</source>
+        <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="50"/>
+        <source>VK Play Live</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="51"/>
+        <source>VK Video</source>
+        <translation>VK Видео</translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="52"/>
+        <source>WASD</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="53"/>
+        <source>Telegram</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="54"/>
         <source>Discord</source>
         <translation></translation>
     </message>
@@ -670,6 +680,44 @@ to these chats/channels in access rights (at your own risk)</source>
     </message>
 </context>
 <context>
+    <name>Kick</name>
+    <message>
+        <location filename="chat_services/kick.cpp" line="17"/>
+        <source>Channel</source>
+        <translation>Канал</translation>
+    </message>
+    <message>
+        <location filename="chat_services/kick.cpp" line="18"/>
+        <source>Link or channel name...</source>
+        <translation>Ссылка или имя канала...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/kick.cpp" line="78"/>
+        <source>Channel not specified</source>
+        <translation>Канал не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/kick.cpp" line="83"/>
+        <source>The channel is not correct</source>
+        <translation>Канал некорректен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/kick.cpp" line="86"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/kick.cpp" line="89"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/kick.cpp" line="92"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
+    </message>
+</context>
+<context>
     <name>MyTextArea</name>
     <message>
         <location filename="my_components/MyTextArea.qml" line="35"/>
@@ -798,6 +846,44 @@ to these chats/channels in access rights (at your own risk)</source>
         <location filename="tcpreply.h" line="17"/>
         <source>Error</source>
         <translation>Ошибка</translation>
+    </message>
+</context>
+<context>
+    <name>Rumble</name>
+    <message>
+        <location filename="chat_services/rumble.cpp" line="38"/>
+        <source>Stream</source>
+        <translation>Стрим</translation>
+    </message>
+    <message>
+        <location filename="chat_services/rumble.cpp" line="39"/>
+        <source>Stream link...</source>
+        <translation>Ссылка на стрим...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/rumble.cpp" line="65"/>
+        <source>Channel not specified</source>
+        <translation>Канал не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/rumble.cpp" line="70"/>
+        <source>The channel is not correct</source>
+        <translation>Канал некорректен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/rumble.cpp" line="73"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/rumble.cpp" line="76"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/rumble.cpp" line="79"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
     </message>
 </context>
 <context>
@@ -2382,7 +2468,7 @@ Latest version available: %2</oldsource>
 <context>
     <name>widgets</name>
     <message>
-        <location filename="setting_pages/widgets.qml" line="40"/>
+        <location filename="setting_pages/widgets.qml" line="37"/>
         <source>Copy the widget link and paste it into your streaming software</source>
         <translation>Скопируйте ссылку виджета и вставьте в программу для стримминга</translation>
     </message>
@@ -2391,23 +2477,23 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Чат</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="26"/>
+        <location filename="setting_pages/widgets.qml" line="25"/>
         <source>Part of the functionality is not yet implemented or may work with errors</source>
         <translation>Часть функционала ещё не реализована или может работать с ошибками</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="54"/>
+        <location filename="setting_pages/widgets.qml" line="51"/>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="72"/>
-        <location filename="setting_pages/widgets.qml" line="109"/>
+        <location filename="setting_pages/widgets.qml" line="69"/>
+        <location filename="setting_pages/widgets.qml" line="106"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="91"/>
+        <location filename="setting_pages/widgets.qml" line="88"/>
         <source>Viewers counter</source>
         <translation>Счётчик зрителей</translation>
     </message>
