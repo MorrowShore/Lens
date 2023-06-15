@@ -352,6 +352,21 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
     const QString userAvatar = user.value("image.1").toString();
     //const bool isFollower = user.value("is_follower").toBool();
 
+    QStringList rightBadges;
+    const QJsonArray jsonBadges = user.value("badges").toArray();
+    for (const QJsonValue& v : qAsConst(jsonBadges))
+    {
+        const QString badgeName = v.toString();
+        if (badgesUrls.contains(badgeName))
+        {
+            rightBadges.append(badgesUrls.value(badgeName));
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "unknown badge" << badgeName;
+        }
+    }
+
     std::set<Message::Flag> flags;
     QHash<Message::ColorRole, QColor> forcedColors;
 
@@ -367,7 +382,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
                   userId,
                   userAvatar,
                   "https://rumble.com/user/" + userName,
-                  {}, {}, {},
+                  {}, rightBadges, {},
                   userColor);
 
     QList<Message::Content *> contents;
@@ -458,7 +473,7 @@ void Rumble::parseConfig(const QJsonObject &config)
 
         if (!url.isEmpty())
         {
-            badgesUrls.insert(badgeName, url);
+            badgesUrls.insert(badgeName, "https://rumble.com/" + url);
         }
         else
         {
