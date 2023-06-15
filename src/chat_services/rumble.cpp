@@ -302,6 +302,8 @@ void Rumble::startReadChat()
 
 void Rumble::onSseReceived(const QJsonObject &root)
 {
+    qDebug() << root;
+
     const QString type = root.value("type").toString();
     if (type == "init" || type == "messages")
     {
@@ -345,6 +347,9 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
     const QString userAvatar = user.value("image.1").toString();
     //const bool isFollower = user.value("is_follower").toBool();
 
+    std::set<Message::Flag> flags;
+    QHash<Message::ColorRole, QColor> forcedColors;
+
     const QString messageId = jsonMessage.value("id").toString();
     const QDateTime messagePublishedTime = QDateTime::fromString(jsonMessage.value("time").toString(), Qt::DateFormat::ISODate);
     const QDateTime messageReceivedTime = QDateTime::currentDateTime();
@@ -361,6 +366,34 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
                   userColor);
 
     QList<Message::Content *> contents;
+
+    const QJsonObject rant = jsonMessage.value("rant").toObject();
+    if (!rant.isEmpty())
+    {
+        forcedColors.insert(Message::ColorRole::BodyBackground, QColor(117, 94, 188));
+
+        bool ok = false;
+        const int64_t priceCents = rant.value("price_cents").toVariant().toLongLong(&ok);
+        if (ok)
+        {
+            QString text = "$";
+            const int64_t dollars = priceCents / 100;
+            const int cents = priceCents % 100;
+
+            text += QString("%1").arg(dollars);
+            if (cents > 0)
+            {
+                text += QString(".%1").arg(cents);
+            }
+
+            text += "\n";
+
+            Message::TextStyle style;
+            style.bold = true;
+            contents.append(new Message::Text(text, style));
+        }
+    }
+
     const QJsonArray blocks = jsonMessage.value("blocks").toArray();
     for (const QJsonValue& v : qAsConst(blocks))
     {
@@ -375,7 +408,9 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
                     author,
                     messagePublishedTime,
                     messageReceivedTime,
-                    getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+                    getServiceTypeId(serviceType) + QString("/%1").arg(messageId),
+                    flags,
+                    forcedColors);
 
     messages.append(message);
     authors.append(author);
