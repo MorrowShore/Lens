@@ -532,6 +532,11 @@ ApplicationWindow {
                             postfix += createImgHtmlTag(authorRightBadgesUrls[i], badgePixelSize) + " "
                         }
 
+                        if (postfix.length > 0)
+                        {
+                            postfix = " " + postfix
+                        }
+
                         var name = ""
 
                         if (name.length === 0) {
