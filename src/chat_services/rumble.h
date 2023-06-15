@@ -4,6 +4,7 @@
 #include "models/message.h"
 #include "ssemanager.h"
 #include <QJsonObject>
+#include <QTimer>
 
 class Rumble : public ChatService
 {
@@ -38,5 +39,7 @@ private:
     QNetworkAccessManager& network;
     Info info;
     SseManager sse;
+
+    QTimer timerRequestViewers;
 };
 

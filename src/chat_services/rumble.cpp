@@ -5,6 +5,8 @@
 namespace
 {
 
+static const int RequestViewersInterval = 10000;
+
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
     resultData.clear();
@@ -66,7 +68,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
     {
         //qDebug() << Q_FUNC_INFO << "SSE received some data";
 
-        if (data == ":")
+        if (data == ":" || data == ": -1")
         {
             return;
         }
@@ -78,13 +80,26 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
             qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << "data:" << data;
         }
 
-        if (!doc.isObject())
+        if (doc.isObject())
+        {
+            onSseReceived(doc.object());
+        }
+        else
         {
             qWarning() << Q_FUNC_INFO << "document is not object";
         }
-
-        onSseReceived(doc.object());
     });
+
+    QObject::connect(&timerRequestViewers, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        requestViewers();
+    });
+    timerRequestViewers.start(RequestViewersInterval);
 
     reconnect();
 }
