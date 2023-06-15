@@ -22,6 +22,7 @@ HEADERS += \
     crypto/crypto.h \
     crypto/obfuscator.h \
     oauth2.h \
+    ssemanager.h \
     tcpreply.h \
     tcprequest.h \
     chat_services/chatservice.h \
@@ -87,6 +88,7 @@ SOURCES += \
         oauth2.cpp \
         outputtofile.cpp \
         qmlutils.cpp \
+        ssemanager.cpp \
         tcpserver.cpp \
         tray.cpp \
         uielementbridge.cpp \

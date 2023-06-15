@@ -1,6 +1,8 @@
 #pragma once
 
 #include "chatservice.h"
+#include "ssemanager.h"
+#include <QJsonObject>
 
 class Rumble : public ChatService
 {
@@ -24,10 +26,11 @@ private:
     static QString parseChatId(const QByteArray& html);
 
     void requestVideoPage();
-    void requestChatPage();
+    void startReadChat();
+    void onMessagesReceived(const QJsonObject& root);
 
     QNetworkAccessManager& network;
-
     Info info;
+    SseManager sse;
 };
 

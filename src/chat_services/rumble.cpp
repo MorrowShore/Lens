@@ -31,12 +31,63 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 Rumble::Rumble(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
     : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Rumble, parent)
     , network(network_)
+    , sse(network)
 {
     // https://wn0.rumble.com/service.php?video=2rhh6c&name=video.watching_now
     // https://rumble.com/chat/popup/167097396
 
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Stream"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Stream link..."));
+
+    QObject::connect(&sse, &SseManager::started, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "SSE started";
+
+        if (!state.connected && !state.streamId.isEmpty() && enabled.get())
+        {
+            state.connected = true;
+            emit connectedChanged(true);
+            emit stateChanged();
+        }
+    });
+
+    QObject::connect(&sse, &SseManager::stopped, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "SSE stopped";
+
+        state.connected = false;
+        emit connectedChanged(false);
+        emit stateChanged();
+
+        if (enabled.get())
+        {
+            startReadChat();
+        }
+    });
+
+    QObject::connect(&sse, &SseManager::readyRead, this, [this](const QByteArray& data)
+    {
+        //qDebug() << Q_FUNC_INFO << "SSE received some data";
+
+        if (data == ":")
+        {
+            return;
+        }
+
+        QJsonParseError jsonError;
+        const QJsonDocument doc = QJsonDocument::fromJson(data, &jsonError);
+        if (jsonError.error != QJsonParseError::ParseError::NoError)
+        {
+            qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << "data:" << data;
+        }
+
+        if (!doc.isObject())
+        {
+            qWarning() << Q_FUNC_INFO << "document is not object";
+        }
+
+        onMessagesReceived(doc.object());
+    });
 
     reconnect();
 }
@@ -87,6 +138,7 @@ void Rumble::reconnectImpl()
 {
     state = State();
     info = Info();
+    sse.stop();
 
     state.streamId = extractLinkId(stream.get());
 
@@ -152,21 +204,25 @@ void Rumble::requestVideoPage()
 
         info.chatId = chatId;
         state.chatUrl = "https://rumble.com/chat/popup/" + chatId;
-
         emit stateChanged();
 
-        requestChatPage();
+        startReadChat();
     });
 }
 
-void Rumble::requestChatPage()
+void Rumble::startReadChat()
 {
     if (!enabled.get() || info.chatId.isEmpty())
     {
         return;
     }
 
+    sse.start("https://web7.rumble.com/chat/api/chat/" + info.chatId + "/stream");
+}
 
+void Rumble::onMessagesReceived(const QJsonObject &root)
+{
+    qDebug() << root;
 }
 
 QString Rumble::parseChatId(const QByteArray &html)
