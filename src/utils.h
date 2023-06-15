@@ -252,4 +252,37 @@ static std::unique_ptr<QJsonDocument> findJson(const QByteArray& data, const QBy
     return findJson(data, objectPosition);
 }
 
+static QByteArray find(const QByteArray& data, const QByteArray& prefix, const QChar& postfix, const int maxLengthSearch)
+{
+    const int prefixStartPos = data.indexOf(prefix);
+    if (prefixStartPos == -1)
+    {
+        //qWarning() << "failed to find prefix";
+        return QByteArray();
+    }
+
+    const int resultStartPos = prefixStartPos + prefix.length();
+
+    const int lastSearchPos = (maxLengthSearch > 0) ? std::min(data.length(), resultStartPos + maxLengthSearch) : data.length();
+
+    int resultLastPos = -1;
+    for (int i = resultStartPos; i < lastSearchPos; ++i)
+    {
+        const QChar& c = data[i];
+        if (c == postfix)
+        {
+            resultLastPos = i;
+            break;
+        }
+    }
+
+    if (resultLastPos == -1)
+    {
+        //qDebug() << Q_FUNC_INFO << "not found '\"'";
+        return QByteArray();
+    }
+
+    return data.mid(resultStartPos, resultLastPos - resultStartPos);
+}
+
 }

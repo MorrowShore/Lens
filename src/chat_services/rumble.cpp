@@ -33,9 +33,6 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
     , network(network_)
     , sse(network)
 {
-    // https://wn0.rumble.com/service.php?video=2rhh6c&name=video.watching_now
-    // https://rumble.com/chat/popup/167097396
-
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Stream"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Stream link..."));
 
@@ -199,48 +196,65 @@ void Rumble::requestVideoPage()
         if (chatId.isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "failed to parse chat id";
-            return;
+        }
+        else
+        {
+            info.chatId = chatId;
         }
 
-        info.chatId = chatId;
-        state.chatUrl = "https://rumble.com/chat/popup/" + chatId;
+        const QString videoId = parseVideoId(data);
+        if (videoId.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "failed to parse video id";
+        }
+        else
+        {
+            info.videoId = videoId;
+        }
+
+        state.chatUrl = "https://rumble.com/chat/popup/" + info.chatId;
         emit stateChanged();
 
         startReadChat();
+        requestViewers();
+    });
+}
+
+void Rumble::requestViewers()
+{
+    if (!enabled.get() || info.videoId.isEmpty())
+    {
+        return;
+    }
+
+    QNetworkRequest request("https://wn0.rumble.com/service.php?name=video.watching_now&video=" + info.videoId);
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        bool ok = false;
+        const int64_t viewers = QJsonDocument::fromJson(data).object().value("data").toObject().value("viewer_count").toVariant().toLongLong(&ok);
+        if (ok)
+        {
+            state.viewersCount = viewers;
+            emit stateChanged();
+        }
     });
 }
 
 QString Rumble::parseChatId(const QByteArray &html)
 {
-    static const QByteArray Prefix = "class=\"rumbles-vote rumbles-vote-with-bar\" data-type=\"1\" data-id=\"";
+    return AxelChat::find(html, "class=\"rumbles-vote rumbles-vote-with-bar\" data-type=\"1\" data-id=\"", '"', 128);
+}
 
-    const int prefixStartPos = html.indexOf(Prefix);
-    if (prefixStartPos == -1)
-    {
-        qWarning() << "failed to find prefix";
-        return QString();
-    }
-
-    const int resultStartPos = prefixStartPos + Prefix.length();
-
-    int resultLastPos = -1;
-    for (int i = resultStartPos; i < std::min(html.length(), resultStartPos + 128); ++i)
-    {
-        const QChar& c = html[i];
-        if (c == '"')
-        {
-            resultLastPos = i;
-            break;
-        }
-    }
-
-    if (resultLastPos == -1)
-    {
-        qDebug() << Q_FUNC_INFO << "not found '\"'";
-        return QString();
-    }
-
-    return QString::fromUtf8(html.mid(resultStartPos, resultLastPos - resultStartPos));
+QString Rumble::parseVideoId(const QByteArray &html)
+{
+    return AxelChat::find(html, "<link rel=alternate href=\"https://rumble.com/api/Media/oembed.json?url=https%3A%2F%2Frumble.com%2Fembed%2Fv", '"', 128);
 }
 
 void Rumble::startReadChat()

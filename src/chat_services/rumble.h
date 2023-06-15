@@ -21,12 +21,15 @@ private:
     struct Info
     {
         QString chatId;
+        QString videoId;
     };
 
     static QString extractLinkId(const QString& rawLink);
     static QString parseChatId(const QByteArray& html);
+    static QString parseVideoId(const QByteArray& html);
 
     void requestVideoPage();
+    void requestViewers();
     void startReadChat();
     void onSseReceived(const QJsonObject& root);
     void parseMessage(const QJsonObject& user, const QJsonObject& message);
