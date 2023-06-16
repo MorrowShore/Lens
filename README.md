@@ -1,4 +1,4 @@
-# AxelChat <img width="32" height="32" src="src/resources/images/youtube-icon.svg"> <img width="32" height="32" src="src/resources/images/twitch-icon.svg"> <img width="32" height="32" src="src/resources/images/trovo-icon.svg"> <img width="32" height="32" src="src/resources/images/goodgame-icon.svg"> <img width="32" height="32" src="src/resources/images/vkplaylive-icon.svg"> <img width="32" height="32" src="src/resources/images/vkvideo-icon.svg"> <img width="32" height="32" src="src/resources/images/wasd-icon.svg"> <img width="32" height="32" src="src/resources/images/telegram-icon.svg"> <img width="32" height="32" src="src/resources/images/discord-icon.svg">
+# AxelChat <img width="32" height="32" src="src/resources/images/youtube-icon.svg"> <img width="32" height="32" src="src/resources/images/twitch-icon.svg"> <img width="32" height="32" src="src/resources/images/trovo-icon.svg"> <img width="32" height="32" src="src/resources/images/rumble-icon.svg"> <img width="32" height="32" src="src/resources/images/goodgame-icon.svg"> <img width="32" height="32" src="src/resources/images/vkplaylive-icon.svg"> <img width="32" height="32" src="src/resources/images/vkvideo-icon.svg"> <img width="32" height="32" src="src/resources/images/wasd-icon.svg"> <img width="32" height="32" src="src/resources/images/telegram-icon.svg"> <img width="32" height="32" src="src/resources/images/discord-icon.svg">
 The AxelChat application collects chat from various streaming platforms and displays it in one window. Has a user-friendly interface and various useful features
 
 [Download](https://github.com/3dproger/axelchat/releases/latest/) |
@@ -37,7 +37,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] VK Video support
 - [ ] kick.com support
 - [ ] TikTok/Douyin support
-- [ ] Rumble support
+- [x] Rumble support
 - [ ] Odysee support
 - [ ] Dlive support
 - [x] WASD support
