@@ -53,7 +53,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
     config.refreshTokenUrl = "https://id.twitch.tv/oauth2/token";
     config.revokeTokenUrl = "https://id.twitch.tv/oauth2/revoke";
     auth.setConfig(config);
-    QObject::connect(&auth, &OAuth2::stateChanged, this, &Twitch::updateUI);
+    QObject::connect(&auth, &OAuth2::stateChanged, this, &Twitch::onAuthStateChanged);
 
     loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
     {
@@ -192,9 +192,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
     });
     timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
-    requestForGlobalBadges();
-
-    updateUI();
+    onAuthStateChanged();
 }
 
 ChatService::ConnectionStateType Twitch::getConnectionStateType() const
@@ -642,34 +640,20 @@ void Twitch::onIRCMessage(const QString &rawData)
     }
 }
 
-void Twitch::requestForGlobalBadges()
+void Twitch::requestGlobalBadges()
 {
-    QNetworkRequest request(QString("https://badges.twitch.tv/v1/badges/global/display"));
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-    QNetworkReply* reply = network.get(request);
-    if (!reply)
-    {
-        qDebug() << Q_FUNC_INFO << ": !reply";
-        return;
-    }
-
-    QObject::connect(reply, &QNetworkReply::finished, this, &Twitch::onReplyBadges);
+    QNetworkRequest request(QString("https://api.twitch.tv/helix/chat/badges/global"));
+    request.setRawHeader("Client-ID", ClientID.toUtf8());
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
+    QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyBadges);
 }
 
-void Twitch::requestForChannelBadges(const QString &broadcasterId)
+void Twitch::requestChannelBadges(const QString &broadcasterId)
 {
-    QNetworkRequest request(QString("https://badges.twitch.tv/v1/badges/channels/%1/display").arg(broadcasterId));
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-    QNetworkReply* reply = network.get(request);
-    if (!reply)
-    {
-        qDebug() << Q_FUNC_INFO << ": !reply";
-        return;
-    }
-
-    QObject::connect(reply, &QNetworkReply::finished, this, &Twitch::onReplyBadges);
+    QNetworkRequest request("https://api.twitch.tv/helix/chat/badges?broadcaster_id=" + broadcasterId);
+    request.setRawHeader("Client-ID", ClientID.toUtf8());
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
+    QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyBadges);
 }
 
 void Twitch::onReplyBadges()
@@ -688,29 +672,28 @@ void Twitch::parseBadgesJson(const QByteArray &data)
 {
     if (data.isEmpty())
     {
+        qWarning() << Q_FUNC_INFO << "data is empty";
         return;
     }
 
-    const QJsonDocument doc = QJsonDocument::fromJson(data);
-    const QJsonObject badgeSetsObj = doc.object().value("badge_sets").toObject();
-
-    const QStringList badgesNames = badgeSetsObj.keys();
-    for (const QString& badgeName : badgesNames)
+    const QJsonArray badgesJson = QJsonDocument::fromJson(data).object().value("data").toArray();
+    for (const QJsonValue& v : qAsConst(badgesJson))
     {
-        const QJsonObject versionsObj = badgeSetsObj.value(badgeName).toObject().value("versions").toObject();
-        const QStringList versions = versionsObj.keys();
-        for (const QString& version : versions)
+        const QJsonObject set = v.toObject();
+        const QString setId = set.value("set_id").toString();
+        const QJsonArray versions = set.value("versions").toArray();
+        for (const QJsonValue& v : qAsConst(versions))
         {
-            const QString url = versionsObj.value(version).toObject().value("image_url_1x").toString();
-            if (!url.isEmpty())
-            {
-                badgesUrls.insert(badgeName + "/" + version, url);
-            }
+            const QJsonObject version = v.toObject();
+            const QString versionId = version.value("id").toString();
+            const QString url = version.value("image_url_2x").toString();
+            const QString badgeName = setId + "/" + versionId;
+            badgesUrls.insert(badgeName, url);
         }
     }
 }
 
-void Twitch::updateUI()
+void Twitch::onAuthStateChanged()
 {
     if (!authStateInfo)
     {
@@ -732,6 +715,7 @@ void Twitch::updateUI()
     case OAuth2::State::LoggedIn:
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + auth.getLogin() + "</b>"));
         loginButton->setItemProperty("text", tr("Logout"));
+        requestGlobalBadges();
         break;
     }
 
@@ -798,14 +782,7 @@ void Twitch::requestUserInfo(const QString& login)
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
-    QNetworkReply* reply = network.get(request);
-    if (!reply)
-    {
-        qDebug() << Q_FUNC_INFO << ": !reply";
-        return;
-    }
-
-    QObject::connect(reply, &QNetworkReply::finished, this, &Twitch::onReplyUserInfo);
+    QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyUserInfo);
 }
 
 void Twitch::onReplyUserInfo()
@@ -840,7 +817,7 @@ void Twitch::onReplyUserInfo()
 
         if (channelLogin == state.streamId)
         {
-            requestForChannelBadges(broadcasterId);
+            requestChannelBadges(broadcasterId);
         }
     }
 }

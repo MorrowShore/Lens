@@ -31,8 +31,8 @@ private slots:
     void sendIRCMessage(const QString& message);
     void onIRCMessage(const QString& rawData);
 
-    void requestForGlobalBadges();
-    void requestForChannelBadges(const QString& broadcasterId);
+    void requestGlobalBadges();
+    void requestChannelBadges(const QString& broadcasterId);
     void onReplyBadges();
 
     void requestUserInfo(const QString& login);
@@ -41,7 +41,7 @@ private slots:
     void requestStreamInfo(const QString& login);
     void onReplyStreamInfo();
 
-    void updateUI();
+    void onAuthStateChanged();
 
 private:
     bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
