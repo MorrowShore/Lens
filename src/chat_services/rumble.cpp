@@ -7,6 +7,7 @@ namespace
 
 static const int RequestViewersInterval = 10000;
 static const QColor DefaultHighlightedMessageColor = QColor(117, 94, 188);
+static const int EmoteImageHeight = 40;
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
@@ -242,6 +243,7 @@ void Rumble::requestVideoPage()
         state.chatUrl = "https://rumble.com/chat/popup/" + info.chatId;
         emit stateChanged();
 
+        requestEmotes();
         startReadChat();
         requestViewers();
     });
@@ -277,6 +279,38 @@ void Rumble::requestViewers()
         {
             state.viewersCount = viewers;
             emit stateChanged();
+        }
+    });
+}
+
+void Rumble::requestEmotes()
+{
+    if (!enabled.get() || info.chatId.isEmpty())
+    {
+        return;
+    }
+
+    QNetworkRequest request("https://rumble.com/service.php?name=emote.list&chat_id=" + info.chatId);
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QJsonArray items = QJsonDocument::fromJson(data).object().value("data").toObject().value("items").toArray();
+        for (const QJsonValue& v : qAsConst(items))
+        {
+            const QJsonArray emotes = v.toObject().value("emotes").toArray();
+            for (const QJsonValue& v : qAsConst(emotes))
+            {
+                const QJsonObject emote = v.toObject();
+                const QString name = emote.value("name").toString();
+                const QString url = emote.value("file").toString();
+                emotesUrls.insert(name, url);
+            }
         }
     });
 }
@@ -346,6 +380,10 @@ void Rumble::onSseReceived(const QJsonObject &root)
 
 void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessage)
 {
+    //qDebug("==========================");
+    //qDebug() << jsonMessage;
+    //qDebug("==========================");
+
     const QString userId = user.value("id").toString();
     const QString userName = user.value("username").toString();
     const QColor userColor = user.value("color").toString();
@@ -423,11 +461,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
     const QJsonArray blocks = jsonMessage.value("blocks").toArray();
     for (const QJsonValue& v : qAsConst(blocks))
     {
-        Message::Content* content = parseBlock(v.toObject());
-        if (content)
-        {
-            contents.append(content);
-        }
+        contents.append(parseBlock(v.toObject()));
     }
 
     Message message(contents,
@@ -524,19 +558,84 @@ QColor Rumble::getDonutColor(const int64_t priceDollars) const
     return color;
 }
 
-Message::Content *Rumble::parseBlock(const QJsonObject &block)
+QList<Message::Content*> Rumble::parseBlock(const QJsonObject &block) const
 {
+    QList<Message::Content*> contents;
+
     const QJsonObject data = block.value("data").toObject();
     const QString type = block.value("type").toString();
     if (type == "text.1")
     {
-        const QString text = data.value("text").toString();
+        const QString rawText = data.value("text").toString();
 
-        return new Message::Text(text);
+        QString currentText;
+        QString currentEmote;
+        int emoteStartPos = -1;
+
+        for (int i = 0; i < rawText.length(); i++)
+        {
+            const QChar c = rawText[i];
+
+            if (emoteStartPos == -1)
+            {
+                if (c == ':')
+                {
+                    emoteStartPos = i + 1;
+                    currentEmote = QString();
+
+                    if (!currentText.isEmpty())
+                    {
+                        contents.append(new Message::Text(currentText));
+                        currentText = QString();
+                    }
+                }
+                else
+                {
+                    currentText += c;
+                }
+            }
+            else
+            {
+                if (c == ':')
+                {
+                    if (emotesUrls.contains(currentEmote))
+                    {
+                        contents.append(new Message::Image(emotesUrls.value(currentEmote), EmoteImageHeight, true));
+                    }
+                    else
+                    {
+                        currentText = ":" + currentEmote + ":";
+                        if (!currentEmote.isEmpty())
+                        {
+                            qWarning() << "emote" << currentEmote << "not found";
+                        }
+                    }
+
+                    currentEmote = QString();
+                    emoteStartPos = -1;
+                }
+                else
+                {
+                    currentEmote += c;
+                }
+            }
+        }
+
+        if (emoteStartPos != -1)
+        {
+            currentText = ":" + currentEmote;
+        }
+
+        if (!currentText.isEmpty())
+        {
+            contents.append(new Message::Text(currentText));
+        }
     }
     else
     {
         qWarning() << Q_FUNC_INFO << "unknown block type" << type;
-        return nullptr;
+
     }
+
+    return contents;
 }

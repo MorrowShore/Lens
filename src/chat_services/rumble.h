@@ -37,12 +37,13 @@ private:
 
     void requestVideoPage();
     void requestViewers();
+    void requestEmotes();
     void startReadChat();
     void onSseReceived(const QJsonObject& root);
     void parseMessage(const QJsonObject& user, const QJsonObject& message);
     void parseConfig(const QJsonObject& config);
     QColor getDonutColor(const int64_t priceDollars) const;
-    static Message::Content* parseBlock(const QJsonObject& block);
+    QList<Message::Content*> parseBlock(const QJsonObject& block) const;
 
     QNetworkAccessManager& network;
     Info info;
@@ -50,6 +51,7 @@ private:
 
     QHash<QString, QString> badgesUrls;
     QList<DonutColor> donutColors;
+    QHash<QString, QString> emotesUrls;
 
     QTimer timerRequestViewers;
     QTimer timerReconnect;
