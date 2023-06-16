@@ -21,7 +21,7 @@ static const QString TwitchIRCHost = "tmi.twitch.tv";
 static const QString FolderLogs = "logs_twitch";
 static const QString ClientID = OBFUSCATE(TWITCH_CLIENT_ID);
 
-static const int ReconncectPeriod = 3 * 1000;
+static const int ReconncectPeriod = 5 * 1000;
 static const int PingPeriod = 60 * 1000;
 static const int PongTimeout = 5 * 1000;
 static const int UpdateStreamInfoPeriod = 10 * 1000;
@@ -73,7 +73,10 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
 
-    QObject::connect(&socket, &QWebSocket::connected, this, [this]() {
+    QObject::connect(&socket, &QWebSocket::connected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+
         if (state.connected)
         {
             state.connected = false;
@@ -95,6 +98,8 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
+        //qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+
         if (state.connected)
         {
             state.connected = false;
@@ -111,7 +116,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAc
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || !auth.isLoggedIn())
+        if (!enabled.get())
         {
             return;
         }
