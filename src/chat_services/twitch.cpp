@@ -17,8 +17,6 @@
 namespace
 {
 
-static const QByteArray AcceptLanguageNetworkHeaderName = ""; // "en-US;q=0.5,en;q=0.3";
-
 static const QString TwitchIRCHost = "tmi.twitch.tv";
 static const QString FolderLogs = "logs_twitch";
 static const QString ClientID = OBFUSCATE(TWITCH_CLIENT_ID);
@@ -785,8 +783,6 @@ void Twitch::requestUserInfo(const QString& login)
     }
 
     QNetworkRequest request(QString("https://api.twitch.tv/helix/users?login=%1").arg(login));
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyUserInfo);
@@ -838,8 +834,6 @@ void Twitch::requestStreamInfo(const QString &login)
     }
 
     QNetworkRequest request(QString("https://api.twitch.tv/helix/streams?user_login=%1").arg(login));
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
 
