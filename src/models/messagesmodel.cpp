@@ -235,9 +235,15 @@ int MessagesModel::getRow(QVariant *data)
     }
 }
 
-void MessagesModel::setAuthorValues(const QString& authorId, const QMap<Author::Role, QVariant>& values)
+void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     Author* author = _authorsById.value(authorId, nullptr);
+    if (!author)
+    {
+        insertAuthor(Author(serviceType, "<blank>", authorId));
+        author = _authorsById.value(authorId, nullptr);
+    }
+
     if (!author)
     {
         qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found";
@@ -303,7 +309,7 @@ void MessagesModel::insertAuthor(const Author& author)
             values.insert(role, author.getValue(role));
         }
 
-        setAuthorValues(id, values);
+        setAuthorValues(author.getServiceType(), id, values);
     }
     else
     {

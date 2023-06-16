@@ -30,7 +30,7 @@ public:
     const Author* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
     void insertAuthor(const Author& author);
-    void setAuthorValues(const QString& authorId, const QMap<Author::Role, QVariant>& values);
+    void setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values);
     QList<Message> getLastMessages(int count) const;
 
 private:

@@ -205,24 +205,23 @@ void ChatHandler::playNewMessageSound()
 
 void ChatHandler::onAuthorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
-    AxelChat::ServiceType type = AxelChat::ServiceType::Unknown;
+    AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
     if (service)
     {
-        type = service->getServiceType();
+        serviceType = service->getServiceType();
     }
-
 
     const QList<Author::Role> roles = values.keys();
     for (const Author::Role role : roles)
     {
         if (role == Author::Role::AvatarUrl)
         {
-            outputToFile.downloadAvatar(authorId, type, values[role].toUrl());
+            outputToFile.downloadAvatar(authorId, serviceType, values[role].toUrl());
         }
     }
 
-    messagesModel.setAuthorValues(authorId, values);
+    messagesModel.setAuthorValues(serviceType, authorId, values);
     webSocket.sendAuthorValues(authorId, values);
 }
 
