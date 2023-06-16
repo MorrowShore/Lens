@@ -269,6 +269,7 @@ void Twitch::reconnectImpl()
     socket.close();
 
     state = State();
+    info = Info();
 
     stream.set(stream.get().toLower().trimmed());
 
@@ -626,7 +627,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         messages.append(message);
         authors.append(author);
 
-        if (!usersInfoUpdated.contains(login))
+        if (!info.usersInfoUpdated.contains(login))
         {
             requestUserInfo(login);
         }
@@ -648,9 +649,14 @@ void Twitch::requestGlobalBadges()
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyBadges);
 }
 
-void Twitch::requestChannelBadges(const QString &broadcasterId)
+void Twitch::requestChannelBadges()
 {
-    QNetworkRequest request("https://api.twitch.tv/helix/chat/badges?broadcaster_id=" + broadcasterId);
+    if (info.broadcasterId.isEmpty())
+    {
+        return;
+    }
+
+    QNetworkRequest request("https://api.twitch.tv/helix/chat/badges?broadcaster_id=" + info.broadcasterId);
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyBadges);
@@ -716,6 +722,7 @@ void Twitch::onAuthStateChanged()
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + auth.getLogin() + "</b>"));
         loginButton->setItemProperty("text", tr("Logout"));
         requestGlobalBadges();
+        reconnect();
         break;
     }
 
@@ -808,7 +815,7 @@ void Twitch::onReplyUserInfo()
             continue;
         }
 
-        usersInfoUpdated.insert(channelLogin);
+        info.usersInfoUpdated.insert(channelLogin);
 
         if (!profileImageUrl.isEmpty())
         {
@@ -817,7 +824,8 @@ void Twitch::onReplyUserInfo()
 
         if (channelLogin == state.streamId)
         {
-            requestChannelBadges(broadcasterId);
+            info.broadcasterId = broadcasterId;
+            requestChannelBadges();
         }
     }
 }

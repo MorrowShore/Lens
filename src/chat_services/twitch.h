@@ -32,7 +32,7 @@ private slots:
     void onIRCMessage(const QString& rawData);
 
     void requestGlobalBadges();
-    void requestChannelBadges(const QString& broadcasterId);
+    void requestChannelBadges();
     void onReplyBadges();
 
     void requestUserInfo(const QString& login);
@@ -46,6 +46,12 @@ private slots:
 private:
     bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
     void parseBadgesJson(const QByteArray& data);
+
+    struct Info
+    {
+        QString broadcasterId;
+        QSet<QString> usersInfoUpdated;
+    };
 
     struct MessageEmoteInfo
     {
@@ -70,7 +76,7 @@ private:
     QTimer timerCheckPong;
     QTimer timerUpdaetStreamInfo;
 
-    QSet<QString> usersInfoUpdated;
+    Info info;
     QHash<QString, QString> badgesUrls;
 
     OAuth2 auth;
