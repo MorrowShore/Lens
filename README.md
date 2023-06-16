@@ -53,6 +53,8 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] Web-based widgets
 - [ ] Appearance editor for Web-based widgets
 - [ ] Support for donate platforms
+- [ ] Animated emoji
+- [ ] Emoji from 3rd party sets
 - [x] Windows builds
 - [ ] Linux builds
 - [ ] macOS builds
