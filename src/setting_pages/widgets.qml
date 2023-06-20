@@ -15,6 +15,36 @@ ScrollView {
     ScrollBar.horizontal.policy: ScrollBar.AsNeeded
     ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
+    Dialog {
+        id: stringCopyDialog
+        anchors.centerIn: parent
+        modal: true
+        standardButtons: Dialog.Ok
+
+        property string stringCopyable: ""
+
+        contentItem: Column {
+            MyComponents.MyTextField {
+                id: stringCopyDialogField
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 400
+                readOnly: true
+                text: stringCopyDialog.stringCopyable
+            }
+
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                display: AbstractButton.TextBesideIcon
+                icon.source: 'qrc:/resources/images/copy-content.svg'
+                text: qsTr("Copy")
+                onClicked: {
+                    stringCopyDialogField.selectAll()
+                    clipboard.text = stringCopyDialogField.text
+                }
+            }
+        }
+    }
+
     Column {
         id: rootColumn
 
@@ -70,6 +100,18 @@ ScrollView {
                 onClicked: {
                     chatTextField.selectAll()
                     clipboard.text = chatTextField.text
+                }
+            }
+
+            Button {
+                anchors.verticalCenter: parent.verticalCenter
+                display: AbstractButton.TextBesideIcon
+                icon.source: 'qrc:/resources/images/settings-svgrepo-com.svg'
+                text: qsTr("Customize")
+                onClicked: {
+                    stringCopyDialog.title = qsTr("Copy this link and open in browser") + ":"
+                    stringCopyDialog.stringCopyable = "file:///" + applicationDirPath + "/widgets/index.html?widget=messages-widget-editor"
+                    stringCopyDialog.open()
                 }
             }
         }

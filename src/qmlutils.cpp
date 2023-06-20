@@ -5,6 +5,12 @@
 #include <QQmlEngine>
 #include <QSysInfo>
 #include <QWindow>
+#include <QDesktopServices>
+
+#ifdef Q_OS_WINDOWS
+#include <windows.h>
+#include <wininet.h>
+#endif
 
 namespace
 {

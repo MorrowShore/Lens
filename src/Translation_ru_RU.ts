@@ -99,7 +99,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="276"/>
+        <location filename="chathandler.cpp" line="275"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -851,37 +851,37 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>Rumble</name>
     <message>
-        <location filename="chat_services/rumble.cpp" line="38"/>
+        <location filename="chat_services/rumble.cpp" line="40"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="39"/>
+        <location filename="chat_services/rumble.cpp" line="41"/>
         <source>Stream link...</source>
         <translation>Ссылка на стрим...</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="65"/>
+        <location filename="chat_services/rumble.cpp" line="141"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="70"/>
+        <location filename="chat_services/rumble.cpp" line="146"/>
         <source>The channel is not correct</source>
         <translation>Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="73"/>
+        <location filename="chat_services/rumble.cpp" line="149"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="76"/>
+        <location filename="chat_services/rumble.cpp" line="152"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="79"/>
+        <location filename="chat_services/rumble.cpp" line="155"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1198,7 +1198,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="chat_services/twitch.cpp" line="40"/>
+        <location filename="chat_services/twitch.cpp" line="38"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
@@ -1218,12 +1218,12 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Получить токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="145"/>
+        <location filename="chat_services/twitch.cpp" line="148"/>
         <source>Ping timeout! Reconnection...</source>
         <translation>Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="221"/>
+        <location filename="chat_services/twitch.cpp" line="222"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -1232,17 +1232,17 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="39"/>
+        <location filename="chat_services/twitch.cpp" line="37"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="728"/>
+        <location filename="chat_services/twitch.cpp" line="720"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="733"/>
+        <location filename="chat_services/twitch.cpp" line="725"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
@@ -1252,9 +1252,9 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Для отображения аватарок войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="58"/>
-        <location filename="chat_services/twitch.cpp" line="724"/>
-        <location filename="chat_services/twitch.cpp" line="729"/>
+        <location filename="chat_services/twitch.cpp" line="56"/>
+        <location filename="chat_services/twitch.cpp" line="716"/>
+        <location filename="chat_services/twitch.cpp" line="721"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
@@ -1267,17 +1267,17 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="223"/>
+        <location filename="chat_services/twitch.cpp" line="224"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="226"/>
+        <location filename="chat_services/twitch.cpp" line="227"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="229"/>
+        <location filename="chat_services/twitch.cpp" line="230"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1286,7 +1286,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="723"/>
+        <location filename="chat_services/twitch.cpp" line="715"/>
         <source>Login for full functionality</source>
         <translation>Для полноценной работы войдите</translation>
     </message>
@@ -1299,7 +1299,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="734"/>
+        <location filename="chat_services/twitch.cpp" line="726"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -2036,23 +2036,23 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="762"/>
+        <location filename="main.qml" line="767"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="766"/>
+        <location filename="main.qml" line="771"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
     <message>
-        <location filename="main.qml" line="771"/>
+        <location filename="main.qml" line="776"/>
         <source>Connected!</source>
         <oldsource>Connected</oldsource>
         <translation>Подключено!</translation>
     </message>
     <message>
-        <location filename="main.qml" line="771"/>
+        <location filename="main.qml" line="776"/>
         <source>But no one has written anything yet</source>
         <translation>Но пока никто ничего не написал</translation>
     </message>
@@ -2468,7 +2468,7 @@ Latest version available: %2</oldsource>
 <context>
     <name>widgets</name>
     <message>
-        <location filename="setting_pages/widgets.qml" line="37"/>
+        <location filename="setting_pages/widgets.qml" line="67"/>
         <source>Copy the widget link and paste it into your streaming software</source>
         <translation>Скопируйте ссылку виджета и вставьте в программу для стримминга</translation>
     </message>
@@ -2477,23 +2477,34 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Чат</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="25"/>
+        <location filename="setting_pages/widgets.qml" line="55"/>
         <source>Part of the functionality is not yet implemented or may work with errors</source>
         <translation>Часть функционала ещё не реализована или может работать с ошибками</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="51"/>
+        <location filename="setting_pages/widgets.qml" line="81"/>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="69"/>
-        <location filename="setting_pages/widgets.qml" line="106"/>
+        <location filename="setting_pages/widgets.qml" line="39"/>
+        <location filename="setting_pages/widgets.qml" line="99"/>
+        <location filename="setting_pages/widgets.qml" line="148"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="88"/>
+        <location filename="setting_pages/widgets.qml" line="110"/>
+        <source>Customize</source>
+        <translation>Настроить</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/widgets.qml" line="112"/>
+        <source>Copy this link and open in browser</source>
+        <translation>Скопируйте эту ссылку и откройте в браузере</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/widgets.qml" line="130"/>
         <source>Viewers counter</source>
         <translation>Счётчик зрителей</translation>
     </message>
