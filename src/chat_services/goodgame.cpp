@@ -302,12 +302,6 @@ QString GoodGame::getStreamId(const QString &stream)
 
 void GoodGame::reconnectImpl()
 {
-    if (smiles.isEmpty())
-    {
-        requestSmiles();
-        return;
-    }
-
     socket.close();
 
     state = State();
@@ -323,6 +317,12 @@ void GoodGame::reconnectImpl()
     state.streamUrl = "https://goodgame.ru/" + state.streamId;
     state.chatUrl = "https://goodgame.ru/chat/" + state.streamId;
     state.controlPanelUrl = "https://goodgame.ru/channel/" + state.streamId + "/?streamer=1";
+
+    if (smiles.isEmpty())
+    {
+        requestSmiles();
+        return;
+    }
 
     if (enabled.get())
     {
