@@ -13,7 +13,7 @@ class Twitch : public ChatService
     Q_OBJECT
 
 public:
-    explicit Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;

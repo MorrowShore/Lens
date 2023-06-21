@@ -9,8 +9,8 @@ const static QString APP_ID = "eb1d5f283081a78b932c"; // TODO
 
 }
 
-Kick::Kick(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Kick, parent)
+Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Kick, parent)
     , network(network_)
     , socket("https://kick.com")
 {

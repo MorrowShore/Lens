@@ -1,12 +1,15 @@
 #include "chatservice.h"
 #include "tcpserver.h"
 
-ChatService::ChatService(QSettings& settings, const QString& settingsGroupPath, AxelChat::ServiceType serviceType_, QObject *parent)
+ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, QObject *parent)
     : QObject(parent)
+
     , serviceType(serviceType_)
-    , enabled(settings, settingsGroupPath + "/enabled", false)
-    , stream(settings, settingsGroupPath + "/stream")
-    , lastSavedMessageId(settings, settingsGroupPath + "/lastSavedMessageId")
+    , settingsGroupPath(settingsGroupPathParent + "/" + getServiceTypeId(serviceType_))
+
+    , enabled(settings, getSettingsGroupPath() + "/enabled", false)
+    , stream(settings, getSettingsGroupPath() + "/stream")
+    , lastSavedMessageId(settings, getSettingsGroupPath() + "/lastSavedMessageId")
 {
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&stream, tr("Stream"))));
 }

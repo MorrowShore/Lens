@@ -15,8 +15,8 @@ static const int HeartbeatAcknowledgementTimeout = 40 * 1000;
 static const int HeartbeatSendTimeout = 30 * 1000;
 }
 
-VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::VkPlayLive, parent)
+VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::VkPlayLive, parent)
     , network(network_)
     , socket("https://vkplay.live")
 {
@@ -556,7 +556,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
                   QUrl("https://vkplay.live/" + authorName),
                   leftBadges);
 
-    Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+    Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
 
     messages.append(message);
     authors.append(author);

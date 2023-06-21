@@ -10,7 +10,7 @@ class Kick : public ChatService
 {
     Q_OBJECT
 public:
-    explicit Kick(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit Kick(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;

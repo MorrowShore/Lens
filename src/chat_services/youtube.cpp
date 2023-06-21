@@ -41,8 +41,8 @@ QByteArray extractDigitsOnly(const QByteArray& data)
 
 }
 
-YouTube::YouTube(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::YouTube, parent)
+YouTube::YouTube(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, parent)
     , network(network_)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));

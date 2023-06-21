@@ -39,8 +39,8 @@ static const QMap<QString, QString> IconTypesExtra =
 
 }
 
-GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::GoodGame, parent)
+GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::GoodGame, parent)
     , network(network_)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));

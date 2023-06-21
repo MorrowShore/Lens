@@ -19,8 +19,8 @@ static const int RequestChannelInterval = 10000;
 
 };
 
-Wasd::Wasd(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Wasd, parent)
+Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Wasd, parent)
     , network(network_)
     , socket("https://wasd.tv/")
 {
@@ -564,7 +564,7 @@ void Wasd::parseEventMessage(const QJsonObject &data)
         return;
     }
 
-    const Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+    const Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
 
     QList<Message> messages = { message };
     QList<Author> authors = { author };

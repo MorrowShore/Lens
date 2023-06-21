@@ -19,11 +19,11 @@ static const int StickerImageHeight = 128;
 
 }
 
-VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::VkVideo, parent)
+VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::VkVideo, parent)
     , network(network_)
     , authStateInfo(UIElementBridge::createLabel("Loading..."))
-    , auth(settings, settingsGroupPath + "/auth", network)
+    , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));
 

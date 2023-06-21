@@ -54,17 +54,17 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
 
-    addService(new YouTube      (settings, SettingsGroupPath + "/youtube",      network, this));
-    addService(new Twitch       (settings, SettingsGroupPath + "/twitch",       network, this));
-    addService(new Trovo        (settings, SettingsGroupPath + "/trovo",        network, this));
-    addService(new Rumble       (settings, SettingsGroupPath + "/rumble",       network, this));
-    //addService(new Kick         (settings, SettingsGroupPath + "/kick",         network, this));
-    addService(new GoodGame     (settings, SettingsGroupPath + "/goodgame",     network, this));
-    addService(new VkPlayLive   (settings, SettingsGroupPath + "/vkplaylive",   network, this));
-    addService(new VkVideo      (settings, SettingsGroupPath + "/vkvideo",      network, this));
-    addService(new Wasd         (settings, SettingsGroupPath + "/wasd",         network, this));
-    addService(new Telegram     (settings, SettingsGroupPath + "/telegram",     network, this));
-    addService(new Discord      (settings, SettingsGroupPath + "/discord",      network, this));
+    addService(new YouTube      (settings, SettingsGroupPath, network, this));
+    addService(new Twitch       (settings, SettingsGroupPath, network, this));
+    addService(new Trovo        (settings, SettingsGroupPath, network, this));
+    addService(new Rumble       (settings, SettingsGroupPath, network, this));
+    //addService(new Kick         (settings, SettingsGroupPath, network, this));
+    addService(new GoodGame     (settings, SettingsGroupPath, network, this));
+    addService(new VkPlayLive   (settings, SettingsGroupPath, network, this));
+    addService(new VkVideo      (settings, SettingsGroupPath, network, this));
+    addService(new Wasd         (settings, SettingsGroupPath, network, this));
+    addService(new Telegram     (settings, SettingsGroupPath, network, this));
+    addService(new Discord      (settings, SettingsGroupPath, network, this));
 
     QTimer::singleShot(2000, [this]()
     {

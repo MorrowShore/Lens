@@ -32,8 +32,8 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 
 }
 
-Rumble::Rumble(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Rumble, parent)
+Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Rumble, parent)
     , network(network_)
     , sse(network)
 {
@@ -468,7 +468,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
                     author,
                     messagePublishedTime,
                     messageReceivedTime,
-                    getServiceTypeId(serviceType) + QString("/%1").arg(messageId),
+                    getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId),
                     flags,
                     forcedColors);
 

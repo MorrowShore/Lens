@@ -54,7 +54,7 @@ public:
         int viewersCount = -1;
     };
 
-    explicit ChatService(QSettings& settings, const QString& settingsGroupPath, AxelChat::ServiceType serviceType_, QObject *parent = nullptr);
+    explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, QObject *parent = nullptr);
 
     static QString getServiceTypeId(const AxelChat::ServiceType serviceType);
     static QString getName(const AxelChat::ServiceType serviceType);
@@ -104,6 +104,11 @@ signals:
     void connectedChanged(const bool connected);
     void authorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
+private:
+    const AxelChat::ServiceType serviceType;
+    const QString settingsGroupPath;
+    QList<std::shared_ptr<UIElementBridge>> uiElements;
+
 protected:
 
     virtual void reconnectImpl() = 0;
@@ -116,14 +121,12 @@ protected:
         Q_UNUSED(element)
     }
 
+    const QString& getSettingsGroupPath() const { return settingsGroupPath; }
+
     std::shared_ptr<UIElementBridge> getUIElementBridgeBySetting(const Setting<QString>& setting);
 
-    const AxelChat::ServiceType serviceType;
     State state;
     Setting<bool> enabled;
     Setting<QString> stream;
     Setting<QString> lastSavedMessageId;
-
-private:
-    QList<std::shared_ptr<UIElementBridge>> uiElements;
 };

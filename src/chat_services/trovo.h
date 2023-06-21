@@ -8,7 +8,7 @@ class Trovo : public ChatService
 {
     Q_OBJECT
 public:
-    explicit Trovo(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit Trovo(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;

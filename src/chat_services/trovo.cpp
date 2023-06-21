@@ -51,8 +51,8 @@ static const int EmoteImageHeight = 40;
 
 }
 
-Trovo::Trovo(QSettings &settings, const QString &settingsGroupPath, QNetworkAccessManager &network_, QObject *parent)
-    : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Trovo, parent)
+Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, QObject *parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Trovo, parent)
     , network(network_)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
@@ -279,7 +279,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
 
             Author author(getServiceType(),
                           authorName,
-                          getServiceTypeId(serviceType) + QString("/%1").arg(authorIdNum),
+                          getServiceTypeId(getServiceType()) + QString("/%1").arg(authorIdNum),
                           avatarUrl,
                           QUrl("https://trovo.live/s/" + authorName));
 
@@ -382,7 +382,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 contents.append(new Message::Text(text));
             }
 
-            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(serviceType) + QString("/%1").arg(messageId));
+            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
 
             messages.append(message);
             authors.append(author);

@@ -28,11 +28,11 @@ static const int UpdateStreamInfoPeriod = 10 * 1000;
 
 }
 
-Twitch::Twitch(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
-  : ChatService(settings, settingsGroupPath, AxelChat::ServiceType::Twitch, parent)
+Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
+  : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Twitch, parent)
   , network(network_)
   , authStateInfo(UIElementBridge::createLabel("Loading..."))
-  , auth(settings, settingsGroupPath + "/auth", network)
+  , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
