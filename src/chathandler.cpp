@@ -298,6 +298,19 @@ void ChatHandler::updateProxy()
     emit proxyChanged();
 }
 
+void ChatHandler::removeService(const int index)
+{
+    if (index >= services.count() || index < 0)
+    {
+        qWarning() << "index not valid";
+        return;
+    }
+
+    ChatService* service = services.at(index);
+    services.removeAt(index);
+    delete service;
+}
+
 template<typename ChatServiceInheritedClass>
 void ChatHandler::addService()
 {

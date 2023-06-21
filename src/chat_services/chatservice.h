@@ -55,6 +55,7 @@ public:
     };
 
     explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, QObject *parent = nullptr);
+    virtual ~ChatService(){}
 
     static QString getServiceTypeId(const AxelChat::ServiceType serviceType);
     static QString getName(const AxelChat::ServiceType serviceType);

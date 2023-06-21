@@ -116,8 +116,8 @@ private slots:
 
 private:
     void updateProxy();
-    template <typename ChatServiceInheritedClass>
-    void addService();
+    template <typename ChatServiceInheritedClass> void addService();
+    void removeService(const int index);
     void addTestMessages();
 
     MessagesModel messagesModel;
