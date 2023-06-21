@@ -54,17 +54,17 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
 
-    addService(new YouTube      (settings, SettingsGroupPath, network, this));
-    addService(new Twitch       (settings, SettingsGroupPath, network, this));
-    addService(new Trovo        (settings, SettingsGroupPath, network, this));
-    addService(new Rumble       (settings, SettingsGroupPath, network, this));
-    //addService(new Kick         (settings, SettingsGroupPath, network, this));
-    addService(new GoodGame     (settings, SettingsGroupPath, network, this));
-    addService(new VkPlayLive   (settings, SettingsGroupPath, network, this));
-    addService(new VkVideo      (settings, SettingsGroupPath, network, this));
-    addService(new Wasd         (settings, SettingsGroupPath, network, this));
-    addService(new Telegram     (settings, SettingsGroupPath, network, this));
-    addService(new Discord      (settings, SettingsGroupPath, network, this));
+    addService<YouTube>();
+    addService<Twitch>();
+    addService<Trovo>();
+    addService<Rumble>();
+    //addService<Kick>();
+    addService<GoodGame>();
+    addService<VkPlayLive>();
+    addService<VkVideo>();
+    addService<Wasd>();
+    addService<Telegram>();
+    addService<Discord>();
 
     QTimer::singleShot(2000, [this]()
     {
@@ -298,12 +298,17 @@ void ChatHandler::updateProxy()
     emit proxyChanged();
 }
 
-void ChatHandler::addService(ChatService* service)
+template<typename ChatServiceInheritedClass>
+void ChatHandler::addService()
 {
-    connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
-    connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
-    connect(service, &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
-    connect(service, &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
+    static_assert(std::is_base_of<ChatService, ChatServiceInheritedClass>::value, "ChatServiceInheritedClass must derive from ChatService");
+
+    ChatServiceInheritedClass* service = new ChatServiceInheritedClass(settings, SettingsGroupPath, network, this);
+
+    QObject::connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
+    QObject::connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
+    QObject::connect(service, &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
+    QObject::connect(service, &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
 
     services.append(service);
 }

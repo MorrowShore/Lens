@@ -116,7 +116,8 @@ private slots:
 
 private:
     void updateProxy();
-    void addService(ChatService* service);
+    template <typename ChatServiceInheritedClass>
+    void addService();
     void addTestMessages();
 
     MessagesModel messagesModel;
