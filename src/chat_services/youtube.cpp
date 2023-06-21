@@ -310,15 +310,7 @@ void YouTube::onTimeoutRequestChat()
     QNetworkRequest request(state.chatUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-
-    QNetworkReply* reply = network.get(request);
-    if (!reply)
-    {
-        qDebug() << Q_FUNC_INFO << ": !reply";
-        return;
-    }
-
-    QObject::connect(reply, &QNetworkReply::finished, this, &YouTube::onReplyChatPage);
+    QObject::connect(network.get(request), &QNetworkReply::finished, this, &YouTube::onReplyChatPage);
 }
 
 void YouTube::onReplyChatPage()
