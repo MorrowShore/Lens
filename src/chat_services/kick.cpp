@@ -197,7 +197,24 @@ void Kick::requestChannelInfo(const QString &channelName)
     });
 }
 
-QString Kick::extractChannelName(const QString &stream)
+QString Kick::extractChannelName(const QString &stream_)
 {
-    return stream;//todo
+    QString stream = stream_.trimmed();
+    if (stream.contains('/'))
+    {
+        stream = AxelChat::simplifyUrl(stream);
+        bool ok = false;
+        stream = AxelChat::removeFromStart(stream, "kick.com/", Qt::CaseSensitivity::CaseInsensitive, &ok);
+        if (!ok)
+        {
+            return QString();
+        }
+    }
+
+    if (stream.contains('/'))
+    {
+        stream = stream.left(stream.indexOf('/'));
+    }
+
+    return stream;
 }
