@@ -22,16 +22,23 @@ protected:
 private slots:
     void onWebSocketReceived(const QString &rawData);
     void send(const QJsonObject& object);
-    void sendSubscribe(const QString& channelId, const QString& chatroomId);
+    void sendSubscribe(const QString& chatroomId);
 
     void interceptChannelInfo(const QString& channelName);
     void onChannelInfoReply(const QByteArray& data);
 
 private:
+    struct Info
+    {
+        QString chatroomId;
+    };
+
     static QString extractChannelName(const QString& stream);
 
     QNetworkAccessManager& network;
     QWebSocket socket;
+
+    Info info;
 
     QTimer timerReconnect;
     QTimer timerPing;

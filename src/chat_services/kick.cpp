@@ -20,23 +20,30 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Kick::onWebSocketReceived);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+        //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
 
-        sendSubscribe("380174", "380090"); // TODO
+        if (info.chatroomId.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "chatroom id is empty";
+            socket.close();
+            return;
+        }
+
+        sendSubscribe(info.chatroomId);
 
         emit stateChanged();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
+        //qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
 
         if (state.connected)
         {
@@ -100,6 +107,7 @@ void Kick::reconnectImpl()
     socket.close();
 
     state = State();
+    info = Info();
 
     state.controlPanelUrl = QUrl(QString("https://kick.com/dashboard/stream"));
 
@@ -145,7 +153,7 @@ void Kick::send(const QJsonObject &object)
     socket.sendTextMessage(data);
 }
 
-void Kick::sendSubscribe(const QString& channelId, const QString& chatroomId)
+void Kick::sendSubscribe(const QString& chatroomId)
 {
     send(QJsonObject(
              {
@@ -153,17 +161,7 @@ void Kick::sendSubscribe(const QString& channelId, const QString& chatroomId)
                  { "data", QJsonObject(
                     {
                         { "auth", "" },
-                        { "channel", "channel." + channelId }
-                    })}
-             }));
-
-    send(QJsonObject(
-             {
-                 { "event", "pusher:subscribe" },
-                 { "data", QJsonObject(
-                    {
-                        { "auth", "" },
-                        { "channel", "chatrooms." + chatroomId }
+                        { "channel", "chatrooms." + chatroomId + ".v2" }
                     })}
              }));
 }
@@ -187,8 +185,11 @@ void Kick::interceptChannelInfo(const QString &channelName)
 void Kick::onChannelInfoReply(const QByteArray &data)
 {
     const QJsonObject root = QJsonDocument::fromJson(data).object();
+    const QJsonObject chatroom = root.value("chatroom").toObject();
 
-    qDebug() << root;
+    info.chatroomId = QString("%1").arg(chatroom.value("id").toVariant().toLongLong());
+
+    socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
 }
 
 QString Kick::extractChannelName(const QString &stream_)
