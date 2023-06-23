@@ -143,6 +143,17 @@ void Kick::onWebSocketReceived(const QString &rawData)
     {
         parseChatMessageEvent(data);
     }
+    else if (type == "pusher:pong")
+    {
+        // TODO
+    }
+    else if (type == "App\\Events\\UserBannedEvent")
+    {
+        // TODO:
+        // {"event":"App\\Events\\UserBannedEvent","data":"{\"id\":\"33667119-a401-4175-bf82-c9040940c4ba\",\"user\":{\"id\":8401465,\"username\":\"2PAC_SHAKUR\",\"slug\":\"2pac-shakur\"},\"banned_by\":{\"id\":8537435,\"username\":\"TheJuicer\",\"slug\":\"thejuicer\"},\"expires_at\":\"2023-06-23T13:09:00+00:00\"}","channel":"chatrooms.668.v2"}
+        qWarning() << Q_FUNC_INFO << "unsupported" << type;
+        qDebug() << data;
+    }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
         if (!state.connected)
@@ -151,11 +162,13 @@ void Kick::onWebSocketReceived(const QString &rawData)
             emit connectedChanged(true);
             emit stateChanged();
         }
+
+        sendPing();
     }
     else
     {
         qWarning() << Q_FUNC_INFO << "unknown event type" << type;
-        qDebug("\nreceived: " + rawData.toUtf8() + "\n");
+        qDebug() << data;
     }
 }
 
@@ -178,6 +191,15 @@ void Kick::sendSubscribe(const QString& chatroomId)
                         { "auth", "" },
                         { "channel", "chatrooms." + chatroomId + ".v2" }
                     })}
+             }));
+}
+
+void Kick::sendPing()
+{
+    send(QJsonObject(
+             {
+                 { "event", "pusher:ping" },
+                 { "data", QJsonObject()}
              }));
 }
 
