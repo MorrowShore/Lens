@@ -114,6 +114,13 @@ QJsonObject Message::toJson(const Author& author) const
     root.insert("id", messageId);
     root.insert("author", author.toJson());
 
+    QJsonArray destinationJson;
+    for (const QString& part : qAsConst(destination))
+    {
+        destinationJson.append(part);
+    }
+    root.insert("destination", destinationJson);
+
     QJsonArray jsonContents;
     for (const Content* content : qAsConst(contents))
     {
@@ -124,7 +131,6 @@ QJsonObject Message::toJson(const Author& author) const
     }
 
     root.insert("contents", jsonContents);
-
     return root;
 }
 
