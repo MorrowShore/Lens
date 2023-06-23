@@ -24,5 +24,6 @@
         <file>my_components/BridgedLineEdit.qml</file>
         <file>my_components/BridgedButton.qml</file>
         <file>my_components/BridgedSwitch.qml</file>
+        <file>setting_pages/add_connection.qml</file>
     </qresource>
 </RCC>
