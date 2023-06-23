@@ -195,9 +195,7 @@ QString Author::getJsonRoleName(const Role role)
     case Author::Role::Id: return "id";
     case Author::Role::PageUrl: return "pageUrl";
     case Author::Role::Name: return "name";
-    case Author::Role::HasCustomNicknameColor: return "hasCustomColor";
     case Author::Role::CustomNicknameColor: return "color";
-    case Author::Role::HasCustomNicknameBackgroundColor: return "hasCustomBackgroundColor";
     case Author::Role::CustomNicknameBackgroundColor: return "customBackgroundColor";
     case Author::Role::AvatarUrl: return "avatar";
     case Author::Role::LeftBadgesUrls: return "leftBadges";
@@ -207,6 +205,9 @@ QString Author::getJsonRoleName(const Role role)
     case Author::Role::IsChatOwner:
     case Author::Role::Sponsor:
     case Author::Role::Moderator:
+
+    case Author::Role::HasCustomNicknameBackgroundColor:
+    case Author::Role::HasCustomNicknameColor:
         break;
     }
 
@@ -221,11 +222,11 @@ QJsonObject Author::toJson() const
 
     root.insert(getJsonRoleName(Role::ServiceType), ChatService::getServiceTypeId(serviceType));
     root.insert(getJsonRoleName(Role::Id), authorId);
+    root.insert(getJsonRoleName(Role::PageUrl), pageUrl.toString());
     root.insert(getJsonRoleName(Role::Name), name);
-    root.insert(getJsonRoleName(Role::AvatarUrl), avatarUrl.toString());
     root.insert(getJsonRoleName(Role::CustomNicknameColor), customNicknameColor.isValid() ? customNicknameColor.name() : QString());
     root.insert(getJsonRoleName(Role::CustomNicknameBackgroundColor), customNicknameBackgroundColor.isValid() ? customNicknameBackgroundColor.name() : QString());
-    root.insert(getJsonRoleName(Role::PageUrl), pageUrl.toString());
+    root.insert(getJsonRoleName(Role::AvatarUrl), avatarUrl.toString());
 
     QJsonArray jsonLeftBadges;
     for (const QString& badgeUrl : leftBadgesUrls)
