@@ -55,6 +55,7 @@ HEADERS += \
     tray.h \
     uielementbridge.h \
     utils.h \
+    webinterceptorhandler.h \
     websocket.h
 
 SOURCES += \
@@ -92,6 +93,7 @@ SOURCES += \
         tcpserver.cpp \
         tray.cpp \
         uielementbridge.cpp \
+        webinterceptorhandler.cpp \
         websocket.cpp
 
 RESOURCES += qml.qrc \

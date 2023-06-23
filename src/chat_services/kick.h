@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include "webinterceptorhandler.h"
 #include "models/message.h"
 #include <QTimer>
 #include <QWebSocket>
@@ -24,6 +25,9 @@ private slots:
     void sendSubscribe(const QString& channelId, const QString& chatroomId);
     void requestChannelInfo(const QString& channelName);
 
+    void interceptChannelInfo(const QString& channelName);
+    void onChannelInfoReply(const QByteArray& data);
+
 private:
     static QString extractChannelName(const QString& stream);
 
@@ -33,5 +37,7 @@ private:
     QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerCheckPing;
+
+    WebInterceptorHandler interceptor;
 };
 

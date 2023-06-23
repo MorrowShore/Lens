@@ -116,10 +116,7 @@ void Kick::reconnectImpl()
 
     if (enabled.get())
     {
-        requestChannelInfo(state.streamId);
-
-        //socket.setProxy(network.proxy());
-        //socket.open(QUrl("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.4.0&flash=false"));
+        interceptChannelInfo(state.streamId);
     }
 }
 
@@ -195,6 +192,29 @@ void Kick::requestChannelInfo(const QString &channelName)
 
         qDebug() << root;
     });
+}
+
+void Kick::interceptChannelInfo(const QString &channelName)
+{
+    static const int Timeout = 5000;
+
+    WebInterceptorHandler::FilterSettings settings;
+    settings.urlPrefixes.insert("https://kick.com/api/");
+    interceptor.setFilterSettings(settings);
+
+    interceptor.start(false, QUrl("https://kick.com/api/v2/channels/" + channelName), Timeout,
+                      [this](const WebInterceptorHandler::Response& response)
+    {
+        onChannelInfoReply(response.data);
+        interceptor.stop();
+    });
+}
+
+void Kick::onChannelInfoReply(const QByteArray &data)
+{
+    const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+    qDebug() << root;
 }
 
 QString Kick::extractChannelName(const QString &stream_)
