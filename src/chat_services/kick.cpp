@@ -130,17 +130,32 @@ void Kick::reconnectImpl()
 
 void Kick::onWebSocketReceived(const QString &rawData)
 {
-    qDebug("\nreceived: " + rawData.toUtf8() + "\n");
-
     if (!enabled.get())
     {
         return;
     }
 
-    if (rawData.isEmpty())
+    const QJsonObject root = QJsonDocument::fromJson(rawData.toUtf8()).object();
+    const QString type = root.value("event").toString();
+    const QJsonObject data = QJsonDocument::fromJson(root.value("data").toString().toUtf8()).object();
+
+    if (type == "App\\Events\\ChatMessageEvent")
     {
-        qWarning() << Q_FUNC_INFO << "received data is empty";
-        return;
+        parseChatMessageEvent(data);
+    }
+    else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
+    {
+        if (!state.connected)
+        {
+            state.connected = true;
+            emit connectedChanged(true);
+            emit stateChanged();
+        }
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown event type" << type;
+        qDebug("\nreceived: " + rawData.toUtf8() + "\n");
     }
 }
 
@@ -148,7 +163,7 @@ void Kick::send(const QJsonObject &object)
 {
     const QString data = QString::fromUtf8(QJsonDocument(object).toJson(QJsonDocument::JsonFormat::Compact));
 
-    qDebug("\nsend: " + data.toUtf8() + "\n");
+    //qDebug("\nsend: " + data.toUtf8() + "\n");
 
     socket.sendTextMessage(data);
 }
@@ -190,6 +205,70 @@ void Kick::onChannelInfoReply(const QByteArray &data)
     info.chatroomId = QString("%1").arg(chatroom.value("id").toVariant().toLongLong());
 
     socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
+}
+
+void Kick::parseChatMessageEvent(const QJsonObject &data)
+{
+    const QString type = data.value("type").toString();
+    const QString id = data.value("id").toString();
+    const QString rawContent = data.value("content").toString();
+    const QDateTime publishedTime = QDateTime::fromString(data.value("created_at").toString(), Qt::DateFormat::ISODate);
+
+    const QJsonObject sender = data.value("sender").toObject();
+    const QString slug = sender.value("slug").toString();
+    const QString authorName = sender.value("username").toString();
+
+    const QJsonObject identity = sender.value("identity").toObject();
+    const QColor authorColor = identity.value("color").toString();
+    const QJsonArray badgesJson = identity.value("badges").toArray();
+
+    if (type == "message")
+    {
+        //
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unkown message type" << type;
+        qDebug() << data;
+    }
+
+    if (rawContent.isEmpty())
+    {
+        return;
+    }
+
+    QStringList leftBadges;
+
+    QList<Message> messages;
+    QList<Author> authors;
+
+    Author author(getServiceType(),
+                  authorName,
+                  getServiceTypeId(getServiceType()) + "_" + slug,
+                  QUrl(""),
+                  "https://kick.com/" + slug,
+                  leftBadges, {}, {},
+                  authorColor);
+
+    QList<Message::Content *> contents;
+
+    contents.append(new Message::Text(rawContent));
+
+    Message message(contents,
+                    author,
+                    publishedTime,
+                    QDateTime::currentDateTime(),
+                    getServiceTypeId(getServiceType()) + QString("/%1").arg(id));
+
+    messages.append(message);
+    authors.append(author);
+
+    if (!messages.isEmpty())
+    {
+        emit readyRead(messages, authors);
+    }
+
+    qDebug() << data;
 }
 
 QString Kick::extractChannelName(const QString &stream_)

@@ -27,6 +27,8 @@ private slots:
     void interceptChannelInfo(const QString& channelName);
     void onChannelInfoReply(const QByteArray& data);
 
+    void parseChatMessageEvent(const QJsonObject& data);
+
 private:
     struct Info
     {
