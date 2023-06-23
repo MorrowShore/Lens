@@ -168,32 +168,6 @@ void Kick::sendSubscribe(const QString& channelId, const QString& chatroomId)
              }));
 }
 
-void Kick::requestChannelInfo(const QString &channelName)
-{
-    QNetworkRequest request(QUrl("https://kick.com/api/v1/channels/" + channelName.trimmed().toLower()));
-    request.setRawHeader("Accept", "application/json, text/plain, */*");
-    request.setRawHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0");
-    request.setRawHeader("Alt-Used", "kick.com");
-    request.setRawHeader("Accept-Language", "en-US;q=0.5,en;q=0.3");
-    request.setRawHeader("Cookie", "__cf_bm=u6_YcMA7CXi.lb5w4WEgS09n9eWutv.8Xq0oKbxP.c0-1681414255-0-AVgwpcfcZY83BD8L4So5rPBur6yKacStQQj6oo7aUFtWEsHFNyJo+1cJar7Pkrep6XKn70D3Wzood+GvmgXZnok=");
-
-    QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply, channelName]()
-    {
-        const QByteArray data = reply->readAll();
-        const int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        reply->deleteLater();
-
-        qDebug() << statusCode;
-
-        qDebug() << data;
-
-        const QJsonObject root = QJsonDocument::fromJson(data).object();
-
-        qDebug() << root;
-    });
-}
-
 void Kick::interceptChannelInfo(const QString &channelName)
 {
     static const int Timeout = 5000;

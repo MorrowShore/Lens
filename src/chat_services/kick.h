@@ -23,7 +23,6 @@ private slots:
     void onWebSocketReceived(const QString &rawData);
     void send(const QJsonObject& object);
     void sendSubscribe(const QString& channelId, const QString& chatroomId);
-    void requestChannelInfo(const QString& channelName);
 
     void interceptChannelInfo(const QString& channelName);
     void onChannelInfoReply(const QByteArray& data);
