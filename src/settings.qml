@@ -171,12 +171,12 @@ Window {
                 }
 
                 model: ListModel {
-                    ListElement {
+                    /*ListElement {
                         name: qsTr("Add connection")
                         category: "add_connection"
                         iconSource: "qrc:/resources/images/add.svg"
                         serviceIndex: -1
-                    }
+                    }*/
                     ListElement {
                         name: qsTr("Common")
                         category: "common"
