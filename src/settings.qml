@@ -172,6 +172,12 @@ Window {
 
                 model: ListModel {
                     ListElement {
+                        name: qsTr("Add connection")
+                        category: "add_connection"
+                        iconSource: "qrc:/resources/images/add.svg"
+                        serviceIndex: -1
+                    }
+                    ListElement {
                         name: qsTr("Common")
                         category: "common"
                         iconSource: ""
@@ -303,6 +309,10 @@ Window {
                     {
                         Global.windowSettingsServiceIndex = currentIndex
                         stackViewCategories.replace("setting_pages/service.qml")
+                    }
+                    else if (currentItem.category === "add_connection")
+                    {
+                        stackViewCategories.replace("setting_pages/add_connection.qml");
                     }
                     else if (currentItem.category === "common")
                     {
