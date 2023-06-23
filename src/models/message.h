@@ -245,7 +245,7 @@ public:
                 const QString& messageId = QString(),
                 const std::set<Flag>& flags = {},
                 const QHash<ColorRole, QColor>& forcedColors = {},
-                const QString& destination = QString());
+                const QStringList& destination = QStringList());
 
     inline const QString& getId() const
     {
@@ -295,11 +295,11 @@ public:
     {
         return flags.find(flag) != flags.end();
     }
-    inline const QString& getDestination() const
+    inline const QStringList& getDestination() const
     {
         return destination;
     }
-    inline void setDestination(const QString& destination_)
+    inline void setDestination(const QStringList& destination_)
     {
         destination = destination_;
     }
@@ -335,7 +335,7 @@ private:
     QHash<ColorRole, QColor> forcedColors;
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
-    QString destination;
+    QStringList destination;
 
     uint64_t idNum = 0;
 };

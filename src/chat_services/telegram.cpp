@@ -383,11 +383,15 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
 
     if (!contents.isEmpty())
     {
-        QString destination;
+        QStringList destination;
 
         if (showChatTitle.get())
         {
-            destination = jsonChat.value("title").toString().trimmed();
+            const QString title = jsonChat.value("title").toString().trimmed();
+            if (!title.isEmpty())
+            {
+                destination.append(title);
+            }
         }
 
         const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId, {}, {}, destination);

@@ -897,23 +897,18 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
     }
 }
 
-QString Discord::getDestination(const Guild &guild, const Channel &channel) const
+QStringList Discord::getDestination(const Guild &guild, const Channel &channel) const
 {
-    QString result;
+    QStringList result;
 
     if (showGuildName.get())
     {
-        result += guild.name;
+        result.append(guild.name);
     }
 
     if (showChannelName.get())
     {
-        if (!result.isEmpty())
-        {
-            result += " / ";
-        }
-
-        result += channel.name;
+        result.append(channel.name);
     }
 
     return result;

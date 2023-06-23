@@ -12,7 +12,7 @@ Message::Message(const QList<Message::Content*>& contents_,
                          const QString &messageId_,
                          const std::set<Flag> &flags_,
                          const QHash<ColorRole, QColor> &forcedColors_,
-                         const QString& destination_)
+                         const QStringList& destination_)
     : contents(contents_)
     , messageId(messageId_)
     , publishedAt(publishedAt_)

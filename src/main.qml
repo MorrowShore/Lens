@@ -559,7 +559,17 @@ ApplicationWindow {
                 Text {
                     id: destination
                     anchors.verticalCenter: authorNameText.verticalCenter
-                    text: " → " + messageDestination
+                    text: {
+                        var t = " → "
+                        for (let i = 0; i < messageDestination.length; i++) {
+                            var dest = messageDestination[i]
+                            t += dest
+
+                            if (i < messageDestination.length - 1) {
+                                t += " / "
+                            }
+                        }
+                    }
                     color: "silver"
                     font.pointSize: authorNameText.font.pointSize * 0.8
                     visible: messageDestination.length > 0

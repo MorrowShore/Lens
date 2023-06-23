@@ -105,7 +105,7 @@ private:
     void requestChannel(const QString& channelId);
 
     void processDeferredMessages(const std::optional<QString>& guildId, const std::optional<QString>& channelId);
-    QString getDestination(const Guild& guild, const Channel& channel) const;
+    QStringList getDestination(const Guild& guild, const Channel& channel) const;
     bool isValidForShow(const Message& message, const Author& author, const Guild& guild, const Channel& channel) const;
 
     static QString getEmbedTypeName(const QString& type);
