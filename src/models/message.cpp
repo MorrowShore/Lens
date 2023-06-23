@@ -14,7 +14,7 @@ Message::Message(const QList<Message::Content*>& contents_,
                          const QHash<ColorRole, QColor> &forcedColors_,
                          const QStringList& destination_)
     : contents(contents_)
-    , messageId(messageId_)
+    , id(messageId_)
     , publishedAt(publishedAt_)
     , receivedAt(receivedAt_)
     , authorId(author.getId())
@@ -22,12 +22,12 @@ Message::Message(const QList<Message::Content*>& contents_,
     , forcedColors(forcedColors_)
     , destination(destination_)
 {
-    if (messageId.isEmpty())
+    if (id.isEmpty())
     {
-        messageId = authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
+        id = authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
     }
 
-    messageId = ChatService::getServiceTypeId(author.getServiceType()) + "/" + messageId;
+    id = ChatService::getServiceTypeId(author.getServiceType()) + "/" + id;
 
     updateHtml();
 }
@@ -111,7 +111,7 @@ QJsonObject Message::toJson(const Author& author) const
 {
     QJsonObject root;
 
-    root.insert("id", messageId);
+    root.insert("id", id);
     root.insert("author", author.toJson());
 
     QJsonArray destinationJson;

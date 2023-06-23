@@ -249,7 +249,7 @@ public:
 
     inline const QString& getId() const
     {
-        return messageId;
+        return id;
     }
     inline const QString& toHtml() const
     {
@@ -327,7 +327,7 @@ private:
 
     QList<Content*> contents;
     QString html;
-    QString messageId;
+    QString id;
     QDateTime publishedAt;
     QDateTime receivedAt;
     QString authorId;
