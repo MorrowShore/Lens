@@ -558,6 +558,7 @@ ApplicationWindow {
                 //Message destination
                 Text {
                     id: destination
+                    style: Text.Outline
                     anchors.verticalCenter: authorNameText.verticalCenter
                     text: {
                         var t = " → "
@@ -570,7 +571,7 @@ ApplicationWindow {
                             }
                         }
                     }
-                    color: "silver"
+                    color: "#ededed"
                     font.pointSize: authorNameText.font.pointSize * 0.8
                     visible: messageDestination.length > 0
                 }
