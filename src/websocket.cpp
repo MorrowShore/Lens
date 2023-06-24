@@ -56,8 +56,8 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
         sendHelloToClient(client);
         sendStateToClient(client);
 
-        //const QList<Message> lastMessages = chatHandler.getMessagesModel().getLastMessages(30);
-        //sendMessagesToClient(lastMessages, client);
+        const QList<Message> lastMessages = chatHandler.getMessagesModel().getLastMessages(30);
+        sendMessagesToClient(lastMessages, client);
     });
 
     connect(&server, &QWebSocketServer::serverError, this, [this](QWebSocketProtocol::CloseCode closeCode)

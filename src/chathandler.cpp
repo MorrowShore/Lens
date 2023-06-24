@@ -69,7 +69,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     QTimer::singleShot(2000, [this]()
     {
         Q_UNUSED(this)
-        //addTestMessages();
+        addTestMessages();
     });
 }
 
@@ -274,8 +274,7 @@ void ChatHandler::onAuthorNameChanged(const Author& author, const QString &prevN
     {
         sendSoftwareMessage(tr("%1: \"%2\" changed name to \"%3\"")
                             .arg(ChatService::getName(author.getServiceType()))
-                            .arg(prevName)
-                            .arg(newName));
+                            .arg(prevName, newName));
     }
 }
 
@@ -352,17 +351,38 @@ void ChatHandler::addTestMessages()
     }
 
     {
-        Author author(AxelChat::ServiceType::Trovo, "Luigi", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/mario/images/7/72/MPSS_Luigi.png/revision/latest/scale-to-width-down/254?cb=20220705200355"));
+        Author author(AxelChat::ServiceType::Trovo,
+                      "Luigi", QUuid::createUuid().toString(),
+                      QUrl("https://static.wikia.nocookie.net/mario/images/7/72/MPSS_Luigi.png/revision/latest/scale-to-width-down/254?cb=20220705200355"),
+                      {},
+                      {},
+                      {},
+                      {},
+                      QColor("#FF00C7"),
+                      QColor("#FFFFFF"));
         authors.append(author);
 
         QList<Message::Content*> contents;
         contents.append(new Message::Text("Mamma mia!"));
 
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+        messages.append(Message(contents,
+                                author,
+                                QDateTime::currentDateTime(),
+                                QDateTime::currentDateTime(),
+                                QUuid::createUuid().toString(),
+                                {},
+                                { { Message::ColorRole::BodyBackground, QColor("#A8D9FF") } },
+                                { "Underground" }));
     }
 
     {
-        Author author(AxelChat::ServiceType::GoodGame, "CJ", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252"));
+        Author author(AxelChat::ServiceType::GoodGame,
+                      "CJ", QUuid::createUuid().toString(),
+                      QUrl("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252"),
+                      {},
+                      { "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252", "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252" },
+                      { "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252", "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252" },
+                      {});
         authors.append(author);
 
         QList<Message::Content*> contents;
@@ -382,13 +402,15 @@ void ChatHandler::addTestMessages()
     }
 
     {
-        Author author(AxelChat::ServiceType::Telegram, "G-Man", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/half-life/images/4/41/G-Man_Alyx_Trailer.jpg/revision/latest/scale-to-width-down/350?cb=20191122020607&path-prefix=en"));
+        Author author(AxelChat::ServiceType::Telegram, "G-Man", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/half-life/images/4/41/G-Man_Alyx_Trailer.jpg/revision/latest/scale-to-width-down/350?cb=20191122020607&path-prefix=en"),
+                      {}, {}, {}, {}, {}, {});
         authors.append(author);
 
         QList<Message::Content*> contents;
         contents.append(new Message::Text("Rise and shine, Mister Freeman"));
 
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString(),
+                                {}, {}, { "Xen", "Stasis" }));
     }
 
     {

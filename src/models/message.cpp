@@ -114,6 +114,12 @@ QJsonObject Message::toJson(const Author& author) const
     root.insert("id", id);
     root.insert("author", author.toJson());
 
+    root.insert("publishedAt", getPublishedAt().toString(Qt::DateFormat::ISODateWithMs));
+    root.insert("receivedAt", getReceivedAt().toString(Qt::DateFormat::ISODateWithMs));
+
+    root.insert("customAuthorAvatarUrl", getCustomAuthorAvatarUrl().toString());
+    root.insert("customAuthorName", getCustomAuthorName());
+
     QJsonArray destinationJson;
     for (const QString& part : qAsConst(destination))
     {
