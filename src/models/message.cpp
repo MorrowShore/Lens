@@ -127,6 +127,16 @@ QJsonObject Message::toJson(const Author& author) const
     }
     root.insert("destination", destinationJson);
 
+    QJsonObject forcedColorsJson;
+    const QList<ColorRole> colorRoles = forcedColors.keys();
+    for (const ColorRole role : qAsConst(colorRoles))
+    {
+        const QString roleStr = colorRoleToString(role);
+        const QColor color = forcedColors.value(role);
+        forcedColorsJson.insert(roleStr, color.name());
+    }
+    root.insert("forcedColors", forcedColorsJson);
+
     QJsonArray jsonContents;
     for (const Content* content : qAsConst(contents))
     {

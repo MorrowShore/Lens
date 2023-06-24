@@ -721,19 +721,19 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
             if (itemRenderer.contains("bodyBackgroundColor"))
             {
                 // usually for liveChatPaidMessageRenderer
-                forcedColors.insert(Message::ColorRole::BodyBackground, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, itemRenderer.value("bodyBackgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("backgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(Message::ColorRole::BodyBackground, itemRenderer.value("backgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, itemRenderer.value("backgroundColor").toVariant().toLongLong());
             }
 
             if (itemRenderer.contains("headerBackgroundColor"))
             {
                 // usually for liveChatPaidStickerRenderer
-                forcedColors.insert(Message::ColorRole::BodyBackground, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
+                forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, itemRenderer.value("headerBackgroundColor").toVariant().toLongLong());
             }
         }
         else if (actionObject.contains("removeChatItemAction"))

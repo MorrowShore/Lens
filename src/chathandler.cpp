@@ -371,7 +371,7 @@ void ChatHandler::addTestMessages()
                                 QDateTime::currentDateTime(),
                                 QUuid::createUuid().toString(),
                                 {},
-                                { { Message::ColorRole::BodyBackground, QColor("#A8D9FF") } },
+                                { { Message::ColorRole::BodyBackgroundColorRole, QColor("#A8D9FF") } },
                                 { "Underground" }));
     }
 

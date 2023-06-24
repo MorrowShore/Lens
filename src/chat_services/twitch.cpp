@@ -443,7 +443,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             {
                 if (!tagValue.trimmed().isEmpty())
                 {
-                    forcedColors.insert(Message::ColorRole::BodyBackground, QColor(117, 94, 188));
+                    forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, QColor(117, 94, 188));
                 }
             }
             else if (tagName == "system-msg")

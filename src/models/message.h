@@ -60,8 +60,20 @@ public:
     Q_ENUM(Flag)
 
     enum ColorRole {
-        BodyBackground
+        BodyBackgroundColorRole
     };
+
+    static QString colorRoleToString(const ColorRole role)
+    {
+        switch(role)
+        {
+        case Message::ColorRole::BodyBackgroundColorRole: return "bodyBackground";
+        }
+
+        qWarning() << Q_FUNC_INFO << "unknown color role" << (int)role;
+
+        return "<unknown>";
+    }
 
     struct TextStyle
     {

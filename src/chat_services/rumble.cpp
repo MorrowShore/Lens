@@ -449,12 +449,12 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
             style.bold = true;
             contents.append(new Message::Text(text, style));
 
-            forcedColors.insert(Message::ColorRole::BodyBackground, getDonutColor(dollars));
+            forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, getDonutColor(dollars));
         }
         else
         {
             qWarning() << Q_FUNC_INFO << "failed to get price, message =" << jsonMessage;
-            forcedColors.insert(Message::ColorRole::BodyBackground, DefaultHighlightedMessageColor);
+            forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, DefaultHighlightedMessageColor);
         }
     }
 
