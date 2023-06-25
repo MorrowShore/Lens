@@ -570,6 +570,8 @@ ApplicationWindow {
                                 t += " / "
                             }
                         }
+
+                        return t
                     }
                     color: "#ededed"
                     font.pointSize: authorNameText.font.pointSize * 0.8
