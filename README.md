@@ -6,11 +6,11 @@ The AxelChat application collects chat from various streaming platforms and disp
 [Issues](https://github.com/3dproger/AxelChat/issues) |
 [Patreon](https://patreon.com/axel_k)
 
-[<img src="images/button-download.png">](https://github.com/3dproger/AxelChat/releases)
+[<img src="misc/images/button-download.png">](https://github.com/3dproger/AxelChat/releases)
 [![Patreon](https://raw.githubusercontent.com/3dproger/AxelChat/main/images/button-patron.png)](https://www.patreon.com/axel_k)
 
 <p align="center">
-  <img src="images/github-social7.png">
+  <img src="misc/images/github-social7.png">
 </p>
 
 # Features
@@ -20,7 +20,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - Displaying the number of viewers both total and for individual platforms
 - Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
 <p align="center">
-  <img src="images/11.png">
+  <img src="misc/images/11.png">
 </p>
 
 - Sound commands that are activated by the corresponding message from the chat. There are built-in commands, but you can always add your own
