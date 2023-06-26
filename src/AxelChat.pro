@@ -14,6 +14,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    BrowserHandler.h \
     chat_services/kick.h \
     chat_services/rumble.h \
     chat_services/vkvideo.h \
@@ -55,46 +56,45 @@ HEADERS += \
     tray.h \
     uielementbridge.h \
     utils.h \
-    webinterceptorhandler.h \
     websocket.h
 
 SOURCES += \
-        chat_services/chatservice.cpp \
-        chat_services/discord.cpp \
-        chat_services/kick.cpp \
-        chat_services/rumble.cpp \
-        chat_services/telegram.cpp \
-        chat_services/trovo.cpp \
-        chat_services/vkplaylive.cpp \
-        chat_services/goodgame.cpp \
-        chat_services/twitch.cpp \
-        chat_services/vkvideo.cpp \
-        chat_services/wasd.cpp \
-        chat_services/youtube.cpp \
-        crypto/aes.cpp \
-        crypto/crypto.cpp \
-        models/author.cpp \
-        models/message.cpp \
-        models/messagesmodel.cpp \
-        authorqmlprovider.cpp \
-        botaction.cpp \
-        chatbot.cpp \
-        chathandler.cpp \
-        clipboardqml.cpp \
-        commandseditor.cpp \
-        commandsingleeditor.cpp \
-        githubapi.cpp \
-        i18n.cpp \
-        main.cpp \
-        oauth2.cpp \
-        outputtofile.cpp \
-        qmlutils.cpp \
-        ssemanager.cpp \
-        tcpserver.cpp \
-        tray.cpp \
-        uielementbridge.cpp \
-        webinterceptorhandler.cpp \
-        websocket.cpp
+    BrowserHandler.cpp \
+    chat_services/chatservice.cpp \
+    chat_services/discord.cpp \
+    chat_services/kick.cpp \
+    chat_services/rumble.cpp \
+    chat_services/telegram.cpp \
+    chat_services/trovo.cpp \
+    chat_services/vkplaylive.cpp \
+    chat_services/goodgame.cpp \
+    chat_services/twitch.cpp \
+    chat_services/vkvideo.cpp \
+    chat_services/wasd.cpp \
+    chat_services/youtube.cpp \
+    crypto/aes.cpp \
+    crypto/crypto.cpp \
+    models/author.cpp \
+    models/message.cpp \
+    models/messagesmodel.cpp \
+    authorqmlprovider.cpp \
+    botaction.cpp \
+    chatbot.cpp \
+    chathandler.cpp \
+    clipboardqml.cpp \
+    commandseditor.cpp \
+    commandsingleeditor.cpp \
+    githubapi.cpp \
+    i18n.cpp \
+    main.cpp \
+    oauth2.cpp \
+    outputtofile.cpp \
+    qmlutils.cpp \
+    ssemanager.cpp \
+    tcpserver.cpp \
+    tray.cpp \
+    uielementbridge.cpp \
+    websocket.cpp
 
 RESOURCES += qml.qrc \
     resources.qrc

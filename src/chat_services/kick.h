@@ -1,8 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
-#include "webinterceptorhandler.h"
-#include "models/message.h"
+#include "BrowserHandler.h"
 #include <QTimer>
 #include <QWebSocket>
 #include <QJsonValue>
@@ -48,6 +47,6 @@ private:
     QTimer timerPing;
     QTimer timerCheckPing;
 
-    WebInterceptorHandler interceptor;
+    BrowserHandler browser;
 };
 

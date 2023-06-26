@@ -4,9 +4,10 @@
 #include <QProcess>
 #include <QSet>
 #include <QTimer>
+#include <QWindow>
 #include <map>
 
-class WebInterceptorHandler : public QObject
+class BrowserHandler : public QObject
 {
     Q_OBJECT
 public:
@@ -17,6 +18,14 @@ public:
         QSet<QString> mimeTypes;
         QSet<QString> urlPrefixes;
         QSet<int> responseStatuses;
+    };
+
+    struct CommandLineParameters
+    {
+        QUrl url;
+        bool showResponses = false;
+        bool windowVisible = true;
+        FilterSettings filterSettings;
     };
 
     struct Response
@@ -30,17 +39,19 @@ public:
         QByteArray data;
     };
 
+    static const QStringList& getAvailableResourceTypes();
     static bool checkExecutableExists();
     static QString getExecutablePath();
 
-    explicit WebInterceptorHandler(QObject *parent = nullptr);
+    explicit BrowserHandler(QObject *parent = nullptr);
 
-    void setFilterSettings(const FilterSettings& filterSettings_) { filterSettings = filterSettings_; }
-    void start(const bool visibleWindow, const QUrl& url, int timeout, std::function<void(const Response&)> onResponseDone);
+    void start(const CommandLineParameters& parameters, int timeout);
     void stop();
 
 signals:
-    void readyRead();
+    void responsed(const Response& response);
+    void windowCreated(QWindow* window);
+    void processClosed();
 
 private slots:
     void onReadyRead();
@@ -48,10 +59,6 @@ private slots:
 private:
     void parseLine(const QByteArray& line);
     void parse(const QByteArray& messageType, const QMap<QByteArray, QByteArray>& properties, const QByteArray& data);
-
-    std::function<void(const Response&)> onResponseDone = nullptr;
-
-    FilterSettings filterSettings;
 
     QProcess* process = nullptr;
 

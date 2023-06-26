@@ -1,4 +1,5 @@
 #include "kick.h"
+#include "models/message.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
@@ -56,6 +57,11 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
         qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+    });
+
+    QObject::connect(&browser, QOverload<const BrowserHandler::Response&>::of(&BrowserHandler::responsed), this, [this](const BrowserHandler::Response& response)
+    {
+        onChannelInfoReply(response.data);
     });
 
     reconnect();
@@ -207,16 +213,18 @@ void Kick::interceptChannelInfo(const QString &channelName)
 {
     static const int Timeout = 5000;
 
-    WebInterceptorHandler::FilterSettings settings;
-    settings.urlPrefixes.insert("https://kick.com/api/");
-    interceptor.setFilterSettings(settings);
+    BrowserHandler::CommandLineParameters params;
 
-    interceptor.start(false, QUrl("https://kick.com/api/v2/channels/" + channelName), Timeout,
-                      [this](const WebInterceptorHandler::Response& response)
-    {
-        onChannelInfoReply(response.data);
-        interceptor.stop();
-    });
+    BrowserHandler::FilterSettings filter;
+    filter.urlPrefixes = { "https://kick.com/api/" };
+    filter.mimeTypes = { "text/html", "application/json" };
+    params.filterSettings = filter;
+
+    params.showResponses = true;
+    params.windowVisible = false;
+    params.url = "https://kick.com/api/v2/channels/" + channelName;
+
+    browser.start(params, Timeout);
 }
 
 void Kick::onChannelInfoReply(const QByteArray &data)

@@ -1,4 +1,4 @@
-#include "webinterceptorhandler.h"
+#include "BrowserHandler.h"
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QDebug>
@@ -7,35 +7,60 @@ namespace
 {
 
 static const QString ExecutableRelativePath = "WebInterceptor/WebInterceptor.exe";
+static const QStringList AvailableResourceTypes =
+{
+    "MAIN_FRAME",
+    "SUB_FRAME",
+    "STYLESHEET",
+    "SCRIPT",
+    "IMAGE",
+    "FONT_RESOURCE",
+    "SUB_RESOURCE",
+    "MEDIA",
+    "WORKER",
+    "SHARED_WORKER",
+    "PREFETCH",
+    "FAVICON",
+    "XHR",
+    "PING",
+    "SERVICE_WORKER",
+    "CSP_REPORT",
+    "PLUGIN_RESOURCE",
+    "NAVIGATION_PRELOAD_MAIN_FRAME",
+    "NAVIGATION_PRELOAD_SUB_FRAME",
+};
 
 }
 
-bool WebInterceptorHandler::checkExecutableExists()
+const QStringList &BrowserHandler::getAvailableResourceTypes()
+{
+    return AvailableResourceTypes;
+}
+
+bool BrowserHandler::checkExecutableExists()
 {
     return QFileInfo::exists(getExecutablePath());
 }
 
-QString WebInterceptorHandler::getExecutablePath()
+QString BrowserHandler::getExecutablePath()
 {
     return qApp->applicationDirPath() + "/" + ExecutableRelativePath;
 }
 
-WebInterceptorHandler::WebInterceptorHandler(QObject *parent)
+BrowserHandler::BrowserHandler(QObject *parent)
     : QObject{parent}
 {
     timeoutTimer.setSingleShot(true);
     connect(&timeoutTimer, &QTimer::timeout, this, [this]()
-    {
-        qWarning() << Q_FUNC_INFO << "stop on timeout";
-        stop();
-    });
+            {
+                qWarning() << Q_FUNC_INFO << "stop on timeout";
+                stop();
+            });
 }
 
-void WebInterceptorHandler::start(const bool visibleWindow, const QUrl& url, int timeout, std::function<void(const Response&)> onResponseDone_)
+void BrowserHandler::start(const CommandLineParameters& parameters, int timeout)
 {
     stop();
-
-    onResponseDone = onResponseDone_;
 
     if (!checkExecutableExists())
     {
@@ -45,21 +70,39 @@ void WebInterceptorHandler::start(const bool visibleWindow, const QUrl& url, int
 
     process = new QProcess(this);
 
-    connect(process, &QProcess::readyRead, this, &WebInterceptorHandler::onReadyRead);
+    connect(process, &QProcess::readyRead, this, &BrowserHandler::onReadyRead);
+    connect(process, &QProcess::stateChanged, this, [this](const QProcess::ProcessState state)
+    {
+        if (state == QProcess::ProcessState::NotRunning)
+        {
+            emit processClosed();
+        }
+    });
+
+    const FilterSettings& filterSettings = parameters.filterSettings;
 
     const QString program = getExecutablePath();
 
     QStringList arguments;
 
-    arguments.append("--url=" + url.toString());
+    arguments.append("--url=" + parameters.url.toString() + "");
 
-    if (visibleWindow)
+    if (parameters.windowVisible)
     {
         arguments.append("--window-visible=true");
     }
     else
     {
         arguments.append("--window-visible=false");
+    }
+
+    if (parameters.showResponses)
+    {
+        arguments.append("--show-responses=true");
+    }
+    else
+    {
+        arguments.append("--show-responses=false");
     }
 
     if (!filterSettings.resourceTypes.empty())
@@ -138,12 +181,14 @@ void WebInterceptorHandler::start(const bool visibleWindow, const QUrl& url, int
         arguments.append(arg);
     }
 
+    //qDebug() << "start program:" << program << ", arguments:" << arguments;
+
     process->start(program, arguments);
 
     timeoutTimer.start(timeout);
 }
 
-void WebInterceptorHandler::stop()
+void BrowserHandler::stop()
 {
     if (process)
     {
@@ -156,7 +201,7 @@ void WebInterceptorHandler::stop()
     timeoutTimer.stop();
 }
 
-void WebInterceptorHandler::onReadyRead()
+void BrowserHandler::onReadyRead()
 {
     if (!process)
     {
@@ -174,7 +219,7 @@ void WebInterceptorHandler::onReadyRead()
     }
 }
 
-void WebInterceptorHandler::parseLine(const QByteArray &line)
+void BrowserHandler::parseLine(const QByteArray &line)
 {
     if (line.isEmpty())
     {
@@ -257,65 +302,36 @@ void WebInterceptorHandler::parseLine(const QByteArray &line)
     parse(messageType, properties, data);
 }
 
-void WebInterceptorHandler::parse(const QByteArray &messageType, const QMap<QByteArray, QByteArray> &properties, const QByteArray &data)
+void BrowserHandler::parse(const QByteArray &messageType, const QMap<QByteArray, QByteArray> &properties, const QByteArray &data)
 {
-    if (messageType == "recd")
+    if (messageType == "resd")
     {
         bool ok = false;
-        const uint64_t requestId = properties.value("reqid").toULongLong(&ok);
+        const uint64_t requestId = properties.value("i").toULongLong(&ok);
         if (!ok)
         {
-            qWarning() << Q_FUNC_INFO << "unknown request id";
+            qWarning() << Q_FUNC_INFO << messageType << "unknown request id";
             return;
         }
 
         if (responses.find(requestId) == responses.end())
         {
-            qWarning() << Q_FUNC_INFO << "request id" << requestId << "not registered";
+            qWarning() << Q_FUNC_INFO << messageType << "request id" << requestId << "not registered";
             return;
         }
 
         Response& response = responses[requestId];
-        response.data += data;
-
-        const QByteArray status = properties.value("st");
-        if (status == "nd")
-        {
-            // keep load
-        }
-        else if (status == "d")
-        {
-            response.data = QByteArray::fromBase64(response.data);
-
-            if (onResponseDone)
-            {
-                onResponseDone(response);
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << "callback not setted";
-            }
-
-            responses.erase(requestId);
-        }
-        else if (status == "e")
-        {
-            qWarning() << Q_FUNC_INFO << "error status";
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << "unknown status" << status;
-        }
+        response.data += QByteArray::fromBase64(data);
     }
-    else if (messageType == "res")
+    else if (messageType == "ress")
     {
         Response response;
 
         bool ok = false;
-        response.requestId = properties.value("reqid").toULongLong(&ok);
+        response.requestId = properties.value("i").toULongLong(&ok);
         if (!ok)
         {
-            qWarning() << Q_FUNC_INFO << "failed to convert request id to integer";
+            qWarning() << Q_FUNC_INFO << messageType << "failed to convert request id to integer";
             return;
         }
 
@@ -323,7 +339,7 @@ void WebInterceptorHandler::parse(const QByteArray &messageType, const QMap<QByt
         response.status = properties.value("st").toInt(&ok);
         if (!ok)
         {
-            qWarning() << Q_FUNC_INFO << "failed to convert status to integer";
+            qWarning() << Q_FUNC_INFO << messageType << "failed to convert status to integer";
         }
 
         response.method = QString::fromUtf8(properties.value("mthd"));
@@ -332,6 +348,38 @@ void WebInterceptorHandler::parse(const QByteArray &messageType, const QMap<QByt
         response.url = QUrl(QString::fromUtf8(data));
 
         responses[response.requestId] = std::move(response);
+    }
+    else if (messageType == "rese")
+    {
+        bool ok = false;
+        const uint64_t requestId = properties.value("i").toULongLong(&ok);
+        if (!ok)
+        {
+            qWarning() << Q_FUNC_INFO << messageType << "failed to convert request id to integer";
+            return;
+        }
+
+        auto it = responses.find(requestId);
+        if (it == responses.end())
+        {
+            qWarning() << Q_FUNC_INFO << messageType << "request id" << requestId << "not registered";
+            return;
+        }
+
+        emit responsed(it->second);
+        responses.erase(it);
+    }
+    else if (messageType == "wndo")
+    {
+        bool ok = false;
+        const uint64_t handle = properties.value("h").toULongLong(&ok);
+        if (!ok)
+        {
+            qWarning() << Q_FUNC_INFO << messageType << "failed to convert request id to integer";
+            return;
+        }
+
+        emit windowCreated(QWindow::fromWinId(handle));
     }
     else
     {
