@@ -25,7 +25,7 @@ private slots:
     void sendSubscribe(const QString& chatroomId);
     void sendPing();
 
-    void interceptChannelInfo(const QString& channelName);
+    void requestChannelInfo(const QString& channelName);
     void onChannelInfoReply(const QByteArray& data);
 
     void parseChatMessageEvent(const QJsonObject& data);

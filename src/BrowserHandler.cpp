@@ -30,6 +30,15 @@ static const QStringList AvailableResourceTypes =
     "NAVIGATION_PRELOAD_SUB_FRAME",
 };
 
+//>messageType:property1=value1;property2=value2;:dataSize:data
+
+static const char Prefix = '>';
+static const char SectionsSeparator = ':';
+static const char PropertyEnd = ';';
+static const char PropertyValueSeparator = '=';
+static const int MaxHeaderLength = 1024;
+static const int SectionSeparatorsCount = 3;
+
 }
 
 const QStringList &BrowserHandler::getAvailableResourceTypes()
@@ -50,17 +59,23 @@ QString BrowserHandler::getExecutablePath()
 BrowserHandler::BrowserHandler(QObject *parent)
     : QObject{parent}
 {
-    timeoutTimer.setSingleShot(true);
-    connect(&timeoutTimer, &QTimer::timeout, this, [this]()
-            {
-                qWarning() << Q_FUNC_INFO << "stop on timeout";
-                stop();
-            });
+
 }
 
-void BrowserHandler::start(const CommandLineParameters& parameters, int timeout)
+void BrowserHandler::openBrowser(const QUrl &url)
 {
-    stop();
+    if (!_initialized)
+    {
+        qWarning() << Q_FUNC_INFO << "not initialized";
+        return;
+    }
+
+    send("browser-open", {}, url.toString().toUtf8());
+}
+
+void BrowserHandler::startProcess(const CommandLineParameters& parameters)
+{
+    stopProcess();
 
     if (!checkExecutableExists())
     {
@@ -75,7 +90,8 @@ void BrowserHandler::start(const CommandLineParameters& parameters, int timeout)
     {
         if (state == QProcess::ProcessState::NotRunning)
         {
-            emit processClosed();
+            process->deleteLater();
+            process = nullptr;
         }
     });
 
@@ -84,17 +100,6 @@ void BrowserHandler::start(const CommandLineParameters& parameters, int timeout)
     const QString program = getExecutablePath();
 
     QStringList arguments;
-
-    arguments.append("--url=" + parameters.url.toString() + "");
-
-    if (parameters.windowVisible)
-    {
-        arguments.append("--window-visible=true");
-    }
-    else
-    {
-        arguments.append("--window-visible=false");
-    }
 
     if (parameters.showResponses)
     {
@@ -181,24 +186,23 @@ void BrowserHandler::start(const CommandLineParameters& parameters, int timeout)
         arguments.append(arg);
     }
 
-    //qDebug() << "start program:" << program << ", arguments:" << arguments;
-
     process->start(program, arguments);
-
-    timeoutTimer.start(timeout);
 }
 
-void BrowserHandler::stop()
+void BrowserHandler::stopProcess()
 {
+    _initialized = false;
+
     if (process)
     {
+        send("exit", {}, QByteArray());
+        //TODO: send exit
+
         process->terminate();
         process = nullptr;
     }
 
     responses.clear();
-
-    timeoutTimer.stop();
 }
 
 void BrowserHandler::onReadyRead()
@@ -219,21 +223,32 @@ void BrowserHandler::onReadyRead()
     }
 }
 
+void BrowserHandler::send(const QString &type, const QMap<QString, QString> &properties, const QByteArray &data)
+{
+    if (!process)
+    {
+        qWarning() << Q_FUNC_INFO << "process is null";
+        return;
+    }
+
+    process->write(Prefix + type.toUtf8() + SectionsSeparator);
+
+    for (const QString& name : properties)
+    {
+        process->write(name.toUtf8() + PropertyValueSeparator + properties[name].toUtf8() + PropertyEnd);
+    }
+
+    process->write(SectionsSeparator + QString("%1").arg(data.size()).toUtf8() + SectionsSeparator + data);
+
+    process->write("\n\n");
+}
+
 void BrowserHandler::parseLine(const QByteArray &line)
 {
     if (line.isEmpty())
     {
         return;
     }
-
-    //>messageType:property1=value1;property2=value2;:dataSize:data
-
-    static const char Prefix = '>';
-    static const char SectionsSeparator = ':';
-    static const char PropertyEnd = ';';
-    static const char PropertyValueSeparator = '=';
-    static const int MaxHeaderLength = 1024;
-    static const int SectionSeparatorsCount = 3;
 
     if (line[0] != Prefix)
     {
@@ -307,20 +322,20 @@ void BrowserHandler::parse(const QByteArray &messageType, const QMap<QByteArray,
     if (messageType == "resd")
     {
         bool ok = false;
-        const uint64_t requestId = properties.value("i").toULongLong(&ok);
+        const uint64_t id = properties.value("i").toULongLong(&ok);
         if (!ok)
         {
             qWarning() << Q_FUNC_INFO << messageType << "unknown request id";
             return;
         }
 
-        if (responses.find(requestId) == responses.end())
+        if (responses.find(id) == responses.end())
         {
-            qWarning() << Q_FUNC_INFO << messageType << "request id" << requestId << "not registered";
+            qWarning() << Q_FUNC_INFO << messageType << "request id" << id << "not registered";
             return;
         }
 
-        Response& response = responses[requestId];
+        Response& response = responses[id];
         response.data += QByteArray::fromBase64(data);
     }
     else if (messageType == "ress")
@@ -340,6 +355,15 @@ void BrowserHandler::parse(const QByteArray &messageType, const QMap<QByteArray,
         if (!ok)
         {
             qWarning() << Q_FUNC_INFO << messageType << "failed to convert status to integer";
+        }
+
+        //bri
+
+        ok = false;
+        response.browserId = QString::fromUtf8(properties.value("bri")).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << Q_FUNC_INFO << messageType << "failed to convert browser id to integer";
         }
 
         response.method = QString::fromUtf8(properties.value("mthd"));
@@ -369,17 +393,57 @@ void BrowserHandler::parse(const QByteArray &messageType, const QMap<QByteArray,
         emit responsed(it->second);
         responses.erase(it);
     }
-    else if (messageType == "wndo")
+    else if (messageType == "initialized")
+    {
+        _initialized = true;
+        emit initialized();
+    }
+    else if (messageType == "log")
+    {
+        qDebug() << "Browser:" << QString::fromUtf8(data);
+    }
+    else if (messageType == "browser-opened")
     {
         bool ok = false;
-        const uint64_t handle = properties.value("h").toULongLong(&ok);
+        const uint64_t id = properties.value("i").toULongLong(&ok);
         if (!ok)
         {
-            qWarning() << Q_FUNC_INFO << messageType << "failed to convert request id to integer";
+            qWarning() << Q_FUNC_INFO << messageType << "unknown browser id";
             return;
         }
 
-        emit windowCreated(QWindow::fromWinId(handle));
+        if (browsers.find(id) != browsers.end())
+        {
+            qWarning() << Q_FUNC_INFO << messageType << "browser id" << id << "already registered";
+        }
+
+        Browser browser;
+        browser.initialUrl = QString::fromUtf8(data);
+
+        browsers[id] = browser;
+
+        emit browserOpened(browser);
+    }
+    else if (messageType == "browser-closed")
+    {
+        bool ok = false;
+        const uint64_t id = properties.value("i").toULongLong(&ok);
+        if (!ok)
+        {
+            qWarning() << Q_FUNC_INFO << messageType << "unknown browser id";
+            return;
+        }
+
+        auto it = browsers.find(id);
+        if (it == browsers.end())
+        {
+            qWarning() << Q_FUNC_INFO << messageType << "browser id" << id << "not registered";
+            return;
+        }
+
+        emit browserClosed(it->second);
+
+        browsers.erase(id);
     }
     else
     {

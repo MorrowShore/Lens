@@ -6,7 +6,8 @@
 namespace
 {
 
-const static QString APP_ID = "eb1d5f283081a78b932c"; // TODO
+static const int ReconncectPeriod = 5 * 1000;
+static const QString APP_ID = "eb1d5f283081a78b932c"; // TODO
 
 }
 
@@ -64,7 +65,42 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         onChannelInfoReply(response.data);
     });
 
+    QObject::connect(&browser, &BrowserHandler::initialized, this, [this]()
+    {
+        qDebug() << Q_FUNC_INFO << "initialized";
+
+        if (enabled.get())
+        {
+            requestChannelInfo(state.streamId);
+        }
+    });
+
+    BrowserHandler::CommandLineParameters params;
+
+    BrowserHandler::FilterSettings filter;
+    filter.urlPrefixes = { "https://kick.com/api/" };
+    filter.mimeTypes = { "text/html", "application/json" };
+    params.filterSettings = filter;
+
+    params.showResponses = true;
+
+    browser.startProcess(params);
+
     reconnect();
+
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (!state.connected)
+        {
+            reconnect();
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);
 }
 
 ChatService::ConnectionStateType Kick::getConnectionStateType() const
@@ -130,7 +166,7 @@ void Kick::reconnectImpl()
 
     if (enabled.get())
     {
-        interceptChannelInfo(state.streamId);
+        requestChannelInfo(state.streamId);
     }
 }
 
@@ -209,22 +245,14 @@ void Kick::sendPing()
              }));
 }
 
-void Kick::interceptChannelInfo(const QString &channelName)
+void Kick::requestChannelInfo(const QString &channelName)
 {
-    static const int Timeout = 5000;
+    if (!browser.isInitialized())
+    {
+        return;
+    }
 
-    BrowserHandler::CommandLineParameters params;
-
-    BrowserHandler::FilterSettings filter;
-    filter.urlPrefixes = { "https://kick.com/api/" };
-    filter.mimeTypes = { "text/html", "application/json" };
-    params.filterSettings = filter;
-
-    params.showResponses = true;
-    params.windowVisible = false;
-    params.url = "https://kick.com/api/v2/channels/" + channelName;
-
-    browser.start(params, Timeout);
+    browser.openBrowser("https://kick.com/api/v2/channels/" + channelName);
 }
 
 void Kick::onChannelInfoReply(const QByteArray &data)

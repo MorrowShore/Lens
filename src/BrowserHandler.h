@@ -3,9 +3,10 @@
 #include <QUrl>
 #include <QProcess>
 #include <QSet>
-#include <QTimer>
 #include <QWindow>
+#include <QMap>
 #include <map>
+#include <set>
 
 class BrowserHandler : public QObject
 {
@@ -22,14 +23,19 @@ public:
 
     struct CommandLineParameters
     {
-        QUrl url;
         bool showResponses = false;
-        bool windowVisible = true;
         FilterSettings filterSettings;
+    };
+
+    struct Browser
+    {
+        int id = 0;
+        QUrl initialUrl;
     };
 
     struct Response
     {
+        int browserId = 0;
         uint64_t requestId = 0;
         QString method;
         QString resourceType;
@@ -45,24 +51,33 @@ public:
 
     explicit BrowserHandler(QObject *parent = nullptr);
 
-    void start(const CommandLineParameters& parameters, int timeout);
-    void stop();
+    void startProcess(const CommandLineParameters& parameters);
+    void stopProcess();
+
+    void openBrowser(const QUrl& url);
+    void closeBrowser(const int id);
+
+    bool isInitialized() const { return _initialized; }
 
 signals:
+    void initialized();
     void responsed(const Response& response);
+    void browserOpened(const Browser& browser);
+    void browserClosed(const Browser& browser);
     void windowCreated(QWindow* window);
-    void processClosed();
 
 private slots:
     void onReadyRead();
 
 private:
+    void send(const QString& type, const QMap<QString, QString>& properties, const QByteArray& data);
+
     void parseLine(const QByteArray& line);
     void parse(const QByteArray& messageType, const QMap<QByteArray, QByteArray>& properties, const QByteArray& data);
 
     QProcess* process = nullptr;
+    bool _initialized = false;
 
     std::map<uint64_t, Response> responses;
-
-    QTimer timeoutTimer;
+    std::map<int, Browser> browsers;
 };
