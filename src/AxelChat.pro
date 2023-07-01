@@ -132,12 +132,12 @@ win32: {
 
     contains(QT_ARCH, i386) {
         #Для Windows x32
-        INCLUDEPATH += $$(QTDIR)/../../Tools/OpenSSL/Win_x86/include
-        LIBS += -L$$(QTDIR)/../../Tools/OpenSSL/Win_x86/lib -llibcrypto -llibssl
+        #INCLUDEPATH += $$(QTDIR)/../../Tools/OpenSSL/Win_x86/include
+        #LIBS += -L$$(QTDIR)/../../Tools/OpenSSL/Win_x86/lib -llibcrypto -llibssl
     } else {
         #Для Windows x64
-        INCLUDEPATH += $$(QTDIR)/../../Tools/OpenSSL/Win_x64/include
-        LIBS += -L$$(QTDIR)/../../Tools/OpenSSL/Win_x64/lib -llibcrypto -llibssl
+        #INCLUDEPATH += $$(QTDIR)/../../Tools/OpenSSL/Win_x64/include
+        #LIBS += -L$$(QTDIR)/../../Tools/OpenSSL/Win_x64/lib -llibcrypto -llibssl
     }
 
 
