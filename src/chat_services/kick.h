@@ -1,7 +1,6 @@
 #pragma once
 
 #include "chatservice.h"
-#include "BrowserHandler.h"
 #include <QTimer>
 #include <QWebSocket>
 #include <QJsonValue>
@@ -10,7 +9,7 @@ class Kick : public ChatService
 {
     Q_OBJECT
 public:
-    explicit Kick(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit Kick(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
@@ -39,6 +38,7 @@ private:
     static QString extractChannelName(const QString& stream);
 
     QNetworkAccessManager& network;
+    cweqt::Manager& web;
     QWebSocket socket;
 
     Info info;
@@ -46,7 +46,5 @@ private:
     QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerCheckPing;
-
-    BrowserHandler browser;
 };
 

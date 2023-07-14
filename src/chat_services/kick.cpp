@@ -11,9 +11,10 @@ static const QString APP_ID = "eb1d5f283081a78b932c"; // TODO
 
 }
 
-Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, QObject *parent)
+Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager& web_, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Kick, parent)
     , network(network_)
+    , web(web_)
     , socket("https://kick.com")
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
@@ -60,7 +61,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
-    QObject::connect(&browser, QOverload<const BrowserHandler::Response&>::of(&BrowserHandler::responsed), this, [this](const BrowserHandler::Response& response)
+    /*QObject::connect(&browser, QOverload<const BrowserHandler::Response&>::of(&BrowserHandler::responsed), this, [this](const BrowserHandler::Response& response)
     {
         onChannelInfoReply(response.data);
     });
@@ -82,9 +83,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     filter.mimeTypes = { "text/html", "application/json" };
     params.filterSettings = filter;
 
-    params.showResponses = true;
-
-    browser.startProcess(params);
+    params.showResponses = true;*/
 
     reconnect();
 
@@ -247,12 +246,13 @@ void Kick::sendPing()
 
 void Kick::requestChannelInfo(const QString &channelName)
 {
-    if (!browser.isInitialized())
+    qWarning() << "============= TODO";
+    /*if (!web.isInitialized())
     {
         return;
     }
 
-    browser.openBrowser("https://kick.com/api/v2/channels/" + channelName);
+    browser.openBrowser("https://kick.com/api/v2/channels/" + channelName);*/
 }
 
 void Kick::onChannelInfoReply(const QByteArray &data)

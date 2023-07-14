@@ -1,5 +1,7 @@
 QT += widgets gui quick multimedia websockets network svg
 
+include(CefWebEngineQt/CefWebEngineQt.pri)
+
 CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use
@@ -14,7 +16,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    BrowserHandler.h \
     chat_services/kick.h \
     chat_services/rumble.h \
     chat_services/vkvideo.h \
@@ -59,7 +60,6 @@ HEADERS += \
     websocket.h
 
 SOURCES += \
-    BrowserHandler.cpp \
     chat_services/chatservice.cpp \
     chat_services/discord.cpp \
     chat_services/kick.cpp \

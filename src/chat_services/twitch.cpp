@@ -28,7 +28,7 @@ static const int UpdateStreamInfoPeriod = 10 * 1000;
 
 }
 
-Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
+Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
   : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Twitch, parent)
   , network(network_)
   , authStateInfo(UIElementBridge::createLabel("Loading..."))

@@ -11,7 +11,7 @@ class YouTube : public ChatService
 {
     Q_OBJECT
 public:
-    explicit YouTube(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit YouTube(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;

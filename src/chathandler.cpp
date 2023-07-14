@@ -32,10 +32,11 @@ static const QString SettingsProxyPort                          = SettingsGroupP
 
 }
 
-ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, QObject *parent)
+ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
     : QObject(parent)
     , settings(settings_)
     , network(network_)
+    , web(web_)
     , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, services)
     , bot(settings, SettingsGroupPath + "/chat_bot")
     , authorQMLProvider(*this, messagesModel, outputToFile)
@@ -315,7 +316,7 @@ void ChatHandler::addService()
 {
     static_assert(std::is_base_of<ChatService, ChatServiceInheritedClass>::value, "ChatServiceInheritedClass must derive from ChatService");
 
-    ChatServiceInheritedClass* service = new ChatServiceInheritedClass(settings, SettingsGroupPath, network, this);
+    ChatServiceInheritedClass* service = new ChatServiceInheritedClass(settings, SettingsGroupPath, network, web, this);
 
     QObject::connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
     QObject::connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);

@@ -10,6 +10,7 @@
 #include "i18n.h"
 #include "commandseditor.h"
 #include "uielementbridge.h"
+#include "CefWebEngineQt/Manager.h"
 #include "crypto/crypto.h"
 #include <QApplication>
 #include <QIcon>
@@ -34,6 +35,9 @@ int main(int argc, char *argv[])
     QMLUtils qmlUtils(settings, "qml_utils");
 
     QApplication app(argc, argv);
+
+    cweqt::Manager web("CefWebEngine/CefWebEngine.exe");
+    web.startProcess();
 
     if (!Crypto::test())
     {
@@ -65,7 +69,7 @@ int main(int argc, char *argv[])
     UIElementBridge::declareQml();
 
     ChatHandler::declareQml();
-    ChatHandler chatHandler(settings, network);
+    ChatHandler chatHandler(settings, network, web);
 
     GitHubApi::declareQml();
     GitHubApi github(settings, "update_checker", network);

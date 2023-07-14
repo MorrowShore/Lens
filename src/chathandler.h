@@ -4,6 +4,7 @@
 #include "authorqmlprovider.h"
 #include "websocket.h"
 #include "tcpserver.h"
+#include "CefWebEngineQt/Manager.h"
 #include <QSettings>
 #include <QMap>
 #include <QDateTime>
@@ -33,7 +34,7 @@ class ChatHandler : public QObject
     Q_PROPERTY(int     proxyServerPort    READ proxyServerPort    WRITE setProxyServerPort    NOTIFY proxyChanged)
 
 public:
-    explicit ChatHandler(QSettings& settings, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit ChatHandler(QSettings& settings, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
 
     MessagesModel& getMessagesModel();
 
@@ -124,6 +125,7 @@ private:
 
     QSettings& settings;
     QNetworkAccessManager& network;
+    cweqt::Manager& web;
 
     QList<ChatService*> services;
 

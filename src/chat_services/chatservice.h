@@ -8,6 +8,7 @@
 #include "tcpreply.h"
 #include "tcpserver.h"
 #include "models/author.h"
+#include "CefWebEngineQt/Manager.h"
 #include <QSettings>
 #include <QObject>
 #include <QQmlEngine>

@@ -11,7 +11,7 @@ static const int RequestChatInterval = 4000;
 static const int RequestChatTimeoutSeconds = 3;
 }
 
-Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
+Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Telegram, parent)
     , network(network_)
     , botToken(settings, getSettingsGroupPath() + "/bot_token", QString(), true)
