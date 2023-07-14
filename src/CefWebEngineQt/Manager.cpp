@@ -69,6 +69,29 @@ static bool getParamInt64(const QMap<QString, QString>& parameters, const QStrin
     return true;
 }
 
+static bool getParamUInt64(const QMap<QString, QString>& parameters, const QString& name, uint64_t& value)
+{
+    if (!parameters.contains(name))
+    {
+        qWarning() << Q_FUNC_INFO << "not found parameter" << name;
+        return false;
+    }
+
+    const QString str = parameters.value(name);
+
+    bool ok = false;
+    const auto tmp = str.toULongLong(&ok);
+    if (!ok)
+    {
+        qWarning() << Q_FUNC_INFO << "failed to convert parameter" << name << "=" << str << "to integer";
+        return false;
+    }
+
+    value = tmp;
+
+    return true;
+}
+
 static bool getParamInt(const QMap<QString, QString>& parameters, const QString& name, int& value)
 {
     if (!parameters.contains(name))
@@ -117,7 +140,105 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
         const QMap<QString, QString>& params = message.getParameters();
         const QByteArray& data = message.getData();
 
-        if (type == "browser-opened")
+        if (type == "resd")
+        {
+            uint64_t responseId = 0;
+            if (!getParamUInt64(params, "i", responseId))
+            {
+                return;
+            }
+
+            int browserId = 0;
+            if (!getParamInt(params, "bi", browserId))
+            {
+                return;
+            }
+
+            auto it = browsers.find(browserId);
+            if (it == browsers.end() || !it->second)
+            {
+                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found or browser is null, message type =" << type;
+                return;
+            }
+
+            it->second->addResponseData(responseId, data);
+        }
+        else if (type == "ress")
+        {
+            std::shared_ptr<Response> response = std::make_shared<Response>();
+
+            if (!getParamInt(params, "browser-id", response->browserId))
+            {
+                return;
+            }
+
+            if (!getParamUInt64(params, "i", response->requestId))
+            {
+                return;
+            }
+
+            if (!getParamStr(params, "method", response->method))
+            {
+                return;
+            }
+
+            if (!getParamStr(params, "mime-type", response->mimeType))
+            {
+                return;
+            }
+
+            if (!getParamStr(params, "resource-type", response->resourceType))
+            {
+                return;
+            }
+
+            if (!getParamInt(params, "status", response->status))
+            {
+                return;
+            }
+
+            QString url;
+            if (!getParamStr(params, "url", url))
+            {
+                return;
+            }
+
+            response->url = url;
+
+            auto it = browsers.find(response->browserId);
+            if (it == browsers.end() || !it->second)
+            {
+                qWarning() << Q_FUNC_INFO << "browser id" << response->browserId << "not found or browser is null, message type =" << type;
+                return;
+            }
+
+            it->second->registerResponse(response);
+        }
+        else if (type == "rese")
+        {
+            uint64_t responseId = 0;
+            if (!getParamUInt64(params, "i", responseId))
+            {
+                return;
+            }
+
+            int browserId = 0;
+            if (!getParamInt(params, "bi", browserId))
+            {
+                return;
+            }
+
+            auto it = browsers.find(browserId);
+            if (it == browsers.end() || !it->second)
+            {
+                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found or browser is null, message type =" << type;
+                return;
+
+            }
+
+            it->second->finalizeResponse(responseId);
+        }
+        else if (type == "browser-opened")
         {
             QString url;
             if (!getParamStr(params, "url", url))
@@ -257,7 +378,7 @@ void Manager::stopProcess()
         process = nullptr;
     }
 
-    responses.clear();
+    browsers.clear();
 }
 
 void Manager::onReadyRead()

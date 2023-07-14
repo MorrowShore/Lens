@@ -10,6 +10,18 @@ namespace cweqt
 
 class Manager;
 
+struct Response
+{
+    int browserId = 0;
+    uint64_t requestId = 0;
+    QString method;
+    QString resourceType;
+    QString mimeType;
+    QUrl url;
+    int status = 0;
+    QByteArray data;
+};
+
 class Browser : public QObject
 {
     Q_OBJECT
@@ -27,20 +39,9 @@ public:
 
         bool visible = true;
         bool showResponses = false;
+        bool closeOnFirstResponse = false;//TODO
 
         Filter filter;
-    };
-
-    struct Response
-    {
-        int browserId = 0;
-        uint64_t requestId = 0;
-        QString method;
-        QString resourceType;
-        QString mimeType;
-        QUrl url;
-        int status = 0;
-        QByteArray data;
     };
 
     bool isOpened() const { return opened; }
@@ -48,7 +49,7 @@ public:
     QUrl getInitialUrl() const { return initialUrl; }
 
 signals:
-    void responseRecieved(std::shared_ptr<Browser::Response> response);
+    void recieved(std::shared_ptr<Response> response);
     void closed();
 
 public slots:
@@ -60,11 +61,17 @@ private:
     explicit Browser(Manager& manager, const int id, const QUrl& initialUrl, const bool opened, QObject *parent = nullptr);
 
     void setClosed();
+
+    void registerResponse(const std::shared_ptr<Response>& response);
+    void addResponseData(const uint64_t responseId, const QByteArray& data);
+    void finalizeResponse(const uint64_t responseId);
     
     Manager& manager;
     const int id;
     const QUrl initialUrl;
     bool opened = false;
+
+    std::map<uint64_t, std::shared_ptr<Response>> responses;
 };
 
 }

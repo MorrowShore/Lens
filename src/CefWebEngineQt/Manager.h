@@ -43,7 +43,6 @@ private:
     QProcess* process = nullptr;
     bool _initialized = false;
 
-    std::map<uint64_t, std::shared_ptr<Browser::Response>> responses;
     std::map<int, std::shared_ptr<Browser>> browsers;
 
     Messanger messanger;
