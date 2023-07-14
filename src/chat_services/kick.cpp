@@ -170,16 +170,6 @@ void Kick::reconnectImpl()
     }
 }
 
-QString Kick::generateAuthorId(const QString &rawId) const
-{
-    return getServiceTypeId(getServiceType()) + "_" + rawId;
-}
-
-QString Kick::generateMessageId(const QString &rawId) const
-{
-    return getServiceTypeId(getServiceType()) + QString("/%1").arg(rawId);
-}
-
 void Kick::onWebSocketReceived(const QString &rawData)
 {
     if (!enabled.get())

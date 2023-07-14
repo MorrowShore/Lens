@@ -185,6 +185,16 @@ void ChatService::bindQmlItem(const int index, QQuickItem *item)
     uiElements[index]->bindQmlItem(item);
 }
 
+QString ChatService::generateAuthorId(const QString &rawId) const
+{
+    return getServiceTypeId(getServiceType()) + "_" + rawId;
+}
+
+QString ChatService::generateMessageId(const QString &rawId) const
+{
+    return getServiceTypeId(getServiceType()) + "/" + rawId;
+}
+
 void ChatService::addUIElement(std::shared_ptr<UIElementBridge> element)
 {
     if (!element)

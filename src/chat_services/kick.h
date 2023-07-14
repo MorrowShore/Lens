@@ -17,8 +17,6 @@ public:
 
 protected:
     void reconnectImpl() override;
-    QString generateAuthorId(const QString& rawId) const;
-    QString generateMessageId(const QString& rawId) const;
 
 private slots:
     void onWebSocketReceived(const QString &rawData);

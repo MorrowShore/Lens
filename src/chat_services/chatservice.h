@@ -115,6 +115,9 @@ protected:
 
     virtual void reconnectImpl() = 0;
 
+    QString generateAuthorId(const QString& rawId) const;
+    QString generateMessageId(const QString& rawId) const;
+
     void addUIElement(std::shared_ptr<UIElementBridge> element);
     void onUIElementChanged(const std::shared_ptr<UIElementBridge> element);
 
