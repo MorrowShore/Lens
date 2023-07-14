@@ -370,6 +370,21 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
 
     QStringList leftBadges;
 
+    for (const QJsonValue& value : qAsConst(badgesJson))
+    {
+        const QString badgeName = value.toObject().value("type").toString();
+        const QString fileName = ":/resources/images/kick/badges/" + badgeName + ".svg";
+        if (QFileInfo(fileName).exists())
+        {
+            leftBadges.append("qrc" + fileName);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "unknown badge" << badgeName;
+            leftBadges.append("qrc:/resources/images/unknown-badge.png");
+        }
+    }
+
     QList<Message> messages;
     QList<Author> authors;
 
