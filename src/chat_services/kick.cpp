@@ -317,8 +317,6 @@ void Kick::requestChannelInfo(const QString &slug)
 
             state.viewersCount = root.value("livestream").toObject().value("viewer_count").toInt(-1);
 
-            qDebug() << state.viewersCount;
-
             emit stateChanged();
         }
     });
