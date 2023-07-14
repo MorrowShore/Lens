@@ -16,6 +16,7 @@ public:
 
 protected:
     void reconnectImpl() override;
+    QString generateAuthorId(const QString& rawId) const;
 
 private slots:
     void onWebSocketReceived(const QString &rawData);
@@ -24,7 +25,7 @@ private slots:
     void sendSubscribe(const QString& chatroomId);
     void sendPing();
 
-    void requestChannelInfo(const QString& channelName);
+    void requestChannelInfo(const QString& slug);
 
     void parseChatMessageEvent(const QJsonObject& data);
 
@@ -32,6 +33,11 @@ private:
     struct Info
     {
         QString chatroomId;
+    };
+
+    struct User
+    {
+        QUrl avatar;
     };
 
     static QString extractChannelName(const QString& stream);
@@ -45,5 +51,7 @@ private:
     QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerCheckPing;
+
+    QMap<QString, User> users;
 };
 

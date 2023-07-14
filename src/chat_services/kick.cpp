@@ -158,6 +158,11 @@ void Kick::reconnectImpl()
     }
 }
 
+QString Kick::generateAuthorId(const QString &rawId) const
+{
+    return getServiceTypeId(getServiceType()) + "_" + rawId;
+}
+
 void Kick::onWebSocketReceived(const QString &rawData)
 {
     if (!enabled.get())
@@ -188,6 +193,11 @@ void Kick::onWebSocketReceived(const QString &rawData)
     {
         //TODO:
         // {"id":"e7467947-44b1-4ff6-a465-26a8c525f6a9","unbanned_by":{"id":7334,"slug":"daiminister","username":"daiminister"},"user":{"id":13811411,"slug":"pistolpetey23","username":"pistolpetey23"}}
+    }
+    else if (type == "App\\Events\\PinnedMessageCreatedEvent")
+    {
+        //TODO:
+        // {"duration":"20","message":{"chatroom_id":"4530","content":"For all our new people, please make sure to verify before you join a game or raffle. Type !verify","created_at":"2023-07-14T20:08:20+00:00","id":"088a8390-cce6-4ea5-b4f4-e1b2b032c64f","sender":{"id":"10863","identity":{"badges":[{"text":"Moderator","type":"moderator"}],"color":"#75FD46"},"slug":"serekorr","username":"SereKorr"},"type":"message"}}
     }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
@@ -238,7 +248,7 @@ void Kick::sendPing()
              }));
 }
 
-void Kick::requestChannelInfo(const QString &channelName)
+void Kick::requestChannelInfo(const QString &slug)
 {
     if (!web.isInitialized())
     {
@@ -249,7 +259,7 @@ void Kick::requestChannelInfo(const QString &channelName)
     filter.urlPrefixes = { "https://kick.com/api/" };
     filter.mimeTypes = { "text/html", "application/json" };
 
-    web.createDisposable("https://kick.com/api/v2/channels/" + channelName, filter, [this](std::shared_ptr<cweqt::Response> response, bool&)
+    web.createDisposable("https://kick.com/api/v2/channels/" + slug, filter, [this, slug](std::shared_ptr<cweqt::Response> response, bool&)
     {
         QJsonParseError error;
         const QJsonObject root = QJsonDocument::fromJson(response->data, &error).object();
@@ -259,19 +269,35 @@ void Kick::requestChannelInfo(const QString &channelName)
             return;
         }
 
-        const QJsonObject chatroom = root.value("chatroom").toObject();
+        const QJsonObject userJson = root.value("user").toObject();
 
-        bool ok = false;
-        int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
-        if (!ok)
+        User user;
+        user.avatar = userJson.value("profile_pic").toString();
+        if (user.avatar.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
-            return;
+            user.avatar = "qrc:/resources/images/kick-default-avatar.png";
         }
 
-        info.chatroomId = QString("%1").arg(chatroomId);
+        users.insert(generateAuthorId(slug), user);
 
-        socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
+        emit authorDataUpdated(generateAuthorId(slug), {{Author::Role::AvatarUrl, user.avatar}});
+
+        if (slug == state.streamId && socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        {
+            const QJsonObject chatroom = root.value("chatroom").toObject();
+
+            bool ok = false;
+            int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
+            if (!ok)
+            {
+                qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
+                return;
+            }
+
+            info.chatroomId = QString("%1").arg(chatroomId);
+
+            socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
+        }
     });
 }
 
@@ -311,6 +337,15 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
         return;
     }
 
+    //users.insert(generateAuthorId(channelName), user);
+
+    const QString userId = generateAuthorId(slug);
+
+    if (!users.contains(userId))
+    {
+        requestChannelInfo(slug);
+    }
+
     QStringList leftBadges;
 
     QList<Message> messages;
@@ -318,7 +353,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
 
     Author author(getServiceType(),
                   authorName,
-                  getServiceTypeId(getServiceType()) + "_" + slug,
+                  userId,
                   QUrl(""),
                   "https://kick.com/" + slug,
                   leftBadges, {}, {},

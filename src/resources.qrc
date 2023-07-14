@@ -79,5 +79,6 @@
         <file>resources/images/rumble-icon.svg</file>
         <file>resources/images/settings-svgrepo-com.svg</file>
         <file>resources/images/add.svg</file>
+        <file>resources/images/kick-default-avatar.png</file>
     </qresource>
 </RCC>
