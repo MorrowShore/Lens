@@ -5,5 +5,6 @@ SOURCES += $$PWD/Browser.cpp \
 	$$PWD/Messanger.cpp
 
 HEADERS += $$PWD/Browser.h \
+	$$PWD/BrowsersStorage.h \
 	$$PWD/Manager.h \
 	$$PWD/Messanger.h

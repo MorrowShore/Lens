@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Browser.h"
+#include "BrowsersStorage.h"
 #include "Messanger.h"
 #include <QUrl>
 #include <QProcess>
@@ -51,9 +52,7 @@ private:
     QProcess* process = nullptr;
     bool _initialized = false;
 
-    std::map<int, std::shared_ptr<Browser>> browsers; // <browser-id, Browser>
-
-    std::map<int64_t, std::shared_ptr<Browser>> creatingBrowsers; // <message-id, Browser>
+    BrowsersStorage storage;
 
     Messanger messanger;
 };

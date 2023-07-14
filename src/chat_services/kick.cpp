@@ -223,7 +223,7 @@ void Kick::sendPing()
 void Kick::requestChannelInfo(const QString &channelName)
 {
     cweqt::Browser::Settings settings;
-    settings.visible = true;
+    settings.visible = false;
     settings.showResponses = true;
 
     cweqt::Browser::Settings::Filter filter;

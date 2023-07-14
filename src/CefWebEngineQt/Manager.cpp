@@ -154,14 +154,14 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
                 return;
             }
 
-            auto it = browsers.find(browserId);
-            if (it == browsers.end() || !it->second)
+            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
             {
-                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found or browser is null, message type =" << type;
-                return;
+                browser->addResponseData(responseId, data);
             }
-
-            it->second->addResponseData(responseId, data);
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
+            }
         }
         else if (type == "ress")
         {
@@ -205,14 +205,14 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
 
             response->url = url;
 
-            auto it = browsers.find(response->browserId);
-            if (it == browsers.end() || !it->second)
+            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(response->browserId); browser)
             {
-                qWarning() << Q_FUNC_INFO << "browser id" << response->browserId << "not found or browser is null, message type =" << type;
-                return;
+                browser->registerResponse(response);
             }
-
-            it->second->registerResponse(response);
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "browser id" << response->browserId << "not found, message type =" << type;
+            }
         }
         else if (type == "rese")
         {
@@ -228,15 +228,14 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
                 return;
             }
 
-            auto it = browsers.find(browserId);
-            if (it == browsers.end() || !it->second)
+            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
             {
-                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found or browser is null, message type =" << type;
-                return;
-
+                browser->finalizeResponse(responseId);
             }
-
-            it->second->finalizeResponse(responseId);
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
+            }
         }
         else if (type == "browser-opened")
         {
@@ -258,32 +257,21 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
                 return;
             }
 
-            auto it = creatingBrowsers.find(messageId);
-            if (it == creatingBrowsers.end())
+            if (std::shared_ptr<Browser> openingBrowser = storage.findByMessageId(messageId); openingBrowser)
             {
-                std::shared_ptr<Browser> browser(new Browser(*this, browserId, url, true));
+                openingBrowser->setOpened(browserId);
 
-                browsers[browserId] = browser;
+                storage.moveFromMessageIdToBrowserId(messageId, browserId);
 
-                emit browserOpened(browser);
+                emit browserOpened(openingBrowser);
             }
             else
             {
-                if (it->second)
-                {
-                    std::shared_ptr<Browser> browser = it->second;
-                    creatingBrowsers.erase(it);
+                std::shared_ptr<Browser> newBrowser(new Browser(*this, browserId, url, true));
 
-                    browser->setOpened(browserId);
+                storage.addWithBrowserId(newBrowser, browserId);
 
-                    browsers[browserId] = browser;
-
-                    emit browserOpened(browser);
-                }
-                else
-                {
-                    qWarning() << Q_FUNC_INFO << "creating browser with message id" << messageId << "is null, browser id =" << browserId;
-                }
+                emit browserOpened(newBrowser);
             }
         }
         else if (type == "initialized")
@@ -299,25 +287,15 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
                 return;
             }
 
-            auto it = browsers.find(browserId);
-            if (it == browsers.end())
-            {
-                qWarning() << Q_FUNC_INFO << "unknown browser id" << browserId;
-                return;
-            }
-
-            std::shared_ptr<Browser>& browser = it->second;
-
-            if (browser)
+            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
             {
                 browser->setClosed();
+                storage.removeByBrowserId(browserId);
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "browser is null";
+                qWarning() << Q_FUNC_INFO << "unknown browser id" << browserId;
             }
-
-            browsers.erase(it);
         }
         else
         {
@@ -344,7 +322,7 @@ std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::
 
     std::shared_ptr<Browser> browser(new Browser(*this, -1, url, false));
 
-    creatingBrowsers[messageId] = browser;
+    storage.addWithMessageId(browser, messageId);
 
     return browser;
 }
@@ -406,7 +384,7 @@ void Manager::stopProcess()
         process = nullptr;
     }
 
-    browsers.clear();
+    storage.clear();
 }
 
 void Manager::onReadyRead()
