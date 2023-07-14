@@ -152,6 +152,8 @@ void Kick::onWebSocketReceived(const QString &rawData)
         return;
     }
 
+    //qDebug("\nreceived:\n" + rawData.toUtf8() + "\n");
+
     const QJsonObject root = QJsonDocument::fromJson(rawData.toUtf8()).object();
     const QString type = root.value("event").toString();
     const QJsonObject data = QJsonDocument::fromJson(root.value("data").toString().toUtf8()).object();
@@ -234,10 +236,25 @@ void Kick::requestChannelInfo(const QString &channelName)
 
 void Kick::onChannelInfoReply(const QByteArray &data)
 {
-    const QJsonObject root = QJsonDocument::fromJson(data).object();
+    QJsonParseError error;
+    const QJsonObject root = QJsonDocument::fromJson(data, &error).object();
+    if (error.error != QJsonParseError::ParseError::NoError)
+    {
+        qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset;
+        return;
+    }
+
     const QJsonObject chatroom = root.value("chatroom").toObject();
 
-    info.chatroomId = QString("%1").arg(chatroom.value("id").toVariant().toLongLong());
+    bool ok = false;
+    int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
+    if (!ok)
+    {
+        qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
+        return;
+    }
+
+    info.chatroomId = QString("%1").arg(chatroomId);
 
     socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
 }
@@ -264,7 +281,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
     else
     {
         qWarning() << Q_FUNC_INFO << "unkown message type" << type;
-        qDebug() << data;
+        //qDebug() << data;
     }
 
     if (rawContent.isEmpty())
