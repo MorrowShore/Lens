@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include "models/message.h"
 #include <QTimer>
 #include <QWebSocket>
 #include <QJsonValue>
@@ -41,6 +42,7 @@ private:
     };
 
     static QString extractChannelName(const QString& stream);
+    static QList<Message::Content*> parseContents(const QString& rawText);
 
     QNetworkAccessManager& network;
     cweqt::Manager& web;

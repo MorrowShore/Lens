@@ -1,5 +1,4 @@
 #include "kick.h"
-#include "models/message.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
@@ -9,6 +8,7 @@ namespace
 static const int ReconncectPeriod = 5 * 1000;
 static const int RequestChannelInfoInterval = 10000;
 static const QString APP_ID = "eb1d5f283081a78b932c"; // TODO
+static const int EmoteImageHeight = 32;
 
 }
 
@@ -358,6 +358,8 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
         return;
     }
 
+    //https://files.kick.com/emotes/39268/fullsize
+
     //users.insert(generateAuthorId(channelName), user);
 
     const QString userId = generateAuthorId(slug);
@@ -380,11 +382,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
                   leftBadges, {}, {},
                   authorColor);
 
-    QList<Message::Content *> contents;
-
-    contents.append(new Message::Text(rawContent));
-
-    Message message(contents,
+    Message message(parseContents(rawContent),
                     author,
                     publishedTime,
                     QDateTime::currentDateTime(),
@@ -421,4 +419,49 @@ QString Kick::extractChannelName(const QString &stream_)
     }
 
     return stream;
+}
+
+QList<Message::Content *> Kick::parseContents(const QString &rawText)
+{
+    QList<Message::Content *> contents;
+
+    QString text;
+    for (int i = 0; i < rawText.length(); ++i)
+    {
+        const QChar& c = rawText[i];
+
+        if (c == '[')
+        {
+            if (const int lastBrace = rawText.indexOf(']', i); lastBrace != -1)
+            {
+                const QString part = rawText.mid(i + 1, lastBrace - (i + 1));
+                const QStringList parts = part.split(':', Qt::SplitBehaviorFlags::KeepEmptyParts);
+                if (parts.count() >= 2 && parts[0] == "emote")
+                {
+                    if (!text.isEmpty())
+                    {
+                        contents.append(new Message::Text(text));
+                        text = QString();
+                    }
+
+                    const QUrl url = "https://files.kick.com/emotes/" + parts[1] + "/fullsize";
+
+                    contents.append(new Message::Image(url, EmoteImageHeight, false));
+
+                    i = lastBrace;
+                    continue;
+                }
+            }
+        }
+
+        text += c;
+    }
+
+    if (!text.isEmpty())
+    {
+        contents.append(new Message::Text(text));
+        text = QString();
+    }
+
+    return contents;
 }
