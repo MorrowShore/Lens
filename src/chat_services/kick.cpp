@@ -61,28 +61,6 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
-    QObject::connect(&web, QOverload<std::shared_ptr<cweqt::Browser>>::of(&cweqt::Manager::browserOpened), this, [this](std::shared_ptr<cweqt::Browser> browser)
-    {
-        if (!browser)
-        {
-            qWarning() << Q_FUNC_INFO << "browser is null";
-            return;
-        }
-
-        QObject::connect(browser.get(), QOverload<std::shared_ptr<cweqt::Response>>::of(&cweqt::Browser::recieved), this, [this, browser](std::shared_ptr<cweqt::Response> response)
-        {
-            browser->close();
-
-            if (!response)
-            {
-                qWarning() << Q_FUNC_INFO << "response is null";
-                return;
-            }
-
-            onChannelInfoReply(response->data);
-        });
-    });
-
     reconnect();
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -254,7 +232,38 @@ void Kick::requestChannelInfo(const QString &channelName)
     filter.mimeTypes = { "text/html", "application/json" };
     settings.filter = filter;
 
-    web.openBrowser("https://kick.com/api/v2/channels/" + channelName, settings);
+    std::shared_ptr<cweqt::Browser> browser = web.createBrowser("https://kick.com/api/v2/channels/" + channelName, settings);
+    if (browser)
+    {
+        QObject::connect(browser.get(), &cweqt::Browser::opened, this, []()
+        {
+            qDebug() << Q_FUNC_INFO << "browser opened";
+        });
+
+        QObject::connect(browser.get(), &cweqt::Browser::closed, this, []()
+        {
+            qDebug() << Q_FUNC_INFO << "browser closed";
+        });
+
+        QObject::connect(browser.get(), QOverload<std::shared_ptr<cweqt::Response>>::of(&cweqt::Browser::recieved), this, [this, browser](std::shared_ptr<cweqt::Response> response)
+        {
+            qDebug() << Q_FUNC_INFO << "browser recieved";
+
+            browser->close();
+
+            if (!response)
+            {
+                qWarning() << Q_FUNC_INFO << "response is null";
+                return;
+            }
+
+            onChannelInfoReply(response->data);
+        });
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "browser is null";
+    }
 }
 
 void Kick::onChannelInfoReply(const QByteArray &data)

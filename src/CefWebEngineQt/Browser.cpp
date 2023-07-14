@@ -5,24 +5,45 @@
 namespace cweqt
 {
 
-Browser::Browser(Manager& manager_, const int id_, const QUrl& initialUrl_, const bool opened_, QObject *parent)
-    : QObject{parent}
-    , manager(manager_)
+Browser::Browser(Manager& manager_, const int id_, const QUrl& initialUrl_, const bool opened)
+    : manager(manager_)
     , id(id_)
     , initialUrl(initialUrl_)
-    , opened(opened_)
+    , state(opened ? State::Opened : State::NotOpened)
 {
 
 }
 
-void Browser::setClosed()
+void Browser::setOpened(const int id_)
 {
-    if (!opened)
+    if (state == State::Opened)
     {
+        qWarning() << Q_FUNC_INFO << "browser" << id << "already opened";
         return;
     }
 
-    opened = false;
+    if (state == State::Closed)
+    {
+        qWarning() << Q_FUNC_INFO << "browser" << id << "once closed and can't be opened again";
+        return;
+    }
+
+    state = State::Opened;
+    const_cast<int&>(id) = id_;
+
+    emit opened();
+}
+
+void Browser::setClosed()
+{
+    if (state == State::Closed)
+    {
+        qWarning() << "browser" << id << "already closed";
+        return;
+    }
+
+    state = State::Closed;
+
     emit closed();
 }
 

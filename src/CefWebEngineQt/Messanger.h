@@ -44,7 +44,7 @@ public:
 
     explicit Messanger(QObject *parent = nullptr);
 
-    void send(const Message& message, QProcess* process);
+    int64_t send(const Message& message, QProcess* process);
     void parseLine(const QByteArray& line);
 
 signals:

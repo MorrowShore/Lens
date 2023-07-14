@@ -258,11 +258,33 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
                 return;
             }
 
-            std::shared_ptr<Browser> browser(new Browser(*this, browserId, url, true, this));
+            auto it = creatingBrowsers.find(messageId);
+            if (it == creatingBrowsers.end())
+            {
+                std::shared_ptr<Browser> browser(new Browser(*this, browserId, url, true));
 
-            browsers[browserId] = browser;
+                browsers[browserId] = browser;
 
-            emit browserOpened(browser);
+                emit browserOpened(browser);
+            }
+            else
+            {
+                if (it->second)
+                {
+                    std::shared_ptr<Browser> browser = it->second;
+                    creatingBrowsers.erase(it);
+
+                    browser->setOpened(browserId);
+
+                    browsers[browserId] = browser;
+
+                    emit browserOpened(browser);
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "creating browser with message id" << messageId << "is null, browser id =" << browserId;
+                }
+            }
         }
         else if (type == "initialized")
         {
@@ -304,21 +326,27 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
     });
 }
 
-void Manager::openBrowser(const QUrl &url, const Browser::Settings& settings)
+std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::Settings& settings)
 {
     if (!isInitialized())
     {
         qWarning() << Q_FUNC_INFO << "not initialized";
-        return;
+        return nullptr;
     }
 
-    messanger.send(Messanger::Message(
+    const int64_t messageId = messanger.send(Messanger::Message(
                        "browser-open",
                         {
                             { "url", url.toString() },
                             { "visible", boolToValue(settings.visible) },
                             { "show-responses", boolToValue(settings.showResponses) },
                         }), process);
+
+    std::shared_ptr<Browser> browser(new Browser(*this, -1, url, false));
+
+    creatingBrowsers[messageId] = browser;
+
+    return browser;
 }
 
 void Manager::closeBrowser(const int id)

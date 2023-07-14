@@ -37,12 +37,12 @@ Messanger::Messanger(QObject *parent)
 
 }
 
-void Messanger::send(const Message &rawMessage, QProcess *process)
+int64_t Messanger::send(const Message &rawMessage, QProcess *process)
 {
     if (!process)
     {
         qWarning() << Q_FUNC_INFO << "process is null";
-        return;
+        return -1;
     }
 
     prevMessageId++;
@@ -58,6 +58,8 @@ void Messanger::send(const Message &rawMessage, QProcess *process)
     message += "\n" + rawMessage.data + "\n";
 
     process->write(message);
+
+    return prevMessageId;
 }
 
 void Messanger::parseLine(const QByteArray &line_)

@@ -26,8 +26,7 @@ public:
     void startProcess();
     void stopProcess();
 
-    void openBrowser(const QUrl& url, const Browser::Settings& settings);
-    void closeBrowser(const int id);
+    std::shared_ptr<Browser> createBrowser(const QUrl& url, const Browser::Settings& settings);
     bool isInitialized() const;
 
     void request(const QString& method,
@@ -43,12 +42,18 @@ private slots:
     void onReadyRead();
 
 private:
+    friend class Browser;
+
+    void closeBrowser(const int id);
+
     const QString executablePath;
 
     QProcess* process = nullptr;
     bool _initialized = false;
 
-    std::map<int, std::shared_ptr<Browser>> browsers;
+    std::map<int, std::shared_ptr<Browser>> browsers; // <browser-id, Browser>
+
+    std::map<int64_t, std::shared_ptr<Browser>> creatingBrowsers; // <message-id, Browser>
 
     Messanger messanger;
 };
