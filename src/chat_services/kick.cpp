@@ -222,48 +222,14 @@ void Kick::sendPing()
 
 void Kick::requestChannelInfo(const QString &channelName)
 {
-    cweqt::Browser::Settings settings;
-    settings.visible = false;
-    settings.showResponses = true;
-
     cweqt::Browser::Settings::Filter filter;
-
     filter.urlPrefixes = { "https://kick.com/api/" };
     filter.mimeTypes = { "text/html", "application/json" };
-    settings.filter = filter;
 
-    std::shared_ptr<cweqt::Browser> browser = web.createBrowser("https://kick.com/api/v2/channels/" + channelName, settings);
-    if (browser)
+    web.createDisposable("https://kick.com/api/v2/channels/" + channelName, filter, [this](std::shared_ptr<cweqt::Response> response, bool&)
     {
-        QObject::connect(browser.get(), &cweqt::Browser::opened, this, []()
-        {
-            qDebug() << Q_FUNC_INFO << "browser opened";
-        });
-
-        QObject::connect(browser.get(), &cweqt::Browser::closed, this, []()
-        {
-            qDebug() << Q_FUNC_INFO << "browser closed";
-        });
-
-        QObject::connect(browser.get(), QOverload<std::shared_ptr<cweqt::Response>>::of(&cweqt::Browser::recieved), this, [this, browser](std::shared_ptr<cweqt::Response> response)
-        {
-            qDebug() << Q_FUNC_INFO << "browser recieved";
-
-            browser->close();
-
-            if (!response)
-            {
-                qWarning() << Q_FUNC_INFO << "response is null";
-                return;
-            }
-
-            onChannelInfoReply(response->data);
-        });
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << "browser is null";
-    }
+        onChannelInfoReply(response->data);
+    });
 }
 
 void Kick::onChannelInfoReply(const QByteArray &data)

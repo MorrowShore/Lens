@@ -347,6 +347,44 @@ bool Manager::isInitialized() const
     return _initialized;
 }
 
+void Manager::createDisposable(const QUrl &url, const Browser::Settings::Filter &filter, std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived)
+{
+    if (!isInitialized())
+    {
+        qWarning() << Q_FUNC_INFO << "not initialized";
+        return;
+    }
+
+    Browser::Settings settings = Browser::getDefaultSettingsForDisposable();
+    settings.filter = filter;
+
+    std::shared_ptr<cweqt::Browser> browser = createBrowser(url, settings);
+    if (browser)
+    {
+        QObject::connect(browser.get(), QOverload<std::shared_ptr<cweqt::Response>>::of(&cweqt::Browser::recieved), this, [onReceived, browser](std::shared_ptr<cweqt::Response> response)
+        {
+            if (!onReceived)
+            {
+                qWarning() << Q_FUNC_INFO << "callback is null, browser will be closed";
+                browser->close();
+                return;
+            }
+
+            bool closeBrowser = true;
+            onReceived(response, closeBrowser);
+
+            if (closeBrowser)
+            {
+                browser->close();
+            }
+        });
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "browser is null";
+    }
+}
+
 void Manager::startProcess()
 {
     stopProcess();

@@ -92,4 +92,14 @@ void Browser::close()
     manager.closeBrowser(id);
 }
 
+Browser::Settings Browser::getDefaultSettingsForDisposable()
+{
+    Settings settings;
+
+    settings.showResponses = true;
+    settings.visible = false;
+
+    return settings;
+}
+
 }

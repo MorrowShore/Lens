@@ -59,6 +59,8 @@ private:
     enum class State { NotOpened, Opened, Closed };
 
     friend class Manager;
+
+    static Settings getDefaultSettingsForDisposable();
     
     explicit Browser(Manager& manager, const int id, const QUrl& initialUrl, const bool opened);
 

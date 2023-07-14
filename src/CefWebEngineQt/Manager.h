@@ -30,10 +30,10 @@ public:
     std::shared_ptr<Browser> createBrowser(const QUrl& url, const Browser::Settings& settings);
     bool isInitialized() const;
 
-    void request(const QString& method,
-                 const QUrl& url,
-                 const std::map<QString, QString> headerParameters,
-                 std::function<void(std::shared_ptr<Response>)> onReceived); // TODO
+    void createDisposable(const QUrl& url,
+                const cweqt::Browser::Settings::Filter& filter,
+                std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived // returns - need close browser
+            );
 
 signals:
     void initialized();
