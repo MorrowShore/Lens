@@ -156,7 +156,7 @@ void OAuth2::validate()
     if (accessToken.get().isEmpty())
     {
         setNewState(State::NotLoggedIn);
-        qWarning() << Q_FUNC_INFO << "access token is empty";
+        //qWarning() << Q_FUNC_INFO << "access token is empty";
         return;
     }
 
@@ -193,7 +193,7 @@ void OAuth2::refresh()
 {
     if (config.refreshTokenUrl.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "refresh url is empty";
+        //qWarning() << Q_FUNC_INFO << "refresh url is empty";
         return;
     }
 

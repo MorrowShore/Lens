@@ -76,6 +76,19 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         }
     });
     timerReconnect.start(ReconncectPeriod);
+
+    QObject::connect(&web, &cweqt::Manager::initialized, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (!state.connected)
+        {
+            reconnect();
+        }
+    });
 }
 
 ChatService::ConnectionStateType Kick::getConnectionStateType() const
@@ -170,8 +183,11 @@ void Kick::onWebSocketReceived(const QString &rawData)
     {
         // TODO:
         // {"event":"App\\Events\\UserBannedEvent","data":"{\"id\":\"33667119-a401-4175-bf82-c9040940c4ba\",\"user\":{\"id\":8401465,\"username\":\"2PAC_SHAKUR\",\"slug\":\"2pac-shakur\"},\"banned_by\":{\"id\":8537435,\"username\":\"TheJuicer\",\"slug\":\"thejuicer\"},\"expires_at\":\"2023-06-23T13:09:00+00:00\"}","channel":"chatrooms.668.v2"}
-        qWarning() << Q_FUNC_INFO << "unsupported" << type;
-        qDebug() << data;
+    }
+    else if (type == "App\\Events\\UserUnbannedEvent")
+    {
+        //TODO:
+        // {"id":"e7467947-44b1-4ff6-a465-26a8c525f6a9","unbanned_by":{"id":7334,"slug":"daiminister","username":"daiminister"},"user":{"id":13811411,"slug":"pistolpetey23","username":"pistolpetey23"}}
     }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
@@ -186,8 +202,8 @@ void Kick::onWebSocketReceived(const QString &rawData)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown event type" << type;
-        qDebug() << data;
+        qWarning() << Q_FUNC_INFO << "unknown event type" << type << ", data:";
+        qDebug() << data; qDebug();
     }
 }
 
@@ -224,39 +240,39 @@ void Kick::sendPing()
 
 void Kick::requestChannelInfo(const QString &channelName)
 {
+    if (!web.isInitialized())
+    {
+        return;
+    }
+
     cweqt::Browser::Settings::Filter filter;
     filter.urlPrefixes = { "https://kick.com/api/" };
     filter.mimeTypes = { "text/html", "application/json" };
 
     web.createDisposable("https://kick.com/api/v2/channels/" + channelName, filter, [this](std::shared_ptr<cweqt::Response> response, bool&)
     {
-        onChannelInfoReply(response->data);
+        QJsonParseError error;
+        const QJsonObject root = QJsonDocument::fromJson(response->data, &error).object();
+        if (error.error != QJsonParseError::ParseError::NoError)
+        {
+            qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset;
+            return;
+        }
+
+        const QJsonObject chatroom = root.value("chatroom").toObject();
+
+        bool ok = false;
+        int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
+        if (!ok)
+        {
+            qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
+            return;
+        }
+
+        info.chatroomId = QString("%1").arg(chatroomId);
+
+        socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
     });
-}
-
-void Kick::onChannelInfoReply(const QByteArray &data)
-{
-    QJsonParseError error;
-    const QJsonObject root = QJsonDocument::fromJson(data, &error).object();
-    if (error.error != QJsonParseError::ParseError::NoError)
-    {
-        qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset;
-        return;
-    }
-
-    const QJsonObject chatroom = root.value("chatroom").toObject();
-
-    bool ok = false;
-    int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
-    if (!ok)
-    {
-        qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
-        return;
-    }
-
-    info.chatroomId = QString("%1").arg(chatroomId);
-
-    socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
 }
 
 void Kick::parseChatMessageEvent(const QJsonObject &data)
@@ -278,10 +294,16 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
     {
         //
     }
+    else if (type == "reply")
+    {
+        // TODO:
+        // {"chatroom_id":4530,"content":"[emote:17289:frankdimespeepolove][emote:16676:frankdimesVibe]","created_at":"2023-07-14T19:58:10+00:00","id":"a7354ff8-7ef7-47e7-843a-90963b137071","metadata":{"original_message":{"content":"@kasperh32 hi bruh seme for u","id":"d94a16ec-3f39-47d2-afad-a493e967f983"},"original_sender":{"id":"9899","username":"evilnero1981"}},"sender":{"id":8082,"identity":{"badges":[{"text":"Moderator","type":"moderator"}],"color":"#75FD46"},"slug":"kasperh32","username":"kasperh32"},"type":"reply"}
+        //qDebug() << data; qDebug();
+    }
     else
     {
         qWarning() << Q_FUNC_INFO << "unkown message type" << type;
-        //qDebug() << data;
+        qDebug() << data; qDebug();
     }
 
     if (rawContent.isEmpty())
@@ -320,7 +342,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
         emit readyRead(messages, authors);
     }
 
-    qDebug() << data;
+    //qDebug() << data; qDebug();
 }
 
 QString Kick::extractChannelName(const QString &stream_)

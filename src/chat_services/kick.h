@@ -25,7 +25,6 @@ private slots:
     void sendPing();
 
     void requestChannelInfo(const QString& channelName);
-    void onChannelInfoReply(const QByteArray& data);
 
     void parseChatMessageEvent(const QJsonObject& data);
 
