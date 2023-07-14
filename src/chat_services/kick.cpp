@@ -85,6 +85,22 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     params.showResponses = true;*/
 
+    QObject::connect(&web, QOverload<std::shared_ptr<cweqt::Browser>>::of(&cweqt::Manager::browserOpened), this, [this](std::shared_ptr<cweqt::Browser> browser)
+    {
+        if (!browser)
+        {
+            qWarning() << Q_FUNC_INFO << "browser is null";
+            return;
+        }
+
+        QObject::connect(browser.get(), &cweqt::Browser::closed, this, []()
+        {
+            qWarning() << "closed";
+        });
+
+        browser->close();
+    });
+
     reconnect();
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -246,13 +262,9 @@ void Kick::sendPing()
 
 void Kick::requestChannelInfo(const QString &channelName)
 {
-    qWarning() << "============= TODO";
-    /*if (!web.isInitialized())
-    {
-        return;
-    }
-
-    browser.openBrowser("https://kick.com/api/v2/channels/" + channelName);*/
+    cweqt::Browser::Settings settings;
+    settings.visible = true;
+    web.openBrowser("https://kick.com/api/v2/channels/" + channelName, settings);
 }
 
 void Kick::onChannelInfoReply(const QByteArray &data)

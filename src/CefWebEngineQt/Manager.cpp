@@ -185,6 +185,12 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
 
 void Manager::openBrowser(const QUrl &url, const Browser::Settings& settings)
 {
+    if (!isInitialized())
+    {
+        qWarning() << Q_FUNC_INFO << "not initialized";
+        return;
+    }
+
     messanger.send(Messanger::Message(
                        "browser-open",
                         {
@@ -192,6 +198,26 @@ void Manager::openBrowser(const QUrl &url, const Browser::Settings& settings)
                             { "visible", boolToValue(settings.visible) },
                             { "show-responses", boolToValue(settings.showResponses) },
                         }), process);
+}
+
+void Manager::closeBrowser(const int id)
+{
+    if (!isInitialized())
+    {
+        qWarning() << Q_FUNC_INFO << "not initialized";
+        return;
+    }
+
+    messanger.send(Messanger::Message(
+                        "browser-close",
+                        {
+                            { "id", QString("%1").arg(id) },
+                        }), process);
+}
+
+bool Manager::isInitialized() const
+{
+    return _initialized;
 }
 
 void Manager::startProcess()

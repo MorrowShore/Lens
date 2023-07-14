@@ -27,6 +27,8 @@ public:
     void stopProcess();
 
     void openBrowser(const QUrl& url, const Browser::Settings& settings);
+    void closeBrowser(const int id);
+    bool isInitialized() const;
 
 signals:
     void initialized();

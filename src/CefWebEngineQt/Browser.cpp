@@ -28,8 +28,7 @@ void Browser::setClosed()
 
 void Browser::close()
 {
-    //TODO
-    qWarning() << "TODO==============";
+    manager.closeBrowser(id);
 }
 
 }
