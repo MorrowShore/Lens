@@ -175,6 +175,11 @@ QString Kick::generateAuthorId(const QString &rawId) const
     return getServiceTypeId(getServiceType()) + "_" + rawId;
 }
 
+QString Kick::generateMessageId(const QString &rawId) const
+{
+    return getServiceTypeId(getServiceType()) + QString("/%1").arg(rawId);
+}
+
 void Kick::onWebSocketReceived(const QString &rawData)
 {
     if (!enabled.get())
@@ -195,6 +200,10 @@ void Kick::onWebSocketReceived(const QString &rawData)
     else if (type == "pusher:pong")
     {
         // TODO
+    }
+    else if (type == "App\\Events\\MessageDeletedEvent")
+    {
+        parseMessageDeletedEvent(data);
     }
     else if (type == "App\\Events\\UserBannedEvent")
     {
@@ -386,7 +395,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
                     author,
                     publishedTime,
                     QDateTime::currentDateTime(),
-                    getServiceTypeId(getServiceType()) + QString("/%1").arg(id));
+                    generateMessageId(id));
 
     messages.append(message);
     authors.append(author);
@@ -397,6 +406,31 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
     }
 
     //qDebug() << data; qDebug();
+}
+
+void Kick::parseMessageDeletedEvent(const QJsonObject &data)
+{
+    const QString rawId = data.value("message").toObject().value("id").toString();
+    const QString messageId = generateMessageId(rawId);
+
+    QList<Message> messages;
+    QList<Author> authors;
+
+    static const Author author(getServiceType(), "", "");
+
+    messages.append(Message({ new Message::Text(tr("Message deleted")) },
+                            author,
+                            QDateTime::currentDateTime(),
+                            QDateTime::currentDateTime(),
+                            messageId,
+                            {Message::Flag::DeleterItem}));
+
+    authors.append(author);
+
+    if (!messages.isEmpty())
+    {
+        emit readyRead(messages, authors);
+    }
 }
 
 QString Kick::extractChannelName(const QString &stream_)

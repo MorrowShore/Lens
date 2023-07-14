@@ -18,6 +18,7 @@ public:
 protected:
     void reconnectImpl() override;
     QString generateAuthorId(const QString& rawId) const;
+    QString generateMessageId(const QString& rawId) const;
 
 private slots:
     void onWebSocketReceived(const QString &rawData);
@@ -29,6 +30,7 @@ private slots:
     void requestChannelInfo(const QString& slug);
 
     void parseChatMessageEvent(const QJsonObject& data);
+    void parseMessageDeletedEvent(const QJsonObject& data);
 
 private:
     struct Info

@@ -45,7 +45,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="163"/>
+        <location filename="chathandler.cpp" line="164"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -99,7 +99,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="275"/>
+        <location filename="chathandler.cpp" line="276"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -593,42 +593,42 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation type="vanished">не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="938"/>
+        <location filename="chat_services/discord.cpp" line="933"/>
         <source>generic</source>
         <translation>общий</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="939"/>
+        <location filename="chat_services/discord.cpp" line="934"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="940"/>
+        <location filename="chat_services/discord.cpp" line="935"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="941"/>
+        <location filename="chat_services/discord.cpp" line="936"/>
         <source>gif-animation</source>
         <translation>gif-анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="942"/>
+        <location filename="chat_services/discord.cpp" line="937"/>
         <source>article</source>
         <translation>статья</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="943"/>
+        <location filename="chat_services/discord.cpp" line="938"/>
         <source>link</source>
         <translation>ссылка</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="945"/>
+        <location filename="chat_services/discord.cpp" line="940"/>
         <source>unknown &quot;%1&quot;</source>
         <translation>неизвестно &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="999"/>
+        <location filename="chat_services/discord.cpp" line="994"/>
         <source>File: %1</source>
         <translation>Файл: %1</translation>
     </message>
@@ -682,39 +682,44 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>Kick</name>
     <message>
-        <location filename="chat_services/kick.cpp" line="19"/>
+        <location filename="chat_services/kick.cpp" line="21"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/kick.cpp" line="20"/>
+        <location filename="chat_services/kick.cpp" line="22"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/kick.cpp" line="82"/>
+        <location filename="chat_services/kick.cpp" line="127"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/kick.cpp" line="87"/>
+        <location filename="chat_services/kick.cpp" line="132"/>
         <source>The channel is not correct</source>
         <translation>Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/kick.cpp" line="90"/>
+        <location filename="chat_services/kick.cpp" line="135"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/kick.cpp" line="93"/>
+        <location filename="chat_services/kick.cpp" line="138"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/kick.cpp" line="96"/>
+        <location filename="chat_services/kick.cpp" line="141"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/kick.cpp" line="421"/>
+        <source>Message deleted</source>
+        <translation>Сообщение удалено</translation>
     </message>
 </context>
 <context>
@@ -1128,18 +1133,18 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>видеочат завершён</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="553"/>
+        <location filename="chat_services/telegram.cpp" line="557"/>
         <source>Bot status</source>
         <translation>Статус бота</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="557"/>
+        <location filename="chat_services/telegram.cpp" line="561"/>
         <source>authorized as %1</source>
         <oldsource>connected as %1</oldsource>
         <translation>авторизован как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/telegram.cpp" line="563"/>
+        <location filename="chat_services/telegram.cpp" line="567"/>
         <source>not authorized</source>
         <oldsource>not connected</oldsource>
         <translation>не авторизован</translation>
@@ -2036,23 +2041,23 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="767"/>
+        <location filename="main.qml" line="780"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="771"/>
+        <location filename="main.qml" line="784"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
     <message>
-        <location filename="main.qml" line="776"/>
+        <location filename="main.qml" line="789"/>
         <source>Connected!</source>
         <oldsource>Connected</oldsource>
         <translation>Подключено!</translation>
     </message>
     <message>
-        <location filename="main.qml" line="776"/>
+        <location filename="main.qml" line="789"/>
         <source>But no one has written anything yet</source>
         <translation>Но пока никто ничего не написал</translation>
     </message>
@@ -2234,9 +2239,8 @@ Latest version available: %2</oldsource>
         <translation>Ок</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="175"/>
         <source>Add connection</source>
-        <translation>Новое подключ.</translation>
+        <translation type="vanished">Новое подключ.</translation>
     </message>
     <message>
         <location filename="settings.qml" line="187"/>
