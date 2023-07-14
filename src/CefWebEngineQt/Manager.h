@@ -8,6 +8,7 @@
 #include <QSet>
 #include <QWindow>
 #include <QMap>
+#include <QTimer>
 #include <map>
 #include <set>
 
@@ -20,20 +21,17 @@ class Manager : public QObject
 public:
     static const QStringList& getAvailableResourceTypes();
 
-    explicit Manager(const QString& scrapperExecutablePath, QObject *parent = nullptr);
+    explicit Manager(const QString& executablePath, QObject *parent = nullptr);
+    virtual ~Manager();
 
     bool isExecutableExists() const;
-
-    void startProcess();
-    void stopProcess();
 
     std::shared_ptr<Browser> createBrowser(const QUrl& url, const Browser::Settings& settings);
     bool isInitialized() const;
 
     void createDisposable(const QUrl& url,
                 const cweqt::Browser::Settings::Filter& filter,
-                std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived // returns - need close browser
-            );
+                std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived);
 
 signals:
     void initialized();
@@ -45,6 +43,8 @@ private slots:
 private:
     friend class Browser;
 
+    void startProcess();
+    void stopProcess();
     void closeBrowser(const int id);
 
     const QString executablePath;
@@ -55,6 +55,8 @@ private:
     BrowsersStorage storage;
 
     Messanger messanger;
+
+    QTimer timerPing;
 };
 
 }

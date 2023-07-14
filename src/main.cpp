@@ -37,7 +37,6 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     cweqt::Manager web("CefWebEngine/CefWebEngine.exe");
-    web.startProcess();
 
     if (!Crypto::test())
     {

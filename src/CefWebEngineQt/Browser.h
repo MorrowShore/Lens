@@ -39,7 +39,6 @@ public:
 
         bool visible = true;
         bool showResponses = false;
-        bool closeOnFirstResponse = false;//TODO
 
         Filter filter;
     };

@@ -130,178 +130,214 @@ bool Manager::isExecutableExists() const
     return QFileInfo::exists(executablePath);
 }
 
-Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
+Manager::Manager(const QString& executablePath_, QObject *parent)
     : QObject{parent}
-    , executablePath(scrapperExecutablePath)
+    , executablePath(executablePath_)
 {
     connect(&messanger, QOverload<const Messanger::Message&>::of(&Messanger::messageReceived), this, [this](const Messanger::Message& message)
-    {
-        const QString& type = message.getType();
-        const QMap<QString, QString>& params = message.getParameters();
-        const QByteArray& data = message.getData();
-
-        if (type == "resd")
         {
-            uint64_t responseId = 0;
-            if (!getParamUInt64(params, "i", responseId))
-            {
-                return;
-            }
+            const QString& type = message.getType();
+            const QMap<QString, QString>& params = message.getParameters();
+            const QByteArray& data = message.getData();
 
-            int browserId = 0;
-            if (!getParamInt(params, "bi", browserId))
+            if (type == "resd")
             {
-                return;
-            }
+                uint64_t responseId = 0;
+                if (!getParamUInt64(params, "i", responseId))
+                {
+                    return;
+                }
 
-            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
+                int browserId = 0;
+                if (!getParamInt(params, "bi", browserId))
+                {
+                    return;
+                }
+
+                if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
+                {
+                    browser->addResponseData(responseId, data);
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
+                }
+            }
+            else if (type == "ress")
             {
-                browser->addResponseData(responseId, data);
+                std::shared_ptr<Response> response = std::make_shared<Response>();
+
+                if (!getParamInt(params, "browser-id", response->browserId))
+                {
+                    return;
+                }
+
+                if (!getParamUInt64(params, "i", response->requestId))
+                {
+                    return;
+                }
+
+                if (!getParamStr(params, "method", response->method))
+                {
+                    return;
+                }
+
+                if (!getParamStr(params, "mime-type", response->mimeType))
+                {
+                    return;
+                }
+
+                if (!getParamStr(params, "resource-type", response->resourceType))
+                {
+                    return;
+                }
+
+                if (!getParamInt(params, "status", response->status))
+                {
+                    return;
+                }
+
+                QString url;
+                if (!getParamStr(params, "url", url))
+                {
+                    return;
+                }
+
+                response->url = url;
+
+                if (std::shared_ptr<Browser> browser = storage.findByBrowserId(response->browserId); browser)
+                {
+                    browser->registerResponse(response);
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "browser id" << response->browserId << "not found, message type =" << type;
+                }
+            }
+            else if (type == "rese")
+            {
+                uint64_t responseId = 0;
+                if (!getParamUInt64(params, "i", responseId))
+                {
+                    return;
+                }
+
+                int browserId = 0;
+                if (!getParamInt(params, "bi", browserId))
+                {
+                    return;
+                }
+
+                if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
+                {
+                    browser->finalizeResponse(responseId);
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
+                }
+            }
+            else if (type == "log")
+            {
+                QString text;
+                if (!getParamStr(params, "text", text))
+                {
+                    return;
+                }
+
+                qInfo() << "WebEngine:" << text;
+            }
+            else if (type == "browser-opened")
+            {
+                QString url;
+                if (!getParamStr(params, "url", url))
+                {
+                    return;
+                }
+
+                int64_t messageId = 0;
+                if (!getParamInt64(params, "message-id", messageId))
+                {
+                    return;
+                }
+
+                int browserId = 0;
+                if (!getParamInt(params, "browser-id", browserId))
+                {
+                    return;
+                }
+
+                if (std::shared_ptr<Browser> openingBrowser = storage.findByMessageId(messageId); openingBrowser)
+                {
+                    openingBrowser->setOpened(browserId);
+
+                    storage.moveFromMessageIdToBrowserId(messageId, browserId);
+
+                    emit browserOpened(openingBrowser);
+                }
+                else
+                {
+                    std::shared_ptr<Browser> newBrowser(new Browser(*this, browserId, url, true));
+
+                    storage.addWithBrowserId(newBrowser, browserId);
+
+                    emit browserOpened(newBrowser);
+                }
+            }
+            else if (type == "initialized")
+            {
+                _initialized = true;
+                emit initialized();
+            }
+            else if (type == "browser-closed")
+            {
+                int browserId = 0;
+                if (!getParamInt(params, "id", browserId))
+                {
+                    return;
+                }
+
+                if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
+                {
+                    browser->setClosed();
+                    storage.removeByBrowserId(browserId);
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "unknown browser id" << browserId;
+                }
+            }
+            else if (type == "exited")
+            {
+                //qWarning() << Q_FUNC_INFO << type << "recevied";
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
+                qWarning() << Q_FUNC_INFO << "unknown message type" << type;
             }
         }
-        else if (type == "ress")
+    );
+
+    connect(&timerPing, &QTimer::timeout, this, [this]()
         {
-            std::shared_ptr<Response> response = std::make_shared<Response>();
-
-            if (!getParamInt(params, "browser-id", response->browserId))
+            if (!isInitialized())
             {
                 return;
             }
 
-            if (!getParamUInt64(params, "i", response->requestId))
-            {
-                return;
-            }
-
-            if (!getParamStr(params, "method", response->method))
-            {
-                return;
-            }
-
-            if (!getParamStr(params, "mime-type", response->mimeType))
-            {
-                return;
-            }
-
-            if (!getParamStr(params, "resource-type", response->resourceType))
-            {
-                return;
-            }
-
-            if (!getParamInt(params, "status", response->status))
-            {
-                return;
-            }
-
-            QString url;
-            if (!getParamStr(params, "url", url))
-            {
-                return;
-            }
-
-            response->url = url;
-
-            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(response->browserId); browser)
-            {
-                browser->registerResponse(response);
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << "browser id" << response->browserId << "not found, message type =" << type;
-            }
+            messanger.send(Messanger::Message("ping"), process);
         }
-        else if (type == "rese")
-        {
-            uint64_t responseId = 0;
-            if (!getParamUInt64(params, "i", responseId))
-            {
-                return;
-            }
+    );
 
-            int browserId = 0;
-            if (!getParamInt(params, "bi", browserId))
-            {
-                return;
-            }
+    timerPing.setInterval(3000);
+    timerPing.start();
 
-            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
-            {
-                browser->finalizeResponse(responseId);
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
-            }
-        }
-        else if (type == "browser-opened")
-        {
-            QString url;
-            if (!getParamStr(params, "url", url))
-            {
-                return;
-            }
+    startProcess();
+}
 
-            int64_t messageId = 0;
-            if (!getParamInt64(params, "message-id", messageId))
-            {
-                return;
-            }
-
-            int browserId = 0;
-            if (!getParamInt(params, "browser-id", browserId))
-            {
-                return;
-            }
-
-            if (std::shared_ptr<Browser> openingBrowser = storage.findByMessageId(messageId); openingBrowser)
-            {
-                openingBrowser->setOpened(browserId);
-
-                storage.moveFromMessageIdToBrowserId(messageId, browserId);
-
-                emit browserOpened(openingBrowser);
-            }
-            else
-            {
-                std::shared_ptr<Browser> newBrowser(new Browser(*this, browserId, url, true));
-
-                storage.addWithBrowserId(newBrowser, browserId);
-
-                emit browserOpened(newBrowser);
-            }
-        }
-        else if (type == "initialized")
-        {
-            _initialized = true;
-            emit initialized();
-        }
-        else if (type == "browser-closed")
-        {
-            int browserId = 0;
-            if (!getParamInt(params, "id", browserId))
-            {
-                return;
-            }
-
-            if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
-            {
-                browser->setClosed();
-                storage.removeByBrowserId(browserId);
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << "unknown browser id" << browserId;
-            }
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << "unknown message type" << type;
-        }
-    });
+Manager::~Manager()
+{
+    stopProcess();
 }
 
 std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::Settings& settings)
@@ -318,6 +354,7 @@ std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::
                             { "url", url.toString() },
                             { "visible", boolToValue(settings.visible) },
                             { "show-responses", boolToValue(settings.showResponses) },
+                            // TODO: filter settings
                         }), process);
 
     std::shared_ptr<Browser> browser(new Browser(*this, -1, url, false));
@@ -344,6 +381,14 @@ void Manager::closeBrowser(const int id)
 
 bool Manager::isInitialized() const
 {
+    if (!process)
+    {
+        Manager& this_ = const_cast<Manager&>(*this);
+
+        this_._initialized = false;
+        this_.startProcess();
+    }
+
     return _initialized;
 }
 
@@ -395,7 +440,7 @@ void Manager::startProcess()
         return;
     }
 
-    process = new QProcess(this);
+    process = new QProcess();
     
     connect(process, &QProcess::readyRead, this, &Manager::onReadyRead);
     connect(process, &QProcess::stateChanged, this, [this](const QProcess::ProcessState state)
@@ -416,9 +461,8 @@ void Manager::stopProcess()
 
     if (process)
     {
-        //TODO: send exit
-
-        process->terminate();
+        messanger.send(Messanger::Message("exit"), process);
+        process->waitForFinished(1000);
         process = nullptr;
     }
 
