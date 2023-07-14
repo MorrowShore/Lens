@@ -58,6 +58,8 @@ private:
     friend class Manager;
     
     explicit Browser(Manager& manager, const int id, const QUrl& initialUrl, const bool opened, QObject *parent = nullptr);
+
+    void setClosed();
     
     Manager& manager;
     const int id;

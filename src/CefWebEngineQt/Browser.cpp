@@ -1,5 +1,6 @@
 #include "Browser.h"
 #include "Manager.h"
+#include <QDebug>
 
 namespace cweqt
 {
@@ -14,9 +15,21 @@ Browser::Browser(Manager& manager_, const int id_, const QUrl& initialUrl_, cons
 
 }
 
+void Browser::setClosed()
+{
+    if (!opened)
+    {
+        return;
+    }
+
+    opened = false;
+    emit closed();
+}
+
 void Browser::close()
 {
     //TODO
+    qWarning() << "TODO==============";
 }
 
 }

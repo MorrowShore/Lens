@@ -148,6 +148,34 @@ Manager::Manager(const QString& scrapperExecutablePath, QObject *parent)
             _initialized = true;
             emit initialized();
         }
+        else if (type == "browser-closed")
+        {
+            int browserId = 0;
+            if (!getParamInt(params, "id", browserId))
+            {
+                return;
+            }
+
+            auto it = browsers.find(browserId);
+            if (it == browsers.end())
+            {
+                qWarning() << Q_FUNC_INFO << "unknown browser id" << browserId;
+                return;
+            }
+
+            std::shared_ptr<Browser>& browser = it->second;
+
+            if (browser)
+            {
+                browser->setClosed();
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "browser is null";
+            }
+
+            browsers.erase(it);
+        }
         else
         {
             qWarning() << Q_FUNC_INFO << "unknown message type" << type;

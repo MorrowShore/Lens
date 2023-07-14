@@ -152,4 +152,28 @@ void Messanger::parseLine(const QByteArray &line_)
     }
 }
 
+QString Messanger::Message::getRawHeader() const
+{
+    QString text = QString("%1 %2 %3").arg(type).arg(size).arg(id);
+
+    const QStringList keys = parameters.keys();
+    for (const QString& key : qAsConst(keys))
+    {
+        const QString value = parameters[key];
+
+        text += "\n" + key + ": ";
+
+        if (value.contains(' '))
+        {
+            text += "\"" + value + "\"";
+        }
+        else
+        {
+            text += value;
+        }
+    }
+
+    return text;
+}
+
 }

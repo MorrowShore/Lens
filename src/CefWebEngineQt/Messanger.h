@@ -25,6 +25,7 @@ public:
         const QString& getType() const { return type; }
         const QMap<QString, QString>& getParameters() const { return parameters; }
         const QByteArray& getData() const { return data; }
+        QString getRawHeader() const;
 
     private:
         friend class Messanger;
@@ -36,8 +37,8 @@ public:
         QByteArray data;
 
         enum class Part { Title, Parameters, Data };
-        int64_t id = 0;
         int64_t size = 0;
+        int64_t id = 0;
         Part part = Part::Title;
     };
 
