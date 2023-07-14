@@ -30,6 +30,11 @@ public:
     void closeBrowser(const int id);
     bool isInitialized() const;
 
+    void request(const QString& method,
+                 const QUrl& url,
+                 const std::map<QString, QString> headerParameters,
+                 std::function<void(std::shared_ptr<Response>)> onReceived); // TODO
+
 signals:
     void initialized();
     void browserOpened(std::shared_ptr<Browser> browser);
