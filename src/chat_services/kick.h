@@ -51,6 +51,7 @@ private:
     QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerCheckPing;
+    QTimer timerRequestChannelInfo;
 
     QMap<QString, User> users;
 };

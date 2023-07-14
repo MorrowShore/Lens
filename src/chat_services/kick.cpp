@@ -7,6 +7,7 @@ namespace
 {
 
 static const int ReconncectPeriod = 5 * 1000;
+static const int RequestChannelInfoInterval = 10000;
 static const QString APP_ID = "eb1d5f283081a78b932c"; // TODO
 
 }
@@ -89,6 +90,17 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
             reconnect();
         }
     });
+
+    QObject::connect(&timerRequestChannelInfo, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get() || state.streamId.isEmpty())
+        {
+            return;
+        }
+
+        requestChannelInfo(state.streamId);
+    });
+    timerRequestChannelInfo.start(RequestChannelInfoInterval);
 }
 
 ChatService::ConnectionStateType Kick::getConnectionStateType() const
@@ -282,21 +294,32 @@ void Kick::requestChannelInfo(const QString &slug)
 
         emit authorDataUpdated(generateAuthorId(slug), {{Author::Role::AvatarUrl, user.avatar}});
 
-        if (slug == state.streamId && socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        if (slug == state.streamId)
         {
-            const QJsonObject chatroom = root.value("chatroom").toObject();
+            state.viewersCount = -1;
 
-            bool ok = false;
-            int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
-            if (!ok)
+            if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
             {
-                qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
-                return;
+                const QJsonObject chatroom = root.value("chatroom").toObject();
+
+                bool ok = false;
+                int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
+                if (!ok)
+                {
+                    qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
+                    return;
+                }
+
+                info.chatroomId = QString("%1").arg(chatroomId);
+
+                socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
             }
 
-            info.chatroomId = QString("%1").arg(chatroomId);
+            state.viewersCount = root.value("livestream").toObject().value("viewer_count").toInt(-1);
 
-            socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
+            qDebug() << state.viewersCount;
+
+            emit stateChanged();
         }
     });
 }
