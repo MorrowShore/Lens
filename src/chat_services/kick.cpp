@@ -61,30 +61,6 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
-    /*QObject::connect(&browser, QOverload<const BrowserHandler::Response&>::of(&BrowserHandler::responsed), this, [this](const BrowserHandler::Response& response)
-    {
-        onChannelInfoReply(response.data);
-    });
-
-    QObject::connect(&browser, &BrowserHandler::initialized, this, [this]()
-    {
-        qDebug() << Q_FUNC_INFO << "initialized";
-
-        if (enabled.get())
-        {
-            requestChannelInfo(state.streamId);
-        }
-    });
-
-    BrowserHandler::CommandLineParameters params;
-
-    BrowserHandler::FilterSettings filter;
-    filter.urlPrefixes = { "https://kick.com/api/" };
-    filter.mimeTypes = { "text/html", "application/json" };
-    params.filterSettings = filter;
-
-    params.showResponses = true;*/
-
     QObject::connect(&web, QOverload<std::shared_ptr<cweqt::Browser>>::of(&cweqt::Manager::browserOpened), this, [this](std::shared_ptr<cweqt::Browser> browser)
     {
         if (!browser)
@@ -93,12 +69,18 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
             return;
         }
 
-        QObject::connect(browser.get(), &cweqt::Browser::closed, this, []()
+        QObject::connect(browser.get(), QOverload<std::shared_ptr<cweqt::Response>>::of(&cweqt::Browser::recieved), this, [this, browser](std::shared_ptr<cweqt::Response> response)
         {
-            qWarning() << "closed";
-        });
+            browser->close();
 
-        browser->close();
+            if (!response)
+            {
+                qWarning() << Q_FUNC_INFO << "response is null";
+                return;
+            }
+
+            onChannelInfoReply(response->data);
+        });
     });
 
     reconnect();
@@ -264,6 +246,14 @@ void Kick::requestChannelInfo(const QString &channelName)
 {
     cweqt::Browser::Settings settings;
     settings.visible = true;
+    settings.showResponses = true;
+
+    cweqt::Browser::Settings::Filter filter;
+
+    filter.urlPrefixes = { "https://kick.com/api/" };
+    filter.mimeTypes = { "text/html", "application/json" };
+    settings.filter = filter;
+
     web.openBrowser("https://kick.com/api/v2/channels/" + channelName, settings);
 }
 
