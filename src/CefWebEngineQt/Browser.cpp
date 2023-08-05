@@ -67,7 +67,7 @@ void Browser::addResponseData(const uint64_t responseId, const QByteArray &data)
         return;
     }
 
-    it->second->data += data;
+    it->second->dataBase64 += data;
 }
 
 void Browser::finalizeResponse(const uint64_t responseId)
@@ -82,7 +82,17 @@ void Browser::finalizeResponse(const uint64_t responseId)
     std::shared_ptr<Response> response = it->second;
     responses.erase(it);
 
-    response->data = QByteArray::fromBase64(response->data);
+    const bool dataIsEmpty = response->dataBase64.isEmpty();
+    if (!dataIsEmpty)
+    {
+        response->data = QByteArray::fromBase64(response->dataBase64, QByteArray::Base64Option::AbortOnBase64DecodingErrors);
+        if (response->data.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "failed to parse base64 data, base64 data =" << response->dataBase64;
+        }
+
+        response->dataBase64.clear();
+    }
 
     emit recieved(response);
 }

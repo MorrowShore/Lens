@@ -20,6 +20,11 @@ struct Response
     QUrl url;
     int status = 0;
     QByteArray data;
+
+private:
+    friend class Browser;
+
+    QByteArray dataBase64;
 };
 
 class Browser : public QObject
