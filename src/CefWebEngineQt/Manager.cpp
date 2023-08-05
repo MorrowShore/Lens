@@ -443,15 +443,11 @@ void Manager::startProcess()
 
     process = new QProcess();
     
+    connect(process, &QProcess::started, this, []() { qDebug() << Q_FUNC_INFO << "started"; });
     connect(process, &QProcess::readyRead, this, &Manager::onReadyRead);
-    connect(process, &QProcess::stateChanged, this, [this](const QProcess::ProcessState state)
-    {
-        if (state == QProcess::ProcessState::NotRunning)
-        {
-            process->deleteLater();
-            process = nullptr;
-        }
-    });
+    connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred), this, [](QProcess::ProcessError error) { qDebug() << Q_FUNC_INFO << "error =" << error; });
+    connect(process, &QProcess::stateChanged, this, [](const QProcess::ProcessState state) { qDebug() << Q_FUNC_INFO << "state =" << state; });
+    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [](int exitCode, QProcess::ExitStatus exitStatus) { qDebug() << Q_FUNC_INFO << "exit code =" << exitCode << ", exit status =" << exitStatus; });
 
     process->start(executablePath, QStringList());
 }
