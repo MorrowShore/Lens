@@ -37,6 +37,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] VK Video support
 - [ ] kick.com support
 - [ ] TikTok/Douyin support
+- [ ] Bigo Live support
 - [x] Rumble support
 - [ ] Odysee support
 - [ ] Dlive support
