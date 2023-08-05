@@ -139,6 +139,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
             const QString& type = message.getType();
             const QMap<QString, QString>& params = message.getParameters();
             const QByteArray& data = message.getData();
+            const int64_t dataSize = message.getDataSize();
 
             if (type == "resd")
             {
@@ -156,7 +157,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
 
                 if (std::shared_ptr<Browser> browser = storage.findByBrowserId(browserId); browser)
                 {
-                    browser->addResponseData(responseId, data);
+                    browser->addResponseData(responseId, data, dataSize);
                 }
                 else
                 {

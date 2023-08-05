@@ -58,7 +58,7 @@ void Browser::registerResponse(const std::shared_ptr<Response>& response)
     responses[response->requestId] = response;
 }
 
-void Browser::addResponseData(const uint64_t responseId, const QByteArray &data)
+void Browser::addResponseData(const uint64_t responseId, const QByteArray &data, const int64_t)
 {
     auto it = responses.find(responseId);
     if (it == responses.end() || !it->second)
@@ -67,7 +67,22 @@ void Browser::addResponseData(const uint64_t responseId, const QByteArray &data)
         return;
     }
 
-    it->second->dataBase64 += data;
+    if (!it->second->validData)
+    {
+        return;
+    }
+
+    const QByteArray::FromBase64Result result = QByteArray::fromBase64Encoding(data, QByteArray::Base64Option::AbortOnBase64DecodingErrors);
+    if (result.decodingStatus == QByteArray::Base64DecodingStatus::Ok)
+    {
+        it->second->data += result.decoded;
+    }
+    else
+    {
+        it->second->data.clear();
+        it->second->validData = false;
+        qWarning() << Q_FUNC_INFO << "failed to parse base64 data, status =" << (int)result.decodingStatus << ", base64 data[" << data.length() << "] =" << data;
+    }
 }
 
 void Browser::finalizeResponse(const uint64_t responseId)
@@ -81,18 +96,6 @@ void Browser::finalizeResponse(const uint64_t responseId)
 
     std::shared_ptr<Response> response = it->second;
     responses.erase(it);
-
-    const QByteArray::FromBase64Result result = QByteArray::fromBase64Encoding(response->dataBase64, QByteArray::Base64Option::AbortOnBase64DecodingErrors);
-    if (result.decodingStatus == QByteArray::Base64DecodingStatus::Ok)
-    {
-        response->data = result.decoded;
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << "failed to parse base64 data, status =" << (int)result.decodingStatus << ", base64 data =" << response->dataBase64;
-    }
-
-    response->dataBase64.clear();
 
     emit recieved(response);
 }

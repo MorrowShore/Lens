@@ -20,11 +20,7 @@ struct Response
     QUrl url;
     int status = 0;
     QByteArray data;
-
-private:
-    friend class Browser;
-
-    QByteArray dataBase64;
+    bool validData = true;
 };
 
 class Browser : public QObject
@@ -72,7 +68,7 @@ private:
     void setClosed();
 
     void registerResponse(const std::shared_ptr<Response>& response);
-    void addResponseData(const uint64_t responseId, const QByteArray& data);
+    void addResponseData(const uint64_t responseId, const QByteArray& data, const int64_t dataSize);
     void finalizeResponse(const uint64_t responseId);
     
     Manager& manager;

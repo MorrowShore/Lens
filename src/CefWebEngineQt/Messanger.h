@@ -25,6 +25,7 @@ public:
         const QString& getType() const { return type; }
         const QMap<QString, QString>& getParameters() const { return parameters; }
         const QByteArray& getData() const { return data; }
+        int64_t getDataSize() const { return size; }
         QString getRawHeader() const;
 
     private:
