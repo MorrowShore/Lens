@@ -210,6 +210,11 @@ void Kick::onWebSocketReceived(const QString &rawData)
         //TODO:
         // {"duration":"20","message":{"chatroom_id":"4530","content":"For all our new people, please make sure to verify before you join a game or raffle. Type !verify","created_at":"2023-07-14T20:08:20+00:00","id":"088a8390-cce6-4ea5-b4f4-e1b2b032c64f","sender":{"id":"10863","identity":{"badges":[{"text":"Moderator","type":"moderator"}],"color":"#75FD46"},"slug":"serekorr","username":"SereKorr"},"type":"message"}}
     }
+    else if (type == "App\\Events\\SubscriptionEvent")
+    {
+        //TODO:
+        // {"chatroom_id":32806,"months":3,"username":"rak_eem_t"}
+    }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
         if (!state.connected)
