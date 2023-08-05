@@ -6,6 +6,11 @@
 namespace
 {
 
+static const QStringList SupportedVersions =
+{
+    "1.0.0",
+};
+
 static const QStringList AvailableResourceTypes =
 {
     "MAIN_FRAME",
@@ -287,6 +292,14 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
             }
             else if (type == "initialized")
             {
+                QString version;
+                getParamStr(params, "version", version);
+
+                if (!SupportedVersions.contains(version))
+                {
+                    qWarning() << Q_FUNC_INFO << "Unsupported version" << version << ", supported versions =" << SupportedVersions;
+                }
+
                 _initialized = true;
                 emit initialized();
             }
