@@ -452,6 +452,7 @@ void Manager::startProcess()
         qDebug() << Q_FUNC_INFO << "exit code =" << exitCode << ", exit status =" << exitStatus;
         if (process)
         {
+            process->deleteLater();
             process = nullptr;
         }
     });
