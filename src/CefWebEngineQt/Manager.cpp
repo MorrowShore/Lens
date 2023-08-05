@@ -343,7 +343,7 @@ Manager::~Manager()
 
 std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::Settings& settings)
 {
-    if (!isInitialized())
+    if (!process || !isInitialized())
     {
         qWarning() << Q_FUNC_INFO << "not initialized";
         return nullptr;
@@ -367,7 +367,7 @@ std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::
 
 void Manager::closeBrowser(const int id)
 {
-    if (!isInitialized())
+    if (!process || !isInitialized())
     {
         qWarning() << Q_FUNC_INFO << "not initialized";
         return;
@@ -395,7 +395,7 @@ bool Manager::isInitialized() const
 
 void Manager::createDisposable(const QUrl &url, const Browser::Settings::Filter &filter, std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived)
 {
-    if (!isInitialized())
+    if (!process || !isInitialized())
     {
         qWarning() << Q_FUNC_INFO << "not initialized";
         return;
@@ -447,7 +447,14 @@ void Manager::startProcess()
     connect(process, &QProcess::readyRead, this, &Manager::onReadyRead);
     connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred), this, [](QProcess::ProcessError error) { qDebug() << Q_FUNC_INFO << "error =" << error; });
     connect(process, &QProcess::stateChanged, this, [](const QProcess::ProcessState state) { qDebug() << Q_FUNC_INFO << "state =" << state; });
-    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [](int exitCode, QProcess::ExitStatus exitStatus) { qDebug() << Q_FUNC_INFO << "exit code =" << exitCode << ", exit status =" << exitStatus; });
+    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [this](int exitCode, QProcess::ExitStatus exitStatus)
+    {
+        qDebug() << Q_FUNC_INFO << "exit code =" << exitCode << ", exit status =" << exitStatus;
+        if (process)
+        {
+            process = nullptr;
+        }
+    });
 
     process->start(executablePath, QStringList());
 }
