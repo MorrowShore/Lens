@@ -215,6 +215,16 @@ void Kick::onWebSocketReceived(const QString &rawData)
         //TODO:
         // {"chatroom_id":32806,"months":3,"username":"rak_eem_t"}
     }
+    else if (type == "App\\Events\\StreamHostEvent")
+    {
+        //TODO:
+        // {"chatroom_id":32806,"host_username":"7eventyy","number_viewers":6,"optional_message":""}
+    }
+    else if (type == "App\\Events\\GiftedSubscriptionsEvent")
+    {
+        //TODO:
+        // {"chatroom_id":32806,"gifted_usernames":["lukechet","Rhoelle","Stuie2k1","chefcurry","kewlar","Layn","rvxky","ap09","bellrizzy","Iaht"],"gifter_username":"Kobebeef22"}
+    }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
         if (!state.connected)
@@ -320,6 +330,15 @@ void Kick::requestChannelInfo(const QString &slug)
                 socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
             }
 
+            const QJsonArray badgesArray = root.value("subscriber_badges").toArray();
+            for (const QJsonValue& v : qAsConst(badgesArray))
+            {
+                const QJsonObject badgeJson = v.toObject();
+                const int months = badgeJson.value("months").toInt();
+                const QUrl url = badgeJson.value("badge_image").toObject().value("src").toString().replace("\\/", "/");
+                info.subscriberBadges.insert(months, url);
+            }
+
             state.viewersCount = root.value("livestream").toObject().value("viewer_count").toInt(-1);
 
             emit stateChanged();
@@ -378,15 +397,29 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
 
     for (const QJsonValue& value : qAsConst(badgesJson))
     {
-        const QString badgeName = value.toObject().value("type").toString();
-        const QString fileName = ":/resources/images/kick/badges/" + badgeName + ".svg";
-        if (QFileInfo(fileName).exists())
+        const QJsonObject basgeJson = value.toObject();
+        qDebug() << basgeJson;
+
+        const QString type = basgeJson.value("type").toString();
+        QString name = type;
+
+        if (type == "subscriber")
+        {
+            const int count = basgeJson.value("count").toInt();
+        }
+        else if (type == "sub_gifter")
+        {
+            const int count = basgeJson.value("count").toInt();
+        }
+
+        const QString fileName = ":/resources/images/kick/badges/" + name + ".svg";
+        if (QFileInfo::exists(fileName))
         {
             leftBadges.append("qrc" + fileName);
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "unknown badge" << badgeName;
+            qWarning() << Q_FUNC_INFO << "unknown badge" << type;
             leftBadges.append("qrc:/resources/images/unknown-badge.png");
         }
     }

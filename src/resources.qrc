@@ -81,5 +81,8 @@
         <file>resources/images/add.svg</file>
         <file>resources/images/kick-default-avatar.png</file>
         <file>resources/images/kick/badges/broadcaster.svg</file>
+        <file>resources/images/kick/badges/moderator.svg</file>
+        <file>resources/images/kick/badges/founder.svg</file>
+        <file>resources/images/kick/badges/subscriber.svg</file>
     </qresource>
 </RCC>

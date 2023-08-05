@@ -34,6 +34,7 @@ private:
     struct Info
     {
         QString chatroomId;
+        QMap<int, QUrl> subscriberBadges; // key - month
     };
 
     struct User
