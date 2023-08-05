@@ -310,7 +310,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
             }
             else if (type == "exited")
             {
-                //qWarning() << Q_FUNC_INFO << type << "recevied";
+                qWarning() << Q_FUNC_INFO << type << "recevied";
             }
             else
             {
@@ -321,7 +321,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
 
     connect(&timerPing, &QTimer::timeout, this, [this]()
         {
-            if (!isInitialized())
+            if (!process || !isInitialized())
             {
                 return;
             }
@@ -446,7 +446,7 @@ void Manager::startProcess()
     connect(process, &QProcess::started, this, []() { qDebug() << Q_FUNC_INFO << "started"; });
     connect(process, &QProcess::readyRead, this, &Manager::onReadyRead);
     connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred), this, [](QProcess::ProcessError error) { qDebug() << Q_FUNC_INFO << "error =" << error; });
-    connect(process, &QProcess::stateChanged, this, [](const QProcess::ProcessState state) { qDebug() << Q_FUNC_INFO << "state =" << state; });
+    //connect(process, &QProcess::stateChanged, this, [](const QProcess::ProcessState state) { qDebug() << Q_FUNC_INFO << "state =" << state; });
     connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [this](int exitCode, QProcess::ExitStatus exitStatus)
     {
         qDebug() << Q_FUNC_INFO << "exit code =" << exitCode << ", exit status =" << exitStatus;
