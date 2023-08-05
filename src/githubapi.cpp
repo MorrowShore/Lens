@@ -7,6 +7,7 @@
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QCoreApplication>
+#include <QApplication>
 
 GitHubApi::GitHubApi(QSettings& settings_, const QString& settingsGroup, QNetworkAccessManager& network_, QObject *parent)
     : QObject(parent)
@@ -219,8 +220,9 @@ void GitHubApi::onReplyReleases()
                     {
                         _latestRelease = release;
 
-                        qDebug(QString("Latest available release \"%1\"")
+                        qDebug(QString("Latest available release \"%1\", current version \"%2\"")
                                .arg(_latestRelease.version.toString())
+                               .arg(QApplication::applicationVersion())
                                .toUtf8());
 
                         break;
