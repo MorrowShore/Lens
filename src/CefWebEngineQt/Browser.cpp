@@ -82,17 +82,17 @@ void Browser::finalizeResponse(const uint64_t responseId)
     std::shared_ptr<Response> response = it->second;
     responses.erase(it);
 
-    const bool dataIsEmpty = response->dataBase64.isEmpty();
-    if (!dataIsEmpty)
+    const QByteArray::FromBase64Result result = QByteArray::fromBase64Encoding(response->dataBase64, QByteArray::Base64Option::AbortOnBase64DecodingErrors);
+    if (result.decodingStatus == QByteArray::Base64DecodingStatus::Ok)
     {
-        response->data = QByteArray::fromBase64(response->dataBase64, QByteArray::Base64Option::AbortOnBase64DecodingErrors);
-        if (response->data.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "failed to parse base64 data, base64 data =" << response->dataBase64;
-        }
-
-        response->dataBase64.clear();
+        response->data = result.decoded;
     }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "failed to parse base64 data, status =" << (int)result.decodingStatus << ", base64 data =" << response->dataBase64;
+    }
+
+    response->dataBase64.clear();
 
     emit recieved(response);
 }
