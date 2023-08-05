@@ -406,6 +406,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
         if (type == "subscriber")
         {
             const int count = basgeJson.value("count").toInt();
+            Q_UNUSED(count)
         }
         else if (type == "sub_gifter")
         {
