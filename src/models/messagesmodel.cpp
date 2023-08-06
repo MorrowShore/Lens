@@ -187,7 +187,7 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
         positionByData.erase(messageData);
         _data.removeAt(position);
 
-        _removedRows++;
+        removedRows++;
     }
 
     endRemoveRows();
@@ -214,7 +214,7 @@ QModelIndex MessagesModel::createIndexByPtr(const std::shared_ptr<QVariant>& dat
 
     if (auto it = positionByData.find(data); it != positionByData.end() && it->first)
     {
-        return createIndex(it->second - _removedRows, 0);
+        return createIndex(it->second - removedRows, 0);
     }
     else
     {

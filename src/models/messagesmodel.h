@@ -41,6 +41,6 @@ private:
     QHash<QString, Author*> _authorsById;
 
     uint64_t lastPosition = 0;
-    uint64_t _removedRows = 0;
+    uint64_t removedRows = 0;
 };
 
