@@ -20,7 +20,6 @@ public:
     void append(const std::shared_ptr<Message>& message);
     bool contains(const QString& id);
     void clear();
-
     const Author* getAuthor(const QString& authorId) const { return const_cast<MessagesModel&>(*this).getAuthor(authorId); }
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
     void insertAuthor(const Author& author);
@@ -32,8 +31,8 @@ private:
     QModelIndex createIndexById(const QString& id) const;
 
     QList<std::shared_ptr<Message>> _data;
-    QHash<QString, std::shared_ptr<QVariant>> _dataById;
-    QHash<uint64_t, std::shared_ptr<QVariant>> dataByRow;
+    QHash<QString, std::shared_ptr<Message>> _dataById;
+    QHash<uint64_t, std::shared_ptr<Message>> dataByRow;
     std::unordered_map<QString, uint64_t> rowById;
 
     QHash<QString, Author*> _authorsById;
