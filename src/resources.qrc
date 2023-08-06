@@ -89,5 +89,8 @@
         <file>resources/images/kick/badges/sub_gifter1.svg</file>
         <file>resources/images/kick/badges/verified.svg</file>
         <file>resources/images/kick/badges/vip.svg</file>
+        <file>resources/images/kick/badges/sub_gifter2.svg</file>
+        <file>resources/images/kick/badges/sub_gifter3.svg</file>
+        <file>resources/images/kick/badges/sub_gifter4.svg</file>
     </qresource>
 </RCC>

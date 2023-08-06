@@ -31,10 +31,12 @@ private slots:
     void parseMessageDeletedEvent(const QJsonObject& data);
 
 private:
+    QString parseBadge(const QJsonObject& basgeJson, const QString& defaultValue) const;
+
     struct Info
     {
         QString chatroomId;
-        QMap<int, QUrl> subscriberBadges; // key - month
+        QMap<int, QString> subscriberBadges; // <months, url>
     };
 
     struct User

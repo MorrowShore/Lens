@@ -225,6 +225,11 @@ void Kick::onWebSocketReceived(const QString &rawData)
         //TODO:
         // {"chatroom_id":32806,"gifted_usernames":["lukechet","Rhoelle","Stuie2k1","chefcurry","kewlar","Layn","rvxky","ap09","bellrizzy","Iaht"],"gifter_username":"Kobebeef22"}
     }
+    else if (type == "App\\Events\\ChatroomUpdatedEvent")
+    {
+        //TODO:
+        // {"advanced_bot_protection":{"enabled":false,"remaining_time":0},"emotes_mode":{"enabled":false},"followers_mode":{"enabled":true,"min_duration":10},"id":668,"slow_mode":{"enabled":false,"message_interval":6},"subscribers_mode":{"enabled":false}}
+    }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
         if (!state.connected)
@@ -291,7 +296,7 @@ void Kick::requestChannelInfo(const QString &slug)
         const QJsonObject root = QJsonDocument::fromJson(response->data, &error).object();
         if (error.error != QJsonParseError::ParseError::NoError)
         {
-            qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset << ", mimeType =" << response->mimeType << ", data =" << response->data;
+            qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset << ", mimeType =" << response->mimeType;// << ", data =" << response->data;
             return;
         }
 
@@ -334,7 +339,7 @@ void Kick::requestChannelInfo(const QString &slug)
             {
                 const QJsonObject badgeJson = v.toObject();
                 const int months = badgeJson.value("months").toInt();
-                const QUrl url = badgeJson.value("badge_image").toObject().value("src").toString().replace("\\/", "/");
+                const QString url = badgeJson.value("badge_image").toObject().value("src").toString().replace("\\/", "/");
                 info.subscriberBadges.insert(months, url);
             }
 
@@ -396,32 +401,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
 
     for (const QJsonValue& value : qAsConst(badgesJson))
     {
-        const QJsonObject basgeJson = value.toObject();
-        qDebug() << basgeJson;
-
-        const QString type = basgeJson.value("type").toString();
-        QString name = type;
-
-        if (type == "subscriber")
-        {
-            const int count = basgeJson.value("count").toInt();
-            Q_UNUSED(count)
-        }
-        else if (type == "sub_gifter")
-        {
-            const int count = basgeJson.value("count").toInt();
-        }
-
-        const QString fileName = ":/resources/images/kick/badges/" + name + ".svg";
-        if (QFileInfo::exists(fileName))
-        {
-            leftBadges.append("qrc" + fileName);
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << "unknown badge" << type;
-            leftBadges.append("qrc:/resources/images/unknown-badge.png");
-        }
+        leftBadges.append(parseBadge(value.toObject(), "qrc:/resources/images/unknown-badge.png"));
     }
 
     QList<Message> messages;
@@ -475,6 +455,58 @@ void Kick::parseMessageDeletedEvent(const QJsonObject &data)
     {
         emit readyRead(messages, authors);
     }
+}
+
+QString Kick::parseBadge(const QJsonObject &basgeJson, const QString &defaultValue) const
+{
+    const QString type = basgeJson.value("type").toString();
+    QString file = ":/resources/images/kick/badges/" + type + ".svg";
+    bool isUrl = false;
+
+    if (type == "subscriber")
+    {
+        const int count = basgeJson.value("count").toInt();
+        for (int i = count; i >= 1; --i)
+        {
+            if (info.subscriberBadges.contains(i))
+            {
+                isUrl = true;
+                file = info.subscriberBadges.value(i);
+            }
+            else
+            {
+                file = ":/resources/images/kick/badges/subscriber.svg";
+            }
+        }
+    }
+    else if (type == "sub_gifter")
+    {
+        const int count = basgeJson.value("count").toInt();
+        if (count == 1)
+        {
+            file = ":/resources/images/kick/badges/sub_gifter1.svg";
+        }
+        else
+        {
+            qWarning() << "Not found count" << count << ", data =" << basgeJson;
+        }
+    }
+
+    if (isUrl)
+    {
+        return file;
+    }
+    else
+    {
+        if (QFileInfo::exists(file))
+        {
+            return "qrc" + file;
+        }
+    }
+
+    qWarning() << Q_FUNC_INFO << "unknown badge, data =" << basgeJson;
+
+    return defaultValue;
 }
 
 QString Kick::extractChannelName(const QString &stream_)
