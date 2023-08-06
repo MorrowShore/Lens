@@ -52,7 +52,7 @@ QHash<int, QByteArray> MessagesModel::roleNames() const
     return RoleNames;
 }
 
-void MessagesModel::append(const std::shared_ptr<Message>& message)
+void MessagesModel::addMessage(const std::shared_ptr<Message>& message)
 {
     //ToDo: добавить сортировку сообщений по времени
 
@@ -174,7 +174,7 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     std::shared_ptr<Author> author = _authorsById.value(authorId, nullptr);
     if (!author)
     {
-        insertAuthor(std::make_shared<Author>(serviceType, "<blank>", authorId));
+        addAuthor(std::make_shared<Author>(serviceType, "<blank>", authorId));
         author = _authorsById.value(authorId, nullptr);
     }
 
@@ -220,7 +220,7 @@ QList<std::shared_ptr<Message>> MessagesModel::getLastMessages(int count) const
     return result;
 }
 
-void MessagesModel::insertAuthor(const std::shared_ptr<Author>& author)
+void MessagesModel::addAuthor(const std::shared_ptr<Author>& author)
 {
     if (!author)
     {

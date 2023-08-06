@@ -102,7 +102,7 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
 
         Author&& author = std::move(authors[i]);
 
-        messagesModel.insertAuthor(std::make_shared<Author>(author));
+        messagesModel.addAuthor(std::make_shared<Author>(author));
 
         if (!message.isHasFlag(Message::Flag::DeleterItem))
         {
@@ -142,8 +142,8 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
             bot.processMessage(message);
         }
 #endif
-
-        messagesModel.append(std::move(message));
+        
+        messagesModel.addMessage(std::move(message));
     }
 
     emit messagesDataChanged();

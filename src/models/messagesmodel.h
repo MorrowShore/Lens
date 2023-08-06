@@ -16,8 +16,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
-    void append(const std::shared_ptr<Message>& message);
-    void insertAuthor(const std::shared_ptr<Author>& author);
+    void addMessage(const std::shared_ptr<Message>& message);
+    void addAuthor(const std::shared_ptr<Author>& author);
     bool contains(const QString& id);
     void clear();
     const std::shared_ptr<Author> getAuthor(const QString& authorId) const { return const_cast<MessagesModel&>(*this).getAuthor(authorId); }
