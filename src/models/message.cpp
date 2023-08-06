@@ -6,13 +6,14 @@
 #include <QDebug>
 
 Message::Message(const QList<Message::Content*>& contents_,
-                         const Author& author,
-                         const QDateTime &publishedAt_,
-                         const QDateTime &receivedAt_,
-                         const QString &messageId_,
-                         const std::set<Flag> &flags_,
-                         const QHash<ColorRole, QColor> &forcedColors_,
-                         const QStringList& destination_)
+                 const Author& author,
+                 const QDateTime &publishedAt_,
+                 const QDateTime &receivedAt_,
+                 const QString &messageId_,
+                 const std::set<Flag> &flags_,
+                 const QHash<ColorRole, QColor> &forcedColors_,
+                 const QStringList& destination_,
+                 const ReplyDestinationInfo& replyDestinationInfo_)
     : contents(contents_)
     , id(messageId_)
     , publishedAt(publishedAt_)
@@ -21,6 +22,7 @@ Message::Message(const QList<Message::Content*>& contents_,
     , flags(flags_)
     , forcedColors(forcedColors_)
     , destination(destination_)
+    , replyDestinationInfo(replyDestinationInfo_)
 {
     if (id.isEmpty())
     {

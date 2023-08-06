@@ -249,15 +249,25 @@ public:
         const bool needSpaces;
     };
 
+    struct ReplyDestinationInfo
+    {
+        QString authorId;
+        QString authorName;
+
+        QString messageId;
+        QString messageText;
+    };
+
     Message() { }
     Message(const QList<Content*>& contents,
-                const Author& author,
-                const QDateTime& publishedAt = QDateTime::currentDateTime(),
-                const QDateTime& receivedAt = QDateTime::currentDateTime(),
-                const QString& messageId = QString(),
-                const std::set<Flag>& flags = {},
-                const QHash<ColorRole, QColor>& forcedColors = {},
-                const QStringList& destination = QStringList());
+            const Author& author,
+            const QDateTime& publishedAt = QDateTime::currentDateTime(),
+            const QDateTime& receivedAt = QDateTime::currentDateTime(),
+            const QString& messageId = QString(),
+            const std::set<Flag>& flags = {},
+            const QHash<ColorRole, QColor>& forcedColors = {},
+            const QStringList& destination = QStringList(),
+            const ReplyDestinationInfo& replyDestinationInfo = ReplyDestinationInfo());
 
     inline const QString& getId() const
     {
@@ -342,12 +352,13 @@ private:
     QString id;
     QDateTime publishedAt;
     QDateTime receivedAt;
-    QString authorId;
+    const QString authorId;
     std::set<Flag> flags;
     QHash<ColorRole, QColor> forcedColors;
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
     QStringList destination;
+    ReplyDestinationInfo replyDestinationInfo;
 
     uint64_t idNum = 0;
 };
