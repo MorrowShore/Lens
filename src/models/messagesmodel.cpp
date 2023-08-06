@@ -104,10 +104,15 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
         dataByRow.insert(message->getRow(), message);
         rowById[message->getId()] = message->getRow();
 
-        Author* author = getAuthor(message->getAuthorId());
-
-        std::set<uint64_t>& messagesIds = author->getMessagesIds();
-        messagesIds.insert(message->getRow());
+        if (std::shared_ptr<Author> author = getAuthor(message->getAuthorId()); author)
+        {
+            std::set<uint64_t>& messagesIds = author->getMessagesIds();
+            messagesIds.insert(message->getRow());
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "author is null";
+        }
 
         _data.append(message);
 
@@ -177,17 +182,11 @@ QModelIndex MessagesModel::createIndexByData(const std::shared_ptr<Message>& mes
 
 void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
-    Author* author = _authorsById.value(authorId, nullptr);
+    std::shared_ptr<Author> author = _authorsById.value(authorId, nullptr);
     if (!author)
     {
-        insertAuthor(Author(serviceType, "<blank>", authorId));
+        insertAuthor(std::make_shared<Author>(serviceType, "<blank>", authorId));
         author = _authorsById.value(authorId, nullptr);
-    }
-
-    if (!author)
-    {
-        qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found";
-        return;
     }
 
     QVector<int> rolesInt;
@@ -230,14 +229,20 @@ QList<std::shared_ptr<Message>> MessagesModel::getLastMessages(int count) const
     return result;
 }
 
-void MessagesModel::insertAuthor(const Author& author)
+void MessagesModel::insertAuthor(const std::shared_ptr<Author>& author)
 {
-    const QString& id = author.getId();
-    Author* prevAuthor = _authorsById.value(id, nullptr);
+    if (!author)
+    {
+        qWarning() << Q_FUNC_INFO << "author is null";
+        return;
+    }
+
+    const QString& id = author->getId();
+    std::shared_ptr<Author> prevAuthor = _authorsById.value(id, nullptr);
     if (prevAuthor)
     {
         std::set<uint64_t>& prevMssagesIds = prevAuthor->getMessagesIds();
-        for (const uint64_t newMessageId : author.getMessagesIds())
+        for (const uint64_t newMessageId : author->getMessagesIds())
         {
             prevMssagesIds.insert(newMessageId);
         }
@@ -246,16 +251,14 @@ void MessagesModel::insertAuthor(const Author& author)
 
         for (const Author::Role role : Author::UpdateableRoles)
         {
-            values.insert(role, author.getValue(role));
+            values.insert(role, author->getValue(role));
         }
 
-        setAuthorValues(author.getServiceType(), id, values);
+        setAuthorValues(author->getServiceType(), id, values);
     }
     else
     {
-        Author* newAuthor = new Author();
-        *newAuthor = author;
-        _authorsById.insert(id, newAuthor);
+        _authorsById.insert(id, author);
     }
 }
 
@@ -337,7 +340,7 @@ QVariant MessagesModel::dataByRole(const std::shared_ptr<Message>& message_, int
         return message.getForcedColorRoleToQMLString(Message::ColorRole::BodyBackgroundColorRole);
     }
 
-    const Author* author = getAuthor(message.getAuthorId());
+    const std::shared_ptr<Author> author = getAuthor(message.getAuthorId());
     if (!author)
     {
         return QVariant();

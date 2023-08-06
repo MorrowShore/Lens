@@ -160,7 +160,7 @@ void WebSocket::sendMessagesToClient(const QList<std::shared_ptr<Message>> &mess
         }
 
         const QString authorId = message->getAuthorId();
-        const Author* author = chatHandler.getMessagesModel().getAuthor(authorId);
+        const std::shared_ptr<Author> author = chatHandler.getMessagesModel().getAuthor(authorId);
         if (!author)
         {
             qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found, message id =" << message->getId();

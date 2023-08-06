@@ -199,7 +199,7 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
         }
 
         const QString authorId = message.getAuthorId();
-        const Author* author = messagesModel.getAuthor(authorId);
+        const std::shared_ptr<Author> author = messagesModel.getAuthor(authorId);
         if (!author)
         {
             qWarning() << "Not found author id" << message.getAuthorId();

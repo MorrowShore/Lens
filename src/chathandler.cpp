@@ -100,9 +100,9 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
             continue;
         }
 
-        Author& author = authors[i];
+        Author&& author = std::move(authors[i]);
 
-        messagesModel.insertAuthor(author);
+        messagesModel.insertAuthor(std::make_shared<Author>(author));
 
         if (!message.isHasFlag(Message::Flag::DeleterItem))
         {
