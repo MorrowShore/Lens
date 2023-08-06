@@ -180,10 +180,10 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
         const Message& message = qvariant_cast<Message>(*messageData);
 
         const QString& id = message.getId();
-        const uint64_t& idNum = message.getPosition();
+        const uint64_t position = message.getPosition();
 
         _dataById.remove(id);
-        _dataByIdNum.remove(idNum);
+        _dataByIdNum.remove(position);
         positionByData.erase(messageData);
         _data.removeAt(position);
 
@@ -198,11 +198,6 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
 void MessagesModel::clear()
 {
     removeRows(0, rowCount(QModelIndex()));
-}
-
-uint64_t MessagesModel::lastIdNum() const
-{
-    return lastPosition;
 }
 
 QModelIndex MessagesModel::createIndexByPtr(const std::shared_ptr<QVariant>& data) const
@@ -449,16 +444,4 @@ QVariant MessagesModel::dataByRole(const Message &message, int role) const
     }
 
     return author->getValue((Author::Role)role);
-}
-
-QVariant MessagesModel::dataByNumId(const uint64_t &idNum, int role)
-{
-    if (_dataByIdNum.contains(idNum))
-    {
-        const std::shared_ptr<QVariant> data = _dataByIdNum.value(idNum);
-        const Message message = qvariant_cast<Message>(*data);
-        return dataByRole(message, role);
-    }
-
-    return QVariant();
 }
