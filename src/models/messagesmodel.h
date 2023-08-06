@@ -21,8 +21,7 @@ public:
     bool contains(const QString& id);
     void clear();
 
-    int getRow(const std::shared_ptr<QVariant>& data);
-    const Author* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
+    const Author* getAuthor(const QString& authorId) const { return const_cast<MessagesModel&>(*this).getAuthor(authorId); }
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
     void insertAuthor(const Author& author);
     void setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values);

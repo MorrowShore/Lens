@@ -217,26 +217,6 @@ QModelIndex MessagesModel::createIndexByPtr(const std::shared_ptr<QVariant>& dat
     }
 }
 
-int MessagesModel::getRow(const std::shared_ptr<QVariant>& data)
-{
-    if (data)
-    {
-        const QModelIndex& index = createIndexByPtr(data);
-        if (index.isValid())
-        {
-            return index.row();
-        }
-        else
-        {
-            return -1;
-        }
-    }
-    else
-    {
-        return -1;
-    }
-}
-
 void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     Author* author = _authorsById.value(authorId, nullptr);
