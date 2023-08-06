@@ -32,13 +32,6 @@ Message::Message(const QList<Message::Content*>& contents_,
     id = ChatService::getServiceTypeId(author.getServiceType()) + "/" + id;
 
     updateHtml();
-
-    qWarning() << "created" << toHtml();
-}
-
-Message::~Message()
-{
-    qWarning() << "removed" << toHtml();
 }
 
 void Message::setPlainText(const QString &text)

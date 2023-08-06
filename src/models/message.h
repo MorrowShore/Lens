@@ -260,7 +260,7 @@ public:
         QString messageText;
     };
 
-    Message(){ qWarning() << "created" << toHtml(); }
+    Message(){ }
     Message(const QList<Content*>& contents,
             const Author& author,
             const QDateTime& publishedAt = QDateTime::currentDateTime(),
@@ -270,8 +270,6 @@ public:
             const QHash<ColorRole, QColor>& forcedColors = {},
             const QStringList& destination = QStringList(),
             const ReplyDestinationInfo& replyDestinationInfo = ReplyDestinationInfo());
-
-    ~Message();
 
     inline const QString& getId() const
     {

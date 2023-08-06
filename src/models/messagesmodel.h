@@ -26,7 +26,7 @@ public:
     QList<std::shared_ptr<Message>> getLastMessages(int count) const;
 
 private:
-    QVariant dataByRole(const Message& message, int role) const;
+    QVariant dataByRole(const std::shared_ptr<Message>& message, int role) const;
     QModelIndex createIndexById(const QString& id) const;
     QModelIndex createIndexByData(const std::shared_ptr<Message>& message) const;
 

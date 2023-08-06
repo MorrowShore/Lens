@@ -284,12 +284,18 @@ QVariant MessagesModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    const std::shared_ptr<Message>& message = _data.value(index.row());
-    return dataByRole(*message, role);
+    return dataByRole(_data.value(index.row()), role);
 }
 
-QVariant MessagesModel::dataByRole(const Message &message, int role) const
+QVariant MessagesModel::dataByRole(const std::shared_ptr<Message>& message_, int role) const
 {
+    if (!message_)
+    {
+        return QVariant();
+    }
+
+    const Message& message = *message_;
+
     switch ((Message::Role)role)
     {
     case Message::Role::Id:
