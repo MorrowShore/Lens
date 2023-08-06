@@ -483,7 +483,7 @@ void OutputToFile::writeMessage(const QList<QPair<QString, QString>> tags /*<tag
     for (int i = 0; i < tags.count(); ++i)
     {
         const QPair<QString, QString>& tag = tags[i];
-        data += tag.first.toLatin1() + "=" + tag.second + "\n";
+        data += tag.first.toLatin1() + "=" + tag.second + "\n"; // TODO: fix
     }
 
     data += "\n";
