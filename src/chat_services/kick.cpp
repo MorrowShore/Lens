@@ -472,6 +472,7 @@ QString Kick::parseBadge(const QJsonObject &basgeJson, const QString &defaultVal
             {
                 isUrl = true;
                 file = info.subscriberBadges.value(i);
+                break;
             }
             else
             {
@@ -482,10 +483,13 @@ QString Kick::parseBadge(const QJsonObject &basgeJson, const QString &defaultVal
     else if (type == "sub_gifter")
     {
         const int count = basgeJson.value("count").toInt();
-        if (count == 1)
+        if (count >= 1 && count <= 20)
         {
             file = ":/resources/images/kick/badges/sub_gifter1.svg";
         }
+        // 2
+        // 3
+        // 4 - 246-600
         else // TODO: implement other count
         {
             qWarning() << "Not found count" << count << ", data =" << basgeJson;
