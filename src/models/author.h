@@ -50,6 +50,11 @@ public:
            const QColor& customNicknameColor = QColor(),
            const QColor& customNicknameBackgroundColor = QColor());
 
+    Author(const Author& other) = delete;
+    Author(Author&& other) = delete;
+    Author& operator=(const Author& other) = delete;
+    Author& operator=(Author&& other) = delete;
+
     static const std::shared_ptr<Author> getSoftwareAuthor();
 
     inline const QString& getId() const
@@ -88,7 +93,7 @@ public:
     };
 
 private:
-    AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
+    const AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
     QString name;
     QString authorId;
     QUrl avatarUrl;

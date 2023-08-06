@@ -270,6 +270,11 @@ public:
             const QStringList& destination = QStringList(),
             const ReplyDestinationInfo& replyDestinationInfo = ReplyDestinationInfo());
 
+    Message(const Message& other) = delete;
+    Message(Message&& other) = delete;
+    Message& operator=(const Message& other) = delete;
+    Message& operator=(Message&& other) = delete;
+
     inline const QString& getId() const
     {
         return id;
@@ -355,16 +360,16 @@ private:
     QList<Content*> contents;
     QString html;
     QString id;
-    QDateTime publishedAt;
-    QDateTime receivedAt;
+    const QDateTime publishedAt;
+    const QDateTime receivedAt;
     std::weak_ptr<Author> author;
-    QString authorId;
+    const QString authorId;
     std::set<Flag> flags;
     QHash<ColorRole, QColor> forcedColors;
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
     QStringList destination;
-    ReplyDestinationInfo replyDestinationInfo;
+    const ReplyDestinationInfo replyDestinationInfo;
 
     uint64_t row = 0;
 };
