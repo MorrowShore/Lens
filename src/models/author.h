@@ -61,11 +61,11 @@ public:
     {
         return serviceType;
     }
-    inline const std::set<uint64_t>& getMessagesIds() const
+    inline const std::set<QString>& getMessagesIds() const
     {
         return messagesIds;
     }
-    inline std::set<uint64_t>& getMessagesIds()
+    inline std::set<QString>& getMessagesIds()
     {
         return messagesIds;
     }
@@ -99,7 +99,7 @@ private:
     std::set<Flag> flags;
     QColor customNicknameColor;
     QColor customNicknameBackgroundColor;
-    std::set<uint64_t> messagesIds;
+    std::set<QString> messagesIds;
 };
 
 Q_DECLARE_METATYPE(Author::Role)

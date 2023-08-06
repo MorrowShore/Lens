@@ -82,7 +82,7 @@ void MessagesModel::addMessage(const std::shared_ptr<Message>& message)
 
         prevMessage->setPlainText(tr("Message deleted"));
 
-        const QModelIndex index = createIndexByExistingMessage(message->getId());
+        const QModelIndex index = createIndexByExistingMessageId(message->getId());
         emit dataChanged(index, index);
     }
     else
@@ -101,12 +101,11 @@ void MessagesModel::addMessage(const std::shared_ptr<Message>& message)
         lastRow++;
 
         messagesById.insert(message->getId(), message);
-        messagesByRow.insert(message->getRow(), message);
 
         if (std::shared_ptr<Author> author = getAuthor(message->getAuthorId()); author)
         {
-            std::set<uint64_t>& messagesIds = author->getMessagesIds();
-            messagesIds.insert(message->getRow());
+            std::set<QString>& messagesIds = author->getMessagesIds();
+            messagesIds.insert(message->getId());
         }
         else
         {
@@ -142,7 +141,6 @@ bool MessagesModel::removeRows(int row, int count, const QModelIndex &parent)
         const QString& id = message->getId();
 
         messagesById.remove(id);
-        messagesByRow.remove(row);
         messages.removeAt(row);
 
         removedRows++;
@@ -158,7 +156,7 @@ void MessagesModel::clear()
     removeRows(0, rowCount(QModelIndex()));
 }
 
-QModelIndex MessagesModel::createIndexByExistingMessage(const QString& id) const
+QModelIndex MessagesModel::createIndexByExistingMessageId(const QString& id) const
 {
     std::shared_ptr<Message> message = messagesById.value(id);
     if (!message)
@@ -171,11 +169,11 @@ QModelIndex MessagesModel::createIndexByExistingMessage(const QString& id) const
 
 void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
-    std::shared_ptr<Author> author = _authorsById.value(authorId, nullptr);
+    std::shared_ptr<Author> author = authors.value(authorId, nullptr);
     if (!author)
     {
         addAuthor(std::make_shared<Author>(serviceType, "<blank>", authorId));
-        author = _authorsById.value(authorId, nullptr);
+        author = authors.value(authorId, nullptr);
     }
 
     QVector<int> rolesInt;
@@ -186,12 +184,12 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
         rolesInt.append((int)role);
     }
 
-    const std::set<uint64_t>& messagesIds = author->getMessagesIds();
-    for (const uint64_t id : messagesIds)
+    const std::set<QString>& messagesIds = author->getMessagesIds();
+    for (const QString& id : messagesIds)
     {
-        if (std::shared_ptr<Message> message = messagesByRow.value(id); message)
+        if (std::shared_ptr<Message> message = messagesById.value(id); message)
         {
-            const QModelIndex index = createIndexByExistingMessage(message->getId());
+            const QModelIndex index = createIndexByExistingMessageId(message->getId());
             emit dataChanged(index, index, rolesInt);
         }
     }
@@ -229,11 +227,11 @@ void MessagesModel::addAuthor(const std::shared_ptr<Author>& author)
     }
 
     const QString& id = author->getId();
-    std::shared_ptr<Author> prevAuthor = _authorsById.value(id, nullptr);
+    std::shared_ptr<Author> prevAuthor = authors.value(id, nullptr);
     if (prevAuthor)
     {
-        std::set<uint64_t>& prevMssagesIds = prevAuthor->getMessagesIds();
-        for (const uint64_t newMessageId : author->getMessagesIds())
+        std::set<QString>& prevMssagesIds = prevAuthor->getMessagesIds();
+        for (const QString& newMessageId : author->getMessagesIds())
         {
             prevMssagesIds.insert(newMessageId);
         }
@@ -249,7 +247,7 @@ void MessagesModel::addAuthor(const std::shared_ptr<Author>& author)
     }
     else
     {
-        _authorsById.insert(id, author);
+        authors.insert(id, author);
     }
 }
 

@@ -21,21 +21,19 @@ public:
     bool contains(const QString& id);
     void clear();
     const std::shared_ptr<Author> getAuthor(const QString& authorId) const { return const_cast<MessagesModel&>(*this).getAuthor(authorId); }
-    std::shared_ptr<Author> getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
+    std::shared_ptr<Author> getAuthor(const QString& authorId) { return authors.value(authorId, nullptr); }
     void setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values);
     QList<std::shared_ptr<Message>> getLastMessages(int count) const;
 
 private:
     QVariant dataByRole(const std::shared_ptr<Message>& message, int role) const;
-    QModelIndex createIndexByExistingMessage(const QString& id) const;
+    QModelIndex createIndexByExistingMessageId(const QString& id) const;
 
     QList<std::shared_ptr<Message>> messages;
     QHash<QString, std::shared_ptr<Message>> messagesById;
-    QHash<uint64_t, std::shared_ptr<Message>> messagesByRow;
 
-    QHash<QString, std::shared_ptr<Author>> _authorsById;
+    QHash<QString, std::shared_ptr<Author>> authors;
 
     uint64_t lastRow = 0;
     uint64_t removedRows = 0;
 };
-
