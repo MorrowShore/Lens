@@ -72,7 +72,7 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
     {
         //Deleter
 
-        std::shared_ptr<Message> prevMessage = _dataById.value(message->getId());
+        std::shared_ptr<Message> prevMessage = messagesById.value(message->getId());
         if (!prevMessage)
         {
             return;
@@ -87,7 +87,7 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
     }
     else
     {
-        if (_dataById.contains(message->getId()))
+        if (messagesById.contains(message->getId()))
         {
             qCritical() << Q_FUNC_INFO << "ignore message because this id" << message->getId() << "already exists";
             return;
@@ -95,13 +95,13 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
 
         //Normal message
 
-        beginInsertRows(QModelIndex(), _data.count(), _data.count());
+        beginInsertRows(QModelIndex(), messages.count(), messages.count());
 
         message->setRow(lastRow);
         lastRow++;
 
-        _dataById.insert(message->getId(), message);
-        dataByRow.insert(message->getRow(), message);
+        messagesById.insert(message->getId(), message);
+        messagesByRow.insert(message->getRow(), message);
         rowById[message->getId()] = message->getRow();
 
         if (std::shared_ptr<Author> author = getAuthor(message->getAuthorId()); author)
@@ -114,7 +114,7 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
             qWarning() << Q_FUNC_INFO << "author is null";
         }
 
-        _data.append(message);
+        messages.append(message);
 
         //printMessageInfo("New message:", rawMessage);
 
@@ -124,9 +124,9 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
     //qDebug() << "Count:" << _data.count();
 
     //Remove old messages
-    if (_data.count() >= MaxSize)
+    if (messages.count() >= MaxSize)
     {
-        removeRows(0, _data.count() - MaxSize);
+        removeRows(0, messages.count() - MaxSize);
     }
 }
 
@@ -138,14 +138,14 @@ bool MessagesModel::removeRows(int row, int count, const QModelIndex &parent)
 
     for (int row = 0; row < count; ++row)
     {
-        const std::shared_ptr<Message>& message = _data[row];
+        const std::shared_ptr<Message>& message = messages[row];
 
         const QString& id = message->getId();
 
-        _dataById.remove(id);
-        dataByRow.remove(row);
+        messagesById.remove(id);
+        messagesByRow.remove(row);
         rowById.erase(id);
-        _data.removeAt(row);
+        messages.removeAt(row);
 
         removedRows++;
     }
@@ -200,7 +200,7 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     const std::set<uint64_t>& messagesIds = author->getMessagesIds();
     for (const uint64_t id : messagesIds)
     {
-        std::shared_ptr<Message> message = dataByRow.value(id);
+        std::shared_ptr<Message> message = messagesByRow.value(id);
         const QModelIndex index = createIndexByData(message);
         emit dataChanged(index, index, rolesInt);
     }
@@ -210,9 +210,9 @@ QList<std::shared_ptr<Message>> MessagesModel::getLastMessages(int count) const
 {
     QList<std::shared_ptr<Message>> result;
 
-    for (int64_t i = _data.count() - 1; i >= 0; --i)
+    for (int64_t i = messages.count() - 1; i >= 0; --i)
     {
-        const std::shared_ptr<Message>& message = _data[i];
+        const std::shared_ptr<Message>& message = messages[i];
         if (message->isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
@@ -264,7 +264,7 @@ void MessagesModel::insertAuthor(const std::shared_ptr<Author>& author)
 
 bool MessagesModel::contains(const QString &id)
 {
-    return _dataById.contains(id);
+    return messagesById.contains(id);
 }
 
 int MessagesModel::rowCount(const QModelIndex &parent) const
@@ -273,7 +273,7 @@ int MessagesModel::rowCount(const QModelIndex &parent) const
         return 0;
     }
 
-    return _data.count();
+    return messages.count();
 }
 
 QVariant MessagesModel::data(const QModelIndex &index, int role) const
@@ -282,12 +282,12 @@ QVariant MessagesModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (index.row() >= _data.size())
+    if (index.row() >= messages.size())
     {
         return QVariant();
     }
 
-    return dataByRole(_data.value(index.row()), role);
+    return dataByRole(messages.value(index.row()), role);
 }
 
 QVariant MessagesModel::dataByRole(const std::shared_ptr<Message>& message_, int role) const

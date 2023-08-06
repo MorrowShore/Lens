@@ -30,9 +30,9 @@ private:
     QModelIndex createIndexById(const QString& id) const;
     QModelIndex createIndexByData(const std::shared_ptr<Message>& message) const;
 
-    QList<std::shared_ptr<Message>> _data;
-    QHash<QString, std::shared_ptr<Message>> _dataById;
-    QHash<uint64_t, std::shared_ptr<Message>> dataByRow;
+    QList<std::shared_ptr<Message>> messages;
+    QHash<QString, std::shared_ptr<Message>> messagesById;
+    QHash<uint64_t, std::shared_ptr<Message>> messagesByRow;
     std::unordered_map<QString, uint64_t> rowById;
 
     QHash<QString, std::shared_ptr<Author>> _authorsById;
