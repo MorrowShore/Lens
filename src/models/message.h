@@ -350,15 +350,15 @@ private:
     QList<Content*> contents;
     QString html;
     QString id;
-    QDateTime publishedAt;
-    QDateTime receivedAt;
+    const QDateTime publishedAt;
+    const QDateTime receivedAt;
     const QString authorId;
     std::set<Flag> flags;
     QHash<ColorRole, QColor> forcedColors;
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
     QStringList destination;
-    ReplyDestinationInfo replyDestinationInfo;
+    const ReplyDestinationInfo replyDestinationInfo;
 
     uint64_t idNum = 0;
 };
