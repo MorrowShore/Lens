@@ -128,20 +128,25 @@ void MessagesModel::addMessage(const std::shared_ptr<Message>& message)
     }
 }
 
-bool MessagesModel::removeRows(int row, int count, const QModelIndex &parent)
+bool MessagesModel::removeRows(int firstRow, int count, const QModelIndex &parent)
 {
     Q_UNUSED(parent)
 
-    beginRemoveRows(QModelIndex(), row, row + count - 1);
-
-    for (int row = 0; row < count; ++row)
+    if (count > messages.count())
     {
-        const std::shared_ptr<Message>& message = messages[row];
+        count = messages.count();
+    }
+
+    beginRemoveRows(QModelIndex(), firstRow, firstRow + count - 1);
+
+    for (int i = 0; i < count; ++i)
+    {
+        const std::shared_ptr<Message>& message = messages[firstRow];
 
         const QString& id = message->getId();
 
         messagesById.remove(id);
-        messages.removeAt(row);
+        messages.removeAt(firstRow);
 
         removedRows++;
     }
