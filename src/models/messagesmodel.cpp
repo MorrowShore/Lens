@@ -134,7 +134,7 @@ void MessagesModel::append(Message&& message)
 
         beginInsertRows(QModelIndex(), _data.count(), _data.count());
 
-        message.setIdNum(_lastIdNum);
+        message.setPosition(_lastIdNum);
         _lastIdNum++;
 
         std::shared_ptr<QVariant> messageData = std::make_shared<QVariant>();
@@ -142,13 +142,13 @@ void MessagesModel::append(Message&& message)
         messageData->setValue(message);
 
         _dataById.insert(message.getId(), messageData);
-        _dataByIdNum.insert(message.getIdNum(), messageData);
-        _idNumByData[messageData] = message.getIdNum();
+        _dataByIdNum.insert(message.getPosition(), messageData);
+        positionByData[messageData] = message.getPosition();
 
         Author* author = getAuthor(message.getAuthorId());
 
         std::set<uint64_t>& messagesIds = author->getMessagesIds();
-        messagesIds.insert(message.getIdNum());
+        messagesIds.insert(message.getPosition());
 
         _data.append(messageData);
 
@@ -179,11 +179,11 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
         const Message& message = qvariant_cast<Message>(*messageData);
 
         const QString& id = message.getId();
-        const uint64_t& idNum = message.getIdNum();
+        const uint64_t& idNum = message.getPosition();
 
         _dataById.remove(id);
         _dataByIdNum.remove(idNum);
-        _idNumByData.erase(messageData);
+        positionByData.erase(messageData);
         _data.removeAt(position);
 
         _removedRows++;
@@ -211,7 +211,7 @@ QModelIndex MessagesModel::createIndexByPtr(const std::shared_ptr<QVariant>& dat
         return QModelIndex();
     }
 
-    if (auto it = _idNumByData.find(data); it != _idNumByData.end() && it->first)
+    if (auto it = positionByData.find(data); it != positionByData.end() && it->first)
     {
         return createIndex(it->second - _removedRows, 0);
     }
