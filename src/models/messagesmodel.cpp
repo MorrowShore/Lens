@@ -79,6 +79,11 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
         }
 
         prevMessage->setFlag(Message::Flag::MarkedAsDeleted, true);
+
+        prevMessage->setPlainText(tr("Message deleted"));
+
+        const QModelIndex index = createIndexByData(message);
+        emit dataChanged(index, index);
     }
     else
     {
@@ -160,6 +165,16 @@ QModelIndex MessagesModel::createIndexById(const QString& id) const
     return QModelIndex();
 }
 
+QModelIndex MessagesModel::createIndexByData(const std::shared_ptr<Message>& message) const
+{
+    if (!message)
+    {
+        return QModelIndex();
+    }
+
+    return createIndexById(message->getId());
+}
+
 void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     Author* author = _authorsById.value(authorId, nullptr);
@@ -187,12 +202,7 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     for (const uint64_t id : messagesIds)
     {
         std::shared_ptr<Message> message = dataByRow.value(id);
-        if (!message)
-        {
-            continue;
-        }
-
-        const QModelIndex index = createIndexById(message->getId());
+        const QModelIndex index = createIndexByData(message);
         emit dataChanged(index, index, rolesInt);
     }
 }
@@ -276,48 +286,6 @@ QVariant MessagesModel::data(const QModelIndex &index, int role) const
 
     const std::shared_ptr<Message>& message = _data.value(index.row());
     return dataByRole(*message, role);
-}
-
-bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    if (index.row() >= _data.size())
-    {
-        return false;
-    }
-
-    std::shared_ptr<Message> message = _data[index.row()];
-
-    switch ((Message::Role)role)
-    {
-    case Message::Role::Html:
-        if (value.canConvert(QMetaType::QString))
-        {
-            message->setPlainText(value.toString());
-        }
-        else
-        {
-            return false;
-        }
-        break;
-    case Message::Role::MarkedAsDeleted:
-        if (value.canConvert(QMetaType::Bool))
-        {
-            message->setFlag(Message::Flag::MarkedAsDeleted, value.toBool());
-        }
-        else
-        {
-            return false;
-        }
-        break;
-
-    default:
-        qCritical() << Q_FUNC_INFO << ": role not updatable";
-        return false;
-    }
-
-    emit dataChanged(index, index, {role});
-
-    return true;
 }
 
 QVariant MessagesModel::dataByRole(const Message &message, int role) const

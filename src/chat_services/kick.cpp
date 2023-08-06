@@ -442,7 +442,7 @@ void Kick::parseMessageDeletedEvent(const QJsonObject &data)
 
     static const Author author(getServiceType(), "", "");
 
-    messages.append(Message({ new Message::Text(tr("Message deleted")) },
+    messages.append(Message({},
                             author,
                             QDateTime::currentDateTime(),
                             QDateTime::currentDateTime(),

@@ -14,7 +14,6 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
     void append(const std::shared_ptr<Message>& message);
@@ -29,6 +28,7 @@ public:
 private:
     QVariant dataByRole(const Message& message, int role) const;
     QModelIndex createIndexById(const QString& id) const;
+    QModelIndex createIndexByData(const std::shared_ptr<Message>& message) const;
 
     QList<std::shared_ptr<Message>> _data;
     QHash<QString, std::shared_ptr<Message>> _dataById;

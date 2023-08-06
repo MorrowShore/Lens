@@ -742,8 +742,6 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
             const QJsonObject removeChatItemAction = actionObject.value("removeChatItemAction").toObject();
 
-            contents.append(new Message::Text(tr("Message deleted")));
-
             messageId = removeChatItemAction.value("targetItemId").toString();
 
             isDeleter = true;

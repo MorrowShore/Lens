@@ -23,17 +23,17 @@
 <context>
     <name>ChatBot</name>
     <message>
-        <location filename="chatbot.cpp" line="255"/>
+        <location filename="chatbot.cpp" line="261"/>
         <source>Custom commands</source>
         <translation>Пользовательские команды</translation>
     </message>
     <message>
-        <location filename="chatbot.cpp" line="262"/>
+        <location filename="chatbot.cpp" line="268"/>
         <source>Built-in commands</source>
         <translation>Встроенные команды</translation>
     </message>
     <message>
-        <location filename="chatbot.cpp" line="273"/>
+        <location filename="chatbot.cpp" line="279"/>
         <source>2nd Channel Edition</source>
         <translation></translation>
     </message>
@@ -717,7 +717,14 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/kick.cpp" line="421"/>
+        <source>Message deleted</source>
+        <translation type="vanished">Сообщение удалено</translation>
+    </message>
+</context>
+<context>
+    <name>MessagesModel</name>
+    <message>
+        <location filename="models/messagesmodel.cpp" line="82"/>
         <source>Message deleted</source>
         <translation>Сообщение удалено</translation>
     </message>
@@ -1516,9 +1523,8 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="745"/>
         <source>Message deleted</source>
-        <translation>Сообщение удалено</translation>
+        <translation type="vanished">Сообщение удалено</translation>
     </message>
     <message>
         <source>DONATION: %1</source>
