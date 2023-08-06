@@ -354,15 +354,15 @@ private:
     QList<Content*> contents;
     QString html;
     QString id;
-    const QDateTime publishedAt;
-    const QDateTime receivedAt;
-    const QString authorId;
+    QDateTime publishedAt;
+    QDateTime receivedAt;
+    QString authorId;
     std::set<Flag> flags;
     QHash<ColorRole, QColor> forcedColors;
     QUrl customAuthorAvatarUrl;
     QString customAuthorName;
     QStringList destination;
-    const ReplyDestinationInfo replyDestinationInfo;
+    ReplyDestinationInfo replyDestinationInfo;
 
     uint64_t row = 0;
 };

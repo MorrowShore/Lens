@@ -239,7 +239,13 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     const std::set<uint64_t>& messagesIds = author->getMessagesIds();
     for (const uint64_t id : messagesIds)
     {
-        const Message& message = qvariant_cast<Message>(*dataByRow.value(id));
+        if (!dataByRow.contains(id))
+        {
+            continue;
+        }
+
+        auto v = dataByRow.value(id);
+        const Message& message = qvariant_cast<Message>(*v);
         const QModelIndex index = createIndexById(message.getId());
         emit dataChanged(index, index, rolesInt);
     }
