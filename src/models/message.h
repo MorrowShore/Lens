@@ -108,6 +108,8 @@ public:
             return "unknown";
         }
 
+        virtual ~Content(){}
+
 
         virtual QJsonObject toJson() const = 0;
 
@@ -258,7 +260,7 @@ public:
         QString messageText;
     };
 
-    Message() { }
+    Message(){ qWarning() << "created" << toHtml(); }
     Message(const QList<Content*>& contents,
             const Author& author,
             const QDateTime& publishedAt = QDateTime::currentDateTime(),
@@ -268,6 +270,8 @@ public:
             const QHash<ColorRole, QColor>& forcedColors = {},
             const QStringList& destination = QStringList(),
             const ReplyDestinationInfo& replyDestinationInfo = ReplyDestinationInfo());
+
+    ~Message();
 
     inline const QString& getId() const
     {

@@ -68,7 +68,7 @@ void MessagesModel::append(Message&& message)
             return;
         }
 
-        QVariant* data = _dataById[message.getId()];
+        std::shared_ptr<QVariant> data = _dataById[message.getId()];
         if (!data)
         {
             return;
@@ -104,7 +104,7 @@ void MessagesModel::append(Message&& message)
         {
             qCritical() << Q_FUNC_INFO << "ignore message because this id" << message.getId() << "already exists";
 
-            const QVariant* data = _dataById.value(message.getId());
+            const std::shared_ptr<QVariant> data = _dataById.value(message.getId());
             if (data)
             {
                 const Message& oldMessage = qvariant_cast<Message>(*data);
@@ -128,14 +128,13 @@ void MessagesModel::append(Message&& message)
         message.setIdNum(_lastIdNum);
         _lastIdNum++;
 
-        QVariant* messageData = new QVariant();
+        std::shared_ptr<QVariant> messageData = std::make_shared<QVariant>();
 
         messageData->setValue(message);
 
-        _idByData.insert(messageData, message.getId());
         _dataById.insert(message.getId(), messageData);
         _dataByIdNum.insert(message.getIdNum(), messageData);
-        _idNumByData.insert(messageData, message.getIdNum());
+        _idNumByData[messageData] = message.getIdNum();
 
         Author* author = getAuthor(message.getAuthorId());
 
@@ -166,7 +165,7 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
 
     for (int row = 0; row < rows; ++row)
     {
-        QVariant* messageData = _data[position];
+        std::shared_ptr<QVariant> messageData = _data[position];
 
         const Message& message = qvariant_cast<Message>(*messageData);
 
@@ -174,12 +173,10 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
         const uint64_t& idNum = message.getIdNum();
 
         _dataById.remove(id);
-        _idByData.remove(messageData);
         _dataByIdNum.remove(idNum);
-        _idNumByData.remove(messageData);
+        _idNumByData.erase(messageData);
         _data.removeAt(position);
 
-        delete messageData;
         _removedRows++;
     }
 
@@ -198,16 +195,16 @@ uint64_t MessagesModel::lastIdNum() const
     return _lastIdNum;
 }
 
-QModelIndex MessagesModel::createIndexByPtr(QVariant *data) const
+QModelIndex MessagesModel::createIndexByPtr(const std::shared_ptr<QVariant>& data) const
 {
     if (!data)
     {
         return QModelIndex();
     }
 
-    if (_idNumByData.contains(data) && data != nullptr)
+    if (auto it = _idNumByData.find(data); it != _idNumByData.end() && it->first)
     {
-        return createIndex(_idNumByData.value(data) - _removedRows, 0);
+        return createIndex(it->second - _removedRows, 0);
     }
     else
     {
@@ -215,7 +212,7 @@ QModelIndex MessagesModel::createIndexByPtr(QVariant *data) const
     }
 }
 
-int MessagesModel::getRow(QVariant *data)
+int MessagesModel::getRow(const std::shared_ptr<QVariant>& data)
 {
     if (data)
     {
@@ -272,7 +269,7 @@ QList<Message> MessagesModel::getLastMessages(int count) const
 
     for (int64_t i = _data.count() - 1; i >= 0; --i)
     {
-        const QVariant* data = _data[i];
+        const std::shared_ptr<QVariant> data = _data[i];
         const Message& message = qvariant_cast<Message>(*data);
         if (message.isHasFlag(Message::Flag::DeleterItem))
         {
@@ -344,7 +341,7 @@ QVariant MessagesModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    const QVariant* data = _data.value(index.row());
+    const std::shared_ptr<QVariant> data = _data.value(index.row());
     const Message& message = qvariant_cast<Message>(*data);
     return dataByRole(message, role);
 }
@@ -448,7 +445,7 @@ QVariant MessagesModel::dataByNumId(const uint64_t &idNum, int role)
 {
     if (_dataByIdNum.contains(idNum))
     {
-        const QVariant* data = _dataByIdNum.value(idNum);
+        const std::shared_ptr<QVariant> data = _dataByIdNum.value(idNum);
         const Message message = qvariant_cast<Message>(*data);
         return dataByRole(message, role);
     }

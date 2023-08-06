@@ -3,6 +3,7 @@
 #include "models/message.h"
 #include "models/author.h"
 #include <QAbstractListModel>
+#include <unordered_map>
 
 class MessagesModel : public QAbstractListModel
 {
@@ -24,8 +25,8 @@ public:
     bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
     void clear();
     uint64_t lastIdNum() const;
-    QModelIndex createIndexByPtr(QVariant* data) const;
-    int getRow(QVariant* data);
+    QModelIndex createIndexByPtr(const std::shared_ptr<QVariant>& data) const;
+    int getRow(const std::shared_ptr<QVariant>& data);
 
     const Author* getAuthor(const QString& authorId) const { return _authorsById.value(authorId, nullptr); }
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
@@ -35,15 +36,14 @@ public:
 
 private:
     static const QHash<int, QByteArray> _roleNames;
-    QList<QVariant*> _data;//*data
-    QHash<QString, QVariant*> _dataById;//message_id, *data
-    QHash<QVariant*, QString> _idByData;//*data, message_id
-    QHash<uint64_t, QVariant*> _dataByIdNum;//idNum, *data
-    QHash<QVariant*, uint64_t> _idNumByData;//*data, idNum
+    QList<std::shared_ptr<QVariant>> _data;
+    QHash<QString, std::shared_ptr<QVariant>> _dataById;
+    QHash<uint64_t, std::shared_ptr<QVariant>> _dataByIdNum;
+    std::unordered_map<std::shared_ptr<QVariant>, uint64_t> _idNumByData;
 
     QHash<QString, Author*> _authorsById;
 
-    const int _maxSize  = 1000;
+    const int _maxSize  = 10; // 1000
 
     uint64_t _lastIdNum = 0;
     uint64_t _removedRows = 0;
