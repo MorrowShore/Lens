@@ -291,7 +291,7 @@ void Kick::requestChannelInfo(const QString &slug)
         const QJsonObject root = QJsonDocument::fromJson(response->data, &error).object();
         if (error.error != QJsonParseError::ParseError::NoError)
         {
-            qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset << ", data =" << response->data;
+            qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset << ", mimeType =" << response->mimeType << ", data =" << response->data;
             return;
         }
 
