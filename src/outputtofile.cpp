@@ -146,7 +146,7 @@ void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat:
     }
 
     ChatService* service = nullptr;
-    for (ChatService* service_ : services)
+    for (ChatService* service_ : qAsConst(services))
     {
         if (service_->getServiceType() == serviceType)
         {
