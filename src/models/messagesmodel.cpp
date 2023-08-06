@@ -82,7 +82,7 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
 
         prevMessage->setPlainText(tr("Message deleted"));
 
-        const QModelIndex index = createIndexByData(message);
+        const QModelIndex index = createIndexByExistingMessage(message->getId());
         emit dataChanged(index, index);
     }
     else
@@ -102,7 +102,6 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
 
         messagesById.insert(message->getId(), message);
         messagesByRow.insert(message->getRow(), message);
-        rowById[message->getId()] = message->getRow();
 
         if (std::shared_ptr<Author> author = getAuthor(message->getAuthorId()); author)
         {
@@ -144,7 +143,6 @@ bool MessagesModel::removeRows(int row, int count, const QModelIndex &parent)
 
         messagesById.remove(id);
         messagesByRow.remove(row);
-        rowById.erase(id);
         messages.removeAt(row);
 
         removedRows++;
@@ -160,24 +158,15 @@ void MessagesModel::clear()
     removeRows(0, rowCount(QModelIndex()));
 }
 
-QModelIndex MessagesModel::createIndexById(const QString& id) const
+QModelIndex MessagesModel::createIndexByExistingMessage(const QString& id) const
 {
-    if (auto it = rowById.find(id); it != rowById.end())
-    {
-        return createIndex(it->second - removedRows, 0);
-    }
-
-    return QModelIndex();
-}
-
-QModelIndex MessagesModel::createIndexByData(const std::shared_ptr<Message>& message) const
-{
+    std::shared_ptr<Message> message = messagesById.value(id);
     if (!message)
     {
         return QModelIndex();
     }
 
-    return createIndexById(message->getId());
+    return createIndex(message->getRow() - removedRows, 0);
 }
 
 void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
@@ -200,9 +189,11 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     const std::set<uint64_t>& messagesIds = author->getMessagesIds();
     for (const uint64_t id : messagesIds)
     {
-        std::shared_ptr<Message> message = messagesByRow.value(id);
-        const QModelIndex index = createIndexByData(message);
-        emit dataChanged(index, index, rolesInt);
+        if (std::shared_ptr<Message> message = messagesByRow.value(id); message)
+        {
+            const QModelIndex index = createIndexByExistingMessage(message->getId());
+            emit dataChanged(index, index, rolesInt);
+        }
     }
 }
 
