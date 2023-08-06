@@ -452,7 +452,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         bool valid = false;
         bool isDeleter = false;
 
-        QList<Message::Content*> contents;
+        QList<std::shared_ptr<Message::Content>> contents;
 
         QString messageId;
         const QDateTime& receivedAt = QDateTime::currentDateTime();
@@ -597,13 +597,13 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
                             Qt::TimeSpec::UTC).toLocalTime();
             }
 
-            QList<Message::Content*> authorNameContent;
+            QList<std::shared_ptr<Message::Content>> authorNameContent;
             tryAppedToText(authorNameContent, itemRenderer, "authorName", false);
             if (!authorNameContent.isEmpty())
             {
-                if (const Message::Content* content = authorNameContent.first(); content->getType() == Message::Content::Type::Text)
+                if (const std::shared_ptr<Message::Content> content = authorNameContent.first(); content->getType() == Message::Content::Type::Text)
                 {
-                    authorName = static_cast<const Message::Text*>(content)->getText();
+                    authorName = static_cast<const Message::Text*>(content.get())->getText();
                 }
             }
 
@@ -710,10 +710,10 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 
                 if (!contents.isEmpty() && contents.last()->getType() == Message::Content::Type::Text)
                 {
-                    contents.append(new Message::Text("\n"));
+                    contents.append(std::make_shared<Message::Text>("\n"));
                 }
 
-                contents.append(new Message::Image(stickerUrl, stickerSize));
+                contents.append(std::make_shared<Message::Image>(stickerUrl, stickerSize));
             }
 
             //Other colors: headerBackgroundColor headerTextColor bodyBackgroundColor bodyTextColor authorNameTextColor timestampColor backgroundColor moneyChipBackgroundColor moneyChipTextColor
@@ -932,43 +932,43 @@ void YouTube::processBadLivePageReply()
     }
 }
 
-void YouTube::tryAppedToText(QList<Message::Content*>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const
+void YouTube::tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const
 {
     if (!jsonObject.contains(varName))
     {
         return;
     }
 
-    QList<Message::Content*> newContents;
+    QList<std::shared_ptr<Message::Content>> newContents;
     parseText(jsonObject.value(varName).toObject(), newContents);
 
     if (!contents.isEmpty() && !newContents.isEmpty())
     {
         if (contents.last()->getType() == Message::Content::Type::Text && contents.last()->getType() == newContents.first()->getType())
         {
-            contents.append(new Message::Text("\n"));
+            contents.append(std::make_shared<Message::Text>("\n"));
         }
     }
 
-    for (Message::Content* content : qAsConst(newContents))
+    for (std::shared_ptr<Message::Content> content : qAsConst(newContents))
     {
         if (content->getType() == Message::Content::Type::Text)
         {
-            static_cast<Message::Text*>(content)->getStyle().bold = bold;
+            static_cast<Message::Text*>(content.get())->getStyle().bold = bold;
         }
     }
 
     contents.append(newContents);
 }
 
-void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& contents) const
+void YouTube::parseText(const QJsonObject &message, QList<std::shared_ptr<Message::Content>>& contents) const
 {
     if (message.contains("simpleText"))
     {
         const QString text = message.value("simpleText").toString().trimmed();
         if (!text.isEmpty())
         {
-            contents.append(new Message::Text(text));
+            contents.append(std::make_shared<Message::Text>(text));
         }
     }
 
@@ -994,7 +994,7 @@ void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& co
                         url = "https://www.youtube.com" + url;
                     }
 
-                    contents.append(new Message::Hyperlink(text, url));
+                    contents.append(std::make_shared<Message::Hyperlink>(text, url));
                     continue;
                 }
                 else
@@ -1008,7 +1008,7 @@ void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& co
                 const QString text = runObject.value("text").toString();
                 if (!text.isEmpty())
                 {
-                    contents.append(new Message::Text(text));
+                    contents.append(std::make_shared<Message::Text>(text));
                 }
             }
             else if (runObject.contains("emoji"))
@@ -1022,7 +1022,7 @@ void YouTube::parseText(const QJsonObject &message, QList<Message::Content*>& co
                     const QString empjiUrl = thumbnails.first().toObject().value("url").toString();
                     if (!empjiUrl.isEmpty())
                     {
-                        contents.append(new Message::Image(empjiUrl, emojiPixelSize));
+                        contents.append(std::make_shared<Message::Image>(empjiUrl, emojiPixelSize));
                     }
                     else
                     {

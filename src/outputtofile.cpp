@@ -217,20 +217,26 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
 
         QString text;
 
-        for (const Message::Content* content : message.getContents())
+        for (const std::shared_ptr<Message::Content>& content : message.getContents())
         {
+            if (!content)
+            {
+                qWarning() << Q_FUNC_INFO << "content is null";
+                continue;
+            }
+
             switch (content->getType())
             {
             case Message::Content::Type::Text:
-                text += prepare(static_cast<const Message::Text*>(content)->getText());
+                text += prepare(static_cast<const Message::Text*>(content.get())->getText());
                 break;
 
             case Message::Content::Type::Image:
-                text += "<emoji:" + convertUrlForFileName(static_cast<const Message::Image*>(content)->getUrl(), ImageFileFormat) + ">";
+                text += "<emoji:" + convertUrlForFileName(static_cast<const Message::Image*>(content.get())->getUrl(), ImageFileFormat) + ">";
                 break;
 
             case Message::Content::Type::Hyperlink:
-                text += prepare(static_cast<const Message::Hyperlink*>(content)->getText());
+                text += prepare(static_cast<const Message::Hyperlink*>(content.get())->getText());
                 break;
             }
         }
@@ -254,12 +260,18 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
             downloadAvatar(authorId, type, author->getValue(Author::Role::AvatarUrl).toUrl());
         }
 
-        for (const Message::Content* content : message.getContents())
+        for (const std::shared_ptr<Message::Content>& content : message.getContents())
         {
+            if (!content)
+            {
+                qWarning() << Q_FUNC_INFO << "content is null";
+                continue;
+            }
+
             if (content->getType() == Message::Content::Type::Image)
             {
                 static const int ImageHeight = 24;
-                const Message::Image* image = static_cast<const Message::Image*>(content);
+                const Message::Image* image = static_cast<const Message::Image*>(content.get());
                 downloadEmoji(image->getUrl(), ImageHeight, author->getServiceType());
             }
         }
@@ -496,7 +508,7 @@ void OutputToFile::writeMessage(const QList<QPair<QString, QString>> tags /*<tag
     for (int i = 0; i < tags.count(); ++i)
     {
         const QPair<QString, QString>& tag = tags[i];
-        data += tag.first.toLatin1() + "=" + tag.second + "\n"; // TODO: fix
+        data += tag.first.toLatin1() + "=" + tag.second.toUtf8() + "\n"; // TODO: fix
     }
 
     data += "\n";

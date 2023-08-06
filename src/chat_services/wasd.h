@@ -46,7 +46,7 @@ private:
     void parseEventMessage(const QJsonObject& data);
     void parseEventJoined(const QJsonObject& data);
     void parseSmile(const QJsonObject& jsonSmile);
-    QList<Message::Content*> parseText(const QString& text) const;
+    QList<std::shared_ptr<Message::Content>> parseText(const QString& text) const;
 
     struct Info
     {

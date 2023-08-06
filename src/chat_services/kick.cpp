@@ -444,7 +444,7 @@ void Kick::parseMessageDeletedEvent(const QJsonObject &data)
 
     static const std::shared_ptr<Author> author = std::make_shared<Author>(getServiceType(), "", "");
 
-    messages.append(std::make_shared<Message>(QList<Message::Content*>(),
+    messages.append(std::make_shared<Message>(QList<std::shared_ptr<Message::Content>>(),
                             author,
                             QDateTime::currentDateTime(),
                             QDateTime::currentDateTime(),
@@ -550,9 +550,9 @@ QString Kick::extractChannelName(const QString &stream_)
     return stream;
 }
 
-QList<Message::Content *> Kick::parseContents(const QString &rawText)
+QList<std::shared_ptr<Message::Content>> Kick::parseContents(const QString &rawText)
 {
-    QList<Message::Content *> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     QString text;
     for (int i = 0; i < rawText.length(); ++i)
@@ -569,13 +569,13 @@ QList<Message::Content *> Kick::parseContents(const QString &rawText)
                 {
                     if (!text.isEmpty())
                     {
-                        contents.append(new Message::Text(text));
+                        contents.append(std::make_shared<Message::Text>(text));
                         text = QString();
                     }
 
                     const QUrl url = "https://files.kick.com/emotes/" + parts[1] + "/fullsize";
 
-                    contents.append(new Message::Image(url, EmoteImageHeight, false));
+                    contents.append(std::make_shared<Message::Image>(url, EmoteImageHeight, false));
 
                     i = lastBrace;
                     continue;
@@ -588,7 +588,7 @@ QList<Message::Content *> Kick::parseContents(const QString &rawText)
 
     if (!text.isEmpty())
     {
-        contents.append(new Message::Text(text));
+        contents.append(std::make_shared<Message::Text>(text));
         text = QString();
     }
 

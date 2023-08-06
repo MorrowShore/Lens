@@ -442,7 +442,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 std::set<Author::Flag>(),
                 nicknameColor);
 
-            QList<Message::Content*> contents;
+            QList<std::shared_ptr<Message::Content>> contents;
 
             QString text;
             QString rawSmileId;
@@ -456,7 +456,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                         const QString smileId = rawSmileId.toLower();
                         if (smiles.contains(smileId.toLower()))
                         {
-                            contents.append(new Message::Image(smiles.value(smileId)));
+                            contents.append(std::make_shared<Message::Image>(smiles.value(smileId)));
                             rawSmileId = QString();
                         }
                         else
@@ -471,7 +471,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                     {
                         if (!text.isEmpty())
                         {
-                            contents.append(new Message::Text(text));
+                            contents.append(std::make_shared<Message::Text>(text));
                             text = QString();
                         }
 
@@ -507,7 +507,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
             if (!text.isEmpty())
             {
-                contents.append(new Message::Text(text));
+                contents.append(std::make_shared<Message::Text>(text));
             }
 
             std::shared_ptr<Message> message = std::make_shared<Message>(

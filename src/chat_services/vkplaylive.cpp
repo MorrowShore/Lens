@@ -436,7 +436,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 
     const QString messageId = QString("%1").arg(data.value("id").toVariant().toLongLong());
 
-    QList<Message::Content*> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     const QJsonArray messageData = data.value("data").toArray();
     for (const QJsonValue& value : qAsConst(messageData))
@@ -454,54 +454,49 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             const QString rawContent = data.value("content").toString();
             if (rawContent.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "text content string is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "text content string is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
             const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
             if (rawContents.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "text content array is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "text content array is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
             const QString text = rawContents.at(0).toString();
             if (text.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "text text is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "text text is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
-            contents.append(new Message::Text(text));
+            contents.append(std::make_shared<Message::Text>(text));
         }
         else if (type == "mention")
         {
             const QString text = data.value("displayName").toString() + ", ";
             if (text.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "display name is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "display name is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
             Message::TextStyle style;
             style.bold = true;
-            contents.append(new Message::Text(text, style));
+            contents.append(std::make_shared<Message::Text>(text, style));
         }
         else if (type == "smile")
         {
             const QString url = data.value("smallUrl").toString();
             if (!url.isEmpty())
             {
-                contents.append(new Message::Image(url));
+                contents.append(std::make_shared<Message::Image>(url));
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "image url is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "image url is empty:" << QJsonDocument(data).toJson();
             }
         }
         else if (type == "link")
@@ -509,16 +504,14 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             const QString rawContent = data.value("content").toString();
             if (rawContent.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link content is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "link content is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
             const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
             if (rawContents.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link content string is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "link content string is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
@@ -527,25 +520,21 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 
             if (text.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link text is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "link text is empty:" << QJsonDocument(data);
                 continue;
             }
 
             if (url.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link url is empty:";
-                qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+                qWarning() << Q_FUNC_INFO << "link url is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
-            contents.append(new Message::Hyperlink(text, url));
+            contents.append(std::make_shared<Message::Hyperlink>(text, url));
         }
         else
         {
-            qDebug() << Q_FUNC_INFO << "unknown content type" << type << ", message:";
-
-            qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+            qDebug() << Q_FUNC_INFO << "unknown content type" << type << ", message:" << QJsonDocument(data).toJson();
         }
     }
 

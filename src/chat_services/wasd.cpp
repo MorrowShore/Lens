@@ -182,7 +182,7 @@ void Wasd::reconnectImpl()
 
 void Wasd::onWebSocketReceived(const QString &rawData)
 {
-    qDebug("\nreceived: " + rawData.toUtf8() + "\n");
+    qDebug() << "received:" << rawData;
 
     if (!enabled.get())
     {
@@ -344,7 +344,7 @@ void Wasd::send(const SocketIO2Type type, const QByteArray& id, const QJsonDocum
 
     QString message = QString("%1").arg(typeNum) + id + QString::fromUtf8(payload.toJson(QJsonDocument::JsonFormat::Compact));
 
-    qDebug("\nsend: " + message.toUtf8() + "\n");
+    qDebug() << "send:" << message;
 
     socket.sendTextMessage(message);
 }
@@ -527,13 +527,13 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     const QDateTime publishedAt = QDateTime::fromString(data.value("date_time").toString(), Qt::DateFormat::ISODateWithMs);
     const QString messageId = data.value("id").toString();
 
-    QList<Message::Content*> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     if (const QJsonValue v = data.value("message"); v.isString())
     {
         const QString text = v.toString();
-        const QList<Message::Content*> newContents = parseText(text);
-        for (Message::Content* content : newContents)
+        const QList<std::shared_ptr<Message::Content>> newContents = parseText(text);
+        for (const std::shared_ptr<Message::Content>& content : qAsConst(newContents))
         {
             contents.append(content);
         }
@@ -556,7 +556,7 @@ void Wasd::parseEventMessage(const QJsonObject &data)
             }
         }
 
-        contents.append(new Message::Image(url, StickerImageHeight));
+        contents.append(std::make_shared<Message::Image>(url, StickerImageHeight));
     }
 
     if (contents.isEmpty())
@@ -604,9 +604,9 @@ void Wasd::parseSmile(const QJsonObject &jsonSmile)
     smiles.insert(token, url);
 }
 
-QList<Message::Content *> Wasd::parseText(const QString &rawText) const
+QList<std::shared_ptr<Message::Content>> Wasd::parseText(const QString &rawText) const
 {
-    QList<Message::Content *> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     const QStringList words = rawText.split(' ', Qt::SplitBehaviorFlags::KeepEmptyParts);
 
@@ -617,11 +617,11 @@ QList<Message::Content *> Wasd::parseText(const QString &rawText) const
         {
             if (!text.isEmpty())
             {
-                contents.append(new Message::Text(text));
+                contents.append(std::make_shared<Message::Text>(text));
                 text = QString();
             }
 
-            contents.append(new Message::Image(smiles.value(word), SmileImageHeight));
+            contents.append(std::make_shared<Message::Image>(smiles.value(word), SmileImageHeight));
         }
         else
         {
@@ -636,7 +636,7 @@ QList<Message::Content *> Wasd::parseText(const QString &rawText) const
 
     if (!text.isEmpty())
     {
-        contents.append(new Message::Text(text));
+        contents.append(std::make_shared<Message::Text>(text));
         text = QString();
     }
 

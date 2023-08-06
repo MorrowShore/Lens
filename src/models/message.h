@@ -260,7 +260,7 @@ public:
         QString messageText;
     };
 
-    Message(const QList<Content*>& contents,
+    Message(const QList<std::shared_ptr<Content>>& contents,
             const std::weak_ptr<Author>& author,
             const QDateTime& publishedAt = QDateTime::currentDateTime(),
             const QDateTime& receivedAt = QDateTime::currentDateTime(),
@@ -344,7 +344,7 @@ public:
 
     QString getForcedColorRoleToQMLString(const ColorRole& role) const;
 
-    const QList<Content*>& getContents() const
+    const QList<std::shared_ptr<Content>>& getContents() const
     {
         return contents;
     }
@@ -357,7 +357,7 @@ private:
     void updateHtml();
     static void trimText(QString& text);
 
-    QList<Content*> contents;
+    QList<std::shared_ptr<Content>> contents;
     QString html;
     QString id;
     const QDateTime publishedAt;

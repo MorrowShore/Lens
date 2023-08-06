@@ -35,8 +35,8 @@ private:
     void processBadChatReply();
     void processBadLivePageReply();
 
-    void tryAppedToText(QList<Message::Content*>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const;
-    void parseText(const QJsonObject& message, QList<Message::Content*>& contents) const;
+    void tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const;
+    void parseText(const QJsonObject& message, QList<std::shared_ptr<Message::Content>>& contents) const;
 
     QColor intToColor(quint64 rawColor) const;
 

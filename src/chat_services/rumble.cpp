@@ -426,7 +426,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
         std::set<Author::Flag>(),
         userColor);
 
-    QList<Message::Content *> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     const QJsonObject rant = jsonMessage.value("rant").toObject();
     if (!rant.isEmpty())
@@ -449,7 +449,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
 
             Message::TextStyle style;
             style.bold = true;
-            contents.append(new Message::Text(text, style));
+            contents.append(std::make_shared<Message::Text>(text, style));
 
             forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, getDonutColor(dollars));
         }
@@ -561,9 +561,9 @@ QColor Rumble::getDonutColor(const int64_t priceDollars) const
     return color;
 }
 
-QList<Message::Content*> Rumble::parseBlock(const QJsonObject &block) const
+QList<std::shared_ptr<Message::Content>> Rumble::parseBlock(const QJsonObject &block) const
 {
-    QList<Message::Content*> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     const QJsonObject data = block.value("data").toObject();
     const QString type = block.value("type").toString();
@@ -588,7 +588,7 @@ QList<Message::Content*> Rumble::parseBlock(const QJsonObject &block) const
 
                     if (!currentText.isEmpty())
                     {
-                        contents.append(new Message::Text(currentText));
+                        contents.append(std::make_shared<Message::Text>(currentText));
                         currentText = QString();
                     }
                 }
@@ -603,7 +603,7 @@ QList<Message::Content*> Rumble::parseBlock(const QJsonObject &block) const
                 {
                     if (emotesUrls.contains(currentEmote))
                     {
-                        contents.append(new Message::Image(emotesUrls.value(currentEmote), EmoteImageHeight, true));
+                        contents.append(std::make_shared<Message::Image>(emotesUrls.value(currentEmote), EmoteImageHeight, true));
                     }
                     else
                     {
@@ -631,7 +631,7 @@ QList<Message::Content*> Rumble::parseBlock(const QJsonObject &block) const
 
         if (!currentText.isEmpty())
         {
-            contents.append(new Message::Text(currentText));
+            contents.append(std::make_shared<Message::Text>(currentText));
         }
     }
     else

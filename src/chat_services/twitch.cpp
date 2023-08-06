@@ -143,10 +143,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
             auto author = Author::getSoftwareAuthor();
 
-            QList<Message::Content*> contents;
-
-            Message::Text* text = new Message::Text(tr("Ping timeout! Reconnection..."));
-            contents.append(text);
+            QList<std::shared_ptr<Message::Content>> contents = { std::make_shared<Message::Text>(tr("Ping timeout! Reconnection...")) };
 
             std::shared_ptr<Message> message = std::make_shared<Message>(contents, author);
 
@@ -404,7 +401,7 @@ void Twitch::onIRCMessage(const QString &rawData)
 
         const QString snippet3 = rawMessage.left(posSnippet1); // [@tags] :[channel-id]![channel-id]@[channel-id]
 
-        QList<Message::Content*> contents;
+        QList<std::shared_ptr<Message::Content>> contents;
         QString login;
         QString displayName;
         QColor nicknameColor;
@@ -451,7 +448,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                 Message::TextStyle style;
                 style.bold = true;
 
-                contents.append(new Message::Text(tagValue + "\n", style));
+                contents.append(std::make_shared<Message::Text>(tagValue + "\n", style));
             }
             else if (tagName == "emotes")
             {
@@ -571,7 +568,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         {
             if (!rawMessageText.isEmpty())
             {
-                contents.append(new Message::Text(rawMessageText));
+                contents.append(std::make_shared<Message::Text>(rawMessageText));
             }
         }
         else
@@ -595,14 +592,14 @@ void Twitch::onIRCMessage(const QString &rawData)
                         {
                             if (!textChunk.isEmpty())
                             {
-                                contents.append(new Message::Text(textChunk));
+                                contents.append(std::make_shared<Message::Text>(textChunk));
                                 textChunk.clear();
                             }
 
                             static const QString sizeUrlPart = "1.0";
                             const QString emoteUrl = QString("https://static-cdn.jtvnw.net/emoticons/v2/%1/default/light/%2").arg(emoteInfo.id, sizeUrlPart);
 
-                            contents.append(new Message::Image(emoteUrl));
+                            contents.append(std::make_shared<Message::Image>(emoteUrl));
                         }
                     }
                 }
@@ -616,7 +613,7 @@ void Twitch::onIRCMessage(const QString &rawData)
 
             if (!textChunk.isEmpty())
             {
-                contents.append(new Message::Text(textChunk));
+                contents.append(std::make_shared<Message::Text>(textChunk));
                 textChunk.clear();
             }
         }

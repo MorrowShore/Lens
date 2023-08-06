@@ -45,7 +45,7 @@ private:
     };
 
     static QString extractChannelName(const QString& stream);
-    static QList<Message::Content*> parseContents(const QString& rawText);
+    static QList<std::shared_ptr<Message::Content>> parseContents(const QString& rawText);
 
     QNetworkAccessManager& network;
     cweqt::Manager& web;

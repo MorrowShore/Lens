@@ -25,7 +25,7 @@ private:
     void parseMessage(const QJsonObject& jsonMessage, QList<std::shared_ptr<Message>>& messages, QList<std::shared_ptr<Author>>& authors);
     void requestUserPhoto(const QString& authorId, const int64_t& userId);
     void requestPhotoFileInfo(const QString& authorId, const QString& fileId);
-    void addServiceContent(QList<Message::Content*>& contents, const QString& name);
+    void addServiceContent(QList<std::shared_ptr<Message::Content>>& contents, const QString& name);
     void updateUI();
 
     QNetworkAccessManager& network;

@@ -345,25 +345,25 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<std::shared_pt
 
     const QString messageId = chatId + "/" + QString("%1").arg(jsonMessage.value("message_id").toVariant().toLongLong());
 
-    QList<Message::Content*> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     if (jsonMessage.contains("caption"))
     {
-        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+        if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
 
         Message::TextStyle style;
         style.bold = true;
 
         const QString text = jsonMessage.value("caption").toString();
-        contents.append(new Message::Text(text, style));
+        contents.append(std::make_shared<Message::Text>(text, style));
     }
 
     if (jsonMessage.contains("text"))
     {
-        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+        if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
 
         const QString messageText = jsonMessage.value("text").toString();
-        contents.append(new Message::Text(messageText));
+        contents.append(std::make_shared<Message::Text>(messageText));
     }
 
     if (jsonMessage.contains("animation")) { addServiceContent(contents, tr("animation")); }
@@ -547,9 +547,9 @@ void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &file
     });
 }
 
-void Telegram::addServiceContent(QList<Message::Content *>& contents, const QString &name_)
+void Telegram::addServiceContent(QList<std::shared_ptr<Message::Content>>& contents, const QString &name_)
 {
-    if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+    if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
 
     QString name = name_;
 
@@ -560,7 +560,7 @@ void Telegram::addServiceContent(QList<Message::Content *>& contents, const QStr
 
     Message::TextStyle style;
     style.italic = true;
-    contents.append(new Message::Text("[" + name + "]", style));
+    contents.append(std::make_shared<Message::Text>("[" + name + "]", style));
 }
 
 void Telegram::updateUI()

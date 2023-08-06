@@ -275,7 +275,7 @@ void VkVideo::requestChat()
 
             const QDateTime publishedAt =  QDateTime::fromSecsSinceEpoch(date);
 
-            QList<Message::Content*> contents;
+            QList<std::shared_ptr<Message::Content>> contents;
 
             if (jsonMessage.contains("reply_to_user"))
             {
@@ -290,7 +290,7 @@ void VkVideo::requestChat()
                     Message::TextStyle style;
                     style.bold = true;
 
-                    contents.append(new Message::Hyperlink(name, QUrl(QString("https://vk.com/id%1").arg(replyToUserId)), false, style));
+                    contents.append(std::make_shared<Message::Hyperlink>(name, QUrl(QString("https://vk.com/id%1").arg(replyToUserId)), false, style));
                 }
                 else
                 {
@@ -300,7 +300,7 @@ void VkVideo::requestChat()
 
             if (!text.isEmpty())
             {
-                contents.append(new Message::Text(text));
+                contents.append(std::make_shared<Message::Text>(text));
             }
 
             QString attachmentsString;
@@ -338,7 +338,7 @@ void VkVideo::requestChat()
                     }
                     else
                     {
-                        contents.append(new Message::Image(url, StickerImageHeight));
+                        contents.append(std::make_shared<Message::Image>(url, StickerImageHeight));
                     }
                 }
                 else
@@ -350,12 +350,12 @@ void VkVideo::requestChat()
 
             if (!attachmentsString.isEmpty())
             {
-                if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+                if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
 
                 Message::TextStyle style;
                 style.italic = true;
 
-                contents.append(new Message::Text("[" + attachmentsString + "]", style));
+                contents.append(std::make_shared<Message::Text>("[" + attachmentsString + "]", style));
             }
 
             QStringList rightBadges;

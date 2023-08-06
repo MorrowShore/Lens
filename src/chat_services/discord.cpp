@@ -561,11 +561,11 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 
     const QDateTime dateTime = QDateTime::fromString(jsonMessage.value("timestamp").toString(), Qt::ISODateWithMs).toLocalTime();
 
-    QList<Message::Content*> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     {
         //text
-        contents.append(new Message::Text(jsonMessage.value("content").toString()));
+        contents.append(std::make_shared<Message::Text>(jsonMessage.value("content").toString()));
     }
 
     {
@@ -573,13 +573,13 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         const QJsonArray embeds = jsonMessage.value("embeds").toArray();
         for (const QJsonValue& v : embeds)
         {
-            const QList<Message::Content*> embedContents = parseEmbed(v.toObject());
+            const QList<std::shared_ptr<Message::Content>> embedContents = parseEmbed(v.toObject());
             if (!embedContents.isEmpty())
             {
-                if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+                if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
             }
 
-            for (Message::Content* embedContent : qAsConst(embedContents))
+            for (const std::shared_ptr<Message::Content> &embedContent : qAsConst(embedContents))
             {
                 contents.append(embedContent);
             }
@@ -591,13 +591,13 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         const QJsonArray attachments = jsonMessage.value("attachments").toArray();
         for (const QJsonValue& v : attachments)
         {
-            const QList<Message::Content*> attachmentContents = parseAttachment(v.toObject());
+            const QList<std::shared_ptr<Message::Content>> attachmentContents = parseAttachment(v.toObject());
             if (!attachmentContents.isEmpty())
             {
-                if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+                if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
             }
 
-            for (Message::Content* embedContent : qAsConst(attachmentContents))
+            for (const std::shared_ptr<Message::Content> &embedContent : qAsConst(attachmentContents))
             {
                 contents.append(embedContent);
             }
@@ -609,11 +609,11 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         const QJsonArray stickerItems = jsonMessage.value("sticker_items").toArray();
         if (!stickerItems.isEmpty())
         {
-            if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
+            if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
 
             Message::TextStyle style;
             style.italic = true;
-            contents.append(new Message::Text("[" + tr("Sticker(s)") + "]", style));
+            contents.append(std::make_shared<Message::Text>("[" + tr("Sticker(s)") + "]", style));
         }
     }
 
@@ -946,9 +946,9 @@ QString Discord::getEmbedTypeName(const QString& type)
     return tr("unknown \"%1\"").arg(type);
 }
 
-QList<Message::Content *> Discord::parseEmbed(const QJsonObject &jsonEmbed)
+QList<std::shared_ptr<Message::Content>> Discord::parseEmbed(const QJsonObject &jsonEmbed)
 {
-    QList<Message::Content *> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     const QString type = jsonEmbed.value("type").toString();
     QString typeName = getEmbedTypeName(type);
@@ -968,26 +968,26 @@ QList<Message::Content *> Discord::parseEmbed(const QJsonObject &jsonEmbed)
 
         if (!title.isEmpty())
         {
-            if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
-            contents.append(new Message::Text(title, style));
+            if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
+            contents.append(std::make_shared<Message::Text>(title, style));
         }
 
         if (!description.isEmpty())
         {
-            if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
-            contents.append(new Message::Text(description, style));
+            if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
+            contents.append(std::make_shared<Message::Text>(description, style));
         }
     }
 
-    if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
-    contents.append(new Message::Text("[" + typeName + "]", style));
+    if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
+    contents.append(std::make_shared<Message::Text>("[" + typeName + "]", style));
 
     return contents;
 }
 
-QList<Message::Content *> Discord::parseAttachment(const QJsonObject &jsonAttachment)
+QList<std::shared_ptr<Message::Content>> Discord::parseAttachment(const QJsonObject &jsonAttachment)
 {
-    QList<Message::Content *> contents;
+    QList<std::shared_ptr<Message::Content>> contents;
 
     const QString fileName = jsonAttachment.value("filename").toString();
 
@@ -996,8 +996,8 @@ QList<Message::Content *> Discord::parseAttachment(const QJsonObject &jsonAttach
 
     if (!fileName.isEmpty())
     {
-        if (!contents.isEmpty()) { contents.append(new Message::Text("\n")); }
-        contents.append(new Message::Text("[" + tr("File: %1").arg(fileName) + "]", style));
+        if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
+        contents.append(std::make_shared<Message::Text>("[" + tr("File: %1").arg(fileName) + "]", style));
     }
 
     return contents;

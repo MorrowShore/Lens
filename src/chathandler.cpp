@@ -170,7 +170,7 @@ void ChatHandler::sendTestMessage(const QString &text)
     std::shared_ptr<Author> author = Author::getSoftwareAuthor();
 
     std::shared_ptr<Message> message = std::make_shared<Message>(
-        QList<Message::Content*>{new Message::Text(text)},
+        QList<std::shared_ptr<Message::Content>>{std::make_shared<Message::Text>(text)},
         author);
 
     message->setCustomAuthorName(tr("Test Message"));
@@ -184,7 +184,7 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
     std::shared_ptr<Author> author = Author::getSoftwareAuthor();
 \
     std::shared_ptr<Message> message = std::make_shared<Message>(
-        QList<Message::Content*>{new Message::Text(text)},
+        QList<std::shared_ptr<Message::Content>>{std::make_shared<Message::Text>(text)},
         author,
         QDateTime::currentDateTime(),
         QDateTime::currentDateTime(),
@@ -279,8 +279,7 @@ void ChatHandler::onAuthorNameChanged(const Author& author, const QString &prevN
     if (_enableShowAuthorNameChanged)
     {
         sendSoftwareMessage(tr("%1: \"%2\" changed name to \"%3\"")
-                            .arg(ChatService::getName(author.getServiceType()))
-                            .arg(prevName, newName));
+                            .arg(ChatService::getName(author.getServiceType()), prevName, newName));
     }
 }
 

@@ -109,8 +109,8 @@ private:
     bool isValidForShow(const Message& message, const Author& author, const Guild& guild, const Channel& channel) const;
 
     static QString getEmbedTypeName(const QString& type);
-    static QList<Message::Content*> parseEmbed(const QJsonObject& jsonEmbed);
-    static QList<Message::Content*> parseAttachment(const QJsonObject& jsonAttachment);
+    static QList<std::shared_ptr<Message::Content>> parseEmbed(const QJsonObject& jsonEmbed);
+    static QList<std::shared_ptr<Message::Content>> parseAttachment(const QJsonObject& jsonAttachment);
 
     QNetworkAccessManager& network;
 

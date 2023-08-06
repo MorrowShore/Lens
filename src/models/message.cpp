@@ -5,7 +5,7 @@
 #include <QMetaEnum>
 #include <QDebug>
 
-Message::Message(const QList<Message::Content*>& contents_,
+Message::Message(const QList<std::shared_ptr<Message::Content>>& contents_,
                  const std::weak_ptr<Author>& author_,
                  const QDateTime &publishedAt_,
                  const QDateTime &receivedAt_,
@@ -40,7 +40,7 @@ Message::Message(const QList<Message::Content*>& contents_,
 
 void Message::setPlainText(const QString &text)
 {
-    contents = QList<Content*>({new Text(text)});
+    contents = { std::make_shared<Text>(text) };
     updateHtml();
 }
 
@@ -144,8 +144,13 @@ QJsonObject Message::toJson(const Author& author) const
     root.insert("forcedColors", forcedColorsJson);
 
     QJsonArray jsonContents;
-    for (const Content* content : qAsConst(contents))
+    for (const std::shared_ptr<Content>& content : qAsConst(contents))
     {
+        if (!content)
+        {
+            qWarning() << Q_FUNC_INFO << "content is null";
+        }
+
         QJsonObject jsonContent;
         jsonContent.insert("type", Content::typeToStringId(content->getType()));
         jsonContent.insert("data", content->toJson());
@@ -206,13 +211,19 @@ void Message::updateHtml()
 {
     html.clear();
 
-    for (const Content* content : qAsConst(contents))
+    for (const std::shared_ptr<Content>& content : qAsConst(contents))
     {
+        if (!content)
+        {
+            qWarning() << Q_FUNC_INFO << "content is null";
+            continue;
+        }
+
         switch (content->getType())
         {
         case Content::Type::Text:
         {
-            const Text* textContent = static_cast<const Text*>(content);
+            const Text* textContent = static_cast<const Text*>(content.get());
             if (textContent)
             {
                 const TextStyle& style = textContent->getStyle();
@@ -237,7 +248,7 @@ void Message::updateHtml()
 
         case Message::Content::Type::Image:
         {
-            const Image* image = static_cast<const Image*>(content);
+            const Image* image = static_cast<const Image*>(content.get());
             if (image)
             {
                 if (image->isNeedSpaces())
@@ -265,7 +276,7 @@ void Message::updateHtml()
 
         case Message::Content::Type::Hyperlink:
         {
-            const Hyperlink* hyperlink = static_cast<const Hyperlink*>(content);
+            const Hyperlink* hyperlink = static_cast<const Hyperlink*>(content.get());
             if (hyperlink)
             {
                 const TextStyle& style = hyperlink->getStyle();

@@ -43,7 +43,7 @@ private:
     void parseMessage(const QJsonObject& user, const QJsonObject& message);
     void parseConfig(const QJsonObject& config);
     QColor getDonutColor(const int64_t priceDollars) const;
-    QList<Message::Content*> parseBlock(const QJsonObject& block) const;
+    QList<std::shared_ptr<Message::Content>> parseBlock(const QJsonObject& block) const;
 
     QNetworkAccessManager& network;
     Info info;
