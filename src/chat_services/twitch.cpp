@@ -141,19 +141,19 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
         {
             qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
 
-            const Author& author = Author::getSoftwareAuthor();
+            auto author = Author::getSoftwareAuthor();
 
             QList<Message::Content*> contents;
 
             Message::Text* text = new Message::Text(tr("Ping timeout! Reconnection..."));
             contents.append(text);
 
-            Message message(contents, author);
+            std::shared_ptr<Message> message = std::make_shared<Message>(contents, author);
 
-            QList<Message> messages;
+            QList<std::shared_ptr<Message>> messages;
             messages.append(message);
 
-            QList<Author> authors;
+            QList<std::shared_ptr<Author>> authors;
             authors.append(author);
 
             emit readyRead(messages, authors);
@@ -329,8 +329,8 @@ void Twitch::onIRCMessage(const QString &rawData)
         timerCheckPong.stop();
     }
 
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
     const QVector<QStringRef> rawMessages = rawData.splitRef("\r\n");
     for (const QStringRef& raw : rawMessages)
@@ -556,15 +556,16 @@ void Twitch::onIRCMessage(const QString &rawData)
             authorFlags.insert(Author::Flag::Moderator);
         }
 
-        const Author author(getServiceType(),
-                                displayName,
-                                login,
-                                QUrl(),
-                                QUrl(QString("https://www.twitch.tv/%1").arg(login)),
-                                badges,
-                                {},
-                                authorFlags,
-                                nicknameColor);
+        std::shared_ptr<Author> author = std::make_shared<Author>(
+            getServiceType(),
+            displayName,
+            login,
+            QUrl(),
+            QUrl(QString("https://www.twitch.tv/%1").arg(login)),
+            badges,
+            QStringList(),
+            authorFlags,
+            nicknameColor);
 
         if (emotesInfo.isEmpty())
         {
@@ -620,13 +621,15 @@ void Twitch::onIRCMessage(const QString &rawData)
             }
         }
 
-        const Message message = Message(contents,
-                                        author,
-                                        QDateTime::currentDateTime(),
-                                        QDateTime::currentDateTime(),
-                                        QString(),
-                                        messageFlags,
-                                        forcedColors);
+        std::shared_ptr<Message> message = std::make_shared<Message>(
+            contents,
+            author,
+            QDateTime::currentDateTime(),
+            QDateTime::currentDateTime(),
+            QString(),
+            messageFlags,
+            forcedColors);
+
         messages.append(message);
         authors.append(author);
 

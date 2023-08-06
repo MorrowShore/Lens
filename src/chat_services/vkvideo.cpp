@@ -249,8 +249,8 @@ void VkVideo::requestChat()
 
         const QJsonArray items = response.value("items").toArray();
 
-        QList<Message> messages;
-        QList<Author> authors;
+        QList<std::shared_ptr<Message>> messages;
+        QList<std::shared_ptr<Author>> authors;
 
         for (const QJsonValue& v : qAsConst(items))
         {
@@ -399,15 +399,21 @@ void VkVideo::requestChat()
                 pageUrl = QString("https://vk.com/id%1").arg(user.id);
             }
 
-            Author author(getServiceType(),
-                          user.name,
-                          user.id,
-                          user.avatar,
-                          QUrl(pageUrl),
-                          {},
-                          rightBadges);
+            std::shared_ptr<Author> author = std::make_shared<Author>(
+                getServiceType(),
+                user.name,
+                user.id,
+                user.avatar,
+                QUrl(pageUrl),
+                QStringList(),
+                rightBadges);
 
-            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), QString("%1_%2").arg(date).arg(rawMessageId));
+            std::shared_ptr<Message> message = std::make_shared<Message>(
+                contents,
+                author,
+                publishedAt,
+                QDateTime::currentDateTime(),
+                QString("%1_%2").arg(date).arg(rawMessageId));
 
             messages.append(message);
             authors.append(author);

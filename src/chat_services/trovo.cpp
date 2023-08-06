@@ -230,8 +230,8 @@ void Trovo::onWebSocketReceived(const QString& rawData)
     }
     else if (type == "CHAT")
     {
-        QList<Message> messages;
-        QList<Author> authors;
+        QList<std::shared_ptr<Message>> messages;
+        QList<std::shared_ptr<Author>> authors;
 
         const QJsonArray chats = data.value("chats").toArray();
         for (const QJsonValue& v : qAsConst(chats))
@@ -277,11 +277,12 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 }
             }
 
-            Author author(getServiceType(),
-                          authorName,
-                          getServiceTypeId(getServiceType()) + QString("/%1").arg(authorIdNum),
-                          avatarUrl,
-                          QUrl("https://trovo.live/s/" + authorName));
+            std::shared_ptr<Author> author = std::make_shared<Author>(
+                getServiceType(),
+                authorName,
+                getServiceTypeId(getServiceType()) + QString("/%1").arg(authorIdNum),
+                avatarUrl,
+                QUrl("https://trovo.live/s/" + authorName));
 
             QDateTime publishedAt;
 
@@ -382,7 +383,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 contents.append(new Message::Text(text));
             }
 
-            Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
+            std::shared_ptr<Message> message = std::make_shared<Message>(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
 
             messages.append(message);
             authors.append(author);

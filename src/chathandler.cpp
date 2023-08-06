@@ -74,7 +74,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     });
 }
 
-void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
+void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, const QList<std::shared_ptr<Author>>& authors)
 {
     if (messages.isEmpty() && authors.isEmpty())
     {
@@ -90,36 +90,47 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
     AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
 
     QList<std::shared_ptr<Message>> messagesValidToAdd;
-    QList<Author*> updatedAuthors;
+    QList<std::shared_ptr<Author>> updatedAuthors;
 
     for (int i = 0; i < messages.count(); ++i)
     {
-        Message&& message = std::move(messages[i]);
-        if (messagesModel.contains(message.getId()) && !message.isHasFlag(Message::Flag::DeleterItem))
+        std::shared_ptr<Message> message = messages[i];
+        if (!message)
+        {
+            qWarning() << Q_FUNC_INFO << "message is null";
+            continue;
+        }
+
+        if (messagesModel.contains(message->getId()) && !message->isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
         }
 
-        Author&& author = std::move(authors[i]);
-
-        messagesModel.addAuthor(std::make_shared<Author>(author));
-
-        if (!message.isHasFlag(Message::Flag::DeleterItem))
+        std::shared_ptr<Author> author = authors[i];
+        if (!author)
         {
-            switch (author.getServiceType())
+            qWarning() << Q_FUNC_INFO << "author is null";
+            continue;
+        }
+
+        messagesModel.addAuthor(author);
+
+        if (!message->isHasFlag(Message::Flag::DeleterItem))
+        {
+            switch (author->getServiceType())
             {
             case AxelChat::ServiceType::Unknown:
             case AxelChat::ServiceType::Software:
                 break;
 
             default:
-                serviceType = author.getServiceType();
-                updatedAuthors.append(&author);
+                serviceType = author->getServiceType();
+                updatedAuthors.append(author);
                 break;
             }
         }
 
-        messagesValidToAdd.append(std::move(std::make_shared<Message>(message)));
+        messagesValidToAdd.append(message);
     }
 
     outputToFile.writeAuthors(updatedAuthors);
@@ -143,7 +154,7 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
         }
 #endif
         
-        messagesModel.addMessage(std::move(message));
+        messagesModel.addMessage(message);
     }
 
     emit messagesDataChanged();
@@ -156,36 +167,30 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
 
 void ChatHandler::sendTestMessage(const QString &text)
 {
-    const Author& author = Author::getSoftwareAuthor();
-    QList<Author> authors;
-    authors.append(author);
+    std::shared_ptr<Author> author = Author::getSoftwareAuthor();
 
-    Message message({new Message::Text(text)}, author);
-    message.setCustomAuthorName(tr("Test Message"));
-    message.setCustomAuthorAvatarUrl(QUrl("qrc:/resources/images/flask2.svg"));
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        QList<Message::Content*>{new Message::Text(text)},
+        author);
 
-    QList<Message> messages;
-    messages.append(message);
+    message->setCustomAuthorName(tr("Test Message"));
+    message->setCustomAuthorAvatarUrl(QUrl("qrc:/resources/images/flask2.svg"));
 
-    onReadyRead(messages, authors);
+    onReadyRead({message}, {author});
 }
 
 void ChatHandler::sendSoftwareMessage(const QString &text)
 {
-    const Author& author = Author::getSoftwareAuthor();
-    QList<Author> authors;
-    authors.append(author);
+    std::shared_ptr<Author> author = Author::getSoftwareAuthor();
+\
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        QList<Message::Content*>{new Message::Text(text)},
+        author,
+        QDateTime::currentDateTime(),
+        QDateTime::currentDateTime(),
+        QString());
 
-    QList<Message> messages;
-    messages.append(Message({new Message::Text(text)},
-                                author,
-                                QDateTime::currentDateTime(),
-                                QDateTime::currentDateTime(),
-                                QString(),
-                                {},
-                                {}));
-
-    onReadyRead(messages, authors);
+    onReadyRead({message}, {author});
 }
 
 void ChatHandler::playNewMessageSound()
@@ -328,7 +333,7 @@ void ChatHandler::addService()
 
 void ChatHandler::addTestMessages()
 {
-    QList<Message> messages;
+    /*QList<Message> messages;
     QList<Author> authors;
 
     {
@@ -424,7 +429,7 @@ void ChatHandler::addTestMessages()
         messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
     }
 
-    onReadyRead(messages, authors);
+    onReadyRead(messages, authors);*/
 }
 
 #ifndef AXELCHAT_LIBRARY

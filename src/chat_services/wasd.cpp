@@ -512,16 +512,17 @@ void Wasd::parseEventMessage(const QJsonObject &data)
         }
     }
 
-    const Author author(getServiceType(),
-                        name,
-                        authorId,
-                        avatarUrl,
-                        pageUrl,
-                        leftBadges,
-                        {},
-                        {},
-                        authorNicknameColor,
-                        authorNicknameBackgroundColor);
+    std::shared_ptr<Author> author = std::make_shared<Author>(
+        getServiceType(),
+        name,
+        authorId,
+        avatarUrl,
+        pageUrl,
+        leftBadges,
+        QStringList(),
+        std::set<Author::Flag>(),
+        authorNicknameColor,
+        authorNicknameBackgroundColor);
 
     const QDateTime publishedAt = QDateTime::fromString(data.value("date_time").toString(), Qt::DateFormat::ISODateWithMs);
     const QString messageId = data.value("id").toString();
@@ -564,10 +565,15 @@ void Wasd::parseEventMessage(const QJsonObject &data)
         return;
     }
 
-    const Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        contents,
+        author,
+        publishedAt,
+        QDateTime::currentDateTime(),
+        getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
 
-    QList<Message> messages = { message };
-    QList<Author> authors = { author };
+    QList<std::shared_ptr<Message>> messages = { message };
+    QList<std::shared_ptr<Author>> authors = { author };
 
     emit readyRead(messages, authors);
 }

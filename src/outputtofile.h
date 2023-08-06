@@ -41,7 +41,7 @@ public:
     void downloadAvatar(const QString& authorId, const AxelChat::ServiceType serviceType, const QUrl &url);
     QString getAuthorDirectory(const AxelChat::ServiceType serviceType, const QString& authorId) const;
     QString getServiceDirectory(const AxelChat::ServiceType serviceType) const;
-    void writeAuthors(const QList<Author*>& authors);
+    void writeAuthors(const QList<std::shared_ptr<Author>>& authors);
     void writeServiceState(const ChatService* service) const;
     void writeApplicationState(const bool started, const int viewersTotalCount) const;
 

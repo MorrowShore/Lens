@@ -260,9 +260,8 @@ public:
         QString messageText;
     };
 
-    Message(){ }
     Message(const QList<Content*>& contents,
-            const Author& author,
+            const std::weak_ptr<Author>& author,
             const QDateTime& publishedAt = QDateTime::currentDateTime(),
             const QDateTime& receivedAt = QDateTime::currentDateTime(),
             const QString& messageId = QString(),
@@ -286,6 +285,10 @@ public:
     inline const QDateTime& getReceivedAt() const
     {
         return receivedAt;
+    }
+    inline std::weak_ptr<Author> getAuthor() const
+    {
+        return author;
     }
     inline const QString& getAuthorId() const
     {
@@ -354,6 +357,7 @@ private:
     QString id;
     QDateTime publishedAt;
     QDateTime receivedAt;
+    std::weak_ptr<Author> author;
     QString authorId;
     std::set<Flag> flags;
     QHash<ColorRole, QColor> forcedColors;

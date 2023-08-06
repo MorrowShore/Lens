@@ -134,5 +134,5 @@ private:
     QMap<QString, Channel> channels;
 
     QMap<QString, QString> requestedGuildsChannels; // <guildId, channelId>
-    QMap<QPair<QString, QString>, QList<QPair<Message, Author>>> deferredMessages; // QMap<<guildId, channelId>, QList<QPair<Messsage, Author>>>
+    QMap<QPair<QString, QString>, QList<QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>>> deferredMessages; // QMap<<guildId, channelId>, QList<QPair<Messsage, Author>>>
 };

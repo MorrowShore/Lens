@@ -6,7 +6,7 @@
 #include <QDebug>
 
 Message::Message(const QList<Message::Content*>& contents_,
-                 const Author& author,
+                 const std::weak_ptr<Author>& author_,
                  const QDateTime &publishedAt_,
                  const QDateTime &receivedAt_,
                  const QString &messageId_,
@@ -18,7 +18,8 @@ Message::Message(const QList<Message::Content*>& contents_,
     , id(messageId_)
     , publishedAt(publishedAt_)
     , receivedAt(receivedAt_)
-    , authorId(author.getId())
+    , author(author_)
+    , authorId(!author_.expired() ? author_.lock()->getId() : QString())
     , flags(flags_)
     , forcedColors(forcedColors_)
     , destination(destination_)
@@ -29,7 +30,10 @@ Message::Message(const QList<Message::Content*>& contents_,
         id = authorId + "/" + QUuid::createUuid().toString(QUuid::Id128);
     }
 
-    id = ChatService::getServiceTypeId(author.getServiceType()) + "/" + id;
+    if (!author.expired())
+    {
+        id = ChatService::getServiceTypeId(author.lock()->getServiceType()) + "/" + id;
+    }
 
     updateHtml();
 }
@@ -96,7 +100,7 @@ void Message::printMessageInfo(const QString &prefix, const int &row) const
     resultString += "\n";
 
     resultString += "\n===========================";
-    qDebug(resultString.toUtf8());
+    qDebug() << resultString.toUtf8();
 }
 
 QString Message::getForcedColorRoleToQMLString(const ColorRole &role) const

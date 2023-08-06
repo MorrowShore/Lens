@@ -400,8 +400,8 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 {
     //qDebug("\n" + QJsonDocument(data).toJson() + "\n");
 
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
     QStringList leftBadges;
 
@@ -549,14 +549,20 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
     }
 
-    Author author(getServiceType(),
-                  authorName,
-                  authorId,
-                  authorAvatarUrl,
-                  QUrl("https://vkplay.live/" + authorName),
-                  leftBadges);
+    std::shared_ptr<Author> author = std::make_shared<Author>(
+        getServiceType(),
+        authorName,
+        authorId,
+        authorAvatarUrl,
+        QUrl("https://vkplay.live/" + authorName),
+        leftBadges);
 
-    Message message(contents, author, publishedAt, QDateTime::currentDateTime(), getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        contents,
+        author,
+        publishedAt,
+        QDateTime::currentDateTime(),
+        getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
 
     messages.append(message);
     authors.append(author);

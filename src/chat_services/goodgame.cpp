@@ -355,8 +355,8 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             emit stateChanged();
         }
 
-        QList<Message> messages;
-        QList<Author> authors;
+        QList<std::shared_ptr<Message>> messages;
+        QList<std::shared_ptr<Author>> authors;
 
         const QJsonArray jsonMessages = data.value("messages").toArray();
         for (const QJsonValue& value : qAsConst(jsonMessages))
@@ -431,15 +431,16 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 }
             }
 
-            const Author author(getServiceType(),
-                                authorName,
-                                authorId,
-                                QUrl(),
-                                QUrl("https://goodgame.ru/user/" + authorId),
-                                {}, // leftBadges, // TODO
-                                {},
-                                {},
-                                nicknameColor);
+            std::shared_ptr<Author> author = std::make_shared<Author>(
+                getServiceType(),
+                authorName,
+                authorId,
+                QUrl(),
+                QUrl("https://goodgame.ru/user/" + authorId),
+                QStringList(), // leftBadges, // TODO
+                QStringList(),
+                std::set<Author::Flag>(),
+                nicknameColor);
 
             QList<Message::Content*> contents;
 
@@ -509,7 +510,12 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 contents.append(new Message::Text(text));
             }
 
-            const Message message(contents, author, publishedAt, QDateTime::currentDateTime(), messageId);
+            std::shared_ptr<Message> message = std::make_shared<Message>(
+                contents,
+                author,
+                publishedAt,
+                QDateTime::currentDateTime(),
+                messageId);
 
             messages.append(message);
             authors.append(author);

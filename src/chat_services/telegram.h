@@ -22,7 +22,7 @@ private:
     void requestUpdates();
     void processBadChatReply();
     void parseUpdates(const QJsonArray& updates);
-    void parseMessage(const QJsonObject& jsonMessage, QList<Message>& messages, QList<Author>& authors);
+    void parseMessage(const QJsonObject& jsonMessage, QList<std::shared_ptr<Message>>& messages, QList<std::shared_ptr<Author>>& authors);
     void requestUserPhoto(const QString& authorId, const int64_t& userId);
     void requestPhotoFileInfo(const QString& authorId, const QString& fileId);
     void addServiceContent(QList<Message::Content*>& contents, const QString& name);

@@ -413,16 +413,18 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
     const QDateTime messagePublishedTime = QDateTime::fromString(jsonMessage.value("time").toString(), Qt::DateFormat::ISODate);
     const QDateTime messageReceivedTime = QDateTime::currentDateTime();
 
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
-    Author author(getServiceType(),
-                  userName,
-                  userId,
-                  userAvatar,
-                  "https://rumble.com/user/" + userName,
-                  {}, rightBadges, {},
-                  userColor);
+    std::shared_ptr<Author> author = std::make_shared<Author>(
+        getServiceType(),
+        userName,
+        userId,
+        userAvatar,
+        "https://rumble.com/user/" + userName,
+        QStringList(), rightBadges,
+        std::set<Author::Flag>(),
+        userColor);
 
     QList<Message::Content *> contents;
 
@@ -464,13 +466,14 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
         contents.append(parseBlock(v.toObject()));
     }
 
-    Message message(contents,
-                    author,
-                    messagePublishedTime,
-                    messageReceivedTime,
-                    getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId),
-                    flags,
-                    forcedColors);
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        contents,
+        author,
+        messagePublishedTime,
+        messageReceivedTime,
+        getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId),
+        flags,
+        forcedColors);
 
     messages.append(message);
     authors.append(author);

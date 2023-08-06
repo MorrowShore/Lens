@@ -550,11 +550,12 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 
     static const int AvatarSize = 256;
 
-    const Author author(getServiceType(),
-                  authorName,
-                  userId,
-                  QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(userId, avatarHash).arg(AvatarSize)),
-                  QUrl("https://discordapp.com/users/" + userId));
+    std::shared_ptr<Author> author = std::make_shared<Author>(
+        getServiceType(),
+        authorName,
+        userId,
+        QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(userId, avatarHash).arg(AvatarSize)),
+        QUrl("https://discordapp.com/users/" + userId));
 
     const QString messageId = jsonMessage.value("id").toString();
 
@@ -622,7 +623,12 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         return;
     }
 
-    Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId);
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        contents,
+        author,
+        dateTime,
+        QDateTime::currentDateTime(),
+        messageId);
 
     bool needDeffered = false;
 
@@ -641,7 +647,7 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
     if (needDeffered)
     {
         const QPair<QString, QString> key = { guildId, channelId };
-        const QPair<Message, Author> value = { message, author };
+        const QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> value = { message, author };
 
         if (deferredMessages.contains(key))
         {
@@ -659,12 +665,12 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         const Guild& guild = guilds[guildId];
         const Channel& channel = channels[channelId];
 
-        message.setDestination(getDestination(guild, channel));
+        message->setDestination(getDestination(guild, channel));
 
-        if (isValidForShow(message, author, guild, channel))
+        if (isValidForShow(*message.get(), *author.get(), guild, channel))
         {
-            QList<Message> messages({ message });
-            QList<Author> authors({ author });
+            QList<std::shared_ptr<Message>> messages({ message });
+            QList<std::shared_ptr<Author>> authors({ author });
 
             emit readyRead(messages, authors);
         }
@@ -868,23 +874,23 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
     requestedGuildsChannels.remove(guildId);
 
     const QPair<QString, QString> key = { guildId, channelId };
-    const QList<QPair<Message, Author>> currentDeferredMessages = deferredMessages.value(key);
+    const QList<QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>> currentDeferredMessages = deferredMessages.value(key);
     deferredMessages.remove(key);
 
     const Guild& guild = guilds.value(guildId);
     const Channel& channel = channels.value(channelId);
 
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
-    for (const QPair<Message, Author>& messageAuthor : qAsConst(currentDeferredMessages))
+    for (const QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>& messageAuthor : qAsConst(currentDeferredMessages))
     {
-        Message message = messageAuthor.first;
-        message.setDestination(getDestination(guild, channel));
+        std::shared_ptr<Message> message = messageAuthor.first;
+        message->setDestination(getDestination(guild, channel));
 
-        const Author& author = messageAuthor.second;
+        std::shared_ptr<Author> author = messageAuthor.second;
 
-        if (isValidForShow(message, author, guild, channel))
+        if (isValidForShow(*message.get(), *author.get(), guild, channel))
         {
             messages.append(message);
             authors.append(author);

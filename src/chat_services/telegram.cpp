@@ -275,8 +275,8 @@ void Telegram::requestUpdates()
 
 void Telegram::parseUpdates(const QJsonArray& updates)
 {
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
     for (const QJsonValue& v : updates)
     {
@@ -312,7 +312,7 @@ void Telegram::parseUpdates(const QJsonArray& updates)
     }
 }
 
-void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &messages, QList<Author> &authors)
+void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<std::shared_ptr<Message>> &messages, QList<std::shared_ptr<Author>> &authors)
 {
     const QJsonObject jsonChat = jsonMessage.value("chat").toObject();
 
@@ -336,7 +336,10 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
         authorName += " " + lastName;
     }
 
-    const Author author(getServiceType(), authorName, QString("%1").arg(userId));
+    std::shared_ptr<Author> author = std::make_shared<Author>(
+        getServiceType(),
+        authorName,
+        QString("%1").arg(userId));
 
     const QDateTime dateTime = QDateTime::fromSecsSinceEpoch(jsonMessage.value("date").toVariant().toLongLong());
 
@@ -394,14 +397,22 @@ void Telegram::parseMessage(const QJsonObject &jsonMessage, QList<Message> &mess
             }
         }
 
-        const Message message(contents, author, dateTime, QDateTime::currentDateTime(), messageId, {}, {}, destination);
+        std::shared_ptr<Message> message = std::make_shared<Message>(
+            contents,
+            author,
+            dateTime,
+            QDateTime::currentDateTime(),
+            messageId,
+            std::set<Message::Flag>(),
+            QHash<Message::ColorRole, QColor>(),
+            destination);
 
         messages.append(message);
         authors.append(author);
 
         if (!usersPhotoUpdated.contains(userId))
         {
-            requestUserPhoto(author.getId(), userId);
+            requestUserPhoto(author->getId(), userId);
         }
     }
 }

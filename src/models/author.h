@@ -39,8 +39,7 @@ public:
     };
     Q_ENUM(Flag)
 
-    Author() { };
-    Author(AxelChat::ServiceType serviceType,
+    Author(const AxelChat::ServiceType serviceType,
            const QString& name,
            const QString& authorId,
            const QUrl& avatarUrl = QUrl(),
@@ -51,7 +50,7 @@ public:
            const QColor& customNicknameColor = QColor(),
            const QColor& customNicknameBackgroundColor = QColor());
 
-    static const Author& getSoftwareAuthor();
+    static const std::shared_ptr<Author> getSoftwareAuthor();
 
     inline const QString& getId() const
     {

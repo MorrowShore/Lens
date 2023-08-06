@@ -148,7 +148,7 @@ QString YouTube::extractBroadcastId(const QString &link) const
 void YouTube::printData(const QString &tag, const QByteArray& data)
 {
     qDebug() << "==============================================================================================================================";
-    qDebug(tag.toUtf8());
+    qDebug() << tag.toUtf8();
     qDebug() << "==================================DATA========================================================================================";
     qDebug() << data;
     qDebug() << "==============================================================================================================================";
@@ -441,8 +441,8 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         emit stateChanged();
     }
 
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
     for (const QJsonValue& actionJson : array)
     {
@@ -788,31 +788,33 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
         {
             if (isDeleter)
             {
-                static const Author author(getServiceType(), "", "");
+                static const std::shared_ptr<Author> author = std::make_shared<Author>(getServiceType(), "", "");
 
-                messages.append(Message(contents,
-                                            author,
-                                            QDateTime::currentDateTime(),
-                                            QDateTime::currentDateTime(),
-                                            messageId,
-                                            {Message::Flag::DeleterItem}));
+                messages.append(std::make_shared<Message>(
+                    contents,
+                    author,
+                    QDateTime::currentDateTime(),
+                    QDateTime::currentDateTime(),
+                    messageId,
+                    std::set<Message::Flag>{Message::Flag::DeleterItem}));
 
                 authors.append(author);
             }
             else
             {
-                const Author author(getServiceType(),
-                                    authorName,
-                                    authorChannelId,
-                                    authorAvatarUrl,
-                                    QUrl(QString("https://www.youtube.com/channel/%1").arg(authorChannelId)),
-                                    {},
-                                    rightBadges,
-                                    authorFlags,
-                                    authorNicknameColor,
-                                    authorNicknameBackgroundColor);
+                std::shared_ptr<Author> author = std::make_shared<Author>(
+                    getServiceType(),
+                    authorName,
+                    authorChannelId,
+                    authorAvatarUrl,
+                    QUrl(QString("https://www.youtube.com/channel/%1").arg(authorChannelId)),
+                    QStringList(),
+                    rightBadges,
+                    authorFlags,
+                    authorNicknameColor,
+                    authorNicknameBackgroundColor);
 
-                const Message message(
+                std::shared_ptr<Message> message = std::make_shared<Message>(
                             contents,
                             author,
                             publishedAt,
@@ -905,8 +907,6 @@ void YouTube::processBadChatReply()
         if (state.connected && !state.streamId.isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "too many bad chat replies! Disonnecting...";
-
-            const QString preBroadcastId = state.streamId;
 
             state = State();
 

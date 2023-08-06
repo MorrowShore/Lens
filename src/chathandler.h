@@ -99,7 +99,7 @@ signals:
     void messagesDataChanged();
 
 public slots:
-    void onReadyRead(QList<Message>& messages, QList<Author>& authors);
+    void onReadyRead(const QList<std::shared_ptr<Message>>& messages, const QList<std::shared_ptr<Author>>& authors);
     void sendTestMessage(const QString& text);
     void sendSoftwareMessage(const QString& text);
     void playNewMessageSound();

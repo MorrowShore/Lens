@@ -404,22 +404,24 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
         leftBadges.append(parseBadge(value.toObject(), "qrc:/resources/images/unknown-badge.png"));
     }
 
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
-    Author author(getServiceType(),
-                  authorName,
-                  userId,
-                  QUrl(""),
-                  "https://kick.com/" + slug,
-                  leftBadges, {}, {},
-                  authorColor);
+    std::shared_ptr<Author> author = std::make_shared<Author>(
+        getServiceType(),
+        authorName,
+        userId,
+        QUrl(),
+        QUrl("https://kick.com/" + slug),
+        leftBadges, QStringList(), std::set<Author::Flag>(),
+        authorColor);
 
-    Message message(parseContents(rawContent),
-                    author,
-                    publishedTime,
-                    QDateTime::currentDateTime(),
-                    generateMessageId(id));
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        parseContents(rawContent),
+        author,
+        publishedTime,
+        QDateTime::currentDateTime(),
+        generateMessageId(id));
 
     messages.append(message);
     authors.append(author);
@@ -437,17 +439,17 @@ void Kick::parseMessageDeletedEvent(const QJsonObject &data)
     const QString rawId = data.value("message").toObject().value("id").toString();
     const QString messageId = generateMessageId(rawId);
 
-    QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
-    static const Author author(getServiceType(), "", "");
+    static const std::shared_ptr<Author> author = std::make_shared<Author>(getServiceType(), "", "");
 
-    messages.append(Message({},
+    messages.append(std::make_shared<Message>(QList<Message::Content*>(),
                             author,
                             QDateTime::currentDateTime(),
                             QDateTime::currentDateTime(),
                             messageId,
-                            {Message::Flag::DeleterItem}));
+                            std::set<Message::Flag>{Message::Flag::DeleterItem}));
 
     authors.append(author);
 

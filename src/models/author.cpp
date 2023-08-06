@@ -4,7 +4,7 @@
 #include <QMetaEnum>
 #include <QDebug>
 
-Author::Author(AxelChat::ServiceType serviceType_,
+Author::Author(const AxelChat::ServiceType serviceType_,
                const QString &name_,
                const QString &authorId_,
                const QUrl &avatarUrl_,
@@ -31,12 +31,13 @@ Author::Author(AxelChat::ServiceType serviceType_,
     }
 }
 
-const Author &Author::getSoftwareAuthor()
+const std::shared_ptr<Author> Author::getSoftwareAuthor()
 {
     static const QString authorId = "____SOFTWARE____";
-    static const Author author(AxelChat::ServiceType::Software,
-                            QCoreApplication::applicationName(),
-                            authorId);
+    static const std::shared_ptr<Author> author = std::make_shared<Author>(
+        AxelChat::ServiceType::Software,
+        QCoreApplication::applicationName(),
+        authorId);
 
     return author;
 }

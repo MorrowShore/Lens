@@ -556,15 +556,21 @@ QString OutputToFile::getServiceDirectory(const AxelChat::ServiceType serviceTyp
     return outputDirectory.get() + "/services/" + ChatService::getServiceTypeId(serviceType);
 }
 
-void OutputToFile::writeAuthors(const QList<Author*>& authors)
+void OutputToFile::writeAuthors(const QList<std::shared_ptr<Author>>& authors)
 {
     if (!enabled.get())
     {
         return;
     }
 
-    for (const Author* author : authors)
+    for (const std::shared_ptr<Author>& author : qAsConst(authors))
     {
+        if (!author)
+        {
+            qWarning() << Q_FUNC_INFO << "author is null";
+            continue;
+        }
+
         const QString pathDir = getAuthorDirectory(author->getServiceType(), author->getId());
         if (!QDir(pathDir).exists())
         {

@@ -102,7 +102,7 @@ public:
 
 signals:
     void stateChanged();
-    void readyRead(QList<Message>& messages, QList<Author>& authors);
+    void readyRead(const QList<std::shared_ptr<Message>>& messages, const QList<std::shared_ptr<Author>>& authors);
     void connectedChanged(const bool connected);
     void authorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
