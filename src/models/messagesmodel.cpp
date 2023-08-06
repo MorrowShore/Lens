@@ -143,7 +143,7 @@ void MessagesModel::append(Message&& message)
         messageData->setValue(message);
 
         _dataById.insert(message.getId(), messageData);
-        _dataByIdNum.insert(message.getPosition(), messageData);
+        dataByPosition.insert(message.getPosition(), messageData);
         positionByData[messageData] = message.getPosition();
 
         Author* author = getAuthor(message.getAuthorId());
@@ -183,7 +183,7 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
         const uint64_t position = message.getPosition();
 
         _dataById.remove(id);
-        _dataByIdNum.remove(position);
+        dataByPosition.remove(position);
         positionByData.erase(messageData);
         _data.removeAt(position);
 
@@ -263,7 +263,7 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     const std::set<uint64_t>& messagesIds = author->getMessagesIds();
     for (const uint64_t id : messagesIds)
     {
-        const QModelIndex index = createIndexByPtr(_dataByIdNum.value(id));
+        const QModelIndex index = createIndexByPtr(dataByPosition.value(id));
         emit dataChanged(index, index, rolesInt);
     }
 }

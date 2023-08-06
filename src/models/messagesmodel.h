@@ -34,7 +34,7 @@ private:
 
     QList<std::shared_ptr<QVariant>> _data;
     QHash<QString, std::shared_ptr<QVariant>> _dataById;
-    QHash<uint64_t, std::shared_ptr<QVariant>> _dataByIdNum;
+    QHash<uint64_t, std::shared_ptr<QVariant>> dataByPosition;
     std::unordered_map<std::shared_ptr<QVariant>, uint64_t> positionByData;
 
     QHash<QString, Author*> _authorsById;
