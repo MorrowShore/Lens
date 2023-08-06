@@ -8,6 +8,7 @@
 
 namespace
 {
+const int MaxSize  = 10; // 1000
 
 const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
 {
@@ -134,8 +135,8 @@ void MessagesModel::append(Message&& message)
 
         beginInsertRows(QModelIndex(), _data.count(), _data.count());
 
-        message.setPosition(_lastIdNum);
-        _lastIdNum++;
+        message.setPosition(lastPosition);
+        lastPosition++;
 
         std::shared_ptr<QVariant> messageData = std::make_shared<QVariant>();
 
@@ -160,9 +161,9 @@ void MessagesModel::append(Message&& message)
     //qDebug() << "Count:" << _data.count();
 
     //Remove old messages
-    if (_data.count() >= _maxSize)
+    if (_data.count() >= MaxSize)
     {
-        removeRows(0, _data.count() - _maxSize);
+        removeRows(0, _data.count() - MaxSize);
     }
 }
 
@@ -201,7 +202,7 @@ void MessagesModel::clear()
 
 uint64_t MessagesModel::lastIdNum() const
 {
-    return _lastIdNum;
+    return lastPosition;
 }
 
 QModelIndex MessagesModel::createIndexByPtr(const std::shared_ptr<QVariant>& data) const

@@ -40,9 +40,7 @@ private:
 
     QHash<QString, Author*> _authorsById;
 
-    const int _maxSize  = 10; // 1000
-
-    uint64_t _lastIdNum = 0;
+    uint64_t lastPosition = 0;
     uint64_t _removedRows = 0;
 };
 
