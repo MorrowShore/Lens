@@ -141,21 +141,21 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
 
         beginInsertRows(QModelIndex(), _data.count(), _data.count());
 
-        message->setPosition(lastPosition);
-        lastPosition++;
+        message->setRow(lastRow);
+        lastRow++;
 
         std::shared_ptr<QVariant> messageData = std::make_shared<QVariant>();
 
         messageData->setValue(*message);
 
         _dataById.insert(message->getId(), messageData);
-        dataByPosition.insert(message->getPosition(), messageData);
-        rowById[message->getId()] = message->getPosition();
+        dataByRow.insert(message->getRow(), messageData);
+        rowById[message->getId()] = message->getRow();
 
         Author* author = getAuthor(message->getAuthorId());
 
         std::set<uint64_t>& messagesIds = author->getMessagesIds();
-        messagesIds.insert(message->getPosition());
+        messagesIds.insert(message->getRow());
 
         _data.append(message);
 
@@ -173,23 +173,22 @@ void MessagesModel::append(const std::shared_ptr<Message>& message)
     }
 }
 
-bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent)
+bool MessagesModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     Q_UNUSED(parent)
 
-    beginRemoveRows(QModelIndex(), position, position + rows - 1);
+    beginRemoveRows(QModelIndex(), row, row + count - 1);
 
-    for (int row = 0; row < rows; ++row)
+    for (int row = 0; row < count; ++row)
     {
-        const std::shared_ptr<Message>& message = _data[position];
+        const std::shared_ptr<Message>& message = _data[row];
 
         const QString& id = message->getId();
-        const uint64_t position = message->getPosition();
 
         _dataById.remove(id);
-        dataByPosition.remove(position);
+        dataByRow.remove(row);
         rowById.erase(id);
-        _data.removeAt(position);
+        _data.removeAt(row);
 
         removedRows++;
     }
@@ -240,7 +239,7 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     const std::set<uint64_t>& messagesIds = author->getMessagesIds();
     for (const uint64_t id : messagesIds)
     {
-        const Message& message = qvariant_cast<Message>(*dataByPosition.value(id));
+        const Message& message = qvariant_cast<Message>(*dataByRow.value(id));
         const QModelIndex index = createIndexById(message.getId());
         emit dataChanged(index, index, rolesInt);
     }

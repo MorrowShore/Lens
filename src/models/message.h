@@ -309,13 +309,13 @@ public:
     {
         customAuthorName = name;
     }
-    inline uint64_t getPosition() const
+    inline uint64_t getRow() const
     {
-        return position;
+        return row;
     }
-    inline void setPosition(const uint64_t position_)
+    inline void setRow(const uint64_t row_)
     {
-        position = position_;
+        row = row_;
     }
     inline bool isHasFlag(const Flag flag) const
     {
@@ -364,7 +364,7 @@ private:
     QStringList destination;
     const ReplyDestinationInfo replyDestinationInfo;
 
-    uint64_t position = 0;
+    uint64_t row = 0;
 };
 
 #endif // MESSAGE_H

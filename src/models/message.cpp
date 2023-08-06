@@ -82,7 +82,7 @@ void Message::printMessageInfo(const QString &prefix, const int &row) const
     resultString += "\nAuthor Id: \"" + getAuthorId() + "\"";
     resultString += "\nMessage Text: \"" + toHtml() + "\"";
     resultString += "\nMessage Id: \"" + getId() + "\"";
-    resultString += QString("\nMessage Position: %1").arg(getPosition());
+    resultString += QString("\nMessage Position: %1").arg(getRow());
 
     if (row != -1)
     {

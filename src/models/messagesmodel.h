@@ -15,7 +15,7 @@ public:
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
-    bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
     void append(const std::shared_ptr<Message>& message);
     bool contains(const QString& id);
@@ -33,12 +33,12 @@ private:
 
     QList<std::shared_ptr<Message>> _data;
     QHash<QString, std::shared_ptr<QVariant>> _dataById;
-    QHash<uint64_t, std::shared_ptr<QVariant>> dataByPosition;
+    QHash<uint64_t, std::shared_ptr<QVariant>> dataByRow;
     std::unordered_map<QString, uint64_t> rowById;
 
     QHash<QString, Author*> _authorsById;
 
-    uint64_t lastPosition = 0;
+    uint64_t lastRow = 0;
     uint64_t removedRows = 0;
 };
 
