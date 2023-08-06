@@ -163,11 +163,16 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
         {
             for (int i = 0; i < messages.count(); ++i)
             {
-                const Message& message = *messages[i];
-
-                if (message.getId() == service->getLastSavedMessageId().get())
+                const std::shared_ptr<Message>& message = messages[i];
+                if (!message)
                 {
-                    qDebug() << "found message with id" << message.getId() << ", ignore saving messages before it, index =" << i;
+                    qWarning() << Q_FUNC_INFO << "message is null";
+                    continue;
+                }
+
+                if (message->getId() == service->getLastSavedMessageId().get())
+                {
+                    qDebug() << "found message with id" << message->getId() << ", ignore saving messages before it, index =" << i;
                     firstValidMessage = i + 1;
                     break;
                 }
@@ -179,7 +184,15 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
 
     for (int i = firstValidMessage; i < messages.count(); ++i)
     {
-        const Message& message = *messages[i];
+        const std::shared_ptr<Message>& message_ = messages[i];
+        if (!message_)
+        {
+            qWarning() << Q_FUNC_INFO << "message is null";
+            continue;
+        }
+
+        const Message& message = *message_;
+
         if (message.isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
