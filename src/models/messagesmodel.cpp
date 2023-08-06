@@ -6,7 +6,10 @@
 #include <QUuid>
 #include <QDebug>
 
-const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>
+namespace
+{
+
+const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
 {
     {(int)Message::Role::Id ,                           "messageId"},
     {(int)Message::Role::Html ,                         "messageHtml"},
@@ -41,6 +44,12 @@ const QHash<int, QByteArray> MessagesModel::_roleNames = QHash<int, QByteArray>
     {(int)Author::Role::RightBadgesUrls,                    "authorRightBadgesUrls"},
 };
 
+}
+
+QHash<int, QByteArray> MessagesModel::roleNames() const
+{
+    return RoleNames;
+}
 
 void MessagesModel::append(Message&& message)
 {

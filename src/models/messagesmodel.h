@@ -11,9 +11,7 @@ class MessagesModel : public QAbstractListModel
 public:
     MessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
 
-    QHash<int, QByteArray> roleNames() const override {
-        return _roleNames;
-    }
+    QHash<int, QByteArray> roleNames() const override;
 
     void append(Message&& message);
     bool contains(const QString& id);
@@ -35,7 +33,6 @@ public:
     QList<Message> getLastMessages(int count) const;
 
 private:
-    static const QHash<int, QByteArray> _roleNames;
     QList<std::shared_ptr<QVariant>> _data;
     QHash<QString, std::shared_ptr<QVariant>> _dataById;
     QHash<uint64_t, std::shared_ptr<QVariant>> _dataByIdNum;
