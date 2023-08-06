@@ -47,7 +47,7 @@ signals:
 
 public slots:
     void setVolume(int volume);
-    void processMessage(Message& message);
+    void processMessage(const std::shared_ptr<Message>& message);
     void execute(BotAction& action);
 
 private:

@@ -89,7 +89,7 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
 
     AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
 
-    QList<Message> messagesValidToAdd;
+    QList<std::shared_ptr<Message>> messagesValidToAdd;
     QList<Author*> updatedAuthors;
 
     for (int i = 0; i < messages.count(); ++i)
@@ -119,7 +119,7 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
             }
         }
 
-        messagesValidToAdd.append(std::move(message));
+        messagesValidToAdd.append(std::move(std::make_shared<Message>(message)));
     }
 
     outputToFile.writeAuthors(updatedAuthors);
@@ -134,10 +134,10 @@ void ChatHandler::onReadyRead(QList<Message>& messages, QList<Author>& authors)
 
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {
-        Message&& message = std::move(messagesValidToAdd[i]);
+        const std::shared_ptr<Message>& message = messagesValidToAdd[i];
 
 #ifndef AXELCHAT_LIBRARY
-        if (!message.isHasFlag(Message::Flag::IgnoreBotCommand))
+        if (!message->isHasFlag(Message::Flag::IgnoreBotCommand))
         {
             bot.processMessage(message);
         }

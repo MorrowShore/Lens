@@ -52,43 +52,49 @@ QHash<int, QByteArray> MessagesModel::roleNames() const
     return RoleNames;
 }
 
-void MessagesModel::append(Message&& message)
+void MessagesModel::append(const std::shared_ptr<Message>& message)
 {
     //ToDo: добавить сортировку сообщений по времени
 
-    if (message.getId().isEmpty())
+    if (!message)
     {
-        message.printMessageInfo("Ignore message with empty id");
+        qWarning() << Q_FUNC_INFO << "message is null";
+        return;
+    }
+
+    if (message->getId().isEmpty())
+    {
+        message->printMessageInfo("Ignore message with empty id");
         return;
     }
 
 
-    if (message.getId().isEmpty())
+    if (message->getId().isEmpty())
     {
         //message.printMessageInfo(QString("%1: Ignore message with empty id:").arg(Q_FUNC_INFO));
         return;
     }
 
-    if (message.isHasFlag(Message::Flag::DeleterItem))
+    if (message->isHasFlag(Message::Flag::DeleterItem))
     {
         //Deleter
 
-        if (!_dataById.contains(message.getId()))
+        if (!_dataById.contains(message->getId()))
         {
             return;
         }
 
-        std::shared_ptr<QVariant> data = _dataById[message.getId()];
+        std::shared_ptr<QVariant> data = _dataById[message->getId()];
         if (!data)
         {
             return;
         }
 
-        const QModelIndex& index = createIndexByPtr(data);
+        const QModelIndex& index = createIndexById(message->getId());
         if (!index.isValid())
         {
             qCritical() << Q_FUNC_INFO << ": index not valid";
-            message.printMessageInfo("Raw message:");
+            message->printMessageInfo("Raw message:");
             return;
         }
 
@@ -96,35 +102,35 @@ void MessagesModel::append(Message&& message)
         {
             qCritical() << Q_FUNC_INFO << ": failed to set data with role" << Message::Role::MarkedAsDeleted;
 
-            message.printMessageInfo("Raw message:");
+            message->printMessageInfo("Raw message:");
         }
 
-        if (!setData(index, message.toHtml(), (int)Message::Role::Html))
+        if (!setData(index, message->toHtml(), (int)Message::Role::Html))
         {
             qCritical() << Q_FUNC_INFO << ": failed to set data with role" << Message::Role::Html;
 
-            message.printMessageInfo("Raw message:");
+            message->printMessageInfo("Raw message:");
         }
 
         //qDebug(QString("Message \"%1\" marked as deleted").arg(rawMessage.id()).toUtf8());
     }
     else
     {
-        if (_dataById.contains(message.getId()))
+        if (_dataById.contains(message->getId()))
         {
-            qCritical() << Q_FUNC_INFO << "ignore message because this id" << message.getId() << "already exists";
+            qCritical() << Q_FUNC_INFO << "ignore message because this id" << message->getId() << "already exists";
 
-            const std::shared_ptr<QVariant> data = _dataById.value(message.getId());
+            const std::shared_ptr<QVariant> data = _dataById.value(message->getId());
             if (data)
             {
                 const Message& oldMessage = qvariant_cast<Message>(*data);
 
-                message.printMessageInfo("Raw new message:");
+                message->printMessageInfo("Raw new message:");
                 oldMessage.printMessageInfo("Old message:");
             }
             else
             {
-                message.printMessageInfo("Raw new message:");
+                message->printMessageInfo("Raw new message:");
                 qDebug("Old message: nullptr");
             }
 
@@ -135,23 +141,23 @@ void MessagesModel::append(Message&& message)
 
         beginInsertRows(QModelIndex(), _data.count(), _data.count());
 
-        message.setPosition(lastPosition);
+        message->setPosition(lastPosition);
         lastPosition++;
 
         std::shared_ptr<QVariant> messageData = std::make_shared<QVariant>();
 
-        messageData->setValue(message);
+        messageData->setValue(*message);
 
-        _dataById.insert(message.getId(), messageData);
-        dataByPosition.insert(message.getPosition(), messageData);
-        positionByData[messageData] = message.getPosition();
+        _dataById.insert(message->getId(), messageData);
+        dataByPosition.insert(message->getPosition(), messageData);
+        rowById[message->getId()] = message->getPosition();
 
-        Author* author = getAuthor(message.getAuthorId());
+        Author* author = getAuthor(message->getAuthorId());
 
         std::set<uint64_t>& messagesIds = author->getMessagesIds();
-        messagesIds.insert(message.getPosition());
+        messagesIds.insert(message->getPosition());
 
-        _data.append(messageData);
+        _data.append(message);
 
         //printMessageInfo("New message:", rawMessage);
 
@@ -175,16 +181,14 @@ bool MessagesModel::removeRows(int position, int rows, const QModelIndex &parent
 
     for (int row = 0; row < rows; ++row)
     {
-        std::shared_ptr<QVariant> messageData = _data[position];
+        const std::shared_ptr<Message>& message = _data[position];
 
-        const Message& message = qvariant_cast<Message>(*messageData);
-
-        const QString& id = message.getId();
-        const uint64_t position = message.getPosition();
+        const QString& id = message->getId();
+        const uint64_t position = message->getPosition();
 
         _dataById.remove(id);
         dataByPosition.remove(position);
-        positionByData.erase(messageData);
+        rowById.erase(id);
         _data.removeAt(position);
 
         removedRows++;
@@ -200,21 +204,14 @@ void MessagesModel::clear()
     removeRows(0, rowCount(QModelIndex()));
 }
 
-QModelIndex MessagesModel::createIndexByPtr(const std::shared_ptr<QVariant>& data) const
+QModelIndex MessagesModel::createIndexById(const QString& id) const
 {
-    if (!data)
-    {
-        return QModelIndex();
-    }
-
-    if (auto it = positionByData.find(data); it != positionByData.end() && it->first)
+    if (auto it = rowById.find(id); it != rowById.end())
     {
         return createIndex(it->second - removedRows, 0);
     }
-    else
-    {
-        return QModelIndex();
-    }
+
+    return QModelIndex();
 }
 
 void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
@@ -243,20 +240,20 @@ void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, con
     const std::set<uint64_t>& messagesIds = author->getMessagesIds();
     for (const uint64_t id : messagesIds)
     {
-        const QModelIndex index = createIndexByPtr(dataByPosition.value(id));
+        const Message& message = qvariant_cast<Message>(*dataByPosition.value(id));
+        const QModelIndex index = createIndexById(message.getId());
         emit dataChanged(index, index, rolesInt);
     }
 }
 
-QList<Message> MessagesModel::getLastMessages(int count) const
+QList<std::shared_ptr<Message>> MessagesModel::getLastMessages(int count) const
 {
-    QList<Message> result;
+    QList<std::shared_ptr<Message>> result;
 
     for (int64_t i = _data.count() - 1; i >= 0; --i)
     {
-        const std::shared_ptr<QVariant> data = _data[i];
-        const Message& message = qvariant_cast<Message>(*data);
-        if (message.isHasFlag(Message::Flag::DeleterItem))
+        const std::shared_ptr<Message>& message = _data[i];
+        if (message->isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
         }
@@ -326,9 +323,8 @@ QVariant MessagesModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    const std::shared_ptr<QVariant> data = _data.value(index.row());
-    const Message& message = qvariant_cast<Message>(*data);
-    return dataByRole(message, role);
+    const std::shared_ptr<Message>& message = _data.value(index.row());
+    return dataByRole(*message, role);
 }
 
 bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -338,14 +334,14 @@ bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int
         return false;
     }
 
-    Message message = qvariant_cast<Message>(*_data[index.row()]);
+    std::shared_ptr<Message> message = _data[index.row()];
 
     switch ((Message::Role)role)
     {
     case Message::Role::Html:
         if (value.canConvert(QMetaType::QString))
         {
-            message.setPlainText(value.toString());
+            message->setPlainText(value.toString());
         }
         else
         {
@@ -355,7 +351,7 @@ bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int
     case Message::Role::MarkedAsDeleted:
         if (value.canConvert(QMetaType::Bool))
         {
-            message.setFlag(Message::Flag::MarkedAsDeleted, value.toBool());
+            message->setFlag(Message::Flag::MarkedAsDeleted, value.toBool());
         }
         else
         {
@@ -368,9 +364,8 @@ bool MessagesModel::setData(const QModelIndex &index, const QVariant &value, int
         return false;
     }
 
-    _data[index.row()]->setValue(message);
-
     emit dataChanged(index, index, {role});
+
     return true;
 }
 

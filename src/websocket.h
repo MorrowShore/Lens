@@ -13,7 +13,7 @@ class WebSocket : public QObject
     Q_OBJECT
 public:
     explicit WebSocket(ChatHandler& chatHandler, QObject *parent = nullptr);
-    void sendMessages(const QList<Message>& messages);
+    void sendMessages(const QList<std::shared_ptr<Message>>& messages);
     void sendState();
     void sendAuthorValues(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
@@ -23,7 +23,7 @@ private:
     void send(const QJsonObject& object, const QList<QWebSocket*>& clients);
 
     void sendHelloToClient(QWebSocket* client);
-    void sendMessagesToClient(const QList<Message>& messages, QWebSocket* client);
+    void sendMessagesToClient(const QList<std::shared_ptr<Message>>& messages, QWebSocket* client);
     void sendStateToClient(QWebSocket* client);
     void sendAuthorValuesToClient(QWebSocket* client, const QString& authorId, const QMap<Author::Role, QVariant>& values);
 

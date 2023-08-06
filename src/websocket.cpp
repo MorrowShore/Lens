@@ -56,7 +56,7 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
         sendHelloToClient(client);
         sendStateToClient(client);
 
-        const QList<Message> lastMessages = chatHandler.getMessagesModel().getLastMessages(30);
+        const QList<std::shared_ptr<Message>> lastMessages = chatHandler.getMessagesModel().getLastMessages(30);
         sendMessagesToClient(lastMessages, client);
     });
 
@@ -75,7 +75,7 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
     }
 }
 
-void WebSocket::sendMessages(const QList<Message>& messages)
+void WebSocket::sendMessages(const QList<std::shared_ptr<Message>>& messages)
 {
     for (QWebSocket* client : qAsConst(clients))
     {
@@ -139,29 +139,29 @@ void WebSocket::sendHelloToClient(QWebSocket *client)
     send(root, {client});
 }
 
-void WebSocket::sendMessagesToClient(const QList<Message> &messages, QWebSocket *client)
+void WebSocket::sendMessagesToClient(const QList<std::shared_ptr<Message>> &messages, QWebSocket *client)
 {
     QJsonObject root;
     root.insert("type", "messages");
 
     QJsonArray jsonMessages;
 
-    for (const Message& message : messages)
+    for (const std::shared_ptr<Message>& message : messages)
     {
-        if (message.isHasFlag(Message::Flag::DeleterItem))
+        if (message->isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
         }
 
-        const QString authorId = message.getAuthorId();
+        const QString authorId = message->getAuthorId();
         const Author* author = chatHandler.getMessagesModel().getAuthor(authorId);
         if (!author)
         {
-            qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found, message id =" << message.getId();
+            qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found, message id =" << message->getId();
             continue;
         }
 
-        jsonMessages.append(message.toJson(*author));
+        jsonMessages.append(message->toJson(*author));
     }
 
     QJsonObject data;

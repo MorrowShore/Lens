@@ -142,24 +142,30 @@ void ChatBot::setVolume(int volume)
     }
 }
 
-void ChatBot::processMessage(Message &message)
+void ChatBot::processMessage(const std::shared_ptr<Message>& message)
 {
-    for (BotAction* action : _actions)
+    if (!message)
     {
-        if (canExecute(*action, message))
+        qWarning() << Q_FUNC_INFO << "message is null";
+        return;
+    }
+
+    for (BotAction* action : qAsConst(_actions))
+    {
+        if (canExecute(*action, *message))
         {
-            message.setFlag(Message::Flag::BotCommand, true);
+            message->setFlag(Message::Flag::BotCommand, true);
             execute(*action);
         }
     }
 
     if (_includeBuiltInCommands)
     {
-        for (BotAction* action : _builtInActions)
+        for (BotAction* action : qAsConst(_builtInActions))
         {
-            if (canExecute(*action, message))
+            if (canExecute(*action, *message))
             {
-                message.setFlag(Message::Flag::BotCommand, true);
+                message->setFlag(Message::Flag::BotCommand, true);
                 execute(*action);
             }
         }

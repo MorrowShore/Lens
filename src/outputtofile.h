@@ -36,7 +36,7 @@ public:
     Q_INVOKABLE int codecOption() const;
 
     void setOutputFolder(const QString& outputDirectory);
-    void writeMessages(const QList<Message>& messages, const AxelChat::ServiceType serviceType);
+    void writeMessages(const QList<std::shared_ptr<Message>>& messages, const AxelChat::ServiceType serviceType);
     Q_INVOKABLE void showInExplorer();
     void downloadAvatar(const QString& authorId, const AxelChat::ServiceType serviceType, const QUrl &url);
     QString getAuthorDirectory(const AxelChat::ServiceType serviceType, const QString& authorId) const;

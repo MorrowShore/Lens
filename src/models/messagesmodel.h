@@ -17,7 +17,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
 
-    void append(Message&& message);
+    void append(const std::shared_ptr<Message>& message);
     bool contains(const QString& id);
     void clear();
 
@@ -25,16 +25,16 @@ public:
     Author* getAuthor(const QString& authorId) { return _authorsById.value(authorId, nullptr); }
     void insertAuthor(const Author& author);
     void setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values);
-    QList<Message> getLastMessages(int count) const;
+    QList<std::shared_ptr<Message>> getLastMessages(int count) const;
 
 private:
     QVariant dataByRole(const Message& message, int role) const;
-    QModelIndex createIndexByPtr(const std::shared_ptr<QVariant>& data) const;
+    QModelIndex createIndexById(const QString& id) const;
 
-    QList<std::shared_ptr<QVariant>> _data;
+    QList<std::shared_ptr<Message>> _data;
     QHash<QString, std::shared_ptr<QVariant>> _dataById;
     QHash<uint64_t, std::shared_ptr<QVariant>> dataByPosition;
-    std::unordered_map<std::shared_ptr<QVariant>, uint64_t> positionByData;
+    std::unordered_map<QString, uint64_t> rowById;
 
     QHash<QString, Author*> _authorsById;
 

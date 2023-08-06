@@ -138,7 +138,7 @@ void OutputToFile::resetSettings()
     setOutputFolder(standardOutputFolder());
 }
 
-void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat::ServiceType serviceType)
+void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages, const AxelChat::ServiceType serviceType)
 {
     if (!enabled.get())
     {
@@ -163,7 +163,7 @@ void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat:
         {
             for (int i = 0; i < messages.count(); ++i)
             {
-                const Message& message = messages[i];
+                const Message& message = *messages[i];
 
                 if (message.getId() == service->getLastSavedMessageId().get())
                 {
@@ -179,7 +179,7 @@ void OutputToFile::writeMessages(const QList<Message>& messages, const AxelChat:
 
     for (int i = firstValidMessage; i < messages.count(); ++i)
     {
-        const Message& message = messages[i];
+        const Message& message = *messages[i];
         if (message.isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
