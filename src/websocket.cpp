@@ -148,6 +148,12 @@ void WebSocket::sendMessagesToClient(const QList<std::shared_ptr<Message>> &mess
 
     for (const std::shared_ptr<Message>& message : messages)
     {
+        if (!message)
+        {
+            qWarning() << Q_FUNC_INFO << "message is null";
+            continue;
+        }
+
         if (message->isHasFlag(Message::Flag::DeleterItem))
         {
             continue;
