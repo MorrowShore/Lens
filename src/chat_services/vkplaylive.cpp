@@ -410,7 +410,7 @@ void VkPlayLive::sendHeartbeat()
 
 void VkPlayLive::parseMessage(const QJsonObject &data)
 {
-    qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+    //qDebug("\n" + QJsonDocument(data).toJson() + "\n");
 
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
@@ -507,7 +507,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
         else if (type == "mention")
         {
-            const QString text = data.value("displayName").toString() + ", ";
+            const QString text = data.value("displayName").toString() + " ";
             if (text.isEmpty())
             {
                 qWarning() << Q_FUNC_INFO << "display name is empty:" << QJsonDocument(data).toJson();
