@@ -291,7 +291,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         }
         else
         {
-            sendParams(QJsonObject({{"channel", info.wsChannel}}), 1);
+            sendParams(QJsonObject({{"channel", "public-chat:" + info.wsChannel}}), 1);
         }
 
         if (!state.connected && !state.streamId.isEmpty() && !info.wsChannel.isEmpty() && !info.token.isEmpty())
