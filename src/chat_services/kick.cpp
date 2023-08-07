@@ -7,6 +7,8 @@ namespace
 
 static const int ReconncectPeriod = 5 * 1000;
 static const int RequestChannelInfoInterval = 10000;
+static const int HeartbeatAcknowledgementTimeout = 20 * 1000;
+static const int HeartbeatSendTimeout = 10 * 1000;
 static const QString APP_ID = "eb1d5f283081a78b932c"; // TODO
 static const int EmoteImageHeight = 32;
 
@@ -32,6 +34,9 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+
+        heartbeatAcknowledgementTimer.setInterval(HeartbeatAcknowledgementTimeout);
+        heartbeatAcknowledgementTimer.start();
 
         if (info.chatroomId.isEmpty())
         {
@@ -101,6 +106,22 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         requestChannelInfo(state.streamId);
     });
     timerRequestChannelInfo.start(RequestChannelInfoInterval);
+
+    QObject::connect(&heartbeatAcknowledgementTimer, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        {
+            heartbeatAcknowledgementTimer.stop();
+            return;
+        }
+
+        qDebug() << Q_FUNC_INFO << "heartbeat acknowledgement timeout, disconnect";
+        socket.close();
+    });
+
+    QObject::connect(&timerPing, &QTimer::timeout, this, &Kick::sendPing);
+    timerPing.setInterval(HeartbeatSendTimeout);
+    timerPing.start();
 }
 
 ChatService::ConnectionStateType Kick::getConnectionStateType() const
@@ -176,6 +197,9 @@ void Kick::onWebSocketReceived(const QString &rawData)
     {
         return;
     }
+
+    heartbeatAcknowledgementTimer.setInterval(HeartbeatAcknowledgementTimeout);
+    heartbeatAcknowledgementTimer.start();
 
     //qDebug("\nreceived:\n" + rawData.toUtf8() + "\n");
 
