@@ -25,7 +25,6 @@ private:
     void sendParams(const QJsonObject& params, int method = -1);
     void sendHeartbeat();
     void parseMessage(const QJsonObject& data);
-    void parseStreamInfo(const QByteArray& data);
 
     struct Info
     {
@@ -38,7 +37,6 @@ private:
     QNetworkAccessManager& network;
 
     QTimer timerRequestToken;
-    QTimer timerRequestChatPage;
     QTimer heartbeatTimer;
     QTimer heartbeatAcknowledgementTimer;
 

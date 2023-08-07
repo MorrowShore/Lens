@@ -10,7 +10,6 @@
 namespace
 {
 
-static const int RequestStreamInterval = 20000;
 static const int HeartbeatAcknowledgementTimeout = 40 * 1000;
 static const int HeartbeatSendTimeout = 30 * 1000;
 }
@@ -130,8 +129,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
                         while(json);
                     }
 
-                    parseStreamInfo(data);
-
                     emit stateChanged();
                 });
             }
@@ -157,26 +154,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
     });
     timerRequestToken.setInterval(2000);
     timerRequestToken.start();
-
-    QObject::connect(&timerRequestChatPage, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get())
-        {
-            return;
-        }
-
-        QNetworkRequest request(state.chatUrl);
-        QNetworkReply* reply = network.get(request);
-        if (reply)
-        {
-            connect(reply, &QNetworkReply::finished, this, [this, reply]()
-            {
-                parseStreamInfo(reply->readAll());
-                reply->deleteLater();
-            });
-        }
-    });
-    timerRequestChatPage.start(RequestStreamInterval);
 
     QObject::connect(&heartbeatAcknowledgementTimer, &QTimer::timeout, this, [this]()
     {
@@ -591,41 +568,4 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
     {
         emit readyRead(messages, authors);
     }
-}
-
-void VkPlayLive::parseStreamInfo(const QByteArray &data)
-{
-    if (info.wsChannel.isEmpty())
-    {
-        return;
-    }
-
-    std::unique_ptr<QJsonDocument> json;
-    int startPosition = 0;
-    do
-    {
-        json = AxelChat::findJson(data, "stream", QJsonValue::Type::Object, startPosition, startPosition);
-        if (json)
-        {
-            const QJsonObject stream = json->object().value("data").toObject().value("stream").toObject();
-            QString wsStreamViewersChannel = stream.value("wsStreamViewersChannel").toString();
-            if (!wsStreamViewersChannel.isEmpty())
-            {
-                const QStringList parts = wsStreamViewersChannel.split(':');
-                if (!parts.isEmpty())
-                {
-                    wsStreamViewersChannel = "public-chat:" + parts.last();
-                }
-
-                if (info.wsChannel == wsStreamViewersChannel)
-                {
-                    state.viewersCount = stream.value("count").toObject().value("viewers").toInt(-1);
-                    break;
-                }
-            }
-        }
-    }
-    while(json);
-
-    emit stateChanged();
 }
