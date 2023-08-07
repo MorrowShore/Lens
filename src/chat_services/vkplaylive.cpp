@@ -433,6 +433,8 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
     }
 
+    const QString vkplayProfileUrl = rawAuthor.value("vkplayProfileLink").toString();
+
     const QJsonArray roles = rawAuthor.value("roles").toArray();
     for (const QJsonValue& v : qAsConst(roles))
     {
@@ -572,7 +574,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         authorName,
         authorId,
         authorAvatarUrl,
-        QUrl("https://vkplay.live/" + authorName),
+        QUrl(vkplayProfileUrl),
         leftBadges);
 
     std::shared_ptr<Message> message = std::make_shared<Message>(
