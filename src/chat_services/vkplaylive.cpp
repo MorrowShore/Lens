@@ -263,7 +263,7 @@ void VkPlayLive::reconnectImpl()
 
 void VkPlayLive::onWebSocketReceived(const QString &rawData)
 {
-    qDebug("\nreceived: " + rawData.toUtf8() + "\n");
+    //qDebug("\nreceived: " + rawData.toUtf8() + "\n");
 
     if (!enabled.get())
     {
@@ -291,6 +291,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         }
         else
         {
+            sendParams(QJsonObject({{"channel", "public-stream:" + info.wsChannel}}), 1);
             sendParams(QJsonObject({{"channel", "public-chat:" + info.wsChannel}}), 1);
         }
 
@@ -311,9 +312,25 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         {
             parseMessage(data.value("data").toObject());
         }
+        else if (type == "stream_online_status")
+        {
+            if (data.contains("viewers"))
+            {
+                state.viewersCount = data.value("viewers").toInt(-1);
+                emit stateChanged();
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "viewers not found in, result =" << result;
+            }
+        }
+        else if (type == "stream_like_counter")
+        {
+            // TODO: result = QJsonObject({"channel":"public-stream:6639759","data":{"data":{"counter":331,"type":"stream_like_counter","userId":0},"offset":38493}}
+        }
         else
         {
-            qWarning() << Q_FUNC_INFO << "unknown receive type" << type;
+            qWarning() << Q_FUNC_INFO << "unknown receive type" << type << ", result =" << result;
         }
     }
 }
@@ -352,7 +369,7 @@ QString VkPlayLive::extractChannelName(const QString &stream_)
 
 void VkPlayLive::send(const QJsonDocument &data)
 {
-    qDebug() << "send:" << data;
+    //qDebug() << "send:" << data;
     socket.sendTextMessage(QString::fromUtf8(data.toJson(QJsonDocument::JsonFormat::Compact)));
 }
 
