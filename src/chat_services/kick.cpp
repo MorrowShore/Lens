@@ -509,7 +509,7 @@ QString Kick::parseBadge(const QJsonObject &basgeJson, const QString &defaultVal
     else if (type == "sub_gifter")
     {
         const int count = basgeJson.value("count").toInt();
-        if (count >= 1 && count <= 20) // TODO: 1-20...
+        if (count >= 1 && count <= 21) // TODO: 1-21...
         {
             file = ":/resources/images/kick/badges/sub_gifter_blue.svg";
         }
@@ -521,7 +521,7 @@ QString Kick::parseBadge(const QJsonObject &basgeJson, const QString &defaultVal
         {
             file = ":/resources/images/kick/badges/sub_gifter_red.svg";
         }
-        else if (count >= 131 && count <= 169) // TODO: ...131-145...
+        else if (count >= 131 && count <= 169) // TODO: ...131-169...
         {
             file = ":/resources/images/kick/badges/sub_gifter_yellow.svg";
         }
