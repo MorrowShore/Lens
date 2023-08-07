@@ -433,6 +433,24 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
     }
 
+    const QJsonArray roles = rawAuthor.value("roles").toArray();
+    for (const QJsonValue& v : qAsConst(roles))
+    {
+        const int priority = v.toObject().value("priority").toInt(-1);
+        if (priority == 1)
+        {
+            const QString url = v.toObject().value("smallUrl").toString().trimmed();
+            if (!url.isEmpty())
+            {
+                leftBadges.append(url);
+                break;
+            }
+        }
+    }
+
+    //TODO: nicname color. rawAuthor.value("nickColor").toInt();
+    //TODO: 8 -> #1DBBA1
+
     QDateTime publishedAt;
 
     bool ok = false;
