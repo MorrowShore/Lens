@@ -8,7 +8,7 @@
 
 namespace
 {
-const int MaxSize  = 10; // 1000
+const int MaxSize  = 1000;
 
 const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
 {
