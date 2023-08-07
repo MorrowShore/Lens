@@ -150,8 +150,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
                     const QString raw = QJsonDocument::fromJson(data).object().value("publicWebSocketChannel").toString();
                     info.wsChannel = raw.mid(raw.indexOf(':') + 1);
 
-                    parseStreamInfo(data);
-
                     emit stateChanged();
                 });
             }
@@ -280,6 +278,14 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
     {
         info.version = version;
 
+        if (!state.connected && !state.streamId.isEmpty() && !info.wsChannel.isEmpty() && !info.token.isEmpty())
+        {
+            state.connected = true;
+
+            emit connectedChanged(true);
+            emit stateChanged();
+        }
+
         if (info.version != "3.2.3")
         {
             qWarning() << Q_FUNC_INFO << "unsupported version" << version;
@@ -292,15 +298,8 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         else
         {
             sendParams(QJsonObject({{"channel", "public-stream:" + info.wsChannel}}), 1);
+            sendParams(QJsonObject({{"channel", "public-viewers:" + info.wsChannel}}), 1);
             sendParams(QJsonObject({{"channel", "public-chat:" + info.wsChannel}}), 1);
-        }
-
-        if (!state.connected && !state.streamId.isEmpty() && !info.wsChannel.isEmpty() && !info.token.isEmpty())
-        {
-            state.connected = true;
-
-            emit connectedChanged(true);
-            emit stateChanged();
         }
     }
     else if (!result.isEmpty())
