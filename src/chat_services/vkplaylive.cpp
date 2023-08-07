@@ -410,7 +410,7 @@ void VkPlayLive::sendHeartbeat()
 
 void VkPlayLive::parseMessage(const QJsonObject &data)
 {
-    //qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+    qDebug("\n" + QJsonDocument(data).toJson() + "\n");
 
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
@@ -436,15 +436,14 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
     const QJsonArray roles = rawAuthor.value("roles").toArray();
     for (const QJsonValue& v : qAsConst(roles))
     {
-        const int priority = v.toObject().value("priority").toInt(-1);
-        if (priority == 1)
+        const int priority = v.toObject().value("priority").toInt(-1);//TODO
+        Q_UNUSED(priority)
+
+        const QString url = v.toObject().value("smallUrl").toString().trimmed();
+        if (!url.isEmpty())
         {
-            const QString url = v.toObject().value("smallUrl").toString().trimmed();
-            if (!url.isEmpty())
-            {
-                leftBadges.append(url);
-                break;
-            }
+            leftBadges.append(url);
+            break;//TODO
         }
     }
 
