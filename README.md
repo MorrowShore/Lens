@@ -9,6 +9,8 @@ The AxelChat application collects chat from various streaming platforms and disp
 [<img src="misc/images/button-download.png">](https://github.com/3dproger/AxelChat/releases)
 [<img src="misc/images/button-patron.png">](https://www.patreon.com/axel_k)
 
+[![Download AxelChat](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/axelchat/files/latest/download)
+
 <p align="center">
   <img src="misc/images/github-social7.png">
 </p>
@@ -52,10 +54,8 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] Proxy support
 - [x] Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
 - [x] Web-based widgets
-- [ ] Web-based widgets appearance editor
 - [ ] Appearance editor for Web-based widgets
 - [ ] Support for donate platforms
-- [ ] Animated emoji
 - [ ] Emoji from 3rd party sets
 - [x] Windows builds
 - [ ] Linux builds
