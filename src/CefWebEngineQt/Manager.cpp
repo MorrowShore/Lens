@@ -251,7 +251,12 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
                     return;
                 }
 
-                qInfo() << "WebEngine:" << text;
+                qInfo() << "WebEngine.log:";
+                const QStringList lines = text.split("\\n");
+                for (const QString& line : qAsConst(lines))
+                {
+                    qInfo().noquote() << line;
+                }
             }
             else if (type == "browser-opened")
             {

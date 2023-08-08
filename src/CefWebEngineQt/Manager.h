@@ -26,7 +26,7 @@ public:
 
     bool isExecutableExists() const;
 
-    std::shared_ptr<Browser> createBrowser(const QUrl& url, const Browser::Settings& settings);
+    std::shared_ptr<Browser> createBrowser(const QUrl& url, const Browser::Settings& settings = Browser::Settings());
     bool isInitialized() const;
 
     void createBrowserOnce(const QUrl& url,
