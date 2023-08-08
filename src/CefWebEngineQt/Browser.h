@@ -64,6 +64,11 @@ private:
     
     explicit Browser(Manager& manager, const int id, const QUrl& initialUrl, const bool opened);
 
+    Browser (const Browser&) = delete;
+    Browser (Browser&&) = delete;
+    Browser& operator= (const Browser&) = delete;
+    Browser&& operator= (Browser&&) = delete;
+
     void setOpened(const int id);
     void setClosed();
 

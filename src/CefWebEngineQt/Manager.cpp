@@ -501,7 +501,9 @@ void Manager::onReadyRead()
 
     while (process->canReadLine())
     {
-        messanger.parseLine(process->readLine());
+        const QByteArray line = process->readLine();
+        //qDebug() << "recieved:" << line;
+        messanger.parseLine(line);
 
         if (!process)
         {

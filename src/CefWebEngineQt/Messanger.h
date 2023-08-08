@@ -45,6 +45,11 @@ public:
 
     explicit Messanger(QObject *parent = nullptr);
 
+    Messanger (const Messanger&) = delete;
+    Messanger (Messanger&&) = delete;
+    Messanger& operator= (const Messanger&) = delete;
+    Messanger&& operator= (Messanger&&) = delete;
+
     int64_t send(const Message& message, QProcess* process);
     void parseLine(const QByteArray& line);
 

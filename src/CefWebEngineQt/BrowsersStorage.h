@@ -10,6 +10,14 @@ namespace cweqt
 class BrowsersStorage
 {
 public:
+
+    BrowsersStorage(){}
+
+    BrowsersStorage (const BrowsersStorage&) = delete;
+    BrowsersStorage (BrowsersStorage&&) = delete;
+    BrowsersStorage& operator= (const BrowsersStorage&) = delete;
+    BrowsersStorage&& operator= (BrowsersStorage&&) = delete;
+
     void addWithBrowserId(std::shared_ptr<Browser> browser, int browserId)
     {
         if (byBrowserId.find(browserId) != byBrowserId.end())

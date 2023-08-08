@@ -58,6 +58,11 @@ public:
     explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, QObject *parent = nullptr);
     virtual ~ChatService(){}
 
+    ChatService (const ChatService&) = delete;
+    ChatService (ChatService&&) = delete;
+    ChatService& operator= (const ChatService&) = delete;
+    ChatService&& operator= (ChatService&&) = delete;
+
     static QString getServiceTypeId(const AxelChat::ServiceType serviceType);
     static QString getName(const AxelChat::ServiceType serviceType);
     static QUrl getIconUrl(const AxelChat::ServiceType serviceType);

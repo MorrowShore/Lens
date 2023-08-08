@@ -24,6 +24,11 @@ public:
     explicit Manager(const QString& executablePath, QObject *parent = nullptr);
     virtual ~Manager();
 
+    Manager (const Manager&) = delete;
+    Manager (Manager&&) = delete;
+    Manager& operator= (const Manager&) = delete;
+    Manager&& operator= (Manager&&) = delete;
+
     bool isExecutableExists() const;
 
     std::shared_ptr<Browser> createBrowser(const QUrl& url, const Browser::Settings& settings = Browser::Settings());
