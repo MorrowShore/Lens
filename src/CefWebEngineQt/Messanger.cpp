@@ -57,6 +57,8 @@ int64_t Messanger::send(const Message &rawMessage, QProcess *process)
 
     message += "\n" + rawMessage.data + "\n";
 
+    //qDebug() << "send:" << message;
+
     process->write(message);
 
     return prevMessageId;

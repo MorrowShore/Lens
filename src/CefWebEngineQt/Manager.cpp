@@ -8,7 +8,7 @@ namespace
 
 static const QStringList SupportedVersions =
 {
-    "1.0.0",
+    "1.1.0",
 };
 
 static const QStringList AvailableResourceTypes =
@@ -33,6 +33,8 @@ static const QStringList AvailableResourceTypes =
     "NAVIGATION_PRELOAD_MAIN_FRAME",
     "NAVIGATION_PRELOAD_SUB_FRAME",
 };
+
+static const QChar ParameterValueSeparator = ';';
 
 static QString boolToValue(const bool value)
 {
@@ -118,6 +120,40 @@ static bool getParamInt(const QMap<QString, QString>& parameters, const QString&
     value = tmp;
 
     return true;
+}
+
+static QString convertToParameterValue(const QSet<QString>& set)
+{
+    QString result;
+
+    for (const QString& value : qAsConst(set))
+    {
+        if (!result.isEmpty())
+        {
+            result += ParameterValueSeparator;
+        }
+
+        result += value;
+    }
+
+    return result;
+}
+
+static QString convertToParameterValue(const QSet<int>& set)
+{
+    QString result;
+
+    for (const int value : qAsConst(set))
+    {
+        if (!result.isEmpty())
+        {
+            result += ParameterValueSeparator;
+        }
+
+        result += QString("%1").arg(value);
+    }
+
+    return result;
 }
 
 }
@@ -367,14 +403,20 @@ std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::
         return nullptr;
     }
 
-    const int64_t messageId = messanger.send(Messanger::Message(
-                       "browser-open",
-                        {
-                            { "url", url.toString() },
-                            { "visible", boolToValue(settings.visible) },
-                            { "show-responses", boolToValue(settings.showResponses) },
-                            // TODO: filter settings
-                        }), process);
+    QMap<QString, QString> parameters =
+    {
+        { "url", url.toString() },
+        { "visible", boolToValue(settings.visible) },
+        { "show-responses", boolToValue(settings.showResponses) },
+    };
+
+    parameters.insert("filter.resource-types", convertToParameterValue(settings.filter.resourceTypes));
+    parameters.insert("filter.methods", convertToParameterValue(settings.filter.methods));
+    parameters.insert("filter.mime-types", convertToParameterValue(settings.filter.mimeTypes));
+    parameters.insert("filter.url-prefixes", convertToParameterValue(settings.filter.urlPrefixes));
+    parameters.insert("filter.response-statuses", convertToParameterValue(settings.filter.responseStatuses));
+
+    const int64_t messageId = messanger.send(Messanger::Message("browser-open", parameters), process);
 
     std::shared_ptr<Browser> browser(new Browser(*this, -1, url, false));
 
