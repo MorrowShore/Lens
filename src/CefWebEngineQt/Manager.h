@@ -29,7 +29,7 @@ public:
     std::shared_ptr<Browser> createBrowser(const QUrl& url, const Browser::Settings& settings);
     bool isInitialized() const;
 
-    void createDisposable(const QUrl& url,
+    void createBrowserOnce(const QUrl& url,
                 const cweqt::Browser::Settings::Filter& filter,
                 std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived);
 

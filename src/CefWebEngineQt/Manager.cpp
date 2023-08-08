@@ -406,7 +406,7 @@ bool Manager::isInitialized() const
     return _initialized;
 }
 
-void Manager::createDisposable(const QUrl &url, const Browser::Settings::Filter &filter, std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived)
+void Manager::createBrowserOnce(const QUrl &url, const Browser::Settings::Filter &filter, std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived)
 {
     if (!process || !isInitialized())
     {

@@ -313,8 +313,8 @@ void Kick::requestChannelInfo(const QString &slug)
     cweqt::Browser::Settings::Filter filter;
     filter.urlPrefixes = { "https://kick.com/api/" };
     filter.mimeTypes = { "text/html", "application/json" };
-
-    web.createDisposable("https://kick.com/api/v2/channels/" + slug, filter, [this, slug](std::shared_ptr<cweqt::Response> response, bool&)
+    
+    web.createBrowserOnce("https://kick.com/api/v2/channels/" + slug, filter, [this, slug](std::shared_ptr<cweqt::Response> response, bool&)
     {
         QJsonParseError error;
         const QJsonObject root = QJsonDocument::fromJson(response->data, &error).object();
