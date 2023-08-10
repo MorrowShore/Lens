@@ -41,6 +41,7 @@ private:
     QColor intToColor(quint64 rawColor) const;
 
     QNetworkAccessManager& network;
+    cweqt::Manager& web;
 
     QTimer timerRequestChat;
     QTimer timerRequestStreamPage;
