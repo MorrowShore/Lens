@@ -306,10 +306,12 @@ void YouTube::reconnectImpl()
                 return;
             }
 
-            parseActionsArray(QJsonDocument::fromJson(response->data).object()
+            const QJsonArray actions = QJsonDocument::fromJson(response->data).object()
                 .value("continuationContents").toObject()
                 .value("liveChatContinuation").toObject()
-                .value("actions").toArray(), response->data);
+                .value("actions").toArray();
+
+            parseActionsArray(actions, response->data);
         });
     }
     else
