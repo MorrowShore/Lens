@@ -314,8 +314,15 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
                     return;
                 }
 
+                uint64_t windowHanle = 0;
+                if (!getParamUInt64(params, "window-handle", windowHanle))
+                {
+                    return;
+                }
+
                 if (std::shared_ptr<Browser> openingBrowser = storage.findByMessageId(messageId); openingBrowser)
                 {
+                    openingBrowser->setWindowHandle(windowHanle);
                     openingBrowser->setOpened(browserId);
 
                     storage.moveFromMessageIdToBrowserId(messageId, browserId);

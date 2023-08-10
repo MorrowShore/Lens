@@ -47,6 +47,16 @@ void Browser::setClosed()
     emit closed();
 }
 
+void Browser::setWindowHandle(const uint64_t handle)
+{
+    window = QWindow::fromWinId((WId)handle);
+
+    if (!window && handle != 0)
+    {
+        qWarning() << Q_FUNC_INFO << "failed to get window from handle" << handle;
+    }
+}
+
 void Browser::registerResponse(const std::shared_ptr<Response>& response)
 {
     if (!response)

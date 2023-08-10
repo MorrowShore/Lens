@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QSet>
 #include <QUrl>
+#include <QWindow>
 #include <memory>
 
 namespace cweqt
@@ -46,6 +47,7 @@ public:
 
     bool isOpened() const { return state == State::Opened; }
     QUrl getInitialUrl() const { return initialUrl; }
+    QWindow* getWindow() const { return window; }
 
 signals:
     void opened();
@@ -71,6 +73,7 @@ private:
 
     void setOpened(const int id);
     void setClosed();
+    void setWindowHandle(const uint64_t handle);
 
     void registerResponse(const std::shared_ptr<Response>& response);
     void addResponseData(const uint64_t responseId, const QByteArray& data, const int64_t dataSize);
@@ -80,6 +83,7 @@ private:
     const int id;
     const QUrl initialUrl;
     State state = State::NotOpened;
+    QWindow* window = nullptr;
 
     std::map<uint64_t, std::shared_ptr<Response>> responses;
 };
