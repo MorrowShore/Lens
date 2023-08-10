@@ -42,6 +42,7 @@ private:
 
     QNetworkAccessManager& network;
     cweqt::Manager& web;
+    std::shared_ptr<cweqt::Browser> browser;
 
     QTimer timerRequestChat;
     QTimer timerRequestStreamPage;
