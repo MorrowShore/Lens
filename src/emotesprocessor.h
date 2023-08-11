@@ -15,7 +15,7 @@ public:
 signals:
 
 private slots:
-    void loadBetterTTVGlobalEmotes();
+    void loadBttvGlobalEmotes();
 
 private:
     QString getEmoteUrl(const QString& name) const;
@@ -26,5 +26,5 @@ private:
 
     QTimer timer;
 
-    QHash<QString, QString> betterTTVEmotes; // <code, id>
+    QHash<QString, QString> bttvEmotes; // <code, id>
 };

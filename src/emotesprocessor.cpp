@@ -19,14 +19,14 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
 {
     connect(&timer, &QTimer::timeout, this, [this]()
     {
-        if (betterTTVEmotes.isEmpty())
+        if (bttvEmotes.isEmpty())
         {
-            loadBetterTTVGlobalEmotes();
+            loadBttvGlobalEmotes();
         }
     });
     timer.start(3000);
 
-    loadBetterTTVGlobalEmotes();
+    loadBttvGlobalEmotes();
 }
 
 void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
@@ -107,7 +107,7 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
     }
 }
 
-void EmotesProcessor::loadBetterTTVGlobalEmotes()
+void EmotesProcessor::loadBttvGlobalEmotes()
 {
     QNetworkRequest request(QUrl("https://api.betterttv.net/3/cached/emotes/global"));
 
@@ -130,14 +130,14 @@ void EmotesProcessor::loadBetterTTVGlobalEmotes()
             const QString id = emoteJson.value("id").toString();
             const QString code = emoteJson.value("code").toString();
 
-            betterTTVEmotes.insert(code, id);
+            bttvEmotes.insert(code, id);
         }
     });
 }
 
 QString EmotesProcessor::getEmoteUrl(const QString &name) const
 {
-    if (auto it = betterTTVEmotes.find(name); it != betterTTVEmotes.end())
+    if (auto it = bttvEmotes.find(name); it != bttvEmotes.end())
     {
         const QString& id = it.value();
         if (id.isEmpty())
