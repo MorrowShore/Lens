@@ -23,10 +23,15 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
         {
             loadBttvGlobalEmotes();
         }
+
+        if (ffzEmotes.isEmpty())
+        {
+            loadFfzGlobalEmotes();
+        }
     });
     timer.start(3000);
 
-    loadBttvGlobalEmotes();
+    loadAll();
 }
 
 void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
@@ -107,6 +112,12 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
     }
 }
 
+void EmotesProcessor::loadAll()
+{
+    loadBttvGlobalEmotes();
+    loadFfzGlobalEmotes();
+}
+
 void EmotesProcessor::loadBttvGlobalEmotes()
 {
     QNetworkRequest request(QUrl("https://api.betterttv.net/3/cached/emotes/global"));
@@ -135,6 +146,38 @@ void EmotesProcessor::loadBttvGlobalEmotes()
     });
 }
 
+void EmotesProcessor::loadFfzGlobalEmotes()
+{
+    QNetworkRequest request(QUrl("https://api.frankerfacez.com/v1/set/global"));
+
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QJsonObject sets = QJsonDocument::fromJson(reply->readAll()).object().value("sets").toObject();
+        reply->deleteLater();
+
+        const QStringList keys = sets.keys();
+        for (const QString& key : qAsConst(keys))
+        {
+            parseFfzSet(sets.value(key).toObject());
+        }
+    });
+}
+
+void EmotesProcessor::parseFfzSet(const QJsonObject &set)
+{
+    const QJsonArray array = set.value("emoticons").toArray();
+    for (const QJsonValue& v : qAsConst(array))
+    {
+        const QJsonObject emoteJson = v.toObject();
+
+        const QString id = QString("%1").arg(emoteJson.value("id").toVariant().toLongLong());
+        const QString name = emoteJson.value("name").toString();
+
+        ffzEmotes.insert(name, id);
+    }
+}
+
 QString EmotesProcessor::getEmoteUrl(const QString &name) const
 {
     if (auto it = bttvEmotes.find(name); it != bttvEmotes.end())
@@ -142,11 +185,24 @@ QString EmotesProcessor::getEmoteUrl(const QString &name) const
         const QString& id = it.value();
         if (id.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "code is empty for emote" << name;
+            qWarning() << Q_FUNC_INFO << "code is empty for global bttv emote" << name;
         }
         else
         {
             return "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
+        }
+    }
+
+    if (auto it = ffzEmotes.find(name); it != ffzEmotes.end())
+    {
+        const QString& id = it.value();
+        if (id.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "code is empty for ffz emote" << name;
+        }
+        else
+        {
+            return "https://cdn.frankerfacez.com/emote/" + id + "/2";
         }
     }
 

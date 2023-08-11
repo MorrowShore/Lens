@@ -15,7 +15,12 @@ public:
 signals:
 
 private slots:
+    void loadAll();
+
     void loadBttvGlobalEmotes();
+
+    void loadFfzGlobalEmotes();
+    void parseFfzSet(const QJsonObject& set);
 
 private:
     QString getEmoteUrl(const QString& name) const;
@@ -27,4 +32,5 @@ private:
     QTimer timer;
 
     QHash<QString, QString> bttvEmotes; // <code, id>
+    QHash<QString, QString> ffzEmotes; // <name, id>
 };
