@@ -19,14 +19,14 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
 {
     connect(&timer, &QTimer::timeout, this, [this]()
     {
-        if (needLoadEmotes)
+        if (betterTTVEmotes.isEmpty())
         {
-            loadEmotes();
+            loadBetterTTVGlobalEmotes();
         }
     });
     timer.start(3000);
 
-    loadEmotes();
+    loadBetterTTVGlobalEmotes();
 }
 
 void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
@@ -107,10 +107,8 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
     }
 }
 
-void EmotesProcessor::loadEmotes()
+void EmotesProcessor::loadBetterTTVGlobalEmotes()
 {
-    needLoadEmotes = true;
-
     QNetworkRequest request(QUrl("https://api.betterttv.net/3/cached/emotes/global"));
 
     QNetworkReply* reply = network.get(request);
@@ -124,8 +122,6 @@ void EmotesProcessor::loadEmotes()
             qWarning() << Q_FUNC_INFO << "array is empty";
             return;
         }
-
-        needLoadEmotes = false;
 
         for (const QJsonValue& v : qAsConst(array))
         {

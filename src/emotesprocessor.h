@@ -15,7 +15,7 @@ public:
 signals:
 
 private slots:
-    void loadEmotes();
+    void loadBetterTTVGlobalEmotes();
 
 private:
     QString getEmoteUrl(const QString& name) const;
@@ -23,8 +23,6 @@ private:
     QSettings& settings;
     const QString settingsGroupPath;
     QNetworkAccessManager& network;
-
-    bool needLoadEmotes = true;
 
     QTimer timer;
 
