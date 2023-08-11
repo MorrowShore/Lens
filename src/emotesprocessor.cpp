@@ -28,6 +28,11 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
         {
             loadFfzGlobalEmotes();
         }
+
+        if (sevenTvEmotes.isEmpty())
+        {
+            loadSevenTvEmotes();
+        }
     });
     timer.start(3000);
 
@@ -116,6 +121,7 @@ void EmotesProcessor::loadAll()
 {
     loadBttvGlobalEmotes();
     loadFfzGlobalEmotes();
+    loadSevenTvEmotes();
 }
 
 void EmotesProcessor::loadBttvGlobalEmotes()
@@ -139,9 +145,11 @@ void EmotesProcessor::loadBttvGlobalEmotes()
             const QJsonObject emoteJson = v.toObject();
 
             const QString id = emoteJson.value("id").toString();
-            const QString code = emoteJson.value("code").toString();
+            const QString name = emoteJson.value("code").toString();
 
-            bttvEmotes.insert(code, id);
+            const QString url = "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
+
+            bttvEmotes.insert(name, url);
         }
     });
 }
@@ -174,35 +182,72 @@ void EmotesProcessor::parseFfzSet(const QJsonObject &set)
         const QString id = QString("%1").arg(emoteJson.value("id").toVariant().toLongLong());
         const QString name = emoteJson.value("name").toString();
 
-        ffzEmotes.insert(name, id);
+        const QString url = "https://cdn.frankerfacez.com/emote/" + id + "/2";
+
+        ffzEmotes.insert(name, url);
     }
+}
+
+void EmotesProcessor::loadSevenTvEmotes()
+{
+    QNetworkRequest request(QUrl("https://api.7tv.app/v3/emote-sets/global"));
+
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QJsonArray emotes = QJsonDocument::fromJson(reply->readAll()).object().value("emotes").toArray();
+        reply->deleteLater();
+
+        for (const QJsonValue& v : qAsConst(emotes))
+        {
+            const QJsonObject emote = v.toObject();
+
+            const QString name = emote.value("name").toString();
+            const QString url = "https:" + emote.value("data").toObject().value("host").toObject().value("url").toString() + "/2x.webp";
+
+            sevenTvEmotes.insert(name, url);
+        }
+    });
 }
 
 QString EmotesProcessor::getEmoteUrl(const QString &name) const
 {
     if (auto it = bttvEmotes.find(name); it != bttvEmotes.end())
     {
-        const QString& id = it.value();
-        if (id.isEmpty())
+        const QString& url = it.value();
+        if (url.isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "code is empty for global bttv emote" << name;
         }
         else
         {
-            return "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
+            return url;
         }
     }
 
     if (auto it = ffzEmotes.find(name); it != ffzEmotes.end())
     {
-        const QString& id = it.value();
-        if (id.isEmpty())
+        const QString& url = it.value();
+        if (url.isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "code is empty for ffz emote" << name;
         }
         else
         {
-            return "https://cdn.frankerfacez.com/emote/" + id + "/2";
+            return url;
+        }
+    }
+
+    if (auto it = sevenTvEmotes.find(name); it != sevenTvEmotes.end())
+    {
+        const QString& url = it.value();
+        if (url.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "code is empty for 7tv emote" << name;
+        }
+        else
+        {
+            return url;
         }
     }
 
