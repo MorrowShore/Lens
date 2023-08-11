@@ -23,6 +23,7 @@ HEADERS += \
     crypto/aes.h \
     crypto/crypto.h \
     crypto/obfuscator.h \
+    emotesprocessor.h \
     oauth2.h \
     ssemanager.h \
     tcpreply.h \
@@ -74,6 +75,7 @@ SOURCES += \
     chat_services/youtube.cpp \
     crypto/aes.cpp \
     crypto/crypto.cpp \
+    emotesprocessor.cpp \
     models/author.cpp \
     models/message.cpp \
     models/messagesmodel.cpp \

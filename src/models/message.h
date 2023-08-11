@@ -349,6 +349,12 @@ public:
         return contents;
     }
 
+    void setContents(const QList<std::shared_ptr<Content>>& contents_)
+    {
+        contents = contents_;
+        updateHtml();
+    }
+
     QJsonObject toJson(const Author& author) const;
 
     static QString flagToString(const Flag flag);

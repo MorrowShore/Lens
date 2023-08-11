@@ -4,6 +4,7 @@
 #include "authorqmlprovider.h"
 #include "websocket.h"
 #include "tcpserver.h"
+#include "emotesprocessor.h"
 #include "CefWebEngineQt/Manager.h"
 #include <QSettings>
 #include <QMap>
@@ -128,6 +129,8 @@ private:
     cweqt::Manager& web;
 
     QList<ChatService*> services;
+
+    EmotesProcessor emotesProcessor;
 
 #ifndef AXELCHAT_LIBRARY
     OutputToFile outputToFile;

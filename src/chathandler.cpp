@@ -37,6 +37,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     , settings(settings_)
     , network(network_)
     , web(web_)
+    , emotesProcessor(settings_, SettingsGroupPath, network_)
     , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, services)
     , bot(settings, SettingsGroupPath + "/chat_bot")
     , authorQMLProvider(*this, messagesModel, outputToFile)
@@ -130,6 +131,7 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
             }
         }
 
+        emotesProcessor.processMessage(message);
         messagesValidToAdd.append(message);
     }
 
