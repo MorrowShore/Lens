@@ -24,7 +24,7 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
             loadBttvGlobalEmotes();
         }
 
-        if (ffzEmotes.isEmpty())
+        if (ffzGlobalEmotes.isEmpty())
         {
             loadFfzGlobalEmotes();
         }
@@ -233,7 +233,7 @@ void EmotesProcessor::loadFfzGlobalEmotes()
         const QStringList keys = sets.keys();
         for (const QString& key : qAsConst(keys))
         {
-            parseFfzSet(sets.value(key).toObject());
+            ffzGlobalEmotes.insert(parseFfzSet(sets.value(key).toObject()));
         }
     });
 }
@@ -253,7 +253,7 @@ void EmotesProcessor::loadFfzUserEmotes(const QString &twitchBroadcasterId)
             const QStringList keys = sets.keys();
             for (const QString& key : qAsConst(keys))
             {
-                parseFfzSet(sets.value(key).toObject());
+                ffzUserEmotes.insert(parseFfzSet(sets.value(key).toObject()));
             }
         });
     }
@@ -271,14 +271,16 @@ void EmotesProcessor::loadFfzUserEmotes(const QString &twitchBroadcasterId)
             const QStringList keys = sets.keys();
             for (const QString& key : qAsConst(keys))
             {
-                parseFfzSet(sets.value(key).toObject());
+                ffzUserEmotes.insert(parseFfzSet(sets.value(key).toObject()));
             }
         });
     }
 }
 
-void EmotesProcessor::parseFfzSet(const QJsonObject &set)
+QHash<QString, QString> EmotesProcessor::parseFfzSet(const QJsonObject &set)
 {
+    QHash<QString, QString> result;
+
     const QJsonArray array = set.value("emoticons").toArray();
     for (const QJsonValue& v : qAsConst(array))
     {
@@ -289,8 +291,10 @@ void EmotesProcessor::parseFfzSet(const QJsonObject &set)
 
         const QString url = "https://cdn.frankerfacez.com/emote/" + id + "/2";
 
-        ffzEmotes.insert(name, url);
+        result.insert(name, url);
     }
+
+    return result;
 }
 
 void EmotesProcessor::loadSevenTvEmotes()
@@ -343,13 +347,25 @@ QString EmotesProcessor::getEmoteUrl(const QString &name) const
         }
     }
 
-
-    if (auto it = ffzEmotes.find(name); it != ffzEmotes.end())
+    if (auto it = ffzGlobalEmotes.find(name); it != ffzGlobalEmotes.end())
     {
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name is empty for ffz emote" << name;
+            qWarning() << Q_FUNC_INFO << "name is empty for global ffz emote" << name;
+        }
+        else
+        {
+            return url;
+        }
+    }
+
+    if (auto it = ffzUserEmotes.find(name); it != ffzUserEmotes.end())
+    {
+        const QString& url = it.value();
+        if (url.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "name is empty for user ffz emote" << name;
         }
         else
         {

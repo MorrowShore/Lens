@@ -24,7 +24,7 @@ private slots:
 
     void loadFfzGlobalEmotes();
     void loadFfzUserEmotes(const QString& twitchBroadcasterId);
-    void parseFfzSet(const QJsonObject& set);
+    static QHash<QString, QString> parseFfzSet(const QJsonObject& set);
 
     void loadSevenTvEmotes();
 
@@ -42,7 +42,9 @@ private:
     QHash<QString, QString> bttvGlobalEmotes;
     QHash<QString, QString> bttvUserEmotes;
 
-    QHash<QString, QString> ffzEmotes;
+    QHash<QString, QString> ffzGlobalEmotes;
+    QHash<QString, QString> ffzUserEmotes;
+
     QHash<QString, QString> sevenTvEmotes;
 
     std::shared_ptr<Twitch> twitch;
