@@ -187,5 +187,24 @@ ScrollView {
                 }
             }
         }
+
+        Row {
+            spacing: 6
+
+            property string servicesNames: "BetterTTV, FrankerFaceZ, 7TV"
+
+            Switch {
+                text: qsTr("%1 emotes").arg(parent.servicesNames)
+            }
+
+            RoundButton {
+                anchors.verticalCenter: parent.verticalCenter
+                flat: true
+                icon.source: "qrc:/resources/images/help-round-button.svg"
+                onClicked: {
+                    Global.windowSettings.showInfo(qsTr("Allow to display emotes from %1. To display channel (custom) emotes, login to a Twitch account that is linked to these services").arg(parent.servicesNames))
+                }
+            }
+        }
     }
 }
