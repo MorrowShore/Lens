@@ -29,9 +29,9 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
             loadFfzGlobalEmotes();
         }
 
-        if (sevenTvEmotes.isEmpty())
+        if (sevenTvGlobalEmotes.isEmpty())
         {
-            loadSevenTvEmotes();
+            loadSevenTvGlobalEmotes();
         }
     });
     timer.start(3000);
@@ -135,7 +135,7 @@ void EmotesProcessor::loadAll()
 {
     loadBttvGlobalEmotes();
     loadFfzGlobalEmotes();
-    loadSevenTvEmotes();
+    loadSevenTvGlobalEmotes();
 
     if (!twitch)
     {
@@ -150,6 +150,7 @@ void EmotesProcessor::loadAll()
 
     loadBttvUserEmotes(channel.id);
     loadFfzUserEmotes(channel.id);
+    loadSevenTvUserEmotes(channel.id);
 }
 
 void EmotesProcessor::loadBttvGlobalEmotes()
@@ -297,26 +298,47 @@ QHash<QString, QString> EmotesProcessor::parseFfzSet(const QJsonObject &set)
     return result;
 }
 
-void EmotesProcessor::loadSevenTvEmotes()
+void EmotesProcessor::loadSevenTvGlobalEmotes()
 {
     QNetworkRequest request(QUrl("https://api.7tv.app/v3/emote-sets/global"));
 
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        const QJsonArray emotes = QJsonDocument::fromJson(reply->readAll()).object().value("emotes").toArray();
+        sevenTvGlobalEmotes.insert(parseSevenTvSet(QJsonDocument::fromJson(reply->readAll()).object()));
         reply->deleteLater();
-
-        for (const QJsonValue& v : qAsConst(emotes))
-        {
-            const QJsonObject emote = v.toObject();
-
-            const QString name = emote.value("name").toString();
-            const QString url = "https:" + emote.value("data").toObject().value("host").toObject().value("url").toString() + "/2x.webp";
-
-            sevenTvEmotes.insert(name, url);
-        }
     });
+}
+
+void EmotesProcessor::loadSevenTvUserEmotes(const QString &twitchBroadcasterId)
+{
+    QNetworkRequest request(QUrl("https://api.7tv.app/v3/users/twitch/" + twitchBroadcasterId));
+
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        sevenTvUserEmotes.insert(parseSevenTvSet(QJsonDocument::fromJson(reply->readAll()).object().value("emote_set").toObject()));
+        reply->deleteLater();
+    });
+}
+
+QHash<QString, QString> EmotesProcessor::parseSevenTvSet(const QJsonObject &set)
+{
+    QHash<QString, QString> result;
+
+    const QJsonArray emotes = set.value("emotes").toArray();
+
+    for (const QJsonValue& v : qAsConst(emotes))
+    {
+        const QJsonObject emote = v.toObject();
+
+        const QString name = emote.value("name").toString();
+        const QString url = "https:" + emote.value("data").toObject().value("host").toObject().value("url").toString() + "/2x.webp";
+
+        result.insert(name, url);
+    }
+
+    return result;
 }
 
 QString EmotesProcessor::getEmoteUrl(const QString &name) const
@@ -373,12 +395,25 @@ QString EmotesProcessor::getEmoteUrl(const QString &name) const
         }
     }
 
-    if (auto it = sevenTvEmotes.find(name); it != sevenTvEmotes.end())
+    if (auto it = sevenTvGlobalEmotes.find(name); it != sevenTvGlobalEmotes.end())
     {
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name is empty for 7tv emote" << name;
+            qWarning() << Q_FUNC_INFO << "name is empty for global 7tv emote" << name;
+        }
+        else
+        {
+            return url;
+        }
+    }
+
+    if (auto it = sevenTvUserEmotes.find(name); it != sevenTvUserEmotes.end())
+    {
+        const QString& url = it.value();
+        if (url.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "name is empty for user 7tv emote" << name;
         }
         else
         {
