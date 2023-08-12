@@ -1,5 +1,6 @@
 #pragma once
 
+#include "chat_services/twitch.h"
 #include "models/message.h"
 #include <QNetworkAccessManager>
 #include <QSettings>
@@ -11,6 +12,7 @@ class EmotesProcessor : public QObject
 public:
     explicit EmotesProcessor(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
     void processMessage(std::shared_ptr<Message> message);
+    void setTwitch(std::shared_ptr<Twitch> twitch);
 
 signals:
 
@@ -36,4 +38,6 @@ private:
     QHash<QString, QString> bttvEmotes; // <name, url>
     QHash<QString, QString> ffzEmotes; // <name, url>
     QHash<QString, QString> sevenTvEmotes; // <name, url>
+
+    std::shared_ptr<Twitch> twitch;
 };

@@ -350,6 +350,18 @@ void ChatHandler::addService()
     QObject::connect(service.get(), &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
 
     services.append(service);
+
+    if (service->getServiceType() == AxelChat::ServiceType::Twitch)
+    {
+        if (std::shared_ptr<Twitch> twitch = std::dynamic_pointer_cast<Twitch>(service); twitch)
+        {
+            emotesProcessor.setTwitch(twitch);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "Failed to cast to Twitch";
+        }
+    }
 }
 
 void ChatHandler::addTestMessages()

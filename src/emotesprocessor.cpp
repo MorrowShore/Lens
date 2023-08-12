@@ -117,6 +117,12 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
     }
 }
 
+void EmotesProcessor::setTwitch(std::shared_ptr<Twitch> twitch_)
+{
+    twitch = twitch_;
+    qDebug() << twitch->getName();
+}
+
 void EmotesProcessor::loadAll()
 {
     loadBttvGlobalEmotes();
