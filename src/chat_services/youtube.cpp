@@ -48,7 +48,7 @@ YouTube::YouTube(QSettings& settings, const QString& settingsGroupPathParent, QN
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open window"), [this]()
+    /*addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open window"), [this]()
     {
         if (!browser)
         {
@@ -64,7 +64,7 @@ YouTube::YouTube(QSettings& settings, const QString& settingsGroupPathParent, QN
         {
             qDebug() << Q_FUNC_INFO << "Window is null";
         }
-    })));
+    })));*/
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTube::onTimeoutRequestChat);
     timerRequestChat.start(RequestChatInterval);
@@ -276,7 +276,7 @@ void YouTube::reconnectImpl()
     onTimeoutRequestChat();
     onTimeoutRequestStreamPage();
 
-    cweqt::Browser::Settings settings;
+    /*cweqt::Browser::Settings settings;
 
     settings.visible = false;
     settings.showResponses = true;
@@ -317,7 +317,7 @@ void YouTube::reconnectImpl()
     else
     {
         qWarning() << Q_FUNC_INFO << "browser is null";
-    }
+    }*/
 }
 
 ChatService::ConnectionStateType YouTube::getConnectionStateType() const
