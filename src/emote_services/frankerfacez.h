@@ -4,11 +4,11 @@
 #include <QObject>
 #include <QHash>
 
-class BetterTTV : public EmoteService
+class FrankerFaceZ : public EmoteService
 {
     Q_OBJECT
 public:
-    explicit BetterTTV(QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit FrankerFaceZ(QNetworkAccessManager& network, QObject *parent = nullptr);
 
     QString findEmoteUrl(const QString &name) const override;
     void loadGlobal() override;
@@ -17,7 +17,7 @@ public:
     bool isLoadedChannel() const override { return loadedChannel; }
 
 private:
-    static QHash<QString, QString> parseArray(const QJsonArray& array);
+    static QHash<QString, QString> parseSet(const QJsonObject& set);
 
     QNetworkAccessManager& network;
 

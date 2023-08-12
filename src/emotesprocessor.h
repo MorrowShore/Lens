@@ -20,10 +20,6 @@ signals:
 private slots:
     void loadAll();
 
-    void loadFfzGlobalEmotes();
-    void loadFfzUserEmotes(const QString& twitchBroadcasterId);
-    static QHash<QString, QString> parseFfzSet(const QJsonObject& set);
-
     void loadSevenTvGlobalEmotes();
     void loadSevenTvUserEmotes(const QString& twitchBroadcasterId);
     static QHash<QString, QString> parseSevenTvSet(const QJsonObject& set);
@@ -38,12 +34,7 @@ private:
 
     QTimer timer;
 
-    // <name, url>
-
     QList<std::shared_ptr<EmoteService>> services;
-
-    QHash<QString, QString> ffzGlobalEmotes;
-    QHash<QString, QString> ffzUserEmotes;
 
     QHash<QString, QString> sevenTvGlobalEmotes;
     QHash<QString, QString> sevenTvUserEmotes;

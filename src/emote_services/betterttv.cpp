@@ -2,6 +2,7 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 BetterTTV::BetterTTV(QNetworkAccessManager& network_, QObject *parent)
     : EmoteService{parent}

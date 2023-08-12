@@ -25,6 +25,7 @@ HEADERS += \
     crypto/obfuscator.h \
     emote_services/betterttv.h \
     emote_services/emoteservice.h \
+    emote_services/frankerfacez.h \
     emotesprocessor.h \
     oauth2.h \
     ssemanager.h \
@@ -78,6 +79,7 @@ SOURCES += \
     crypto/aes.cpp \
     crypto/crypto.cpp \
     emote_services/betterttv.cpp \
+    emote_services/frankerfacez.cpp \
     emotesprocessor.cpp \
     models/author.cpp \
     models/message.cpp \

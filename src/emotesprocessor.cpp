@@ -1,5 +1,6 @@
 #include "emotesprocessor.h"
 #include "emote_services/betterttv.h"
+#include "emote_services/frankerfacez.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -39,11 +40,6 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
             }
         }
 
-        if (ffzGlobalEmotes.isEmpty())
-        {
-            loadFfzGlobalEmotes();
-        }
-
         if (sevenTvGlobalEmotes.isEmpty())
         {
             loadSevenTvGlobalEmotes();
@@ -52,6 +48,7 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
     timer.start(3000);
 
     addService<BetterTTV>();
+    addService<FrankerFaceZ>();
 
     loadAll();
 }
@@ -160,83 +157,6 @@ void EmotesProcessor::loadAll()
             service->loadChannel(twitchChannelInfo->id);
         }
     }
-}
-
-void EmotesProcessor::loadFfzGlobalEmotes()
-{
-    QNetworkRequest request(QUrl("https://api.frankerfacez.com/v1/set/global"));
-
-    QNetworkReply* reply = network.get(request);
-    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        const QJsonObject sets = QJsonDocument::fromJson(reply->readAll()).object().value("sets").toObject();
-        reply->deleteLater();
-
-        const QStringList keys = sets.keys();
-        for (const QString& key : qAsConst(keys))
-        {
-            ffzGlobalEmotes.insert(parseFfzSet(sets.value(key).toObject()));
-        }
-    });
-}
-
-void EmotesProcessor::loadFfzUserEmotes(const QString &twitchBroadcasterId)
-{
-    {
-        QNetworkRequest request(QUrl("https://api.frankerfacez.com/v1/room/id/" + twitchBroadcasterId));
-
-        QNetworkReply* reply = network.get(request);
-        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
-        {
-            const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
-            const QJsonObject sets = root.value("sets").toObject();
-            reply->deleteLater();
-
-            const QStringList keys = sets.keys();
-            for (const QString& key : qAsConst(keys))
-            {
-                ffzUserEmotes.insert(parseFfzSet(sets.value(key).toObject()));
-            }
-        });
-    }
-
-    {
-        QNetworkRequest request(QUrl("https://api.frankerfacez.com/v1/user/id/" + twitchBroadcasterId));
-
-        QNetworkReply* reply = network.get(request);
-        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
-        {
-            const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
-            const QJsonObject sets = root.value("sets").toObject();
-            reply->deleteLater();
-
-            const QStringList keys = sets.keys();
-            for (const QString& key : qAsConst(keys))
-            {
-                ffzUserEmotes.insert(parseFfzSet(sets.value(key).toObject()));
-            }
-        });
-    }
-}
-
-QHash<QString, QString> EmotesProcessor::parseFfzSet(const QJsonObject &set)
-{
-    QHash<QString, QString> result;
-
-    const QJsonArray array = set.value("emoticons").toArray();
-    for (const QJsonValue& v : qAsConst(array))
-    {
-        const QJsonObject emoteJson = v.toObject();
-
-        const QString id = QString("%1").arg(emoteJson.value("id").toVariant().toLongLong());
-        const QString name = emoteJson.value("name").toString();
-
-        const QString url = "https://cdn.frankerfacez.com/emote/" + id + "/2";
-
-        result.insert(name, url);
-    }
-
-    return result;
 }
 
 void EmotesProcessor::loadSevenTvGlobalEmotes()
