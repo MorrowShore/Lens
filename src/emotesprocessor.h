@@ -20,10 +20,6 @@ signals:
 private slots:
     void loadAll();
 
-    void loadSevenTvGlobalEmotes();
-    void loadSevenTvUserEmotes(const QString& twitchBroadcasterId);
-    static QHash<QString, QString> parseSevenTvSet(const QJsonObject& set);
-
 private:
     QString getEmoteUrl(const QString& name) const;
     template <typename EmoteServiceInheritedClass> void addService();
@@ -35,9 +31,6 @@ private:
     QTimer timer;
 
     QList<std::shared_ptr<EmoteService>> services;
-
-    QHash<QString, QString> sevenTvGlobalEmotes;
-    QHash<QString, QString> sevenTvUserEmotes;
 
     std::optional<Twitch::ChannelInfo> twitchChannelInfo;
 };

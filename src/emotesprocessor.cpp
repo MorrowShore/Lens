@@ -1,6 +1,7 @@
 #include "emotesprocessor.h"
 #include "emote_services/betterttv.h"
 #include "emote_services/frankerfacez.h"
+#include "emote_services/seventv.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -39,16 +40,12 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
                 service->loadChannel(twitchChannelInfo->id);
             }
         }
-
-        if (sevenTvGlobalEmotes.isEmpty())
-        {
-            loadSevenTvGlobalEmotes();
-        }
     });
     timer.start(3000);
 
     addService<BetterTTV>();
     addService<FrankerFaceZ>();
+    addService<SevenTV>();
 
     loadAll();
 }
@@ -142,7 +139,7 @@ void EmotesProcessor::connectTwitch(std::shared_ptr<Twitch> twitch)
 
 void EmotesProcessor::loadAll()
 {
-    for (const std::shared_ptr<EmoteService>& service : services)
+    for (const std::shared_ptr<EmoteService>& service : qAsConst(services))
     {
         if (!service)
         {
@@ -157,49 +154,6 @@ void EmotesProcessor::loadAll()
             service->loadChannel(twitchChannelInfo->id);
         }
     }
-}
-
-void EmotesProcessor::loadSevenTvGlobalEmotes()
-{
-    QNetworkRequest request(QUrl("https://api.7tv.app/v3/emote-sets/global"));
-
-    QNetworkReply* reply = network.get(request);
-    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        sevenTvGlobalEmotes.insert(parseSevenTvSet(QJsonDocument::fromJson(reply->readAll()).object()));
-        reply->deleteLater();
-    });
-}
-
-void EmotesProcessor::loadSevenTvUserEmotes(const QString &twitchBroadcasterId)
-{
-    QNetworkRequest request(QUrl("https://api.7tv.app/v3/users/twitch/" + twitchBroadcasterId));
-
-    QNetworkReply* reply = network.get(request);
-    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        sevenTvUserEmotes.insert(parseSevenTvSet(QJsonDocument::fromJson(reply->readAll()).object().value("emote_set").toObject()));
-        reply->deleteLater();
-    });
-}
-
-QHash<QString, QString> EmotesProcessor::parseSevenTvSet(const QJsonObject &set)
-{
-    QHash<QString, QString> result;
-
-    const QJsonArray emotes = set.value("emotes").toArray();
-
-    for (const QJsonValue& v : qAsConst(emotes))
-    {
-        const QJsonObject emote = v.toObject();
-
-        const QString name = emote.value("name").toString();
-        const QString url = "https:" + emote.value("data").toObject().value("host").toObject().value("url").toString() + "/2x.webp";
-
-        result.insert(name, url);
-    }
-
-    return result;
 }
 
 QString EmotesProcessor::getEmoteUrl(const QString &name) const
