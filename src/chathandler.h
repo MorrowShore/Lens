@@ -36,6 +36,7 @@ class ChatHandler : public QObject
 
 public:
     explicit ChatHandler(QSettings& settings, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    ~ChatHandler();
 
     MessagesModel& getMessagesModel();
 

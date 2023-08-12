@@ -75,6 +75,15 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     });
 }
 
+ChatHandler::~ChatHandler()
+{
+    const int count = services.count();
+    for (int i = 0; i < count; i++)
+    {
+        removeService(0);
+    }
+}
+
 void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, const QList<std::shared_ptr<Author>>& authors)
 {
     if (messages.isEmpty() && authors.isEmpty())

@@ -182,7 +182,7 @@ void Wasd::reconnectImpl()
 
 void Wasd::onWebSocketReceived(const QString &rawData)
 {
-    qDebug() << "received:" << rawData;
+    //qDebug() << "received:" << rawData;
 
     if (!enabled.get())
     {
@@ -218,7 +218,7 @@ void Wasd::onWebSocketReceived(const QString &rawData)
     const QJsonDocument doc = payload.isEmpty() ? QJsonDocument() : QJsonDocument::fromJson(payload, &jsonError);
     if (jsonError.error != QJsonParseError::ParseError::NoError)
     {
-        qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << payload;
+        qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << ",raw data =" << rawData;
     }
 
     parseSocketMessage(type, doc);
@@ -344,7 +344,7 @@ void Wasd::send(const SocketIO2Type type, const QByteArray& id, const QJsonDocum
 
     QString message = QString("%1").arg(typeNum) + id + QString::fromUtf8(payload.toJson(QJsonDocument::JsonFormat::Compact));
 
-    qDebug() << "send:" << message;
+    //qDebug() << "send:" << message;
 
     socket.sendTextMessage(message);
 }
