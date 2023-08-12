@@ -296,9 +296,15 @@ void ChatHandler::updateProxy()
         network.setProxy(QNetworkProxy(QNetworkProxy::NoProxy));
     }
 
-    for (ChatService* chat : qAsConst(services))
+    for (const std::shared_ptr<ChatService>& service : qAsConst(services))
     {
-        chat->reconnect();
+        if (!service)
+        {
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
+        }
+
+        service->reconnect();
     }
 
     emit proxyChanged();
@@ -312,9 +318,14 @@ void ChatHandler::removeService(const int index)
         return;
     }
 
-    ChatService* service = services.at(index);
+    std::shared_ptr<ChatService> service = services.at(index);
+    if (service)
+    {
+        QObject::disconnect(service.get(), nullptr, this, nullptr);
+        QObject::disconnect(this, nullptr, service.get(), nullptr);
+    }
+
     services.removeAt(index);
-    delete service;
 }
 
 template<typename ChatServiceInheritedClass>
@@ -322,12 +333,12 @@ void ChatHandler::addService()
 {
     static_assert(std::is_base_of<ChatService, ChatServiceInheritedClass>::value, "ChatServiceInheritedClass must derive from ChatService");
 
-    ChatServiceInheritedClass* service = new ChatServiceInheritedClass(settings, SettingsGroupPath, network, web, this);
+    std::shared_ptr<ChatServiceInheritedClass> service = std::make_shared<ChatServiceInheritedClass>(settings, SettingsGroupPath, network, web, this);
 
-    QObject::connect(service, &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
-    QObject::connect(service, &ChatService::readyRead, this, &ChatHandler::onReadyRead);
-    QObject::connect(service, &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
-    QObject::connect(service, &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
+    QObject::connect(service.get(), &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
+    QObject::connect(service.get(), &ChatService::readyRead, this, &ChatHandler::onReadyRead);
+    QObject::connect(service.get(), &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
+    QObject::connect(service.get(), &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
 
     services.append(service);
 }
@@ -490,8 +501,14 @@ int ChatHandler::connectedCount() const
 {
     int result = 0;
 
-    for (ChatService* service : services)
+    for (const std::shared_ptr<ChatService>& service : qAsConst(services))
     {
+        if (!service)
+        {
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
+        }
+
         if (service->getConnectionStateType()  == ChatService::ConnectionStateType::Connected)
         {
             result++;
@@ -505,8 +522,14 @@ int ChatHandler::getViewersTotalCount() const
 {
     int result = 0;
 
-    for (ChatService* service : services)
+    for (const std::shared_ptr<ChatService>& service : qAsConst(services))
     {
+        if (!service)
+        {
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
+        }
+
         const int count = service->getViewersCount();
         if (count >= 0)
         {
@@ -577,16 +600,22 @@ ChatService *ChatHandler::getServiceAtIndex(int index) const
         return nullptr;
     }
 
-    return services.at(index);
+    return services.at(index).get();
 }
 
 ChatService *ChatHandler::getServiceByType(int type) const
 {
-    for (ChatService* service : services)
+    for (const std::shared_ptr<ChatService>& service : services)
     {
+        if (!service)
+        {
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
+        }
+
         if (service->getServiceType() == (AxelChat::ServiceType)type)
         {
-            return service;
+            return service.get();
         }
     }
 

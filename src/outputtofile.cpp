@@ -66,7 +66,7 @@ QString removePostfix(const QString& string, const QString& postfix, const Qt::C
 
 }
 
-OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath_, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, QList<ChatService*>& services_, QObject *parent)
+OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath_, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, QList<std::shared_ptr<ChatService>>& services_, QObject *parent)
     : QObject(parent)
     , settings(settings_)
     , settingsGroupPath(settingsGroupPath_)
@@ -145,9 +145,15 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
         return;
     }
 
-    ChatService* service = nullptr;
-    for (ChatService* service_ : qAsConst(services))
+    std::shared_ptr<ChatService> service;
+    for (const std::shared_ptr<ChatService>& service_ : qAsConst(services))
     {
+        if (!service_)
+        {
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
+        }
+
         if (service_->getServiceType() == serviceType)
         {
             service = service_;
@@ -794,9 +800,9 @@ void OutputToFile::writeApplicationState(const bool started, const int viewersTo
     file.write(QString("session_directory=%1\n").arg(_relativeSessionFolder).toUtf8());
     file.write(QString("viewers_count_total=%1\n").arg(viewersTotalCount).toUtf8());
 
-    for (const ChatService* service : qAsConst(services))
+    for (const std::shared_ptr<ChatService>& service : qAsConst(services))
     {
-        writeServiceState(service);
+        writeServiceState(service.get());
     }
 }
 
@@ -804,6 +810,12 @@ void OutputToFile::writeServiceState(const ChatService* service) const
 {
     if (!enabled.get())
     {
+        return;
+    }
+
+    if (!service)
+    {
+        qWarning() << Q_FUNC_INFO << "service is null";
         return;
     }
 

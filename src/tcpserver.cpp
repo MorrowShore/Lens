@@ -3,7 +3,7 @@
 #include <QTcpSocket>
 #include <QCoreApplication>
 
-TcpServer::TcpServer(QList<ChatService*>& services_, QObject *parent)
+TcpServer::TcpServer(QList<std::shared_ptr<ChatService>>& services_, QObject *parent)
     : QObject{parent}
     , services(services_)
 {
@@ -61,8 +61,14 @@ TcpServer::TcpServer(QList<ChatService*>& services_, QObject *parent)
                     url = url.mid(serviceIdBa.length());
 
                     bool found = false;
-                    for (ChatService* service : qAsConst(services))
+                    for (const std::shared_ptr<ChatService>& service : qAsConst(services))
                     {
+                        if (!service)
+                        {
+                            qWarning() << Q_FUNC_INFO << "servies is null";
+                            continue;
+                        }
+
                         if (serviceId == ChatService::getServiceTypeId(service->getServiceType()))
                         {
                             socket->write(service->processTcpRequest(TcpRequest(method, QUrl(url))).getData());

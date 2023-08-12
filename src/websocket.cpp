@@ -123,8 +123,14 @@ void WebSocket::sendHelloToClient(QWebSocket *client)
 
     QJsonArray jsonServices;
 
-    for (const ChatService* service : chatHandler.getServices())
+    for (const std::shared_ptr<ChatService>& service : chatHandler.getServices())
     {
+        if (!service)
+        {
+            qWarning() << Q_FUNC_INFO << "servies is null";
+            continue;
+        }
+
         jsonServices.append(service->getStaticInfoJson());
     }
 
@@ -185,8 +191,14 @@ void WebSocket::sendStateToClient(QWebSocket *client)
 
     QJsonArray jsonServices;
 
-    for (const ChatService* service : chatHandler.getServices())
+    for (const std::shared_ptr<ChatService>& service : chatHandler.getServices())
     {
+        if (!service)
+        {
+            qWarning() << Q_FUNC_INFO << "servies is null";
+            continue;
+        }
+
         jsonServices.append(service->getStateJson());
     }
 

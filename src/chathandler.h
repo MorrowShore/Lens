@@ -88,7 +88,7 @@ public:
     Q_INVOKABLE ChatService* getServiceByType(int type) const;
     Q_INVOKABLE QUrl getServiceIconUrl(int serviceType) const;
     Q_INVOKABLE QUrl getServiceName(int serviceType) const;
-    const QList<ChatService*>& getServices() const { return services; }
+    const QList<std::shared_ptr<ChatService>>& getServices() const { return services; }
 
 signals:
     void connectedCountChanged();
@@ -128,7 +128,7 @@ private:
     QNetworkAccessManager& network;
     cweqt::Manager& web;
 
-    QList<ChatService*> services;
+    QList<std::shared_ptr<ChatService>> services;
 
     EmotesProcessor emotesProcessor;
 

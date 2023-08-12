@@ -10,7 +10,7 @@ class TcpServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit TcpServer(QList<ChatService*>& services, QObject *parent = nullptr);
+    explicit TcpServer(QList<std::shared_ptr<ChatService>>& services, QObject *parent = nullptr);
 
     static const int Port = 8356;
 
@@ -19,7 +19,7 @@ public:
 signals:
 
 private:
-    QList<ChatService*>& services;
+    QList<std::shared_ptr<ChatService>>& services;
 
     QTcpServer server;
 };
