@@ -355,7 +355,7 @@ void ChatHandler::addService()
     {
         if (std::shared_ptr<Twitch> twitch = std::dynamic_pointer_cast<Twitch>(service); twitch)
         {
-            emotesProcessor.setTwitch(twitch);
+            emotesProcessor.connectTwitch(twitch);
         }
         else
         {

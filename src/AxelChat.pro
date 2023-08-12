@@ -23,6 +23,8 @@ HEADERS += \
     crypto/aes.h \
     crypto/crypto.h \
     crypto/obfuscator.h \
+    emote_services/betterttv.h \
+    emote_services/emoteservice.h \
     emotesprocessor.h \
     oauth2.h \
     ssemanager.h \
@@ -75,6 +77,7 @@ SOURCES += \
     chat_services/youtube.cpp \
     crypto/aes.cpp \
     crypto/crypto.cpp \
+    emote_services/betterttv.cpp \
     emotesprocessor.cpp \
     models/author.cpp \
     models/message.cpp \

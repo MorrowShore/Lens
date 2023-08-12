@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chat_services/twitch.h"
+#include "emote_services/emoteservice.h"
 #include "models/message.h"
 #include <QNetworkAccessManager>
 #include <QSettings>
@@ -12,15 +13,12 @@ class EmotesProcessor : public QObject
 public:
     explicit EmotesProcessor(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
     void processMessage(std::shared_ptr<Message> message);
-    void setTwitch(std::shared_ptr<Twitch> twitch);
+    void connectTwitch(std::shared_ptr<Twitch> twitch);
 
 signals:
 
 private slots:
     void loadAll();
-
-    void loadBttvGlobalEmotes();
-    void loadBttvUserEmotes(const QString& twitchBroadcasterId);
 
     void loadFfzGlobalEmotes();
     void loadFfzUserEmotes(const QString& twitchBroadcasterId);
@@ -32,6 +30,7 @@ private slots:
 
 private:
     QString getEmoteUrl(const QString& name) const;
+    template <typename EmoteServiceInheritedClass> void addService();
 
     QSettings& settings;
     const QString settingsGroupPath;
@@ -41,8 +40,7 @@ private:
 
     // <name, url>
 
-    QHash<QString, QString> bttvGlobalEmotes;
-    QHash<QString, QString> bttvUserEmotes;
+    QList<std::shared_ptr<EmoteService>> services;
 
     QHash<QString, QString> ffzGlobalEmotes;
     QHash<QString, QString> ffzUserEmotes;
@@ -50,5 +48,5 @@ private:
     QHash<QString, QString> sevenTvGlobalEmotes;
     QHash<QString, QString> sevenTvUserEmotes;
 
-    std::shared_ptr<Twitch> twitch;
+    std::optional<Twitch::ChannelInfo> twitchChannelInfo;
 };

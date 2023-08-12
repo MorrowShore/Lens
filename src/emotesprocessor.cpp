@@ -1,4 +1,5 @@
 #include "emotesprocessor.h"
+#include "emote_services/betterttv.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -19,9 +20,23 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
 {
     connect(&timer, &QTimer::timeout, this, [this]()
     {
-        if (bttvGlobalEmotes.isEmpty())
+        for (const std::shared_ptr<EmoteService>& service : qAsConst(services))
         {
-            loadBttvGlobalEmotes();
+            if (!service)
+            {
+                qWarning() << Q_FUNC_INFO << "service is null";
+                continue;
+            }
+
+            if (!service->isLoadedGlobal())
+            {
+                service->loadGlobal();
+            }
+
+            if (!service->isLoadedChannel() && twitchChannelInfo)
+            {
+                service->loadChannel(twitchChannelInfo->id);
+            }
         }
 
         if (ffzGlobalEmotes.isEmpty())
@@ -35,6 +50,8 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
         }
     });
     timer.start(3000);
+
+    addService<BetterTTV>();
 
     loadAll();
 }
@@ -117,108 +134,32 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
     }
 }
 
-void EmotesProcessor::setTwitch(std::shared_ptr<Twitch> twitch_)
+void EmotesProcessor::connectTwitch(std::shared_ptr<Twitch> twitch)
 {
-    twitch = twitch_;
-
-    if (!twitch)
+    connect(twitch.get(), &Twitch::channelInfoChanged, this, [this, twitch]()
     {
-        qWarning() << Q_FUNC_INFO << "twitch is null";
-        return;
-    }
-
-    connect(twitch.get(), &Twitch::channelInfoChanged, this, &EmotesProcessor::loadAll);
-    loadAll();
+        twitchChannelInfo = twitch->getChannelInfo();
+        loadAll();
+    });
 }
 
 void EmotesProcessor::loadAll()
 {
-    loadBttvGlobalEmotes();
-    loadFfzGlobalEmotes();
-    loadSevenTvGlobalEmotes();
-
-    if (!twitch)
+    for (const std::shared_ptr<EmoteService>& service : services)
     {
-        return;
+        if (!service)
+        {
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
+        }
+
+        service->loadGlobal();
+
+        if (twitchChannelInfo)
+        {
+            service->loadChannel(twitchChannelInfo->id);
+        }
     }
-
-    const Twitch::ChannelInfo channel = twitch->getChannelInfo();
-    if (channel.id.isEmpty())
-    {
-        return;
-    }
-
-    loadBttvUserEmotes(channel.id);
-    loadFfzUserEmotes(channel.id);
-    loadSevenTvUserEmotes(channel.id);
-}
-
-void EmotesProcessor::loadBttvGlobalEmotes()
-{
-    QNetworkRequest request(QUrl("https://api.betterttv.net/3/cached/emotes/global"));
-
-    QNetworkReply* reply = network.get(request);
-    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        const QJsonArray array = QJsonDocument::fromJson(reply->readAll()).array();
-        reply->deleteLater();
-
-        if (array.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "array is empty";
-            return;
-        }
-
-        for (const QJsonValue& v : qAsConst(array))
-        {
-            const QJsonObject emoteJson = v.toObject();
-
-            const QString id = emoteJson.value("id").toString();
-            const QString name = emoteJson.value("code").toString();
-
-            const QString url = "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
-
-            bttvGlobalEmotes.insert(name, url);
-        }
-    });
-}
-
-void EmotesProcessor::loadBttvUserEmotes(const QString &twitchBroadcasterId)
-{
-    QNetworkRequest request(QUrl("https://api.betterttv.net/3/cached/users/twitch/" + twitchBroadcasterId));
-
-    QNetworkReply* reply = network.get(request);
-    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
-        reply->deleteLater();
-
-        const QJsonArray sharedEmotes = root.value("sharedEmotes").toArray();
-        for (const QJsonValue& v : qAsConst(sharedEmotes))
-        {
-            const QJsonObject emoteJson = v.toObject();
-
-            const QString id = emoteJson.value("id").toString();
-            const QString name = emoteJson.value("code").toString();
-
-            const QString url = "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
-
-            bttvUserEmotes.insert(name, url);
-        }
-
-        const QJsonArray channelEmotes = root.value("channelEmotes").toArray();
-        for (const QJsonValue& v : qAsConst(channelEmotes))
-        {
-            const QJsonObject emoteJson = v.toObject();
-
-            const QString id = emoteJson.value("id").toString();
-            const QString name = emoteJson.value("code").toString();
-
-            const QString url = "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
-
-            bttvUserEmotes.insert(name, url);
-        }
-    });
 }
 
 void EmotesProcessor::loadFfzGlobalEmotes()
@@ -343,83 +284,29 @@ QHash<QString, QString> EmotesProcessor::parseSevenTvSet(const QJsonObject &set)
 
 QString EmotesProcessor::getEmoteUrl(const QString &name) const
 {
-    if (auto it = bttvGlobalEmotes.find(name); it != bttvGlobalEmotes.end())
+    for (const std::shared_ptr<EmoteService>& service : qAsConst(services))
     {
-        const QString& url = it.value();
-        if (url.isEmpty())
+        if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "name is empty for global bttv emote" << name;
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
         }
-        else
-        {
-            return url;
-        }
-    }
 
-    if (auto it = bttvUserEmotes.find(name); it != bttvUserEmotes.end())
-    {
-        const QString& url = it.value();
-        if (url.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "name is empty for user bttv emote" << name;
-        }
-        else
-        {
-            return url;
-        }
-    }
-
-    if (auto it = ffzGlobalEmotes.find(name); it != ffzGlobalEmotes.end())
-    {
-        const QString& url = it.value();
-        if (url.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "name is empty for global ffz emote" << name;
-        }
-        else
-        {
-            return url;
-        }
-    }
-
-    if (auto it = ffzUserEmotes.find(name); it != ffzUserEmotes.end())
-    {
-        const QString& url = it.value();
-        if (url.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "name is empty for user ffz emote" << name;
-        }
-        else
-        {
-            return url;
-        }
-    }
-
-    if (auto it = sevenTvGlobalEmotes.find(name); it != sevenTvGlobalEmotes.end())
-    {
-        const QString& url = it.value();
-        if (url.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "name is empty for global 7tv emote" << name;
-        }
-        else
-        {
-            return url;
-        }
-    }
-
-    if (auto it = sevenTvUserEmotes.find(name); it != sevenTvUserEmotes.end())
-    {
-        const QString& url = it.value();
-        if (url.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "name is empty for user 7tv emote" << name;
-        }
-        else
+        if (const QString url = service->findEmoteUrl(name); !url.isEmpty())
         {
             return url;
         }
     }
 
     return QString();
+}
+
+template<typename EmoteServiceInheritedClass>
+void EmotesProcessor::addService()
+{
+    static_assert(std::is_base_of<EmoteService, EmoteServiceInheritedClass>::value, "EmoteServiceInheritedClass must derive from EmoteService");
+
+    std::shared_ptr<EmoteServiceInheritedClass> service = std::make_shared<EmoteServiceInheritedClass>(network, this);
+
+    services.append(service);
 }
