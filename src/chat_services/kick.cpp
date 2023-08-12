@@ -15,7 +15,7 @@ static const int EmoteImageHeight = 32;
 }
 
 Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager& web_, QObject *parent)
-    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Kick, parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Kick, false, parent)
     , network(network_)
     , web(web_)
     , socket("https://kick.com")

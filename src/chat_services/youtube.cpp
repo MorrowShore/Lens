@@ -42,7 +42,7 @@ QByteArray extractDigitsOnly(const QByteArray& data)
 }
 
 YouTube::YouTube(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
-    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
     , network(network_)
     , web(web_)
 {

@@ -55,7 +55,7 @@ static const int MESSAGE_TYPE_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32;
 }
 
 Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
-    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Discord, parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Discord, false, parent)
     , network(network_)
     , applicationId(settings, getSettingsGroupPath() + "/client_id", QString(), true)
     , botToken(settings, getSettingsGroupPath() + "/bot_token", QString(), true)

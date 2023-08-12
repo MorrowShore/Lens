@@ -1,6 +1,6 @@
 #include "chatservice.h"
 
-ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, QObject *parent)
+ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
     : QObject(parent)
 
     , serviceType(serviceType_)
@@ -10,7 +10,7 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
     , stream(settings, getSettingsGroupPath() + "/stream")
     , lastSavedMessageId(settings, getSettingsGroupPath() + "/lastSavedMessageId")
 
-    , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", true)
+    , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", enabledThirdPartyEmotesDefault)
 {
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&stream, tr("Stream"))));
 }

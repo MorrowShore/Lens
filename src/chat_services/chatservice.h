@@ -57,7 +57,7 @@ public:
         int viewersCount = -1;
     };
 
-    explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, QObject *parent = nullptr);
+    explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
     virtual ~ChatService(){}
 
     ChatService (const ChatService&) = delete;
