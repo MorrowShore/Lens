@@ -56,7 +56,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] Web-based widgets
 - [ ] Appearance editor for Web-based widgets
 - [ ] Support for donate platforms
-- [x] BetterTTV, FrankerFaceZ, 7TV support
+- [x] BetterTTV, FrankerFaceZ, 7TV support on any streaming platform
 - [x] Windows builds
 - [ ] Linux builds
 - [ ] macOS builds
