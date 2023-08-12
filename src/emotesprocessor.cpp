@@ -149,6 +149,7 @@ void EmotesProcessor::loadAll()
     }
 
     loadBttvUserEmotes(channel.id);
+    loadFfzUserEmotes(channel.id);
 }
 
 void EmotesProcessor::loadBttvGlobalEmotes()
@@ -235,6 +236,45 @@ void EmotesProcessor::loadFfzGlobalEmotes()
             parseFfzSet(sets.value(key).toObject());
         }
     });
+}
+
+void EmotesProcessor::loadFfzUserEmotes(const QString &twitchBroadcasterId)
+{
+    {
+        QNetworkRequest request(QUrl("https://api.frankerfacez.com/v1/room/id/" + twitchBroadcasterId));
+
+        QNetworkReply* reply = network.get(request);
+        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+        {
+            const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
+            const QJsonObject sets = root.value("sets").toObject();
+            reply->deleteLater();
+
+            const QStringList keys = sets.keys();
+            for (const QString& key : qAsConst(keys))
+            {
+                parseFfzSet(sets.value(key).toObject());
+            }
+        });
+    }
+
+    {
+        QNetworkRequest request(QUrl("https://api.frankerfacez.com/v1/user/id/" + twitchBroadcasterId));
+
+        QNetworkReply* reply = network.get(request);
+        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+        {
+            const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
+            const QJsonObject sets = root.value("sets").toObject();
+            reply->deleteLater();
+
+            const QStringList keys = sets.keys();
+            for (const QString& key : qAsConst(keys))
+            {
+                parseFfzSet(sets.value(key).toObject());
+            }
+        });
+    }
 }
 
 void EmotesProcessor::parseFfzSet(const QJsonObject &set)

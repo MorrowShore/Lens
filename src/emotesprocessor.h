@@ -23,6 +23,7 @@ private slots:
     void loadBttvUserEmotes(const QString& twitchBroadcasterId);
 
     void loadFfzGlobalEmotes();
+    void loadFfzUserEmotes(const QString& twitchBroadcasterId);
     void parseFfzSet(const QJsonObject& set);
 
     void loadSevenTvEmotes();
