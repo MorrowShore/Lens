@@ -86,6 +86,8 @@ ChatHandler::~ChatHandler()
 
 void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, const QList<std::shared_ptr<Author>>& authors)
 {
+    ChatService* service = static_cast<ChatService*>(sender());
+
     if (messages.isEmpty() && authors.isEmpty())
     {
         return;
@@ -97,7 +99,7 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
         return;
     }
 
-    AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
+    const AxelChat::ServiceType serviceType = service ? service->getServiceType() : AxelChat::ServiceType::Unknown;
 
     QList<std::shared_ptr<Message>> messagesValidToAdd;
     QList<std::shared_ptr<Author>> updatedAuthors;
@@ -125,22 +127,11 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
 
         messagesModel.addAuthor(author);
 
-        if (!message->isHasFlag(Message::Flag::DeleterItem))
+        if ((service && service->isEnabledThirdPartyEmotes()) || !service)
         {
-            switch (author->getServiceType())
-            {
-            case AxelChat::ServiceType::Unknown:
-            case AxelChat::ServiceType::Software:
-                break;
-
-            default:
-                serviceType = author->getServiceType();
-                updatedAuthors.append(author);
-                break;
-            }
+            emotesProcessor.processMessage(message);
         }
 
-        emotesProcessor.processMessage(message);
         messagesValidToAdd.append(message);
     }
 
