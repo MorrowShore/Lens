@@ -12,13 +12,23 @@ class Twitch : public ChatService
     Q_OBJECT
 
 public:
+
+    struct ChannelInfo
+    {
+        QString id;
+        QString login;
+    };
+
     explicit Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
     TcpReply processTcpRequest(const TcpRequest &request) override;
 
+    ChannelInfo getChannelInfo() const { return info.channel; }
+
 signals:
+    void channelInfoChanged();
 
 public slots:
 
@@ -48,7 +58,7 @@ private:
 
     struct Info
     {
-        QString broadcasterId;
+        ChannelInfo channel;
         QSet<QString> usersInfoUpdated;
     };
 

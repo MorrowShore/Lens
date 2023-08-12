@@ -19,7 +19,7 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
 {
     connect(&timer, &QTimer::timeout, this, [this]()
     {
-        if (bttvEmotes.isEmpty())
+        if (bttvGlobalEmotes.isEmpty())
         {
             loadBttvGlobalEmotes();
         }
@@ -120,7 +120,15 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
 void EmotesProcessor::setTwitch(std::shared_ptr<Twitch> twitch_)
 {
     twitch = twitch_;
-    qDebug() << twitch->getName();
+
+    if (!twitch)
+    {
+        qWarning() << Q_FUNC_INFO << "twitch is null";
+        return;
+    }
+
+    connect(twitch.get(), &Twitch::channelInfoChanged, this, &EmotesProcessor::loadAll);
+    loadAll();
 }
 
 void EmotesProcessor::loadAll()
@@ -128,6 +136,19 @@ void EmotesProcessor::loadAll()
     loadBttvGlobalEmotes();
     loadFfzGlobalEmotes();
     loadSevenTvEmotes();
+
+    if (!twitch)
+    {
+        return;
+    }
+
+    const Twitch::ChannelInfo channel = twitch->getChannelInfo();
+    if (channel.id.isEmpty())
+    {
+        return;
+    }
+
+    loadBttvUserEmotes(channel.id);
 }
 
 void EmotesProcessor::loadBttvGlobalEmotes()
@@ -155,7 +176,45 @@ void EmotesProcessor::loadBttvGlobalEmotes()
 
             const QString url = "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
 
-            bttvEmotes.insert(name, url);
+            bttvGlobalEmotes.insert(name, url);
+        }
+    });
+}
+
+void EmotesProcessor::loadBttvUserEmotes(const QString &twitchBroadcasterId)
+{
+    QNetworkRequest request(QUrl("https://api.betterttv.net/3/cached/users/twitch/" + twitchBroadcasterId));
+
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
+        reply->deleteLater();
+
+        const QJsonArray sharedEmotes = root.value("sharedEmotes").toArray();
+        for (const QJsonValue& v : qAsConst(sharedEmotes))
+        {
+            const QJsonObject emoteJson = v.toObject();
+
+            const QString id = emoteJson.value("id").toString();
+            const QString name = emoteJson.value("code").toString();
+
+            const QString url = "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
+
+            bttvUserEmotes.insert(name, url);
+        }
+
+        const QJsonArray channelEmotes = root.value("channelEmotes").toArray();
+        for (const QJsonValue& v : qAsConst(channelEmotes))
+        {
+            const QJsonObject emoteJson = v.toObject();
+
+            const QString id = emoteJson.value("id").toString();
+            const QString name = emoteJson.value("code").toString();
+
+            const QString url = "https://cdn.betterttv.net/emote/" + id + "/2x.webp";
+
+            bttvUserEmotes.insert(name, url);
         }
     });
 }
@@ -218,12 +277,12 @@ void EmotesProcessor::loadSevenTvEmotes()
 
 QString EmotesProcessor::getEmoteUrl(const QString &name) const
 {
-    if (auto it = bttvEmotes.find(name); it != bttvEmotes.end())
+    if (auto it = bttvGlobalEmotes.find(name); it != bttvGlobalEmotes.end())
     {
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "code is empty for global bttv emote" << name;
+            qWarning() << Q_FUNC_INFO << "name is empty for global bttv emote" << name;
         }
         else
         {
@@ -231,12 +290,26 @@ QString EmotesProcessor::getEmoteUrl(const QString &name) const
         }
     }
 
+    if (auto it = bttvUserEmotes.find(name); it != bttvUserEmotes.end())
+    {
+        const QString& url = it.value();
+        if (url.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "name is empty for user bttv emote" << name;
+        }
+        else
+        {
+            return url;
+        }
+    }
+
+
     if (auto it = ffzEmotes.find(name); it != ffzEmotes.end())
     {
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "code is empty for ffz emote" << name;
+            qWarning() << Q_FUNC_INFO << "name is empty for ffz emote" << name;
         }
         else
         {
@@ -249,7 +322,7 @@ QString EmotesProcessor::getEmoteUrl(const QString &name) const
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "code is empty for 7tv emote" << name;
+            qWarning() << Q_FUNC_INFO << "name is empty for 7tv emote" << name;
         }
         else
         {

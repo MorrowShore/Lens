@@ -271,6 +271,8 @@ void Twitch::reconnectImpl()
     state = State();
     info = Info();
 
+    emit channelInfoChanged();
+
     stream.set(stream.get().toLower().trimmed());
 
     state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/stream-manager"));
@@ -654,12 +656,12 @@ void Twitch::requestGlobalBadges()
 
 void Twitch::requestChannelBadges()
 {
-    if (info.broadcasterId.isEmpty())
+    if (info.channel.id.isEmpty())
     {
         return;
     }
 
-    QNetworkRequest request("https://api.twitch.tv/helix/chat/badges?broadcaster_id=" + info.broadcasterId);
+    QNetworkRequest request("https://api.twitch.tv/helix/chat/badges?broadcaster_id=" + info.channel.id);
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyBadges);
@@ -825,8 +827,11 @@ void Twitch::onReplyUserInfo()
 
         if (channelLogin == state.streamId)
         {
-            info.broadcasterId = broadcasterId;
+            info.channel.id = broadcasterId;
+            info.channel.login = channelLogin;
             requestChannelBadges();
+
+            emit channelInfoChanged();
         }
     }
 }
