@@ -195,6 +195,20 @@ ScrollView {
 
             Switch {
                 text: qsTr("%1 emotes").arg(parent.servicesNames)
+
+                property bool enableDataChanging: true
+
+                Component.onCompleted: {
+                    enableDataChanging = false
+                    checked = chatService.enabledThirdPartyEmotes
+                    enableDataChanging = true
+                }
+
+                onCheckedChanged: {
+                    if (enableDataChanging) {
+                        chatService.enabledThirdPartyEmotes = checked
+                    }
+                }
             }
 
             RoundButton {

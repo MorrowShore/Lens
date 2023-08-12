@@ -37,6 +37,8 @@ public:
 
     Q_PROPERTY(int                  viewersCount                 READ getViewersCount                    NOTIFY stateChanged)
 
+    Q_PROPERTY(bool  enabledThirdPartyEmotes      READ isEnabledThirdPartyEmotes   WRITE setEnabledThirdPartyEmotes     NOTIFY stateChanged)
+
     enum class ConnectionStateType
     {
         NotConnected = 10,
@@ -81,7 +83,10 @@ public:
     int getViewersCount() const;
 
     bool isEnabled() const;
-    void setEnabled(const bool enabled_);
+    void setEnabled(const bool enabled);
+
+    bool isEnabledThirdPartyEmotes() const;
+    void setEnabledThirdPartyEmotes(const bool enabled);
 
     const Setting<QString>& getLastSavedMessageId() const;
     void setLastSavedMessageId(const QString& messageId);
@@ -139,4 +144,5 @@ protected:
     Setting<bool> enabled;
     Setting<QString> stream;
     Setting<QString> lastSavedMessageId;
+    Setting<bool> enabledThirdPartyEmotes;
 };

@@ -1,5 +1,4 @@
 #include "chatservice.h"
-#include "tcpserver.h"
 
 ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, QObject *parent)
     : QObject(parent)
@@ -10,6 +9,8 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
     , enabled(settings, getSettingsGroupPath() + "/enabled", false)
     , stream(settings, getSettingsGroupPath() + "/stream")
     , lastSavedMessageId(settings, getSettingsGroupPath() + "/lastSavedMessageId")
+
+    , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", true)
 {
     addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&stream, tr("Stream"))));
 }
@@ -125,6 +126,17 @@ void ChatService::setEnabled(const bool enabled_)
 {
     enabled.set(enabled_);
     onUIElementChanged(uiElements[0]);
+    emit stateChanged();
+}
+
+bool ChatService::isEnabledThirdPartyEmotes() const
+{
+    return enabledThirdPartyEmotes.get();
+}
+
+void ChatService::setEnabledThirdPartyEmotes(const bool enabled)
+{
+    enabledThirdPartyEmotes.set(enabled);
     emit stateChanged();
 }
 
