@@ -1,5 +1,4 @@
-#ifndef COMMANDSINGLEEDITOR_H
-#define COMMANDSINGLEEDITOR_H
+#pragma once
 
 #include <QDialog>
 #include "chatbot.h"
@@ -43,5 +42,3 @@ private:
     bool _createNew = true;
     int _editingActionNum = -1;
 };
-
-#endif // COMMANDSINGLEEDITOR_H

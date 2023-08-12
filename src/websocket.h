@@ -1,5 +1,4 @@
-#ifndef WEBSOCKET_H
-#define WEBSOCKET_H
+#pragma once
 
 #include "models/message.h"
 #include "chat_services/chatservice.h"
@@ -31,5 +30,3 @@ private:
     QList<QWebSocket*> clients;
     ChatHandler& chatHandler;
 };
-
-#endif // WEBSOCKET_H

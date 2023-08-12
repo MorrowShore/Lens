@@ -1,5 +1,4 @@
-#ifndef AXELCHAT_GLOBAL_HPP
-#define AXELCHAT_GLOBAL_HPP
+#pragma once
 
 #include "applicationinfo.hpp"
 #include "chathandler.hpp"
@@ -332,5 +331,3 @@ DLLEXPORT const char* axelchat_message_get_flags(double id)
 {
     return "ToDo"; // ToDo
 }
-
-#endif // AXELCHAT_GLOBAL_HPP

@@ -1,5 +1,4 @@
-#ifndef GITGUBAPI_HPP
-#define GITGUBAPI_HPP
+#pragma once
 
 #include <QObject>
 #include <QSettings>
@@ -374,5 +373,3 @@ private:
     const bool _enabledAlpha                = false;
     const bool _enabledRelease              = true;
 };
-
-#endif // GITGUBAPI_HPP

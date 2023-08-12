@@ -1,5 +1,4 @@
-#ifndef CHATBOT_HPP
-#define CHATBOT_HPP
+#pragma once
 
 #include <QSettings>
 #include <QMediaPlayer>
@@ -76,5 +75,3 @@ private:
 
     QMediaPlayer _player;
 };
-
-#endif // CHATBOT_HPP

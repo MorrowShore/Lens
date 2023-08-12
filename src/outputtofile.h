@@ -1,5 +1,4 @@
-#ifndef OUTPUTTOFILE_HPP
-#define OUTPUTTOFILE_HPP
+#pragma once
 
 #include "utils.h"
 #include "setting.h"
@@ -82,5 +81,3 @@ private:
     const int avatarHeight = 72;
     QSet<QString> needIgnoreDownloadFileNames;
 };
-
-#endif // OUTPUTTOFILE_HPP

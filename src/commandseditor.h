@@ -1,5 +1,4 @@
-#ifndef COMMANDSEDITOR_H
-#define COMMANDSEDITOR_H
+#pragma once
 
 #include <QDialog>
 #include <QQmlEngine>
@@ -48,5 +47,3 @@ private:
     ChatBot& chatBot;
     CommandSingleEditor* _singleEditor = nullptr;
 };
-
-#endif // COMMANDSEDITOR_H

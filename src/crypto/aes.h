@@ -1,5 +1,4 @@
-#ifndef _AES_H_
-#define _AES_H_
+#pragma once
 
 #include <stdio.h>
 
@@ -343,5 +342,3 @@ static const unsigned char CMDS[4][4] = {
 /// Inverse circulant MDS matrix
 static const unsigned char INV_CMDS[4][4] = {
     {14, 11, 13, 9}, {9, 14, 11, 13}, {13, 9, 14, 11}, {11, 13, 9, 14}};
-
-#endif

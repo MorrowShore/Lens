@@ -1,5 +1,4 @@
-#ifndef GOODGAME_H
-#define GOODGAME_H
+#pragma once
 
 #include "chatservice.h"
 #include "utils.h"
@@ -50,5 +49,3 @@ private:
     inline static const QString SmilesValidSymbols = "abcdefghijklmnopqrstuvwxyz_0123456789";
     QHash<QString, QUrl> smiles;
 };
-
-#endif // GOODGAME_H

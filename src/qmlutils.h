@@ -1,5 +1,4 @@
-#ifndef QMLUTILS_HPP
-#define QMLUTILS_HPP
+#pragma once
 
 #include <QObject>
 #include <QSettings>
@@ -44,5 +43,3 @@ private:
     const QString SettingsGroupPath = "qml_utils";
     const QQmlApplicationEngine* qmlEngine = nullptr;
 };
-
-#endif // QMLUTILS_HPP

@@ -1,5 +1,4 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#pragma once
 
 #include <QObject>
 #include <QDateTime>
@@ -379,5 +378,3 @@ private:
 
     uint64_t row = 0;
 };
-
-#endif // MESSAGE_H

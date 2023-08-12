@@ -1,5 +1,4 @@
-#ifndef TWITCH_HPP
-#define TWITCH_HPP
+#pragma once
 
 #include "utils.h"
 #include "chatservice.h"
@@ -81,5 +80,3 @@ private:
 
     OAuth2 auth;
 };
-
-#endif // TWITCH_HPP

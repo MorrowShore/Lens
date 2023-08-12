@@ -1,5 +1,4 @@
-#ifndef AUTHORQMLPROVIDER_H
-#define AUTHORQMLPROVIDER_H
+#pragma once
 
 #include "models/messagesmodel.h"
 #include "outputtofile.h"
@@ -41,5 +40,3 @@ private:
     const OutputToFile& outputToFile;
     QString authorId;
 };
-
-#endif // AUTHORQMLPROVIDER_H

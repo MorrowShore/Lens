@@ -1,5 +1,4 @@
-#ifndef CLIPBOARDQML_HPP
-#define CLIPBOARDQML_HPP
+#pragma once
 
 #include <QObject>
 #include <QQmlEngine>
@@ -23,5 +22,3 @@ signals:
 private:
 
 };
-
-#endif // CLIPBOARDQML_HPP

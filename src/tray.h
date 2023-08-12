@@ -1,5 +1,4 @@
-#ifndef TRAY_H
-#define TRAY_H
+#pragma once
 
 #include <QObject>
 #include <QSystemTrayIcon>
@@ -29,5 +28,3 @@ private:
 
     QAction* _ignoreMouseAction = nullptr;
 };
-
-#endif // TRAY_H

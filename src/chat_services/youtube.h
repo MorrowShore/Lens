@@ -1,5 +1,4 @@
-#ifndef YOUTUBEINTERCEPTOR_HPP
-#define YOUTUBEINTERCEPTOR_HPP
+#pragma once
 
 #include "models/message.h"
 #include "chatservice.h"
@@ -56,5 +55,3 @@ private:
     const int stickerSize = 80;
     const int badgePixelSize = 64;
 };
-
-#endif // YOUTUBEINTERCEPTOR_HPP
