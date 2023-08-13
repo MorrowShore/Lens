@@ -9,12 +9,20 @@ class AppSponsor
 public:
     enum class Role {
         Name = Qt::UserRole + 1,
-        Tier,
+        TierName,
     };
     Q_ENUM(Role)
 
+    enum class Type {
+        Unknown,
+        Subscription,
+        Donation,
+    };
+
+    Type type = Type::Unknown;
     QString name;
-    QString tier;
+    QString tierName;
+    QString platform;
 };
 
 class AppSponsorModel : public QAbstractListModel

@@ -55,7 +55,7 @@ Item {
                 color: "#03A9F4"
                 font.bold: true
                 font.pointSize: Global.windowChatMessageTextFontSize
-                text: name + " - " + tier
+                text: name + " - " + tierName
                 anchors.left: parent.left
                 anchors.right: parent.right
 
