@@ -93,5 +93,7 @@
         <file>resources/images/kick/badges/sub_gifter_purple.svg</file>
         <file>resources/images/kick/badges/sub_gifter_red.svg</file>
         <file>resources/images/kick/badges/sub_gifter_yellow.svg</file>
+        <file>resources/images/boosty-icon.svg</file>
+        <file>resources/images/patreon-icon.svg</file>
     </qresource>
 </RCC>

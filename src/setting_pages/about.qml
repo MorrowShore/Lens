@@ -24,6 +24,36 @@ ScrollView {
             standardButtons: Dialog.Ok
         }
 
+        Dialog {
+            id: sponsorDialog
+            anchors.centerIn: parent
+            modal: true
+            standardButtons: Dialog.Ok
+            title: qsTr("Support the developer")
+
+            contentItem: Column {
+                Button {
+                    text: qsTr("Patreon")
+                    icon.source: "qrc:/resources/images/patreon-icon.svg"
+                    icon.color: "transparent"
+
+                    onClicked: {
+                        Qt.openUrlExternally("https://www.patreon.com/axel_k")
+                    }
+                }
+
+                Button {
+                    text: qsTr("Boosty")
+                    icon.source: "qrc:/resources/images/boosty-icon.svg"
+                    icon.color: "transparent"
+
+                    onClicked: {
+                        Qt.openUrlExternally("https://boosty.to/axel_k")
+                    }
+                }
+            }
+        }
+
         Text {
             id: textVersion
             y: 76
@@ -241,7 +271,7 @@ ScrollView {
         }
 
         Button {
-            id: buttonPatreon
+            id: sponsorButton
             x: 8
             y: 62
             text: qsTr("Support the developer")
@@ -249,7 +279,7 @@ ScrollView {
             Material.background: "#DB61A2"
 
             onClicked: {
-                Qt.openUrlExternally("https://www.patreon.com/axel_k");
+                sponsorDialog.open()
             }
         }
 
