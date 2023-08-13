@@ -55,12 +55,14 @@ QString YouTubeBrowser::getStateDescription() const
 
 void YouTubeBrowser::reconnectImpl()
 {
-    if (state.connected)
+    const bool preConnected = state.connected;
+
+    state = State();
+
+    if (preConnected)
     {
         emit connectedChanged(false);
     }
-
-    state = State();
 
     state.streamId = YouTubeUtils::extractBroadcastId(stream.get().trimmed());
 

@@ -15,8 +15,6 @@ public:
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
 
-    Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
-
 protected:
     void reconnectImpl() override;
 
@@ -28,13 +26,9 @@ private slots:
     void onReplyStreamPage();
 
 private:
-    void parseActionsArray(const QJsonArray& array, const QByteArray& data);
     bool parseViews(const QByteArray& rawData);
     void processBadChatReply();
     void processBadLivePageReply();
-
-    void tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const;
-    void parseText(const QJsonObject& message, QList<std::shared_ptr<Message::Content>>& contents) const;
 
     QColor intToColor(quint64 rawColor) const;
 
@@ -45,10 +39,4 @@ private:
 
     int badChatReplies = 0;
     int badLivePageReplies = 0;
-
-    static void printData(const QString& tag, const QByteArray& data);
-
-    const int emojiPixelSize = 24;
-    const int stickerSize = 80;
-    const int badgePixelSize = 64;
 };

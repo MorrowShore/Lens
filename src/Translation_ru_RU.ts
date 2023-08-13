@@ -45,7 +45,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="187"/>
+        <location filename="chathandler.cpp" line="180"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -99,7 +99,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="292"/>
+        <location filename="chathandler.cpp" line="285"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -108,63 +108,63 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="44"/>
-        <location filename="chat_services/chatservice.cpp" line="60"/>
+        <location filename="chat_services/chatservice.cpp" line="45"/>
+        <location filename="chat_services/chatservice.cpp" line="61"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="47"/>
+        <location filename="chat_services/chatservice.cpp" line="48"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="48"/>
+        <location filename="chat_services/chatservice.cpp" line="49"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="49"/>
+        <location filename="chat_services/chatservice.cpp" line="50"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="50"/>
+        <location filename="chat_services/chatservice.cpp" line="51"/>
         <source>Rumble</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="51"/>
+        <location filename="chat_services/chatservice.cpp" line="52"/>
         <source>Kick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="52"/>
+        <location filename="chat_services/chatservice.cpp" line="53"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="53"/>
+        <location filename="chat_services/chatservice.cpp" line="54"/>
         <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="54"/>
+        <location filename="chat_services/chatservice.cpp" line="55"/>
         <source>VK Video</source>
         <translation>VK Видео</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="55"/>
+        <location filename="chat_services/chatservice.cpp" line="56"/>
         <source>WASD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="56"/>
+        <location filename="chat_services/chatservice.cpp" line="57"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="57"/>
+        <location filename="chat_services/chatservice.cpp" line="58"/>
         <source>Discord</source>
         <translation></translation>
     </message>
@@ -173,7 +173,7 @@
         <translation type="vanished">Включено</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="14"/>
+        <location filename="chat_services/chatservice.cpp" line="15"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -1493,39 +1493,28 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>YouTube</name>
     <message>
-        <location filename="chat_services/youtube.cpp" line="49"/>
         <source>Link or broadcast ID...</source>
-        <translation>Ссылка или ID трансляции...</translation>
+        <translation type="vanished">Ссылка или ID трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="51"/>
-        <source>Open window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="chat_services/youtube.cpp" line="344"/>
         <source>Broadcast not specified</source>
-        <translation>Трансляция не указана</translation>
+        <translation type="vanished">Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="349"/>
         <source>The broadcast is not correct</source>
-        <translation>Трансляция указана некорректно</translation>
+        <translation type="vanished">Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="352"/>
         <source>Not connected</source>
-        <translation>Не подключено</translation>
+        <translation type="vanished">Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="355"/>
         <source>Connecting...</source>
-        <translation>Подключение...</translation>
+        <translation type="vanished">Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube.cpp" line="358"/>
         <source>Successfully connected!</source>
-        <translation>Успешно подключено!</translation>
+        <translation type="vanished">Успешно подключено!</translation>
     </message>
     <message>
         <source>Message deleted</source>
@@ -1558,6 +1547,67 @@ It is not recommended to use more than one %1 with the same bot</source>
     <message>
         <source>Control Panel URL: %1</source>
         <translation type="vanished">URL панели управления: %1</translation>
+    </message>
+</context>
+<context>
+    <name>YouTubeBrowser</name>
+    <message>
+        <location filename="chat_services/youtubebrowser.cpp" line="35"/>
+        <source>Broadcast not specified</source>
+        <translation>Трансляция не указана</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubebrowser.cpp" line="40"/>
+        <source>The broadcast is not correct</source>
+        <translation>Трансляция указана некорректно</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubebrowser.cpp" line="43"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubebrowser.cpp" line="46"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubebrowser.cpp" line="49"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
+    </message>
+</context>
+<context>
+    <name>YouTubeHtml</name>
+    <message>
+        <location filename="chat_services/youtubehtml.cpp" line="47"/>
+        <source>Link or broadcast ID...</source>
+        <translation>Ссылка или ID трансляции...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubehtml.cpp" line="113"/>
+        <source>Broadcast not specified</source>
+        <translation>Трансляция не указана</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubehtml.cpp" line="118"/>
+        <source>The broadcast is not correct</source>
+        <translation>Трансляция указана некорректно</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubehtml.cpp" line="121"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubehtml.cpp" line="124"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubehtml.cpp" line="127"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
     </message>
 </context>
 <context>
@@ -2218,7 +2268,7 @@ Latest version available: %2</oldsource>
         <translation>%1 эмодзи</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="205"/>
+        <location filename="setting_pages/service.qml" line="219"/>
         <source>Allow to display emotes from %1. To display channel (custom) emotes, login to a Twitch account that is linked to these services</source>
         <oldsource>Allow to display emotes from %1. To display chennel (custom) emotes, login to a Twitch account that is linked to these services</oldsource>
         <translation>Включает отображение эмодзи из %1. Чтобы отображались эмодзи канала (кастомные), войдите в аккаунт Twitch, который привязан к этим сервисам</translation>
