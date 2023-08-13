@@ -26,13 +26,13 @@ UIElementBridge* UIElementBridge::createLineEdit(Setting<QString> *setting, cons
     return element;
 }
 
-UIElementBridge* UIElementBridge::createButton(const QString &text, std::function<void()> invokeCallback_)
+UIElementBridge* UIElementBridge::createButton(const QString &text, std::function<void()> invokeCallback)
 {
     UIElementBridge* element = new UIElementBridge();
 
     element->type = Type::Button;
 
-    element->invokeCallback = invokeCallback_;
+    element->invokeCallback = invokeCallback;
     element->setItemProperty("text", text);
 
     element->updateItemProperties();
@@ -64,6 +64,21 @@ UIElementBridge* UIElementBridge::createSwitch(Setting<bool> *settingBool, const
     {
         element->setItemProperty("checked", settingBool->get());
     }
+
+    element->updateItemProperties();
+
+    return element;
+}
+
+UIElementBridge *UIElementBridge::createComboBox(Setting<int> *settingInt, const QString &name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged)
+{
+    UIElementBridge* element = new UIElementBridge();
+
+    element->type = Type::ComboBox;
+    element->settingInt = settingInt;
+    element->setItemProperty("text", name);
+    element->comboBoxValues = values;
+    element->invokeCallback = valueChanged;
 
     element->updateItemProperties();
 

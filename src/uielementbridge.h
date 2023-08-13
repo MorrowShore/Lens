@@ -18,12 +18,14 @@ public:
         LineEdit = 20,
         Button = 30,
         Switch = 32,
+        ComboBox = 40,
     };
 
     static UIElementBridge* createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
     static UIElementBridge* createButton(const QString& text, std::function<void()> invokeCallback);
     static UIElementBridge* createLabel(const QString& text);
     static UIElementBridge* createSwitch(Setting<bool>* settingBool, const QString& name);
+    static UIElementBridge* createComboBox(Setting<int>* settingInt, const QString& name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged);
 
     Q_INVOKABLE void bindQmlItem(QQuickItem* item);
 
@@ -64,6 +66,9 @@ private:
 
     Setting<QString>* settingString;
     Setting<bool>* settingBool;
+    Setting<int>* settingInt;
+
+    QList<QPair<int, QString>> comboBoxValues;
 
     Type type;
     QMap<QByteArray, QVariant> parameters;

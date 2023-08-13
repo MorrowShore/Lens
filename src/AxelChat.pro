@@ -22,6 +22,7 @@ HEADERS += \
     chat_services/wasd.h \
     chat_services/youtubebrowser.h \
     chat_services/youtubehtml.h \
+    chat_services/youtubeutils.h \
     crypto/aes.h \
     crypto/crypto.h \
     crypto/obfuscator.h \
@@ -79,6 +80,7 @@ SOURCES += \
     chat_services/wasd.cpp \
     chat_services/youtubebrowser.cpp \
     chat_services/youtubehtml.cpp \
+    chat_services/youtubeutils.cpp \
     crypto/aes.cpp \
     crypto/crypto.cpp \
     emote_services/betterttv.cpp \

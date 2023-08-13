@@ -28,7 +28,6 @@ private slots:
     void onReplyStreamPage();
 
 private:
-    QString extractBroadcastId(const QString& link) const;
     void parseActionsArray(const QJsonArray& array, const QByteArray& data);
     bool parseViews(const QByteArray& rawData);
     void processBadChatReply();
