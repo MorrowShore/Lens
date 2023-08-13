@@ -22,6 +22,8 @@ public:
 
     static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
 
+    static int parseViews(const QByteArray& rawData);
+
 private:
     static void tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold);
     static void parseText(const QJsonObject& message, QList<std::shared_ptr<Message::Content>>& contents);

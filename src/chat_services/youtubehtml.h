@@ -25,7 +25,6 @@ private slots:
     void onReplyStreamPage();
 
 private:
-    bool parseViews(const QByteArray& rawData);
     void processBadChatReply();
     void processBadLivePageReply();
 

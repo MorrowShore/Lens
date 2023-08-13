@@ -24,20 +24,6 @@ static const QByteArray AcceptLanguageNetworkHeaderName = "";
 static const int MaxBadChatReplies = 10;
 static const int MaxBadLivePageReplies = 3;
 
-QByteArray extractDigitsOnly(const QByteArray& data)
-{
-    QByteArray result;
-    for (const char& c : data)
-    {
-        if (c >= 48 && c <= 57)
-        {
-            result += c;
-        }
-    }
-
-    return result;
-}
-
 }
 
 YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
@@ -269,79 +255,16 @@ void YouTubeHtml::onReplyStreamPage()
         return;
     }
 
-    if (parseViews(rawData))
+    if (const int viewers = YouTubeUtils::parseViews(rawData); viewers != -1)
     {
+        state.viewersCount = viewers;
+        emit stateChanged();
         badLivePageReplies = 0;
     }
     else
     {
         processBadLivePageReply();
     }
-}
-
-bool YouTubeHtml::parseViews(const QByteArray &rawData)
-{
-    static const QByteArray Prefix = "{\"videoViewCountRenderer\":{\"viewCount\":{\"runs\":[";
-
-    const int start = rawData.indexOf(Prefix);
-    if (start == -1)
-    {
-        if (rawData.contains("videoViewCountRenderer\":{\"viewCount\":{}"))
-        {
-            state.viewersCount = 0;
-            emit stateChanged();
-            return false;
-        }
-
-        qDebug() << Q_FUNC_INFO << ": failed to parse videoViewCountRenderer";
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_videoViewCountRenderer_from_html_youtube.html", rawData);
-        return false;
-    }
-
-    int lastPos = -1;
-    for (int i = start + Prefix.length(); i < rawData.length(); ++i)
-    {
-        const QChar& c = rawData[i];
-        if (c == ']')
-        {
-            lastPos = i;
-            break;
-        }
-    }
-
-    if (lastPos == -1)
-    {
-        qDebug() << Q_FUNC_INFO << ": not found ']'";
-        return false;
-    }
-
-    const QByteArray data = rawData.mid(start + Prefix.length(), lastPos - (start + Prefix.length()));
-    const QByteArray digits = extractDigitsOnly(data);
-    if (digits.isEmpty())
-    {
-        YouTubeUtils::printData(Q_FUNC_INFO + QString(": failed to find digits"), data);
-
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_no_digits_youtube.html", rawData);
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_no_digits_youtube.json", data);
-        return false;
-    }
-
-    bool ok = false;
-    const int viewers = digits.toInt(&ok);
-    if (!ok)
-    {
-        YouTubeUtils::printData(Q_FUNC_INFO + QString(": failed to convert to number"), data);
-
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.html", rawData);
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.json", data);
-        return false;
-    }
-
-    state.viewersCount = viewers;
-
-    emit stateChanged();
-
-    return true;
 }
 
 void YouTubeHtml::processBadChatReply()

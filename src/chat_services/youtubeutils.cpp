@@ -10,6 +10,20 @@ static const int EmojiPixelSize = 24;
 static const int StickerSize = 80;
 static const int BadgePixelSize = 64;
 
+static QByteArray extractDigitsOnly(const QByteArray& data)
+{
+    QByteArray result;
+    for (const char& c : data)
+    {
+        if (c >= 48 && c <= 57)
+        {
+            result += c;
+        }
+    }
+
+    return result;
+}
+
 }
 
 const QString YouTubeUtils::FolderLogs = "logs_youtube";
@@ -679,4 +693,63 @@ void YouTubeUtils::parseText(const QJsonObject &message, QList<std::shared_ptr<M
             }
         }
     }
+}
+
+int YouTubeUtils::parseViews(const QByteArray &rawData)
+{
+    static const QByteArray Prefix = "{\"videoViewCountRenderer\":{\"viewCount\":{\"runs\":[";
+
+    const int start = rawData.indexOf(Prefix);
+    if (start == -1)
+    {
+        if (rawData.contains("videoViewCountRenderer\":{\"viewCount\":{}"))
+        {
+            return -1;
+        }
+
+        qDebug() << Q_FUNC_INFO << ": failed to parse videoViewCountRenderer";
+        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_videoViewCountRenderer_from_html_youtube.html", rawData);
+        return -1;
+    }
+
+    int lastPos = -1;
+    for (int i = start + Prefix.length(); i < rawData.length(); ++i)
+    {
+        const QChar& c = rawData[i];
+        if (c == ']')
+        {
+            lastPos = i;
+            break;
+        }
+    }
+
+    if (lastPos == -1)
+    {
+        qDebug() << Q_FUNC_INFO << ": not found ']'";
+        return -1;
+    }
+
+    const QByteArray data = rawData.mid(start + Prefix.length(), lastPos - (start + Prefix.length()));
+    const QByteArray digits = extractDigitsOnly(data);
+    if (digits.isEmpty())
+    {
+        YouTubeUtils::printData(Q_FUNC_INFO + QString(": failed to find digits"), data);
+
+        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_no_digits_youtube.html", rawData);
+        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_no_digits_youtube.json", data);
+        return -1;
+    }
+
+    bool ok = false;
+    const int viewers = digits.toInt(&ok);
+    if (!ok)
+    {
+        YouTubeUtils::printData(Q_FUNC_INFO + QString(": failed to convert to number"), data);
+
+        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.html", rawData);
+        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.json", data);
+        return -1;
+    }
+
+    return viewers;
 }
