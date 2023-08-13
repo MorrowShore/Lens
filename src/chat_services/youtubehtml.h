@@ -2,6 +2,7 @@
 
 #include "models/message.h"
 #include "chatservice.h"
+#include "youtubebrowser.h"
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <memory>
@@ -40,8 +41,8 @@ private:
     QColor intToColor(quint64 rawColor) const;
 
     QNetworkAccessManager& network;
-    cweqt::Manager& web;
-    std::shared_ptr<cweqt::Browser> browser;
+
+    YouTubeBrowser browser;
 
     QTimer timerRequestChat;
     QTimer timerRequestStreamPage;
