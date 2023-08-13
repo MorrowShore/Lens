@@ -1663,7 +1663,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>about</name>
     <message>
-        <location filename="setting_pages/about.qml" line="332"/>
+        <location filename="setting_pages/about.qml" line="316"/>
         <source>You are using the most current version!
 
 Current version: %1
@@ -1677,12 +1677,12 @@ Latest version available: %2</oldsource>
 Последняя доступная версия: %2</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="340"/>
+        <location filename="setting_pages/about.qml" line="324"/>
         <source>Failed to connect to server. Check your internet connection!</source>
         <translation>Не удалось подключиться к серверу. Проверьте подключение к интернету!</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="345"/>
+        <location filename="setting_pages/about.qml" line="329"/>
         <source>Request limits exceeded! Please try again later</source>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
@@ -1713,23 +1713,37 @@ Latest version available: %2</oldsource>
         <translation>Архитектура сборки: %1</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="115"/>
-        <source>YouTube Channel</source>
-        <translation>YouTube канал</translation>
+        <location filename="setting_pages/about.qml" line="173"/>
+        <source>YouTube</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="159"/>
+        <location filename="setting_pages/about.qml" line="183"/>
+        <source>Twitch</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="setting_pages/about.qml" line="221"/>
+        <source>For feedback or cooperation, write to email %1</source>
+        <translation>Для обратной связи или сотрудничества пишите на %1</translation>
+    </message>
+    <message>
+        <source>YouTube Channel</source>
+        <translation type="vanished">YouTube канал</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/about.qml" line="128"/>
         <source>Check for Updates</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="197"/>
+        <location filename="setting_pages/about.qml" line="159"/>
         <source>subscribe</source>
         <translation>подпишись</translation>
     </message>
     <message>
         <location filename="setting_pages/about.qml" line="32"/>
-        <location filename="setting_pages/about.qml" line="266"/>
+        <location filename="setting_pages/about.qml" line="250"/>
         <source>Support the developer</source>
         <translation>Поддержать разработчика</translation>
     </message>
@@ -1738,27 +1752,26 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Форум (Discussions)</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="209"/>
+        <location filename="setting_pages/about.qml" line="206"/>
         <source>Releases</source>
         <translation>Релизы</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="224"/>
         <source>For feedback or cooperation, write to email &lt;b&gt;%1&lt;/b&gt;</source>
-        <translation>Для обратной связи или сотрудничества пишите на &lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation type="vanished">Для обратной связи или сотрудничества пишите на &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="291"/>
+        <location filename="setting_pages/about.qml" line="275"/>
         <source>Source Code</source>
         <translation>Исходный код</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="303"/>
+        <location filename="setting_pages/about.qml" line="287"/>
         <source>License</source>
         <translation>Лицензия</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="279"/>
+        <location filename="setting_pages/about.qml" line="263"/>
         <source>Complaints and suggestions (Issues)</source>
         <oldsource>Complaints and suggestions  (Issues)</oldsource>
         <translation>Жалобы и предложения (Issues)</translation>
@@ -1768,13 +1781,13 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Жалобы и предложения</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="223"/>
+        <location filename="setting_pages/about.qml" line="220"/>
         <source>%1 is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</source>
         <oldsource>AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</oldsource>
         <translation>%1 — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="238"/>
+        <location filename="setting_pages/about.qml" line="193"/>
         <source>GitHub</source>
         <translation></translation>
     </message>

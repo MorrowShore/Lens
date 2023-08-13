@@ -148,7 +148,7 @@ ScrollView {
         }
 
         Row {
-            x: 114
+            anchors.horizontalCenter: parent.horizontalCenter
             y: 450
             spacing: 10
 
