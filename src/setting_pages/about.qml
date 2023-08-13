@@ -104,23 +104,6 @@ ScrollView {
             fillMode: Image.PreserveAspectFit
         }
 
-        Text {
-            id: element2
-            x: 8
-            y: 445
-            textFormat: Text.RichText
-            text: "Some icons made by <a href=\"http://www.freepik.com/\" title=\"Freepik\">Freepik</a> and <a href=\"https://www.flaticon.com/authors/google\" title=\"Google\">Google</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\"> www.flaticon.com</a> and <a href=\"https://icons8.com\">https://icons8.com</a>"
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 21
-            font.pixelSize: 12
-
-            onLinkActivated: {
-                Qt.openUrlExternally(link)
-            }
-
-            color: Material.foreground
-        }
-
         Button {
             id: buttonCheckUpdates
             x: 482
@@ -147,55 +130,73 @@ ScrollView {
             color: Material.foreground
         }
 
-        Row {
+        Column {
             anchors.horizontalCenter: parent.horizontalCenter
+
             y: 450
             spacing: 10
 
-            Column {
-                Text {
-                    id: element4
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 10
 
-                    text: qsTr("subscribe")
-                    font.pixelSize: 12
-                    color: Material.foreground
+                Column {
+                    Text {
+                        id: element4
+
+                        text: qsTr("subscribe")
+                        font.pixelSize: 12
+                        color: Material.foreground
+                    }
+
+                    Text {
+                        id: element1
+                        text: "(⌒ω⌒)ﾉ"
+                        font.pixelSize: 20
+                        color: Material.foreground
+                    }
                 }
 
-                Text {
-                    id: element1
-                    text: "(⌒ω⌒)ﾉ"
-                    font.pixelSize: 20
-                    color: Material.foreground
+                Button {
+                    text: qsTr("YouTube")
+                    icon.color: "transparent"
+                    icon.source: "qrc:/resources/images/youtube-icon.svg"
+
+                    onClicked: {
+                        Qt.openUrlExternally("https://www.youtube.com/channel/UCujkj8ZgVkscm34GA1Z8wTQ");
+                    }
+                }
+
+                Button {
+                    text: qsTr("Twitch")
+                    icon.color: "transparent"
+                    icon.source: "qrc:/resources/images/twitch-icon.svg"
+
+                    onClicked: {
+                        Qt.openUrlExternally("https://www.twitch.tv/axe1_k");
+                    }
+                }
+
+                Button {
+                    text: qsTr("GitHub")
+                    icon.source: "qrc:/resources/images/github.svg"
+
+                    onClicked: {
+                        Qt.openUrlExternally("https://github.com/3dproger");
+                    }
                 }
             }
 
-            Button {
-                text: qsTr("YouTube")
-                icon.color: "transparent"
-                icon.source: "qrc:/resources/images/youtube-icon.svg"
+            Text {
+                textFormat: Text.RichText
+                text: "Some icons made by <a href=\"http://www.freepik.com/\" title=\"Freepik\">Freepik</a> and <a href=\"https://www.flaticon.com/authors/google\" title=\"Google\">Google</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\"> www.flaticon.com</a> and <a href=\"https://icons8.com\">https://icons8.com</a>"
+                font.pixelSize: 12
 
-                onClicked: {
-                    Qt.openUrlExternally("https://www.youtube.com/channel/UCujkj8ZgVkscm34GA1Z8wTQ");
+                onLinkActivated: {
+                    Qt.openUrlExternally(link)
                 }
-            }
 
-            Button {
-                text: qsTr("Twitch")
-                icon.color: "transparent"
-                icon.source: "qrc:/resources/images/twitch-icon.svg"
-
-                onClicked: {
-                    Qt.openUrlExternally("https://www.twitch.tv/axe1_k");
-                }
-            }
-
-            Button {
-                text: qsTr("GitHub")
-                icon.source: "qrc:/resources/images/github.svg"
-
-                onClicked: {
-                    Qt.openUrlExternally("https://github.com/3dproger");
-                }
+                color: Material.foreground
             }
         }
 
