@@ -4,13 +4,45 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
+namespace
+{
+
+static const int ReconncectPeriod = 5 * 1000;
+
+}
+
 YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager&, cweqt::Manager& web_, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
     , web(web_)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
 
-    reconnect();
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (!state.connected)
+        {
+            reconnect();
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);
+
+    QObject::connect(&web, &cweqt::Manager::initialized, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (!state.connected)
+        {
+            reconnect();
+        }
+    });
 }
 
 ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const
@@ -77,7 +109,7 @@ void YouTubeBrowser::reconnectImpl()
         state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
     }
 
-    if (!enabled.get())
+    if (!enabled.get() || !web.isInitialized())
     {
         return;
     }

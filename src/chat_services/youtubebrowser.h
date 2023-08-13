@@ -23,4 +23,6 @@ public slots:
 private:
     cweqt::Manager& web;
     std::shared_ptr<cweqt::Browser> browser;
+
+    QTimer timerReconnect;
 };
