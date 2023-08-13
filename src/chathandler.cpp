@@ -1,5 +1,5 @@
 #include "chathandler.h"
-#include "chat_services/youtube.h"
+#include "chat_services/youtubehtml.h"
 #include "chat_services/twitch.h"
 #include "chat_services/trovo.h"
 #include "chat_services/rumble.h"
@@ -55,8 +55,8 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyEnabled(settings.value(SettingsProxyEnabled, _enabledProxy).toBool());
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
-
-    addService<YouTube>();
+    
+    addService<YouTubeHtml>();
     addService<Twitch>();
     addService<Trovo>();
     addService<Rumble>();

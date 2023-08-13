@@ -1,4 +1,4 @@
-#include "youtube.h"
+#include "youtubehtml.h"
 #include "utils.h"
 #include "models/messagesmodel.h"
 #include "models/author.h"
@@ -41,7 +41,7 @@ QByteArray extractDigitsOnly(const QByteArray& data)
 
 }
 
-YouTube::YouTube(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
+YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
     , network(network_)
     , web(web_)
@@ -65,17 +65,17 @@ YouTube::YouTube(QSettings& settings, const QString& settingsGroupPathParent, QN
             qDebug() << Q_FUNC_INFO << "Window is null";
         }
     })));*/
-
-    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTube::onTimeoutRequestChat);
+    
+    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTubeHtml::onTimeoutRequestChat);
     timerRequestChat.start(RequestChatInterval);
-
-    QObject::connect(&timerRequestStreamPage,&QTimer::timeout, this, &YouTube::onTimeoutRequestStreamPage);
+    
+    QObject::connect(&timerRequestStreamPage,&QTimer::timeout, this, &YouTubeHtml::onTimeoutRequestStreamPage);
     timerRequestStreamPage.start(RequestStreamInterval);
 
     reconnect();
 }
 
-QString YouTube::extractBroadcastId(const QString &link) const
+QString YouTubeHtml::extractBroadcastId(const QString &link) const
 {
     const QString simpleUrl = AxelChat::simplifyUrl(link);
 
@@ -164,7 +164,7 @@ QString YouTube::extractBroadcastId(const QString &link) const
     return broadcastId;
 }
 
-void YouTube::printData(const QString &tag, const QByteArray& data)
+void YouTubeHtml::printData(const QString &tag, const QByteArray& data)
 {
     qDebug() << "==============================================================================================================================";
     qDebug() << tag.toUtf8();
@@ -173,7 +173,7 @@ void YouTube::printData(const QString &tag, const QByteArray& data)
     qDebug() << "==============================================================================================================================";
 }
 
-QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeight)
+QUrl YouTubeHtml::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeight)
 {
     if (sourceAvatarUrl.isEmpty())
     {
@@ -242,7 +242,7 @@ QUrl YouTube::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int imageHeigh
     return sourceAvatarUrl;
 }
 
-void YouTube::reconnectImpl()
+void YouTubeHtml::reconnectImpl()
 {
     const bool preConnected = state.connected;
     const QString preBroadcastId = state.streamId;
@@ -320,7 +320,7 @@ void YouTube::reconnectImpl()
     }*/
 }
 
-ChatService::ConnectionStateType YouTube::getConnectionStateType() const
+ChatService::ConnectionStateType YouTubeHtml::getConnectionStateType() const
 {
     if (state.connected)
     {
@@ -334,7 +334,7 @@ ChatService::ConnectionStateType YouTube::getConnectionStateType() const
     return ChatService::ConnectionStateType::NotConnected;
 }
 
-QString YouTube::getStateDescription() const
+QString YouTubeHtml::getStateDescription() const
 {
     switch (getConnectionStateType())
     {
@@ -362,7 +362,7 @@ QString YouTube::getStateDescription() const
     return "<unknown_state>";
 }
 
-void YouTube::onTimeoutRequestChat()
+void YouTubeHtml::onTimeoutRequestChat()
 {
     if (!enabled.get() || state.chatUrl.isEmpty())
     {
@@ -372,10 +372,10 @@ void YouTube::onTimeoutRequestChat()
     QNetworkRequest request(state.chatUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
-    QObject::connect(network.get(request), &QNetworkReply::finished, this, &YouTube::onReplyChatPage);
+    QObject::connect(network.get(request), &QNetworkReply::finished, this, &YouTubeHtml::onReplyChatPage);
 }
 
-void YouTube::onReplyChatPage()
+void YouTubeHtml::onReplyChatPage()
 {
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
@@ -441,7 +441,7 @@ void YouTube::onReplyChatPage()
     }
 }
 
-void YouTube::onTimeoutRequestStreamPage()
+void YouTubeHtml::onTimeoutRequestStreamPage()
 {
     if (!enabled.get() || state.streamUrl.isEmpty())
     {
@@ -458,11 +458,11 @@ void YouTube::onTimeoutRequestStreamPage()
         qDebug() << Q_FUNC_INFO << ": !reply";
         return;
     }
-
-    QObject::connect(reply, &QNetworkReply::finished, this, &YouTube::onReplyStreamPage);
+    
+    QObject::connect(reply, &QNetworkReply::finished, this, &YouTubeHtml::onReplyStreamPage);
 }
 
-void YouTube::onReplyStreamPage()
+void YouTubeHtml::onReplyStreamPage()
 {
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
@@ -491,7 +491,7 @@ void YouTube::onReplyStreamPage()
     }
 }
 
-void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
+void YouTubeHtml::parseActionsArray(const QJsonArray& array, const QByteArray& data)
 {
     //AxelChat::saveDebugDataToFile(FolderLogs, "debug.json", data);
 
@@ -895,7 +895,7 @@ void YouTube::parseActionsArray(const QJsonArray& array, const QByteArray& data)
     emit stateChanged();
 }
 
-bool YouTube::parseViews(const QByteArray &rawData)
+bool YouTubeHtml::parseViews(const QByteArray &rawData)
 {
     static const QByteArray Prefix = "{\"videoViewCountRenderer\":{\"viewCount\":{\"runs\":[";
 
@@ -960,7 +960,7 @@ bool YouTube::parseViews(const QByteArray &rawData)
     return true;
 }
 
-void YouTube::processBadChatReply()
+void YouTubeHtml::processBadChatReply()
 {
     badChatReplies++;
 
@@ -981,7 +981,7 @@ void YouTube::processBadChatReply()
     }
 }
 
-void YouTube::processBadLivePageReply()
+void YouTubeHtml::processBadLivePageReply()
 {
     badLivePageReplies++;
 
@@ -994,7 +994,7 @@ void YouTube::processBadLivePageReply()
     }
 }
 
-void YouTube::tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const
+void YouTubeHtml::tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold) const
 {
     if (!jsonObject.contains(varName))
     {
@@ -1023,7 +1023,7 @@ void YouTube::tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents,
     contents.append(newContents);
 }
 
-void YouTube::parseText(const QJsonObject &message, QList<std::shared_ptr<Message::Content>>& contents) const
+void YouTubeHtml::parseText(const QJsonObject &message, QList<std::shared_ptr<Message::Content>>& contents) const
 {
     if (message.contains("simpleText"))
     {
@@ -1104,7 +1104,7 @@ void YouTube::parseText(const QJsonObject &message, QList<std::shared_ptr<Messag
     }
 }
 
-QColor YouTube::intToColor(quint64 rawColor) const
+QColor YouTubeHtml::intToColor(quint64 rawColor) const
 {
     qDebug() << "rawColor" << rawColor;
     return QColor::fromRgba64(QRgba64::fromRgba64(rawColor));

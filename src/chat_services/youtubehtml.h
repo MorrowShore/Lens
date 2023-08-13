@@ -6,11 +6,11 @@
 #include <QTimer>
 #include <memory>
 
-class YouTube : public ChatService
+class YouTubeHtml : public ChatService
 {
     Q_OBJECT
 public:
-    explicit YouTube(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    explicit YouTubeHtml(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;

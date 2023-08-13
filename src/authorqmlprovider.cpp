@@ -1,6 +1,6 @@
 #include "authorqmlprovider.h"
 #include "models/author.h"
-#include "chat_services/youtube.h"
+#include "chat_services/youtubehtml.h"
 #include "chathandler.h"
 #include <QDesktopServices>
 
@@ -84,7 +84,7 @@ bool AuthorQMLProvider::openAvatar() const
 
     if (author->getServiceType() == AxelChat::ServiceType::YouTube)
     {
-        const QUrl url_ = YouTube::createResizedAvatarUrl(url, YouTubeAvatarSize);
+        const QUrl url_ = YouTubeHtml::createResizedAvatarUrl(url, YouTubeAvatarSize);
         if (url_.isValid())
         {
             url = url_;

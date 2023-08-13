@@ -1,7 +1,7 @@
 #include "outputtofile.h"
 #include "models/author.h"
 #include "models/message.h"
-#include "chat_services/youtube.h"
+#include "chat_services/youtubehtml.h"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>
@@ -302,7 +302,7 @@ void OutputToFile::downloadAvatar(const QString& authorId, const AxelChat::Servi
     QUrl url = url_;
     if (serviceType == AxelChat::ServiceType::YouTube)
     {
-        url = YouTube::createResizedAvatarUrl(url, avatarHeight);
+        url = YouTubeHtml::createResizedAvatarUrl(url, avatarHeight);
     }
 
     if (url.isEmpty() || !enabled.get())
