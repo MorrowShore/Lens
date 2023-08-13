@@ -64,6 +64,13 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
 
     QObject::connect(&timerRequestStreamPage, &QTimer::timeout, this, &YouTubeBrowser::requestStreamPage);
     timerRequestStreamPage.start(RequestStreamInterval);
+
+    openChatButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open chat"), [this]()
+    {
+        openWindow();
+    }));
+    openChatButton->setItemProperty("enabled", false);
+    addUIElement(openChatButton);
 }
 
 ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const
@@ -121,6 +128,8 @@ void YouTubeBrowser::reconnectImpl()
         emit connectedChanged(false);
     }
 
+    openChatButton->setItemProperty("enabled", false);
+
     state.streamId = YouTubeUtils::extractBroadcastId(stream.get().trimmed());
 
     if (!state.streamId.isEmpty())
@@ -157,6 +166,7 @@ void YouTubeBrowser::reconnectImpl()
         {
             qDebug() << Q_FUNC_INFO << "Browser closed";
             browser.reset();
+            reconnect();
         });
 
         connect(browser.get(), QOverload<std::shared_ptr<cweqt::Response>>::of(&cweqt::Browser::recieved), this, [this](std::shared_ptr<cweqt::Response> response)
@@ -184,6 +194,8 @@ void YouTubeBrowser::reconnectImpl()
             if (!state.connected && !state.streamId.isEmpty() && enabled.get())
             {
                 state.connected = true;
+
+                openChatButton->setItemProperty("enabled", true);
 
                 requestStreamPage();
 
