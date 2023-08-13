@@ -13,6 +13,14 @@
     </message>
 </context>
 <context>
+    <name>AppSponsorManager</name>
+    <message>
+        <location filename="appsponsormanager.cpp" line="65"/>
+        <source>Donator</source>
+        <translation>Донатер</translation>
+    </message>
+</context>
+<context>
     <name>BridgedLineEdit</name>
     <message>
         <location filename="my_components/BridgedLineEdit.qml" line="59"/>
@@ -1177,7 +1185,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>TitlesPage</name>
     <message>
-        <location filename="TitlesPage.qml" line="24"/>
+        <location filename="TitlesPage.qml" line="25"/>
         <source>Thanks to these people, %1 gets support:</source>
         <oldsource>Thanks to these people, AxelChat gets support:</oldsource>
         <translation>Благодаря этим людям %1 получает поддержку:</translation>
@@ -1721,7 +1729,7 @@ Latest version available: %2</oldsource>
     </message>
     <message>
         <location filename="setting_pages/about.qml" line="32"/>
-        <location filename="setting_pages/about.qml" line="277"/>
+        <location filename="setting_pages/about.qml" line="266"/>
         <source>Support the developer</source>
         <translation>Поддержать разработчика</translation>
     </message>
@@ -1735,16 +1743,22 @@ Latest version available: %2</oldsource>
         <translation>Релизы</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="302"/>
+        <location filename="setting_pages/about.qml" line="224"/>
+        <source>For feedback or cooperation, write to email &lt;b&gt;%1&lt;/b&gt;</source>
+        <translation>Для обратной связи или сотрудничества пишите на &lt;b&gt;%1&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/about.qml" line="291"/>
         <source>Source Code</source>
         <translation>Исходный код</translation>
     </message>
     <message>
+        <location filename="setting_pages/about.qml" line="303"/>
         <source>License</source>
-        <translation type="vanished">Лицензия</translation>
+        <translation>Лицензия</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="290"/>
+        <location filename="setting_pages/about.qml" line="279"/>
         <source>Complaints and suggestions (Issues)</source>
         <oldsource>Complaints and suggestions  (Issues)</oldsource>
         <translation>Жалобы и предложения (Issues)</translation>
@@ -1760,7 +1774,7 @@ Latest version available: %2</oldsource>
         <translation>%1 — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="237"/>
+        <location filename="setting_pages/about.qml" line="238"/>
         <source>GitHub</source>
         <translation></translation>
     </message>
