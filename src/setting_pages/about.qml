@@ -92,23 +92,6 @@ ScrollView {
             color: Material.foreground
         }
 
-        Button {
-            id: buttonYouTubeChannel
-            x: 196
-            y: 382
-            width: 226
-            height: 48
-            text: qsTr("YouTube Channel")
-            anchors.horizontalCenterOffset: 0
-            icon.color: "transparent"
-            icon.source: "qrc:/resources/images/youtube-icon.svg"
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            onClicked: {
-                Qt.openUrlExternally("https://www.youtube.com/channel/UCujkj8ZgVkscm34GA1Z8wTQ");
-            }
-        }
-
         Image {
             id: image
             x: 275
@@ -154,18 +137,6 @@ ScrollView {
         }
 
         Text {
-            id: element1
-            x: 109
-            text: "(⌒ω⌒)ﾉ"
-            anchors.right: buttonYouTubeChannel.left
-            anchors.top: buttonYouTubeChannel.bottom
-            anchors.rightMargin: 6
-            font.pixelSize: 20
-            anchors.topMargin: -38
-            color: Material.foreground
-        }
-
-        Text {
             id: element3
             x: 380
             y: 20
@@ -176,16 +147,56 @@ ScrollView {
             color: Material.foreground
         }
 
-        Text {
-            id: element4
+        Row {
             x: 114
-            y: 390
-            text: qsTr("subscribe")
-            anchors.horizontalCenterOffset: -5
-            anchors.horizontalCenter: element1.horizontalCenter
-            anchors.bottom: element1.top
-            font.pixelSize: 12
-            color: Material.foreground
+            y: 450
+            spacing: 10
+
+            Column {
+                Text {
+                    id: element4
+
+                    text: qsTr("subscribe")
+                    font.pixelSize: 12
+                    color: Material.foreground
+                }
+
+                Text {
+                    id: element1
+                    text: "(⌒ω⌒)ﾉ"
+                    font.pixelSize: 20
+                    color: Material.foreground
+                }
+            }
+
+            Button {
+                text: qsTr("YouTube")
+                icon.color: "transparent"
+                icon.source: "qrc:/resources/images/youtube-icon.svg"
+
+                onClicked: {
+                    Qt.openUrlExternally("https://www.youtube.com/channel/UCujkj8ZgVkscm34GA1Z8wTQ");
+                }
+            }
+
+            Button {
+                text: qsTr("Twitch")
+                icon.color: "transparent"
+                icon.source: "qrc:/resources/images/twitch-icon.svg"
+
+                onClicked: {
+                    Qt.openUrlExternally("https://www.twitch.tv/axe1_k");
+                }
+            }
+
+            Button {
+                text: qsTr("GitHub")
+                icon.source: "qrc:/resources/images/github.svg"
+
+                onClicked: {
+                    Qt.openUrlExternally("https://github.com/3dproger");
+                }
+            }
         }
 
         Button {
@@ -207,7 +218,7 @@ ScrollView {
             y: 290
             height: 66
             text: qsTr("%1 is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms").arg(Qt.application.name)
-                + "<br><br>" + qsTr("For feedback or cooperation, write to email <b>%1</b>").arg(APP_INFO_EMAIL_STR)
+                + "<br><br>" + qsTr("For feedback or cooperation, write to email %1").arg("<u><b>" + APP_INFO_EMAIL_STR + "</b></u>")
                 + "<br><br>" + APP_INFO_LEGALCOPYRIGHT_STR_U
             anchors.left: parent.left
             anchors.right: parent.right
@@ -217,20 +228,6 @@ ScrollView {
             anchors.rightMargin: 8
             anchors.leftMargin: 8
             color: Material.foreground
-        }
-
-        Button {
-            id: buttonGitHub
-            y: 380
-            text: qsTr("GitHub")
-            anchors.verticalCenter: buttonYouTubeChannel.verticalCenter
-            anchors.left: buttonYouTubeChannel.right
-            anchors.leftMargin: 6
-            icon.source: "qrc:/resources/images/github.svg"
-
-            onClicked: {
-                Qt.openUrlExternally("https://github.com/3dproger");
-            }
         }
 
         Button {
