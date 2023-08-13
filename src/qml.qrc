@@ -27,5 +27,6 @@
         <file>setting_pages/add_connection.qml</file>
         <file>ChatPage.qml</file>
         <file>WaitAnimationPage.qml</file>
+        <file>TitlesPage.qml</file>
     </qresource>
 </RCC>

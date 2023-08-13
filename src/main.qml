@@ -216,31 +216,13 @@ ApplicationWindow {
         clip: true
     }
 
-    /*StackView{
-        id: stackView
-        anchors.fill: parent
-        initialItem: chatPage
-
-        replaceExit: Transition {
-            OpacityAnimator {
-                from: 1;
-                to: 0;
-                duration: 200
-            }
-        }
-
-        replaceEnter: Transition {
-            OpacityAnimator {
-                from: 0;
-                to: 1;
-                duration: 200
-            }
-        }
-    }*/
-
     WaitAnimationPage {
         anchors.fill: parent
         visible: chatPage.listView.count == 0
+    }
+
+    TitlesPage {
+        anchors.fill: parent
     }
 
     Rectangle {

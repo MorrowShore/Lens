@@ -220,7 +220,7 @@ ScrollView {
             id: element6
             y: 270
             height: 66
-            text: qsTr("AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms")
+            text: qsTr("%1 is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms").arg(Qt.application.name)
             anchors.left: parent.left
             anchors.right: parent.right
             font.pixelSize: 17
@@ -261,7 +261,7 @@ ScrollView {
             id: buttonSite
             x: 8
             y: 8
-            text: "AxelChat"
+            text: Qt.application.name
             icon.source: "qrc:/resources/images/internet-globe.svg"
             highlighted: true
 

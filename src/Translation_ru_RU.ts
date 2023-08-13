@@ -1175,6 +1175,15 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
 </context>
 <context>
+    <name>TitlesPage</name>
+    <message>
+        <location filename="TitlesPage.qml" line="24"/>
+        <source>Thanks to these people, %1 gets support:</source>
+        <oldsource>Thanks to these people, AxelChat gets support:</oldsource>
+        <translation>Благодаря этим людям %1 получает поддержку:</translation>
+    </message>
+</context>
+<context>
     <name>Trovo</name>
     <message>
         <location filename="chat_services/trovo.cpp" line="58"/>
@@ -1746,9 +1755,9 @@ Latest version available: %2</oldsource>
     </message>
     <message>
         <location filename="setting_pages/about.qml" line="223"/>
-        <source>AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</source>
-        <oldsource>A free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</oldsource>
-        <translation>AxelChat — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
+        <source>%1 is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</source>
+        <oldsource>AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</oldsource>
+        <translation>%1 — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
     </message>
     <message>
         <location filename="setting_pages/about.qml" line="237"/>
