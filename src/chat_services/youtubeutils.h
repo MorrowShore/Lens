@@ -20,7 +20,7 @@ public:
 
     static void printData(const QString& tag, const QByteArray& data);
 
-    Q_INVOKABLE static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
+    static QUrl createResizedAvatarUrl(const QUrl& sourceAvatarUrl, int imageHeight);
 
 private:
     static void tryAppedToText(QList<std::shared_ptr<Message::Content>>& contents, const QJsonObject& jsonObject, const QString& varName, bool bold);
