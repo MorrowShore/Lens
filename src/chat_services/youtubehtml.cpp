@@ -19,8 +19,6 @@ namespace
 static const int RequestChatInterval = 2000;
 static const int RequestStreamInterval = 20000;
 
-static const QByteArray AcceptLanguageNetworkHeaderName = "";
-
 static const int MaxBadChatReplies = 10;
 static const int MaxBadLivePageReplies = 3;
 
@@ -126,7 +124,7 @@ void YouTubeHtml::onTimeoutRequestChat()
 
     QNetworkRequest request(state.chatUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
+    request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &YouTubeHtml::onReplyChatPage);
 }
 
@@ -224,7 +222,7 @@ void YouTubeHtml::onTimeoutRequestStreamPage()
 
     QNetworkRequest request(state.streamUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
-    request.setRawHeader("Accept-Language", AcceptLanguageNetworkHeaderName);
+    request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
 
     QNetworkReply* reply = network.get(request);
     if (!reply)

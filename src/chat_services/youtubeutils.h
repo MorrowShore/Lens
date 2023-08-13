@@ -9,6 +9,7 @@ class YouTubeUtils
 {
 public:
     static const QString FolderLogs;
+    static const QByteArray AcceptLanguageNetworkHeaderName;
 
     YouTubeUtils() = delete;
 

@@ -3,17 +3,20 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QNetworkReply>
 
 namespace
 {
 
 static const int ReconncectPeriod = 5 * 1000;
 static const int CheckConnectionTimeout = 20 * 1000;
+static const int RequestStreamInterval = 10000;
 
 }
 
-YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager&, cweqt::Manager& web_, QObject *parent)
+YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
+    , network(network_)
     , web(web_)
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
@@ -58,6 +61,9 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
         }
     });
     timerCheckConnection.setInterval(CheckConnectionTimeout);
+
+    QObject::connect(&timerRequestStreamPage, &QTimer::timeout, this, &YouTubeBrowser::requestStreamPage);
+    timerRequestStreamPage.start(RequestStreamInterval);
 }
 
 ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const
@@ -179,6 +185,8 @@ void YouTubeBrowser::reconnectImpl()
             {
                 state.connected = true;
 
+                requestStreamPage();
+
                 emit connectedChanged(true);
                 emit stateChanged();
             }
@@ -200,6 +208,37 @@ void YouTubeBrowser::reconnectImpl()
     {
         qWarning() << Q_FUNC_INFO << "failed to create browser";
     }
+}
+
+void YouTubeBrowser::requestStreamPage()
+{
+    if (!enabled.get() || state.streamUrl.isEmpty())
+    {
+        return;
+    }
+
+    QNetworkRequest request(state.streamUrl);
+    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
+
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QByteArray data = reply->readAll();
+        reply->deleteLater();
+
+        if (data.isEmpty())
+        {
+            qDebug() << Q_FUNC_INFO << "data is empty";
+            return;
+        }
+
+        if (const int viewers = YouTubeUtils::parseViews(data); viewers != -1)
+        {
+            state.viewersCount = viewers;
+            emit stateChanged();
+        }
+    });
 }
 
 void YouTubeBrowser::openWindow()

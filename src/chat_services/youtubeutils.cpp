@@ -27,6 +27,7 @@ static QByteArray extractDigitsOnly(const QByteArray& data)
 }
 
 const QString YouTubeUtils::FolderLogs = "logs_youtube";
+const QByteArray YouTubeUtils::AcceptLanguageNetworkHeaderName = "";
 
 QString YouTubeUtils::extractBroadcastId(const QString &link)
 {

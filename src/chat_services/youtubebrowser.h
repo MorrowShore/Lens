@@ -18,12 +18,15 @@ protected:
     void reconnectImpl() override;
 
 public slots:
+    void requestStreamPage();
     void openWindow();
 
 private:
+    QNetworkAccessManager& network;
     cweqt::Manager& web;
     std::shared_ptr<cweqt::Browser> browser;
 
     QTimer timerReconnect;
     QTimer timerCheckConnection;
+    QTimer timerRequestStreamPage;
 };
