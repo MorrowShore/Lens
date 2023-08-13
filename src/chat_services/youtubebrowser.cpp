@@ -8,7 +8,9 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
     , web(web_)
 {
+    getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
 
+    reconnect();
 }
 
 ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const
@@ -131,7 +133,16 @@ void YouTubeBrowser::reconnectImpl()
 
             const QJsonArray actions = v.toArray();
 
-            emit actionsReceived(actions, response->data);
+            QList<std::shared_ptr<Message>> messages;
+            QList<std::shared_ptr<Author>> authors;
+
+            YouTubeUtils::parseActionsArray(actions, response->data, messages, authors);
+
+            if (!messages.isEmpty())
+            {
+                emit readyRead(messages, authors);
+                emit stateChanged();
+            }
         });
     }
     else

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "models/message.h"
 #include "chatservice.h"
 #include <QNetworkAccessManager>
 #include <QTimer>

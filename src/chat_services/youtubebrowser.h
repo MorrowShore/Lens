@@ -14,9 +14,6 @@ public:
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
 
-signals:
-    void actionsReceived(const QJsonArray& array, const QByteArray& data);
-
 protected:
     void reconnectImpl() override;
 
