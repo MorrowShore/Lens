@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    appsponsormanager.h \
     chat_services/kick.h \
     chat_services/rumble.h \
     chat_services/vkvideo.h \
@@ -67,6 +68,7 @@ HEADERS += \
     websocket.h
 
 SOURCES += \
+    appsponsormanager.cpp \
     chat_services/chatservice.cpp \
     chat_services/discord.cpp \
     chat_services/kick.cpp \

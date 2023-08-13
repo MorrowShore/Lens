@@ -12,6 +12,7 @@
 #include "uielementbridge.h"
 #include "CefWebEngineQt/Manager.h"
 #include "crypto/crypto.h"
+#include "appsponsormanager.h"
 #include <QApplication>
 #include <QIcon>
 #include <QStandardPaths>
@@ -65,6 +66,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    AppSponsorManager appSponsorManager(network);
+
     UIElementBridge::declareQml();
 
     ChatHandler::declareQml();
@@ -98,6 +101,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("clipboard",          &clipboard);
     engine.rootContext()->setContextProperty("qmlUtils",           &qmlUtils);
     engine.rootContext()->setContextProperty("messagesModel",      &chatHandler.getMessagesModel());
+    engine.rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
     engine.rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
     engine.rootContext()->setContextProperty("tray",               &tray);
 

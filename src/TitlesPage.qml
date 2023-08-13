@@ -36,16 +36,7 @@ Item {
         interactive: true
         delegate: delegate
 
-        model: [
-            {
-                title: "Axel",
-                text: "Sponsor",
-            },
-            {
-                title: "Felix",
-                text: "Меценат",
-            },
-        ]
+        model: appSponsorsModel
     }
 
     Component {
@@ -64,7 +55,7 @@ Item {
                 color: "#03A9F4"
                 font.bold: true
                 font.pointSize: Global.windowChatMessageTextFontSize
-                text: "Аксель" + " - " + "Меценат"
+                text: name + " - " + tier
                 anchors.left: parent.left
                 anchors.right: parent.right
 
