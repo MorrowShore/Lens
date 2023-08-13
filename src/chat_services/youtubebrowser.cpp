@@ -8,6 +8,7 @@ namespace
 {
 
 static const int ReconncectPeriod = 5 * 1000;
+static const int CheckConnectionTimeout = 20 * 1000;
 
 }
 
@@ -43,6 +44,20 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
             reconnect();
         }
     });
+
+    QObject::connect(&timerCheckConnection, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (state.connected)
+        {
+            reconnect();
+        }
+    });
+    timerCheckConnection.setInterval(CheckConnectionTimeout);
 }
 
 ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const
@@ -92,6 +107,8 @@ void YouTubeBrowser::reconnectImpl()
     const bool preConnected = state.connected;
 
     state = State();
+
+    timerCheckConnection.stop();
 
     if (preConnected)
     {
@@ -155,6 +172,8 @@ void YouTubeBrowser::reconnectImpl()
                 qWarning() << Q_FUNC_INFO << "liveChatContinuation not found, object =" << root;
                 return;
             }
+
+            timerCheckConnection.start();
 
             if (!state.connected && !state.streamId.isEmpty() && enabled.get())
             {

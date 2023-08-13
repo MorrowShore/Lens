@@ -25,4 +25,5 @@ private:
     std::shared_ptr<cweqt::Browser> browser;
 
     QTimer timerReconnect;
+    QTimer timerCheckConnection;
 };
