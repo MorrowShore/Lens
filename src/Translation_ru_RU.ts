@@ -1552,27 +1552,32 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>YouTubeBrowser</name>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="35"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="19"/>
+        <source>Link or broadcast ID...</source>
+        <translation>Ссылка или ID трансляции...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubebrowser.cpp" line="84"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="40"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="89"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="43"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="92"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="46"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="95"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="49"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="98"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
