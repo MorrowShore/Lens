@@ -1453,6 +1453,29 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
 </context>
 <context>
+    <name>WaitAnimationPage</name>
+    <message>
+        <location filename="WaitAnimationPage.qml" line="63"/>
+        <source>Nothing connected</source>
+        <translation>Ничего не подключено</translation>
+    </message>
+    <message>
+        <location filename="WaitAnimationPage.qml" line="67"/>
+        <source>Right click on the window to open the settings</source>
+        <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
+    </message>
+    <message>
+        <location filename="WaitAnimationPage.qml" line="72"/>
+        <source>Connected!</source>
+        <translation>Подключено!</translation>
+    </message>
+    <message>
+        <location filename="WaitAnimationPage.qml" line="72"/>
+        <source>But no one has written anything yet</source>
+        <translation>Но пока никто ничего не написал</translation>
+    </message>
+</context>
+<context>
     <name>Wasd</name>
     <message>
         <location filename="chat_services/wasd.cpp" line="27"/>
@@ -1552,32 +1575,37 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>YouTubeBrowser</name>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="19"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="22"/>
         <source>Link or broadcast ID...</source>
         <translation>Ссылка или ID трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="84"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="68"/>
+        <source>Open chat</source>
+        <translation>Открыть чат</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtubebrowser.cpp" line="97"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="89"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="102"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="92"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="105"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="95"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="108"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubebrowser.cpp" line="98"/>
+        <location filename="chat_services/youtubebrowser.cpp" line="111"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1585,32 +1613,32 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>YouTubeHtml</name>
     <message>
-        <location filename="chat_services/youtubehtml.cpp" line="47"/>
+        <location filename="chat_services/youtubehtml.cpp" line="31"/>
         <source>Link or broadcast ID...</source>
         <translation>Ссылка или ID трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubehtml.cpp" line="113"/>
+        <location filename="chat_services/youtubehtml.cpp" line="97"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubehtml.cpp" line="118"/>
+        <location filename="chat_services/youtubehtml.cpp" line="102"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubehtml.cpp" line="121"/>
+        <location filename="chat_services/youtubehtml.cpp" line="105"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubehtml.cpp" line="124"/>
+        <location filename="chat_services/youtubehtml.cpp" line="108"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtubehtml.cpp" line="127"/>
+        <location filename="chat_services/youtubehtml.cpp" line="111"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1618,7 +1646,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>about</name>
     <message>
-        <location filename="setting_pages/about.qml" line="302"/>
+        <location filename="setting_pages/about.qml" line="332"/>
         <source>You are using the most current version!
 
 Current version: %1
@@ -1632,48 +1660,59 @@ Latest version available: %2</oldsource>
 Последняя доступная версия: %2</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="310"/>
+        <location filename="setting_pages/about.qml" line="340"/>
         <source>Failed to connect to server. Check your internet connection!</source>
         <translation>Не удалось подключиться к серверу. Проверьте подключение к интернету!</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="315"/>
+        <location filename="setting_pages/about.qml" line="345"/>
         <source>Request limits exceeded! Please try again later</source>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="54"/>
+        <location filename="setting_pages/about.qml" line="84"/>
         <source>32-bit Build</source>
         <translation>32-битная сборка</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="56"/>
+        <location filename="setting_pages/about.qml" line="36"/>
+        <source>Patreon</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="setting_pages/about.qml" line="46"/>
+        <source>Boosty</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="setting_pages/about.qml" line="86"/>
         <source>64-bit Build</source>
         <translation>64-битная сборка</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="58"/>
+        <location filename="setting_pages/about.qml" line="88"/>
         <source>Build Architecture: %1</source>
         <oldsource>Build Architecture: </oldsource>
         <translation>Архитектура сборки: %1</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="85"/>
+        <location filename="setting_pages/about.qml" line="115"/>
         <source>YouTube Channel</source>
         <translation>YouTube канал</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="129"/>
+        <location filename="setting_pages/about.qml" line="159"/>
         <source>Check for Updates</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="167"/>
+        <location filename="setting_pages/about.qml" line="197"/>
         <source>subscribe</source>
         <translation>подпишись</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="247"/>
+        <location filename="setting_pages/about.qml" line="32"/>
+        <location filename="setting_pages/about.qml" line="277"/>
         <source>Support the developer</source>
         <translation>Поддержать разработчика</translation>
     </message>
@@ -1682,12 +1721,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Форум (Discussions)</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="179"/>
+        <location filename="setting_pages/about.qml" line="209"/>
         <source>Releases</source>
         <translation>Релизы</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="272"/>
+        <location filename="setting_pages/about.qml" line="302"/>
         <source>Source Code</source>
         <translation>Исходный код</translation>
     </message>
@@ -1696,7 +1735,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Лицензия</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="260"/>
+        <location filename="setting_pages/about.qml" line="290"/>
         <source>Complaints and suggestions (Issues)</source>
         <oldsource>Complaints and suggestions  (Issues)</oldsource>
         <translation>Жалобы и предложения (Issues)</translation>
@@ -1706,13 +1745,13 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Жалобы и предложения</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="193"/>
+        <location filename="setting_pages/about.qml" line="223"/>
         <source>AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</source>
         <oldsource>A free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</oldsource>
         <translation>AxelChat — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="207"/>
+        <location filename="setting_pages/about.qml" line="237"/>
         <source>GitHub</source>
         <translation></translation>
     </message>
@@ -2107,25 +2146,21 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка или ID трансляции не указана</translation>
     </message>
     <message>
-        <location filename="main.qml" line="780"/>
         <source>Nothing connected</source>
-        <translation>Ничего не подключено</translation>
+        <translation type="vanished">Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="main.qml" line="784"/>
         <source>Right click on the window to open the settings</source>
-        <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
+        <translation type="vanished">Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
     <message>
-        <location filename="main.qml" line="789"/>
         <source>Connected!</source>
         <oldsource>Connected</oldsource>
-        <translation>Подключено!</translation>
+        <translation type="vanished">Подключено!</translation>
     </message>
     <message>
-        <location filename="main.qml" line="789"/>
         <source>But no one has written anything yet</source>
-        <translation>Но пока никто ничего не написал</translation>
+        <translation type="vanished">Но пока никто ничего не написал</translation>
     </message>
     <message>
         <source>but no one has written anything yet</source>

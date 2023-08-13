@@ -216,79 +216,30 @@ ApplicationWindow {
         clip: true
     }
 
-    Item {
-        id: waitAnimation
-        x: parent.width  / 2 - width  / 2
-        y: parent.height / 2 - height / 2
-        width: 100
-        height: 100
-        visible: chatPage.listView.count == 0
+    /*StackView{
+        id: stackView
+        anchors.fill: parent
+        initialItem: chatPage
 
-        AnimatedImage {
-            id: animatedImage
-            x: 270
-            y: 190
-            anchors.fill: parent
-            playing: true
-            source: chatHandler.connectedCount === 0 ? "qrc:/resources/images/sleeping_200_transparent.gif" : "qrc:/resources/images/cool_200_transparent.gif"
-            smooth: true
-            antialiasing: true
-            asynchronous: true
-
-            property real imageScaleX: 1.0
-            transform: Scale {
-                xScale: animatedImage.imageScaleX;
-                origin.x: width  / 2;
-                origin.y: height / 2;
+        replaceExit: Transition {
+            OpacityAnimator {
+                from: 1;
+                to: 0;
+                duration: 200
             }
         }
 
-        ColorOverlay {
-            width: 100
-            height: 100
-            source: animatedImage
-            smooth: animatedImage.smooth
-            antialiasing: animatedImage.antialiasing
-            color: "#03A9F4"
-            opacity: animatedImage.opacity
-            transform: Scale {
-                xScale: animatedImage.imageScaleX
-                origin.x: width  / 2;
-                origin.y: height / 2;
+        replaceEnter: Transition {
+            OpacityAnimator {
+                from: 0;
+                to: 1;
+                duration: 200
             }
         }
-    }
+    }*/
 
-    Text {
-        text: {
-            var s = ""
-
-            if (chatHandler.connectedCount === 0)
-            {
-                s += qsTr("Nothing connected");
-
-                if (typeof(root.settingsWindow) == "undefined" || !root.settingsWindow.visible)
-                {
-                   s += "\n\n" + qsTr("Right click on the window to open the settings");
-                }
-            }
-            else
-            {
-                s += qsTr("Connected!") + "\n\n" + qsTr("But no one has written anything yet")
-            }
-
-            return s;
-        }
-
-        color: "#03A9F4"
-        wrapMode: Text.Wrap
-        style: Text.Outline
-        font.pointSize: 12
-        horizontalAlignment: Text.AlignHCenter
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: waitAnimation.bottom
-        anchors.topMargin: 20
+    WaitAnimationPage {
+        anchors.fill: parent
         visible: chatPage.listView.count == 0
     }
 

@@ -26,5 +26,6 @@
         <file>my_components/BridgedSwitch.qml</file>
         <file>setting_pages/add_connection.qml</file>
         <file>ChatPage.qml</file>
+        <file>WaitAnimationPage.qml</file>
     </qresource>
 </RCC>
