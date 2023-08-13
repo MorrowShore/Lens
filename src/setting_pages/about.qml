@@ -92,20 +92,6 @@ ScrollView {
             color: Material.foreground
         }
 
-        Text {
-            id: element
-            y: 352
-            height: 24
-            text: APP_INFO_LEGALCOPYRIGHT_STR_U
-            anchors.right: parent.right
-            anchors.rightMargin: 8
-            anchors.left: parent.left
-            anchors.leftMargin: 8
-            horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 20
-            color: Material.foreground
-        }
-
         Button {
             id: buttonYouTubeChannel
             x: 196
@@ -222,6 +208,7 @@ ScrollView {
             height: 66
             text: qsTr("%1 is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms").arg(Qt.application.name)
                 + "<br><br>" + qsTr("For feedback or cooperation, write to email <b>%1</b>").arg(APP_INFO_EMAIL_STR)
+                + "<br><br>" + APP_INFO_LEGALCOPYRIGHT_STR_U
             anchors.left: parent.left
             anchors.right: parent.right
             font.pixelSize: 17
