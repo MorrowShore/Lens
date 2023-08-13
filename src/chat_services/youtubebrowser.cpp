@@ -112,14 +112,15 @@ void YouTubeBrowser::reconnectImpl()
                 return;
             }
 
-            const QJsonValue v = QJsonDocument::fromJson(response->data).object()
-                .value("continuationContents").toObject()
-                .value("liveChatContinuation").toObject()
-                .value("actions");
+            const QJsonObject root = QJsonDocument::fromJson(response->data).object();
 
-            if (v.type() != QJsonValue::Type::Array)
+            const QJsonValue v = root
+                .value("continuationContents").toObject()
+                .value("liveChatContinuation").toObject();
+
+            if (v.type() != QJsonValue::Type::Object)
             {
-                qWarning() << Q_FUNC_INFO << "array of actions not found";
+                qWarning() << Q_FUNC_INFO << "liveChatContinuation not found, object =" << root;
                 return;
             }
 
@@ -131,7 +132,7 @@ void YouTubeBrowser::reconnectImpl()
                 emit stateChanged();
             }
 
-            const QJsonArray actions = v.toArray();
+            const QJsonArray actions = v.toObject().value("actions").toArray();
 
             QList<std::shared_ptr<Message>> messages;
             QList<std::shared_ptr<Author>> authors;
@@ -141,7 +142,6 @@ void YouTubeBrowser::reconnectImpl()
             if (!messages.isEmpty())
             {
                 emit readyRead(messages, authors);
-                emit stateChanged();
             }
         });
     }
