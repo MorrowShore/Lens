@@ -73,7 +73,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     QTimer::singleShot(2000, [this]()
     {
         Q_UNUSED(this)
-        //addTestMessages();
+        addTestMessages();
     });
 }
 
@@ -359,20 +359,22 @@ void ChatHandler::addService()
 
 void ChatHandler::addTestMessages()
 {
-    /*QList<Message> messages;
-    QList<Author> authors;
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
 
     {
-        Author author(AxelChat::ServiceType::YouTube, "Mario", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953"));
+        std::shared_ptr<Author> author = std::make_shared<Author>(AxelChat::ServiceType::YouTube, "Mario", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953"));
         authors.append(author);
 
-        QList<Message::Content*> contents;
-        contents.append(new Message::Text("Hello it's me Mario!"));
+        QList<std::shared_ptr<Message::Content>> contents;
+        contents.append(std::make_shared<Message::Text>("Hello it's me Mario!"));
 
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
+        std::shared_ptr<Message> message = std::make_shared<Message>(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString());
+
+        messages.append(message);
     }
 
-    {
+    /*{
         Author author(AxelChat::ServiceType::Twitch, "BigSmoke", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/gtawiki/images/b/bf/BigSmoke-GTASAde.png/revision/latest/scale-to-width-down/350?cb=20211113214309"));
         authors.append(author);
 
@@ -453,9 +455,9 @@ void ChatHandler::addTestMessages()
         contents.append(new Message::Text("May I say a few words?"));
 
         messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
-    }
+    }*/
 
-    onReadyRead(messages, authors);*/
+    onReadyRead(messages, authors);
 }
 
 #ifndef AXELCHAT_LIBRARY
