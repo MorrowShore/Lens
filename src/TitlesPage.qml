@@ -40,6 +40,7 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         value: 1
+
     }
 
     Text {
@@ -49,6 +50,7 @@ Item {
         font.bold: true
         font.pointSize: Global.windowChatMessageTextFontSize
         wrapMode: Text.Wrap
+        anchors.top: progressBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 4
