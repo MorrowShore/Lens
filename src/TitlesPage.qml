@@ -35,6 +35,7 @@ Item {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 4
+        anchors.topMargin: 8
         interactive: true
         delegate: delegate
 
@@ -55,9 +56,8 @@ Item {
                 id: textLine
                 style: Text.Outline
                 color: "#03A9F4"
-                font.bold: true
                 font.pointSize: Global.windowChatMessageTextFontSize
-                text: name + " - " + tierName
+                text: "<b>" + name + "</b> - " + tierName
                 anchors.left: parent.left
                 anchors.right: parent.right
 
