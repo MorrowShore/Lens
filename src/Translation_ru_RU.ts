@@ -1192,8 +1192,9 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="TitlesPage.qml" line="98"/>
-        <source>I want to be on this list</source>
-        <translation>Хочу быть в этом списке</translation>
+        <source>I want to be on this list!</source>
+        <oldsource>I want to be on this list</oldsource>
+        <translation>Я хочу быть в этом списке!</translation>
     </message>
     <message>
         <source>Support the developer</source>
@@ -2386,8 +2387,12 @@ Latest version available: %2</oldsource>
     </message>
     <message>
         <location filename="settings.qml" line="108"/>
+        <source>Choose a support method convenient for you:</source>
+        <translation>Выберите удобный для Вас способ поддержки:</translation>
+    </message>
+    <message>
         <source>Support the developer</source>
-        <translation>Поддержать разработчика</translation>
+        <translation type="vanished">Поддержать разработчика</translation>
     </message>
     <message>
         <location filename="settings.qml" line="112"/>

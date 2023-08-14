@@ -105,7 +105,7 @@ Window {
         anchors.centerIn: parent
         modal: true
         standardButtons: Dialog.Ok
-        title: qsTr("Support the developer")
+        title: qsTr("Choose a support method convenient for you:")
 
         contentItem: Column {
             Button {

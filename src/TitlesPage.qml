@@ -1,11 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
 import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
 import AxelChat.ChatHandler 1.0
 import AxelChat.ChatService 1.0
 import AxelChat.UpdateChecker 1.0
-import QtQuick.Controls.Material 2.15
 import "my_components" as MyComponents
 import "."
 
@@ -95,7 +95,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 4
-        text: qsTr("I want to be on this list")
+        text: qsTr("I want to be on this list!")
         icon.source: "qrc:/resources/images/heart.svg"
         Material.background: "#DB61A2"
         Material.foreground: "white"
