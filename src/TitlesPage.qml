@@ -95,7 +95,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 4
-        text: qsTr("Support the developer")
+        text: qsTr("I want to be on this list")
         icon.source: "qrc:/resources/images/heart.svg"
         Material.background: "#DB61A2"
         Material.foreground: "white"
