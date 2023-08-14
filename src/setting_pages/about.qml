@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import AxelChat.UpdateChecker 1.0
 import AxelChat.QMLUtils 1.0
+import "../"
 
 ScrollView {
     id: root
@@ -22,36 +23,6 @@ ScrollView {
             anchors.centerIn: parent
             modal: true
             standardButtons: Dialog.Ok
-        }
-
-        Dialog {
-            id: sponsorDialog
-            anchors.centerIn: parent
-            modal: true
-            standardButtons: Dialog.Ok
-            title: qsTr("Support the developer")
-
-            contentItem: Column {
-                Button {
-                    text: qsTr("Patreon")
-                    icon.source: "qrc:/resources/images/patreon-icon.svg"
-                    icon.color: "transparent"
-
-                    onClicked: {
-                        Qt.openUrlExternally("https://www.patreon.com/axel_k")
-                    }
-                }
-
-                Button {
-                    text: qsTr("Boosty")
-                    icon.source: "qrc:/resources/images/boosty-icon.svg"
-                    icon.color: "transparent"
-
-                    onClicked: {
-                        Qt.openUrlExternally("https://boosty.to/axel_k")
-                    }
-                }
-            }
         }
 
         Text {
@@ -253,7 +224,7 @@ ScrollView {
             Material.background: "#DB61A2"
 
             onClicked: {
-                sponsorDialog.open()
+                Global.windowSettings.openSponsorDialog()
             }
         }
 

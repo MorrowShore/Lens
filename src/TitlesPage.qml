@@ -101,7 +101,8 @@ Item {
         Material.foreground: "white"
 
         onClicked: {
-
+            Global.openSettingsWindow()
+            Global.windowSettings.openSponsorDialog()
         }
     }
 

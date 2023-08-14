@@ -96,6 +96,40 @@ Window {
         }
     }
 
+    function openSponsorDialog() {
+        sponsorDialog.open()
+    }
+
+    Dialog {
+        id: sponsorDialog
+        anchors.centerIn: parent
+        modal: true
+        standardButtons: Dialog.Ok
+        title: qsTr("Support the developer")
+
+        contentItem: Column {
+            Button {
+                text: qsTr("Patreon")
+                icon.source: "qrc:/resources/images/patreon-icon.svg"
+                icon.color: "transparent"
+
+                onClicked: {
+                    Qt.openUrlExternally("https://www.patreon.com/axel_k")
+                }
+            }
+
+            Button {
+                text: qsTr("Boosty")
+                icon.source: "qrc:/resources/images/boosty-icon.svg"
+                icon.color: "transparent"
+
+                onClicked: {
+                    Qt.openUrlExternally("https://boosty.to/axel_k")
+                }
+            }
+        }
+    }
+
     onVisibleChanged: {
         if (visible) {
             qmlUtils.updateWindowStyle(this)

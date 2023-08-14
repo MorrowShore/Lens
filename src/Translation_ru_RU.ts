@@ -1668,7 +1668,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>about</name>
     <message>
-        <location filename="setting_pages/about.qml" line="317"/>
+        <location filename="setting_pages/about.qml" line="288"/>
         <source>You are using the most current version!
 
 Current version: %1
@@ -1682,53 +1682,43 @@ Latest version available: %2</oldsource>
 Последняя доступная версия: %2</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="325"/>
+        <location filename="setting_pages/about.qml" line="296"/>
         <source>Failed to connect to server. Check your internet connection!</source>
         <translation>Не удалось подключиться к серверу. Проверьте подключение к интернету!</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="330"/>
+        <location filename="setting_pages/about.qml" line="301"/>
         <source>Request limits exceeded! Please try again later</source>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="84"/>
+        <location filename="setting_pages/about.qml" line="55"/>
         <source>32-bit Build</source>
         <translation>32-битная сборка</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="36"/>
-        <source>Patreon</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="setting_pages/about.qml" line="46"/>
-        <source>Boosty</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="setting_pages/about.qml" line="86"/>
+        <location filename="setting_pages/about.qml" line="57"/>
         <source>64-bit Build</source>
         <translation>64-битная сборка</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="88"/>
+        <location filename="setting_pages/about.qml" line="59"/>
         <source>Build Architecture: %1</source>
         <oldsource>Build Architecture: </oldsource>
         <translation>Архитектура сборки: %1</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="161"/>
+        <location filename="setting_pages/about.qml" line="132"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="171"/>
+        <location filename="setting_pages/about.qml" line="142"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="222"/>
+        <location filename="setting_pages/about.qml" line="193"/>
         <source>For feedback or cooperation, write to email %1</source>
         <translation>Для обратной связи или сотрудничества пишите на %1</translation>
     </message>
@@ -1737,18 +1727,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">YouTube канал</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="111"/>
+        <location filename="setting_pages/about.qml" line="82"/>
         <source>Check for Updates</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="147"/>
+        <location filename="setting_pages/about.qml" line="118"/>
         <source>subscribe</source>
         <translation>подпишись</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="32"/>
-        <location filename="setting_pages/about.qml" line="251"/>
+        <location filename="setting_pages/about.qml" line="222"/>
         <source>Support the developer</source>
         <translation>Поддержать разработчика</translation>
     </message>
@@ -1757,7 +1746,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Форум (Discussions)</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="207"/>
+        <location filename="setting_pages/about.qml" line="178"/>
         <source>Releases</source>
         <translation>Релизы</translation>
     </message>
@@ -1766,17 +1755,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Для обратной связи или сотрудничества пишите на &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="276"/>
+        <location filename="setting_pages/about.qml" line="247"/>
         <source>Source Code</source>
         <translation>Исходный код</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="288"/>
+        <location filename="setting_pages/about.qml" line="259"/>
         <source>License</source>
         <translation>Лицензия</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="264"/>
+        <location filename="setting_pages/about.qml" line="235"/>
         <source>Complaints and suggestions (Issues)</source>
         <oldsource>Complaints and suggestions  (Issues)</oldsource>
         <translation>Жалобы и предложения (Issues)</translation>
@@ -1786,13 +1775,13 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Жалобы и предложения</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="221"/>
+        <location filename="setting_pages/about.qml" line="192"/>
         <source>%1 is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</source>
         <oldsource>AxelChat is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms</oldsource>
         <translation>%1 — бесплатное кроссплатформенное приложение для добавления интерактивности к прямым трансляциям и одновременного взаимодействия со зрителями с нескольких стриминговых платформ</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="181"/>
+        <location filename="setting_pages/about.qml" line="152"/>
         <source>GitHub</source>
         <translation></translation>
     </message>
@@ -2392,16 +2381,31 @@ Latest version available: %2</oldsource>
         <translation>Ок</translation>
     </message>
     <message>
+        <location filename="settings.qml" line="108"/>
+        <source>Support the developer</source>
+        <translation>Поддержать разработчика</translation>
+    </message>
+    <message>
+        <location filename="settings.qml" line="112"/>
+        <source>Patreon</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settings.qml" line="122"/>
+        <source>Boosty</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Add connection</source>
         <translation type="vanished">Новое подключ.</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="187"/>
+        <location filename="settings.qml" line="221"/>
         <source>Widgets</source>
         <translation>Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="193"/>
+        <location filename="settings.qml" line="227"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -2410,17 +2414,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="181"/>
+        <location filename="settings.qml" line="215"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="205"/>
+        <location filename="settings.qml" line="239"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="211"/>
+        <location filename="settings.qml" line="245"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -2429,7 +2433,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="217"/>
+        <location filename="settings.qml" line="251"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
