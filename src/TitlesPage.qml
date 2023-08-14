@@ -35,7 +35,7 @@ Item {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 4
-        anchors.topMargin: 8
+        anchors.topMargin: 12
         interactive: true
         delegate: delegate
 
