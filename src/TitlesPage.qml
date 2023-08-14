@@ -11,6 +11,36 @@ import "."
 
 Item {
     property int count: listView.count
+    property int duration: 5000
+
+    function start() {
+        timerUpdateProgressBar.start()
+    }
+
+    signal stopped()
+
+    Timer {
+        id: timerUpdateProgressBar
+        interval: 10
+        running: false
+        repeat: true
+        onTriggered: {
+            progressBar.value -= interval / duration
+
+            if (progressBar.value <= 0) {
+                stop()
+                stopped()
+            }
+        }
+    }
+
+    ProgressBar {
+        id: progressBar
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        value: 1
+    }
 
     Text {
         id: titleText

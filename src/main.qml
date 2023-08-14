@@ -226,23 +226,19 @@ ApplicationWindow {
         id: titlesPage
         anchors.fill: parent
         visible: false
+        duration: 2500
         property bool shown: false
+
         onCountChanged: {
             if (count > 0 && !shown) {
                 visible = true
                 shown = true
-                timerSponsors.running = true
+                start()
             }
         }
 
-        Timer {
-            id: timerSponsors
-            interval: 3000;
-            running: false
-            repeat: false
-            onTriggered: {
-                parent.visible = false
-            }
+        onStopped: () => {
+            visible = false
         }
     }
 

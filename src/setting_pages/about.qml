@@ -106,7 +106,7 @@ ScrollView {
 
         Button {
             id: buttonCheckUpdates
-            x: 482
+            x: 460
             y: 8
             text: qsTr("Check for Updates")
             anchors.right: parent.right
@@ -202,7 +202,7 @@ ScrollView {
 
         Button {
             id: buttonReleases
-            x: 521
+            x: 500
             y: 62
             text: qsTr("Releases")
             anchors.right: parent.right
