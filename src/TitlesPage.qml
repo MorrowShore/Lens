@@ -10,6 +10,8 @@ import "."
 
 
 Item {
+    property int count: listView.count
+
     Text {
         id: titleText
         style: Text.Outline
@@ -26,7 +28,7 @@ Item {
     }
 
     ListView {
-        id: list
+        id: listView
 
         anchors.top: titleText.bottom
         anchors.left: parent.left
@@ -44,7 +46,7 @@ Item {
 
         Rectangle {
             id: content
-            width: list.width
+            width: listView.width
             height: textLine.height + 10
 
             color: "transparent"

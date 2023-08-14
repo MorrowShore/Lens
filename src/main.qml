@@ -205,16 +205,6 @@ ApplicationWindow {
         }
     }
 
-    Timer {
-        id: timerSponsors
-        interval: 3000;
-        running: true
-        repeat: false
-        onTriggered: {
-            titlesPage.visible = false
-        }
-    }
-
     ChatPage {
         id: chatPage
         anchors.leftMargin: 2
@@ -235,6 +225,25 @@ ApplicationWindow {
     TitlesPage {
         id: titlesPage
         anchors.fill: parent
+        visible: false
+        property bool shown: false
+        onCountChanged: {
+            if (count > 0 && !shown) {
+                visible = true
+                shown = true
+                timerSponsors.running = true
+            }
+        }
+
+        Timer {
+            id: timerSponsors
+            interval: 3000;
+            running: false
+            repeat: false
+            onTriggered: {
+                parent.visible = false
+            }
+        }
     }
 
     Rectangle {
