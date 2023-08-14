@@ -34,57 +34,61 @@ Item {
         }
     }
 
-    ProgressBar {
-        id: progressBar
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        height: 4
-        value: 1
+    Column {
+        anchors.fill: parent
+        spacing: 8
 
-        background: Rectangle {
-            anchors.fill: progressBar
-            color: "#8003A9F4"
+        ProgressBar {
+            id: progressBar
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 4
+            value: 1
+
+            background: Rectangle {
+                anchors.fill: progressBar
+                color: "#8003A9F4"
+            }
+
+            contentItem: Rectangle {
+                anchors.left: progressBar.left
+                anchors.bottom: progressBar.bottom
+                height: progressBar.height
+                width: progressBar.width * progressBar.value
+                color: "#03A9F4"
+            }
         }
 
-        contentItem: Rectangle {
-            anchors.left: progressBar.left
-            anchors.bottom: progressBar.bottom
-            height: progressBar.height
-            width: progressBar.width * progressBar.value
+        Text {
+            id: titleText
+            style: Text.Outline
             color: "#03A9F4"
+            font.bold: true
+            font.pointSize: Global.windowChatMessageTextFontSize
+            wrapMode: Text.Wrap
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 4
+            anchors.rightMargin: 4
+            horizontalAlignment: Text.AlignHCenter
+
+            text: qsTr("Thanks to these people, %1 gets support:").arg(Qt.application.name)
         }
-    }
 
-    Text {
-        id: titleText
-        style: Text.Outline
-        color: "#03A9F4"
-        font.bold: true
-        font.pointSize: Global.windowChatMessageTextFontSize
-        wrapMode: Text.Wrap
-        anchors.top: progressBar.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 4
-        horizontalAlignment: Text.AlignHCenter
+        ListView {
+            id: listView
+            height: parent.parent.height
 
-        text: qsTr("Thanks to these people, %1 gets support:").arg(Qt.application.name)
-    }
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 4
+            anchors.rightMargin: 4
+            anchors.topMargin: 4
+            interactive: true
+            delegate: delegate
 
-    ListView {
-        id: listView
-
-        anchors.top: titleText.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 4
-        anchors.topMargin: 12
-        interactive: true
-        delegate: delegate
-
-        model: appSponsorsModel
+            model: appSponsorsModel
+        }
     }
 
     Component {
