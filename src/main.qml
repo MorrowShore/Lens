@@ -205,6 +205,16 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: timerSponsors
+        interval: 3000;
+        running: true
+        repeat: false
+        onTriggered: {
+            titlesPage.visible = false
+        }
+    }
+
     ChatPage {
         id: chatPage
         anchors.leftMargin: 2
@@ -214,14 +224,16 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.bottom: bottomPanel.visible ? bottomPanel.top : parent.bottom
         clip: true
+        visible: !titlesPage.visible
     }
 
     WaitAnimationPage {
         anchors.fill: parent
-        visible: chatPage.listView.count == 0
+        visible: chatPage.listView.count == 0 && !titlesPage.visible
     }
 
     TitlesPage {
+        id: titlesPage
         anchors.fill: parent
     }
 

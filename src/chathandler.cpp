@@ -359,7 +359,7 @@ void ChatHandler::addService()
 
 void ChatHandler::addTestMessages()
 {
-    QList<std::shared_ptr<Message>> messages;
+    /*QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
 
     {
@@ -374,7 +374,7 @@ void ChatHandler::addTestMessages()
         messages.append(message);
     }
 
-    /*{
+    {
         Author author(AxelChat::ServiceType::Twitch, "BigSmoke", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/gtawiki/images/b/bf/BigSmoke-GTASAde.png/revision/latest/scale-to-width-down/350?cb=20211113214309"));
         authors.append(author);
 
@@ -455,9 +455,9 @@ void ChatHandler::addTestMessages()
         contents.append(new Message::Text("May I say a few words?"));
 
         messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
-    }*/
+    }
 
-    onReadyRead(messages, authors);
+    onReadyRead(messages, authors);*/
 }
 
 #ifndef AXELCHAT_LIBRARY
