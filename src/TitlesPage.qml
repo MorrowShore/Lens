@@ -39,8 +39,21 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
+        height: 4
         value: 1
 
+        background: Rectangle {
+            anchors.fill: progressBar
+            color: "#8003A9F4"
+        }
+
+        contentItem: Rectangle {
+            anchors.left: progressBar.left
+            anchors.bottom: progressBar.bottom
+            height: progressBar.height
+            width: progressBar.width * progressBar.value
+            color: "#03A9F4"
+        }
     }
 
     Text {
