@@ -218,7 +218,7 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.bottom: bottomPanel.visible ? bottomPanel.top : parent.bottom
         visible: false
-        duration: 2500
+        duration: 3000
         property bool shown: false
 
         onCountChanged: {
