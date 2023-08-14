@@ -60,7 +60,6 @@ ApplicationWindow {
     opacity: Global.windowChatWindowOpacity
     color: Qt.rgba(0, 0, 0, Global.windowChatBackgroundOpacity)
 
-    property var settingsWindow;
     property var authorWindow: null
     property var updatesWindow;
 
@@ -157,7 +156,7 @@ ApplicationWindow {
 
         function onTriggered(actionName) {
             if (actionName === "settings") {
-                openSettingsWindow()
+                Global.openSettingsWindow()
             }
             else if (actionName === "input_transparent_toggle") {
                 Global.windowChatTransparentForInput = !Global.windowChatTransparentForInput
@@ -182,21 +181,11 @@ ApplicationWindow {
         }
     }
 
-    function openSettingsWindow() {
-        if (typeof(settingsWindow) == "undefined")
-        {
-            var component = Qt.createComponent("qrc:/settings.qml")
-            settingsWindow = component.createObject(root)
-        }
-
-        settingsWindow.show()
-    }
-
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         onClicked: {
-            openSettingsWindow()
+            Global.openSettingsWindow()
         }
 
         onWheel: {
@@ -224,7 +213,10 @@ ApplicationWindow {
 
     TitlesPage {
         id: titlesPage
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: bottomPanel.visible ? bottomPanel.top : parent.bottom
         visible: false
         duration: 2500
         property bool shown: false

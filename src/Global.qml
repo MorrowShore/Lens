@@ -45,4 +45,14 @@ QtObject {
     function save(){
         windowChat.saveGlobalSettings()
     }
+
+    function openSettingsWindow() {
+        if (typeof(windowSettings) == "undefined")
+        {
+            var component = Qt.createComponent("qrc:/settings.qml")
+            windowSettings = component.createObject(windowChat)
+        }
+
+        windowSettings.show()
+    }
 }
