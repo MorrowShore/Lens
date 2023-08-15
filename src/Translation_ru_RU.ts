@@ -661,46 +661,51 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>DonationAlerts</name>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="33"/>
-        <location filename="chat_services/donationalerts.cpp" line="103"/>
-        <location filename="chat_services/donationalerts.cpp" line="108"/>
+        <location filename="chat_services/donationalerts.cpp" line="73"/>
+        <location filename="chat_services/donationalerts.cpp" line="143"/>
+        <location filename="chat_services/donationalerts.cpp" line="148"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="68"/>
+        <location filename="chat_services/donationalerts.cpp" line="108"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="71"/>
+        <location filename="chat_services/donationalerts.cpp" line="111"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="74"/>
+        <location filename="chat_services/donationalerts.cpp" line="114"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="102"/>
+        <location filename="chat_services/donationalerts.cpp" line="142"/>
         <source>Login for full functionality</source>
         <translation>Для полноценной работы войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="107"/>
+        <location filename="chat_services/donationalerts.cpp" line="147"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="115"/>
+        <location filename="chat_services/donationalerts.cpp" line="153"/>
         <source>Logged in</source>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="116"/>
+        <location filename="chat_services/donationalerts.cpp" line="154"/>
         <source>Logout</source>
         <translation>Выйти</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donationalerts.cpp" line="206"/>
+        <source>Logged in as %1</source>
+        <translation>Вы вошли как %1</translation>
     </message>
 </context>
 <context>

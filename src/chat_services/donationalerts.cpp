@@ -1,10 +1,50 @@
 #include "donationalerts.h"
 #include "secrets.h"
 #include "crypto/obfuscator.h"
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+
 namespace
 {
 
 static const QString ClientID = OBFUSCATE(DONATIONALERTS_CLIENT_ID);
+
+bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
+{
+    resultData.clear();
+
+    if (!reply)
+    {
+        qWarning() << tag << tag << ": !reply";
+        return false;
+    }
+
+    int statusCode = 200;
+    const QVariant rawStatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    resultData = reply->readAll();
+    const QUrl requestUrl = reply->request().url();
+    reply->deleteLater();
+
+    if (rawStatusCode.isValid())
+    {
+        statusCode = rawStatusCode.toInt();
+
+        if (statusCode != 200)
+        {
+            qWarning() << tag << ": status code:" << statusCode;
+        }
+    }
+
+    if (resultData.isEmpty() && statusCode != 200)
+    {
+        qWarning() << tag << ": data is empty";
+        return false;
+    }
+
+    return true;
+}
 
 }
 
@@ -24,7 +64,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     config.clientSecret = OBFUSCATE(DONATIONALERTS_API_KEY);
     config.authorizationPageUrl = "https://www.donationalerts.com/oauth/authorize";
     config.redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
-    config.scope = "oauth-donation-subscribe+oauth-donation-index";
+    config.scope = "oauth-user-show+oauth-donation-subscribe+oauth-donation-index";
     config.requestTokenUrl = "https://www.donationalerts.com/oauth/token";
     config.refreshTokenUrl = "https://www.donationalerts.com/oauth/token";
     auth.setConfig(config);
@@ -110,10 +150,9 @@ void DonationAlerts::onAuthStateChanged()
 
     case OAuth2::State::LoggedIn:
     {
-        const QJsonObject authInfo = auth.getAuthorizationInfo();
-
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in"));
         loginButton->setItemProperty("text", tr("Logout"));
+        requestUser();
         reconnect();
         break;
     }
@@ -122,7 +161,54 @@ void DonationAlerts::onAuthStateChanged()
     emit stateChanged();
 }
 
+void DonationAlerts::requestDonations()
+{
+    QNetworkRequest request(QString("https://www.donationalerts.com/api/v1/alerts/donations"));
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+     {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        //qDebug() << data;
+    });
+}
+
+void DonationAlerts::requestUser()
+{
+    QNetworkRequest request(QString("https://www.donationalerts.com/api/v1/user/oauth"));
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
+    QNetworkReply* reply = network.get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+        const QString name = root.value("data").toObject().value("name").toString();
+
+        if (name.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "name is empty, data =" << root;
+            return;
+        }
+
+        if (auth.getState() == OAuth2::State::LoggedIn && authStateInfo)
+        {
+            authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + name + "</b>"));
+        }
+    });
+}
+
 void DonationAlerts::reconnectImpl()
 {
-
+    requestDonations();
 }

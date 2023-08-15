@@ -18,6 +18,8 @@ signals:
 
 private slots:
     void onAuthStateChanged();
+    void requestDonations();
+    void requestUser();
 
 protected:
     void reconnectImpl() override;
