@@ -157,19 +157,6 @@ Window {
             }
 
             Button {
-                text: qsTr("StreamElements")
-                icon.source: "qrc:/resources/images/streamelements-icon.png"
-                icon.color: "transparent"
-                font.capitalization: Font.MixedCase
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 200
-
-                onClicked: {
-                    Qt.openUrlExternally("https://streamelements.com/axe1_k/tip")
-                }
-            }
-
-            Button {
                 text: qsTr("DonationAlerts")
                 icon.source: "qrc:/resources/images/donationalerts-icon.svg"
                 icon.color: "transparent"
@@ -179,6 +166,19 @@ Window {
 
                 onClicked: {
                     Qt.openUrlExternally("https://www.donationalerts.com/r/axel_k")
+                }
+            }
+
+            Button {
+                text: qsTr("StreamElements")
+                icon.source: "qrc:/resources/images/streamelements-icon.png"
+                icon.color: "transparent"
+                font.capitalization: Font.MixedCase
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 200
+
+                onClicked: {
+                    Qt.openUrlExternally("https://streamelements.com/axe1_k/tip")
                 }
             }
         }
