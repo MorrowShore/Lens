@@ -1794,7 +1794,7 @@ Latest version available: %2</oldsource>
 <context>
     <name>all_commands_window</name>
     <message>
-        <location filename="setting_pages/all_commands_window.qml" line="60"/>
+        <location filename="setting_pages/all_commands_window.qml" line="62"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
@@ -2381,26 +2381,46 @@ Latest version available: %2</oldsource>
         <translation>Перезапуск</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="90"/>
+        <location filename="settings.qml" line="93"/>
         <source>Ok</source>
         <translation>Ок</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="108"/>
+        <location filename="settings.qml" line="111"/>
         <source>Choose a support method convenient for you:</source>
         <translation>Выберите удобный для Вас способ поддержки:</translation>
+    </message>
+    <message>
+        <location filename="settings.qml" line="117"/>
+        <source>One-time payment:</source>
+        <translation>Единоразовый платеж:</translation>
+    </message>
+    <message>
+        <location filename="settings.qml" line="121"/>
+        <source>StreamElements</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settings.qml" line="132"/>
+        <source>DonationAlerts</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settings.qml" line="143"/>
+        <source>Paid subscription:</source>
+        <translation>Платная подписка:</translation>
     </message>
     <message>
         <source>Support the developer</source>
         <translation type="vanished">Поддержать разработчика</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="112"/>
+        <location filename="settings.qml" line="147"/>
         <source>Patreon</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settings.qml" line="122"/>
+        <location filename="settings.qml" line="158"/>
         <source>Boosty</source>
         <translation></translation>
     </message>
@@ -2409,12 +2429,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Новое подключ.</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="221"/>
+        <location filename="settings.qml" line="258"/>
         <source>Widgets</source>
         <translation>Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="227"/>
+        <location filename="settings.qml" line="264"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -2423,17 +2443,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="215"/>
+        <location filename="settings.qml" line="252"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="239"/>
+        <location filename="settings.qml" line="276"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="245"/>
+        <location filename="settings.qml" line="282"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -2442,7 +2462,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="251"/>
+        <location filename="settings.qml" line="288"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
