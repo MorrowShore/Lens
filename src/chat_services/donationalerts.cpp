@@ -382,9 +382,6 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     const QString userName = userNameJson.type() == QJsonValue::Type::Null ? tr("Anonymous") : data.value("username").toString();
     //const QString paidSystemTitle = data.value("payin_system").toObject().value("title").toString(); // TODO:
 
-    //TODO: other type
-    //TODO: time
-
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
 

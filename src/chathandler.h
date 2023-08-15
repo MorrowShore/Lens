@@ -26,6 +26,7 @@ class ChatHandler : public QObject
     Q_OBJECT
     Q_PROPERTY(int  connectedCount                   READ connectedCount                                                             NOTIFY connectedCountChanged)
     Q_PROPERTY(int  viewersTotalCount                READ getViewersTotalCount                                                       NOTIFY viewersTotalCountChanged)
+    Q_PROPERTY(bool knownViewesServicesMoreOne       READ isKnownViewesServicesMoreOne                                               NOTIFY viewersTotalCountChanged)
     Q_PROPERTY(bool enabledSoundNewMessage           READ enabledSoundNewMessage           WRITE setEnabledSoundNewMessage           NOTIFY enabledSoundNewMessageChanged)
     Q_PROPERTY(bool enabledClearMessagesOnLinkChange READ enabledClearMessagesOnLinkChange WRITE setEnabledClearMessagesOnLinkChange NOTIFY enabledClearMessagesOnLinkChangeChanged)
     Q_PROPERTY(bool enabledShowAuthorNameChanged     READ enabledShowAuthorNameChanged     WRITE setEnabledShowAuthorNameChanged     NOTIFY enabledShowAuthorNameChangedChanged)
@@ -73,6 +74,8 @@ public:
 
     int connectedCount() const;
     int getViewersTotalCount() const;
+
+    bool isKnownViewesServicesMoreOne() const;
 
     void setProxyEnabled(bool enabled);
     inline bool proxyEnabled() const { return _enabledProxy; }

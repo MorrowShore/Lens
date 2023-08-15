@@ -558,6 +558,31 @@ int ChatHandler::getViewersTotalCount() const
     return result;
 }
 
+bool ChatHandler::isKnownViewesServicesMoreOne() const
+{
+    int count = 0;
+
+    for (const std::shared_ptr<ChatService>& service : qAsConst(services))
+    {
+        if (!service)
+        {
+            continue;
+        }
+
+        if (service->getState().viewersCount >= 0)
+        {
+            count++;
+
+            if (count >= 2)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void ChatHandler::setProxyEnabled(bool enabled)
 {
     if (_enabledProxy != enabled)

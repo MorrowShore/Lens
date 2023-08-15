@@ -321,7 +321,7 @@ Row {
             anchors.right: parent.right
             anchors.rightMargin: 4
             spacing: 8
-            visible: chatHandler.viewersTotalCount !== -1 && chatHandler.connectedCount > 1
+            visible: chatHandler.viewersTotalCount !== -1 && chatHandler.knownViewesServicesMoreOne
 
             Image {
                 mipmap: true
