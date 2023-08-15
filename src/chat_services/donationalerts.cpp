@@ -1,6 +1,7 @@
 #include "donationalerts.h"
 #include "secrets.h"
 #include "crypto/obfuscator.h"
+#include "models/message.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -302,6 +303,7 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
     if (result.contains("client"))
     {
         requestSubscribeCentrifuge(result.value("client").toString(), info.userId);
+        return;
     }
 
     if (result.value("type").toInt() == 1 && result.value("channel").toString().startsWith("$"))
@@ -312,7 +314,21 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
             emit connectedChanged(true);
             emit stateChanged();
         }
+
+        return;
     }
+
+    if (result.value("channel").toString().startsWith("$"))
+    {
+        const QJsonValue data = result.value("data").toObject().value("data");
+        if (data.isObject())
+        {
+            parseEvent(data.toObject());
+            return;
+        }
+    }
+
+    qWarning() << Q_FUNC_INFO << "unknown message:" << rawData;
 }
 
 void DonationAlerts::send(const QJsonObject &params, const int method)
@@ -351,6 +367,80 @@ void DonationAlerts::sendConnectToPrivateChannels(const QList<PrivateChannelInfo
                 { "channel", channel.channel },
             }, 1);
     }
+}
+
+void DonationAlerts::parseEvent(const QJsonObject &data)
+{
+    const QString id = data.value("id").toString();
+    const QString messageText = data.value("message").toString();
+    const double amount = data.value("amount").toDouble();
+    const double amountInUserCurrency = data.value("amount_in_user_currency").toDouble(); // TODO: show
+    const QString currency = data.value("currency").toString();
+    const QDateTime sendedTime = QDateTime::fromString(data.value("created_at").toString(), "YYYY-MM-DD hh:mm:ss");
+
+    const QJsonValue userNameJson = data.value("username");
+    const QString userName = userNameJson.type() == QJsonValue::Type::Null ? tr("Anonymous") : data.value("username").toString();
+    //const QString paidSystemTitle = data.value("payin_system").toObject().value("title").toString(); // TODO:
+
+    //TODO: heart
+    //TODO: anonimous
+    //TODO: other type
+    //TODO: avatar
+
+    const QString messageType = data.value("message_type").toString();
+    if (messageType == "text")
+    {
+        //
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType;
+    }
+
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
+
+    std::shared_ptr<Author> author = std::make_shared<Author>(
+        getServiceType(),
+        userName,
+        getServiceTypeId(getServiceType()) + "_" + userName,
+        QUrl(),
+        QUrl(),
+        QStringList(), QStringList(), std::set<Author::Flag>());
+
+    QList<std::shared_ptr<Message::Content>> contents;
+
+    Message::TextStyle style;
+
+    style.bold = true;
+
+    const QString header = QString("%1 %2").arg(amount, 0, 'f', 2).arg(currency);
+
+    contents.append(std::make_shared<Message::Text>(header, style));
+
+    if (!messageText.isEmpty())
+    {
+        contents.append(std::make_shared<Message::Text>("\n"));
+
+        contents.append(std::make_shared<Message::Text>(messageText));
+    }
+
+    std::set<Message::Flag> flags = { Message::Flag::DonateWithText };
+    QHash<Message::ColorRole, QColor> forcedColors = { { Message::ColorRole::BodyBackgroundColorRole, QColor(224, 24, 134) } };
+
+    std::shared_ptr<Message> message = std::make_shared<Message>(
+        contents,
+        author,
+        sendedTime,
+        QDateTime::currentDateTime(),
+        generateMessageId(id),
+        flags,
+        forcedColors);
+
+    messages.append(message);
+    authors.append(author);
+
+    emit readyRead(messages, authors);
 }
 
 void DonationAlerts::reconnectImpl()

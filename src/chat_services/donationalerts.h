@@ -42,6 +42,7 @@ private:
 
     void send(const QJsonObject& params, const int method = -1);
     void sendConnectToPrivateChannels(const QList<PrivateChannelInfo>& channels);
+    void parseEvent(const QJsonObject& data);
 
     QNetworkAccessManager& network;
     OAuth2 auth;

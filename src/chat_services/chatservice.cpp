@@ -208,8 +208,14 @@ QString ChatService::generateAuthorId(const QString &rawId) const
     return getServiceTypeId(getServiceType()) + "_" + rawId;
 }
 
-QString ChatService::generateMessageId(const QString &rawId) const
+QString ChatService::generateMessageId(const QString &rawId_) const
 {
+    QString rawId = rawId_;
+    if (rawId_.isEmpty())
+    {
+        rawId = QUuid::createUuid().toString(QUuid::Id128);
+    }
+
     return getServiceTypeId(getServiceType()) + "/" + rawId;
 }
 
