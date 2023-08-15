@@ -137,6 +137,7 @@ Window {
                 text: qsTr("Patreon")
                 icon.source: "qrc:/resources/images/patreon-icon.svg"
                 icon.color: "transparent"
+                font.capitalization: Font.MixedCase
 
                 onClicked: {
                     Qt.openUrlExternally("https://www.patreon.com/axel_k")
@@ -147,6 +148,7 @@ Window {
                 text: qsTr("Boosty")
                 icon.source: "qrc:/resources/images/boosty-icon.svg"
                 icon.color: "transparent"
+                font.capitalization: Font.MixedCase
 
                 onClicked: {
                     Qt.openUrlExternally("https://boosty.to/axel_k")
