@@ -21,6 +21,8 @@ enum class ServiceType
     Wasd,
     Telegram,
     Discord,
+
+    DonationAlerts,
 };
 
 }

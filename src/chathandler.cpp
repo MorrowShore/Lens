@@ -11,6 +11,7 @@
 #include "chat_services/vkvideo.h"
 #include "chat_services/wasd.h"
 #include "chat_services/kick.h"
+#include "chat_services/donationalerts.h""
 #include "models/author.h"
 #include "models/message.h"
 #include <QCoreApplication>
@@ -69,6 +70,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService<Wasd>();
     addService<Telegram>();
     addService<Discord>();
+    addService<DonationAlerts>();
 
     QTimer::singleShot(2000, [this]()
     {

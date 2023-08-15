@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     appsponsormanager.h \
+    chat_services/donationalerts.h \
     chat_services/kick.h \
     chat_services/rumble.h \
     chat_services/vkvideo.h \
@@ -71,6 +72,7 @@ SOURCES += \
     appsponsormanager.cpp \
     chat_services/chatservice.cpp \
     chat_services/discord.cpp \
+    chat_services/donationalerts.cpp \
     chat_services/kick.cpp \
     chat_services/rumble.cpp \
     chat_services/telegram.cpp \

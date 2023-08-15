@@ -33,6 +33,8 @@ QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Wasd: return "wasd";
     case AxelChat::ServiceType::Telegram: return "telegram";
     case AxelChat::ServiceType::Discord: return "discord";
+
+    case AxelChat::ServiceType::DonationAlerts: return "donationalerts";
     }
 
     return "unknown";
@@ -56,6 +58,8 @@ QString ChatService::getName(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Wasd: return tr("WASD");
     case AxelChat::ServiceType::Telegram: return tr("Telegram");
     case AxelChat::ServiceType::Discord: return tr("Discord");
+
+    case AxelChat::ServiceType::DonationAlerts: return tr("DonationAlerts");
     }
 
     return tr("Unknown");
@@ -79,6 +83,8 @@ QUrl ChatService::getIconUrl(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Wasd: return QUrl("qrc:/resources/images/wasd-icon.svg");
     case AxelChat::ServiceType::Telegram: return QUrl("qrc:/resources/images/telegram-icon.svg");
     case AxelChat::ServiceType::Discord: return QUrl("qrc:/resources/images/discord-icon.svg");
+
+    case AxelChat::ServiceType::DonationAlerts: return QUrl("qrc:/resources/images/donationalerts-icon.svg");
     }
 
     return QUrl();
