@@ -271,8 +271,6 @@ void Twitch::reconnectImpl()
     state = State();
     info = Info();
 
-    emit channelInfoChanged();
-
     stream.set(stream.get().toLower().trimmed());
 
     state.controlPanelUrl = QUrl(QString("https://dashboard.twitch.tv/stream-manager"));
@@ -654,14 +652,14 @@ void Twitch::requestGlobalBadges()
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyBadges);
 }
 
-void Twitch::requestChannelBadges()
+void Twitch::requestChannelBadges(const ChannelInfo& channelInfo)
 {
-    if (info.channel.id.isEmpty())
+    if (channelInfo.id.isEmpty())
     {
         return;
     }
 
-    QNetworkRequest request("https://api.twitch.tv/helix/chat/badges?broadcaster_id=" + info.channel.id);
+    QNetworkRequest request("https://api.twitch.tv/helix/chat/badges?broadcaster_id=" + channelInfo.id);
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &Twitch::onReplyBadges);
@@ -711,6 +709,8 @@ void Twitch::onAuthStateChanged()
         qCritical() << Q_FUNC_INFO << "!authStateInfo";
     }
 
+    authorizedChannel = ChannelInfo();
+
     switch (auth.getState())
     {
     case OAuth2::State::NotLoggedIn:
@@ -727,19 +727,15 @@ void Twitch::onAuthStateChanged()
     {
         const QJsonObject authInfo = auth.getAuthorizationInfo();
 
-        ChannelInfo channel;
+        authorizedChannel.id = authInfo.value("user_id").toString();
+        authorizedChannel.login = authInfo.value("login").toString();
 
-        channel.id = authInfo.value("user_id").toString();
-        channel.login = authInfo.value("login").toString();
+        emit authorized(authorizedChannel);
 
-        info.channel = channel;
-
-        emit channelInfoChanged();
-
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + info.channel.login + "</b>"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + authorizedChannel.login + "</b>"));
         loginButton->setItemProperty("text", tr("Logout"));
         requestGlobalBadges();
-        requestChannelBadges();
+        requestChannelBadges(authorizedChannel);
         reconnect();
         break;
     }
@@ -837,6 +833,20 @@ void Twitch::onReplyUserInfo()
         if (!profileImageUrl.isEmpty())
         {
             emit authorDataUpdated(channelLogin, { {Author::Role::AvatarUrl, profileImageUrl} });
+        }
+
+        if (channelLogin == state.streamId)
+        {
+            ChannelInfo channel;
+
+            channel.id = broadcasterId;
+            channel.login = channelLogin;
+
+            info.connectedChannel = channel;
+
+            requestChannelBadges(channel);
+
+            emit connectedChannel(channel);
         }
     }
 }

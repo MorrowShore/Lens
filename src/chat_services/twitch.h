@@ -25,10 +25,9 @@ public:
     QString getStateDescription() const override;
     TcpReply processTcpRequest(const TcpRequest &request) override;
 
-    ChannelInfo getChannelInfo() const { return info.channel; }
-
 signals:
-    void channelInfoChanged();
+    void authorized(const ChannelInfo& channelInfo);
+    void connectedChannel(const ChannelInfo& channelInfo);
 
 public slots:
 
@@ -41,7 +40,7 @@ private slots:
     void onIRCMessage(const QString& rawData);
 
     void requestGlobalBadges();
-    void requestChannelBadges();
+    void requestChannelBadges(const ChannelInfo& channelInfo);
     void onReplyBadges();
 
     void requestUserInfo(const QString& login);
@@ -58,7 +57,7 @@ private:
 
     struct Info
     {
-        ChannelInfo channel;
+        ChannelInfo connectedChannel;
         QSet<QString> usersInfoUpdated;
     };
 
@@ -86,6 +85,7 @@ private:
     QTimer timerUpdaetStreamInfo;
 
     Info info;
+    ChannelInfo authorizedChannel;
     QHash<QString, QString> badgesUrls;
 
     OAuth2 auth;

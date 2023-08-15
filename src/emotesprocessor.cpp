@@ -47,7 +47,7 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
     addService<FrankerFaceZ>();
     addService<SevenTV>();
 
-    loadAll();
+    loadGlobal();
 }
 
 void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
@@ -130,14 +130,18 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
 
 void EmotesProcessor::connectTwitch(std::shared_ptr<Twitch> twitch)
 {
-    connect(twitch.get(), &Twitch::channelInfoChanged, this, [this, twitch]()
+    connect(twitch.get(), QOverload<const Twitch::ChannelInfo&>::of(&Twitch::authorized), this, [this](const Twitch::ChannelInfo& channelInfo)
     {
-        twitchChannelInfo = twitch->getChannelInfo();
-        loadAll();
+        loadChannel(channelInfo);
+    });
+
+    connect(twitch.get(), QOverload<const Twitch::ChannelInfo&>::of(&Twitch::connectedChannel), this, [this](const Twitch::ChannelInfo& channelInfo)
+    {
+        loadChannel(channelInfo);
     });
 }
 
-void EmotesProcessor::loadAll()
+void EmotesProcessor::loadGlobal()
 {
     for (const std::shared_ptr<EmoteService>& service : qAsConst(services))
     {
@@ -148,11 +152,20 @@ void EmotesProcessor::loadAll()
         }
 
         service->loadGlobal();
+    }
+}
 
-        if (twitchChannelInfo)
+void EmotesProcessor::loadChannel(const Twitch::ChannelInfo &channelInfo)
+{
+    for (const std::shared_ptr<EmoteService>& service : qAsConst(services))
+    {
+        if (!service)
         {
-            service->loadChannel(twitchChannelInfo->id);
+            qWarning() << Q_FUNC_INFO << "service is null";
+            continue;
         }
+
+        service->loadChannel(channelInfo.id);
     }
 }
 

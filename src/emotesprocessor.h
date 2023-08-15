@@ -18,7 +18,8 @@ public:
 signals:
 
 private slots:
-    void loadAll();
+    void loadGlobal();
+    void loadChannel(const Twitch::ChannelInfo& channelInfo);
 
 private:
     QString getEmoteUrl(const QString& name) const;
