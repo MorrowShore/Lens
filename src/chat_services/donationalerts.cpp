@@ -382,10 +382,7 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     const QString userName = userNameJson.type() == QJsonValue::Type::Null ? tr("Anonymous") : data.value("username").toString();
     //const QString paidSystemTitle = data.value("payin_system").toObject().value("title").toString(); // TODO:
 
-    //TODO: heart
-    //TODO: anonimous
     //TODO: other type
-    //TODO: avatar
 
     const QString messageType = data.value("message_type").toString();
     if (messageType == "text")
@@ -404,7 +401,7 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
         getServiceType(),
         userName,
         getServiceTypeId(getServiceType()) + "_" + userName,
-        QUrl(),
+        QUrl("qrc:/resources/images/money1-icon.svg"),
         QUrl(),
         QStringList(), QStringList(), std::set<Author::Flag>());
 
@@ -426,7 +423,7 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     }
 
     std::set<Message::Flag> flags = { Message::Flag::DonateWithText };
-    QHash<Message::ColorRole, QColor> forcedColors = { { Message::ColorRole::BodyBackgroundColorRole, QColor(224, 24, 134) } };
+    QHash<Message::ColorRole, QColor> forcedColors = { { Message::ColorRole::BodyBackgroundColorRole, QColor(0, 224, 213) } };
 
     std::shared_ptr<Message> message = std::make_shared<Message>(
         contents,

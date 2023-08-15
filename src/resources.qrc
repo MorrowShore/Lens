@@ -97,5 +97,6 @@
         <file>resources/images/patreon-icon.svg</file>
         <file>resources/images/donationalerts-icon.svg</file>
         <file>resources/images/streamelements-icon.png</file>
+        <file>resources/images/money1-icon.svg</file>
     </qresource>
 </RCC>

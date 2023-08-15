@@ -661,51 +661,56 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>DonationAlerts</name>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="73"/>
-        <location filename="chat_services/donationalerts.cpp" line="143"/>
-        <location filename="chat_services/donationalerts.cpp" line="148"/>
+        <location filename="chat_services/donationalerts.cpp" line="74"/>
+        <location filename="chat_services/donationalerts.cpp" line="176"/>
+        <location filename="chat_services/donationalerts.cpp" line="181"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="108"/>
+        <location filename="chat_services/donationalerts.cpp" line="141"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="111"/>
+        <location filename="chat_services/donationalerts.cpp" line="144"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="114"/>
+        <location filename="chat_services/donationalerts.cpp" line="147"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="142"/>
+        <location filename="chat_services/donationalerts.cpp" line="175"/>
         <source>Login for full functionality</source>
         <translation>Для полноценной работы войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="147"/>
+        <location filename="chat_services/donationalerts.cpp" line="180"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="153"/>
+        <location filename="chat_services/donationalerts.cpp" line="186"/>
         <source>Logged in</source>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="154"/>
+        <location filename="chat_services/donationalerts.cpp" line="187"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="206"/>
+        <location filename="chat_services/donationalerts.cpp" line="242"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donationalerts.cpp" line="382"/>
+        <source>Anonymous</source>
+        <translation>Аноним</translation>
     </message>
 </context>
 <context>
@@ -2446,22 +2451,22 @@ Latest version available: %2</oldsource>
         <translation>Выберите удобный для Вас способ поддержки:</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="156"/>
+        <location filename="settings.qml" line="155"/>
         <source>One-time payment:</source>
         <translation>Единоразовый платеж:</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="173"/>
+        <location filename="settings.qml" line="172"/>
         <source>StreamElements</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settings.qml" line="160"/>
+        <location filename="settings.qml" line="159"/>
         <source>DonationAlerts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settings.qml" line="124"/>
+        <location filename="settings.qml" line="122"/>
         <source>Paid subscription:</source>
         <translation>Платная подписка:</translation>
     </message>
@@ -2470,12 +2475,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Поддержать разработчика</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="129"/>
+        <location filename="settings.qml" line="127"/>
         <source>Patreon</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settings.qml" line="142"/>
+        <location filename="settings.qml" line="140"/>
         <source>Boosty</source>
         <translation></translation>
     </message>
@@ -2484,12 +2489,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Новое подключ.</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="275"/>
+        <location filename="settings.qml" line="274"/>
         <source>Widgets</source>
         <translation>Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="281"/>
+        <location filename="settings.qml" line="280"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -2498,17 +2503,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="269"/>
+        <location filename="settings.qml" line="268"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="293"/>
+        <location filename="settings.qml" line="292"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="299"/>
+        <location filename="settings.qml" line="298"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -2517,7 +2522,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="305"/>
+        <location filename="settings.qml" line="304"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
