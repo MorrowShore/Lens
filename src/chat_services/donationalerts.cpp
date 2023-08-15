@@ -84,6 +84,38 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     addUIElement(loginButton);
 
     onAuthStateChanged();
+
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
+        Q_UNUSED(state)
+        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
+    });
+
+    QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &DonationAlerts::onReceiveWebSocket);
+
+    QObject::connect(&socket, &QWebSocket::connected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+        send(
+            {
+                { "token", info.socketConnectionToken },
+            });
+    });
+
+    QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
+    {
+        qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+
+        if (state.connected)
+        {
+            state.connected = false;
+            emit connectedChanged(false);
+            emit stateChanged();
+        }
+    });
+
+    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
+        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+    });
 }
 
 ChatService::ConnectionStateType DonationAlerts::getConnectionStateType() const
@@ -152,13 +184,11 @@ void DonationAlerts::onAuthStateChanged()
     {
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in"));
         loginButton->setItemProperty("text", tr("Logout"));
-        requestUser();
-        reconnect();
         break;
     }
     }
 
-    emit stateChanged();
+    reconnect();
 }
 
 void DonationAlerts::requestDonations()
@@ -174,7 +204,9 @@ void DonationAlerts::requestDonations()
             return;
         }
 
-        //qDebug() << data;
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+        //qDebug() << root;
     });
 }
 
@@ -192,23 +224,135 @@ void DonationAlerts::requestUser()
         }
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
+        const QJsonObject dataJson = root.value("data").toObject();
 
-        const QString name = root.value("data").toObject().value("name").toString();
+        const QString name = dataJson.value("name").toString();
+        info.socketConnectionToken = dataJson.value("socket_connection_token").toString();
+        info.userId = QString("%1").arg(dataJson.value("id").toVariant().toLongLong());
 
-        if (name.isEmpty())
+        if (name.isEmpty() || info.socketConnectionToken.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name is empty, data =" << root;
+            qWarning() << Q_FUNC_INFO << "name or socket token is empty, data =" << root;
             return;
         }
 
         if (auth.getState() == OAuth2::State::LoggedIn && authStateInfo)
         {
             authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + name + "</b>"));
+
+            socket.setProxy(network.proxy());
+            socket.open(QUrl("wss://centrifugo.donationalerts.com/connection/websocket"));
         }
     });
 }
 
+void DonationAlerts::requestSubscribeCentrifuge(const QString &clientId, const QString& userId)
+{
+    QNetworkRequest request(QString("https://www.donationalerts.com/api/v1/centrifuge/subscribe"));
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
+    request.setRawHeader("Content-Type", "application/json");
+
+    QJsonObject data;
+
+    data.insert("client", clientId);
+
+    data.insert("channels", QJsonArray({"$alerts:donation_" + userId}));
+
+    QNetworkReply* reply = network.post(request, QJsonDocument(data).toJson(QJsonDocument::JsonFormat::Compact));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        QList<PrivateChannelInfo> channelsInfo;
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+        const QJsonArray channelsJson = root.value("channels").toArray();
+        for (const QJsonValue& v : qAsConst(channelsJson))
+        {
+            const QJsonObject channelInfoJson = v.toObject();
+
+            PrivateChannelInfo channelInfo;
+
+            channelInfo.channel = channelInfoJson.value("channel").toString();
+            channelInfo.token = channelInfoJson.value("token").toString();
+
+            channelsInfo.append(channelInfo);
+        }
+
+        sendConnectToPrivateChannels(channelsInfo);
+    });
+}
+
+void DonationAlerts::onReceiveWebSocket(const QString &rawData)
+{
+    if (!enabled.get())
+    {
+        return;
+    }
+
+    const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
+
+    qDebug() << "received:" << doc;
+
+    const QJsonObject result = doc.object().value("result").toObject();
+    if (result.contains("client"))
+    {
+        requestSubscribeCentrifuge(result.value("client").toString(), info.userId);
+    }
+}
+
+void DonationAlerts::send(const QJsonObject &params, const int method)
+{
+    info.lastMessageId++;
+
+    QJsonObject object;
+    object.insert("params", params);
+    object.insert("id", info.lastMessageId);
+
+    if (method != -1)
+    {
+        object.insert("method", method);
+    }
+
+    const QJsonDocument doc(object);
+
+    qDebug() << "send:" << doc;
+
+    socket.sendTextMessage(doc.toJson(QJsonDocument::JsonFormat::Compact));
+}
+
+void DonationAlerts::sendConnectToPrivateChannels(const QList<PrivateChannelInfo> &channels)
+{
+    if (channels.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "channels is empty";
+        return;
+    }
+
+    for (const PrivateChannelInfo& channel : qAsConst(channels))
+    {
+        send(
+            {
+                { "token", channel.token },
+                { "channel", channel.channel },
+            }, 1);
+    }
+}
+
 void DonationAlerts::reconnectImpl()
 {
+    socket.close();
+    info = Info();
+
+    if (auth.getState() != OAuth2::State::LoggedIn || !enabled.get())
+    {
+        return;
+    }
+
+    requestUser();
     requestDonations();
 }
