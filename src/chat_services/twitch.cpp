@@ -399,7 +399,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             messageFlags.insert(Message::Flag::TwitchAction);
         }
 
-        const QString snippet3 = rawMessage.left(posSnippet1); // [@tags] :[channel-id]![channel-id]@[channel-id]
+        const QString snippet3 = rawMessage.left(posSnippet1); // [@tags] :[user-id]![user-id]@[channel-id]
 
         QList<std::shared_ptr<Message::Content>> contents;
         QString login;
@@ -408,6 +408,16 @@ void Twitch::onIRCMessage(const QString &rawData)
         QStringList badges;
         QVector<MessageEmoteInfo> emotesInfo;
         QHash<Message::ColorRole, QColor> forcedColors;
+
+        static const QRegExp rxLogin("\\:([a-zA-Z0-9_]+)\\!");
+        if (rxLogin.indexIn(snippet3) != -1)
+        {
+            login = rxLogin.cap(1);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "not found login, message =" << rawMessage;
+        }
 
         const QString tagsSnippet = snippet3.left(snippet3.lastIndexOf(":")).mid(1).trimmed();
         const QVector<QStringRef> rawTags = tagsSnippet.splitRef(";", Qt::SplitBehaviorFlags::SkipEmptyParts);
@@ -428,10 +438,10 @@ void Twitch::onIRCMessage(const QString &rawData)
             {
                 nicknameColor = QColor(tagValue);
             }
-            else if (tagName == "login")
+            /*else if (tagName == "login")
             {
                 login = tagValue;
-            }
+            }*/
             else if (tagName == "display-name")
             {
                 displayName = tagValue;
@@ -533,7 +543,13 @@ void Twitch::onIRCMessage(const QString &rawData)
 
         if (login.isEmpty())
         {
+            qWarning() << Q_FUNC_INFO << "login is empty. Login will be taken from the display name" << displayName << ", message =" << rawMessage;
             login = displayName.toLower();
+        }
+
+        if (login != displayName.toLower())
+        {
+            //qWarning() << Q_FUNC_INFO << "login and display name not matching, login =" << login << ", display name =" << displayName << ", message =" << rawMessage;
         }
 
         std::set<Author::Flag> authorFlags;
