@@ -75,11 +75,6 @@ TcpReply OAuth2::processRedirect(const TcpRequest &request)
     return TcpReply::createTextHtmlOK(tr("Now you can close the page and return to %1").arg(QCoreApplication::applicationName()));
 }
 
-QString OAuth2::getLogin() const
-{
-    return _login;
-}
-
 QString OAuth2::getAccessToken() const
 {
     return accessToken.get();
@@ -177,7 +172,7 @@ void OAuth2::validate()
 
         if (root.contains("login"))
         {
-            _login = root.value("login").toString();
+            authorizationInfo = root;
             setNewState(State::LoggedIn);
         }
         else
@@ -379,7 +374,7 @@ void OAuth2::clear()
 {
     accessToken.set(QString());
     refreshToken.set(QString());
-    _login = QString();
+    authorizationInfo = QJsonObject();
 
     emit stateChanged();
 }

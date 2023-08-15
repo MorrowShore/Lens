@@ -5,6 +5,7 @@
 #include "tcpreply.h"
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include <QJsonObject>
 
 class OAuth2 : public QObject
 {
@@ -39,7 +40,7 @@ public:
     bool isLoggedIn() const;
     State getState() const;
     TcpReply processRedirect(const TcpRequest &request);
-    QString getLogin() const;
+    QJsonObject getAuthorizationInfo() const { return authorizationInfo; }
     // TODO: deffered request
     QString getAccessToken() const;
 
@@ -65,7 +66,7 @@ private:
     bool configSetted = false;
 
     State state = State::NotLoggedIn;
-    QString _login;
+    QJsonObject authorizationInfo;
 
     QNetworkAccessManager& network;
 

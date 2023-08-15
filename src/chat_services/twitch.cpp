@@ -724,11 +724,25 @@ void Twitch::onAuthStateChanged()
         break;
 
     case OAuth2::State::LoggedIn:
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + auth.getLogin() + "</b>"));
+    {
+        const QJsonObject authInfo = auth.getAuthorizationInfo();
+
+        ChannelInfo channel;
+
+        channel.id = authInfo.value("user_id").toString();
+        channel.login = authInfo.value("login").toString();
+
+        info.channel = channel;
+
+        emit channelInfoChanged();
+
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + info.channel.login + "</b>"));
         loginButton->setItemProperty("text", tr("Logout"));
         requestGlobalBadges();
+        requestChannelBadges();
         reconnect();
         break;
+    }
     }
 
     emit stateChanged();
@@ -823,15 +837,6 @@ void Twitch::onReplyUserInfo()
         if (!profileImageUrl.isEmpty())
         {
             emit authorDataUpdated(channelLogin, { {Author::Role::AvatarUrl, profileImageUrl} });
-        }
-
-        if (channelLogin == state.streamId)
-        {
-            info.channel.id = broadcasterId;
-            info.channel.login = channelLogin;
-            requestChannelBadges();
-
-            emit channelInfoChanged();
         }
     }
 }
