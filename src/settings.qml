@@ -118,8 +118,6 @@ Window {
         }
 
         contentItem: Column {
-            spacing: 4
-
             Label {
                 text: qsTr("Paid subscription:")
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -152,6 +150,7 @@ Window {
             }
 
             Label {
+                topPadding: 10
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("One-time payment:")
             }
