@@ -8,10 +8,10 @@ import "../"
 ScrollView {
     id: root
     clip: true
-    contentHeight: 480
+    contentHeight: 540
     contentWidth: 640
-    ScrollBar.horizontal.policy: ScrollBar.AsNeeded
-    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+    ScrollBar.horizontal.policy: width < contentWidth ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+    ScrollBar.vertical.policy: height < contentHeight ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
 
     Item {
         id: element5

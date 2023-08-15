@@ -31,6 +31,8 @@ Window {
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
         anchors.topMargin: 0
+        ScrollBar.horizontal.policy: width < contentWidth ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+        ScrollBar.vertical.policy: height < contentHeight ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
         TextArea {
             id: textInputCommands
 

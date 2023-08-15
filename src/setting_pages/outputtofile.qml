@@ -11,8 +11,8 @@ ScrollView {
     padding: 6
     contentHeight: column.implicitHeight
     contentWidth: column.implicitWidth
-    ScrollBar.horizontal.policy: ScrollBar.AsNeeded
-    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+    ScrollBar.horizontal.policy: width < contentWidth ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+    ScrollBar.vertical.policy: height < contentHeight ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
 
     function urlToFilename(url)
     {

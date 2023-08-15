@@ -74,11 +74,14 @@ Window {
 
     Dialog {
         id: infoDialog
-        anchors.centerIn: parent
+        x: parent.width / 2 - width / 2
+        y: parent.height / 2 - height / 2
         margins: 12
+        width: parent.width * 0.75
         property string infoText: "info"
         modal: true
         header: Label {
+            width: infoDialog.width - 24
             padding: 12
             wrapMode: Text.WordWrap
             text: infoDialog.infoText

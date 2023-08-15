@@ -12,8 +12,8 @@ ScrollView {
     padding: 6
     contentHeight: rootColumn.implicitHeight
     contentWidth: rootColumn.implicitWidth
-    ScrollBar.horizontal.policy: ScrollBar.AsNeeded
-    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+    ScrollBar.horizontal.policy: width < contentWidth ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+    ScrollBar.vertical.policy: height < contentHeight ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
 
     Column {
         id: rootColumn
