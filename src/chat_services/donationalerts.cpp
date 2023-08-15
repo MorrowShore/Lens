@@ -383,16 +383,7 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     //const QString paidSystemTitle = data.value("payin_system").toObject().value("title").toString(); // TODO:
 
     //TODO: other type
-
-    const QString messageType = data.value("message_type").toString();
-    if (messageType == "text")
-    {
-        //
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType;
-    }
+    //TODO: time
 
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
@@ -407,15 +398,40 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
 
     QList<std::shared_ptr<Message::Content>> contents;
 
-    Message::TextStyle style;
+    {
+        Message::TextStyle style;
 
-    style.bold = true;
+        style.bold = true;
 
-    const QString header = QString("%1 %2").arg(amount, 0, 'f', 2).arg(currency);
+        const QString header = QString("%1 %2").arg(amount, 0, 'f', 2).arg(currency);
 
-    contents.append(std::make_shared<Message::Text>(header, style));
+        contents.append(std::make_shared<Message::Text>(header, style));
+    }
 
-    if (!messageText.isEmpty())
+    const QString messageType = data.value("message_type").toString();
+    if (messageType == "text")
+    {
+        //
+    }
+    else if (messageType == "audio")
+    {
+        if (!contents.isEmpty())
+        {
+            contents.append(std::make_shared<Message::Text>("\n"));
+        }
+
+        Message::TextStyle style;
+
+        style.italic = true;
+
+        contents.append(std::make_shared<Message::Text>("[" + tr("Audio") + "]", style));
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType;
+    }
+
+    if (!contents.isEmpty())
     {
         contents.append(std::make_shared<Message::Text>("\n"));
 

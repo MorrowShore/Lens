@@ -712,6 +712,11 @@ to these chats/channels in access rights (at your own risk)</source>
         <source>Anonymous</source>
         <translation>Аноним</translation>
     </message>
+    <message>
+        <location filename="chat_services/donationalerts.cpp" line="427"/>
+        <source>Audio</source>
+        <translation>Аудио</translation>
+    </message>
 </context>
 <context>
     <name>GoodGame</name>
