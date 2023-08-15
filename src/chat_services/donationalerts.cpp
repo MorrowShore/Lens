@@ -124,7 +124,7 @@ ChatService::ConnectionStateType DonationAlerts::getConnectionStateType() const
     {
         return ChatService::ConnectionStateType::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (enabled.get() && auth.isLoggedIn())
     {
         return ChatService::ConnectionStateType::Connecting;
     }
@@ -302,6 +302,16 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
     if (result.contains("client"))
     {
         requestSubscribeCentrifuge(result.value("client").toString(), info.userId);
+    }
+
+    if (result.value("type").toInt() == 1 && result.value("channel").toString().startsWith("$"))
+    {
+        if (!state.connected)
+        {
+            state.connected = true;
+            emit connectedChanged(true);
+            emit stateChanged();
+        }
     }
 }
 
