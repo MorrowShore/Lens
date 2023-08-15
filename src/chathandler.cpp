@@ -57,8 +57,8 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     setProxyServerAddress(settings.value(SettingsProxyAddress, _proxy.hostName()).toString());
     setProxyServerPort(settings.value(SettingsProxyPort, _proxy.port()).toInt());
     
-    //addService<YouTubeHtml>();
-    addService<YouTubeBrowser>();
+    addService<YouTubeHtml>();
+    //addService<YouTubeBrowser>();
     addService<Twitch>();
     addService<Trovo>();
     addService<Rumble>();
