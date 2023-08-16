@@ -682,27 +682,32 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Страница доната</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="56"/>
+        <location filename="chat_services/donatepay.cpp" line="33"/>
+        <source>Transactions</source>
+        <translation>Транзакции</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donatepay.cpp" line="61"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="59"/>
+        <location filename="chat_services/donatepay.cpp" line="64"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="62"/>
+        <location filename="chat_services/donatepay.cpp" line="67"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="72"/>
+        <location filename="chat_services/donatepay.cpp" line="77"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="77"/>
+        <location filename="chat_services/donatepay.cpp" line="82"/>
         <source>Authorized as %1</source>
         <translation>Авторизован как %1</translation>
     </message>
@@ -710,44 +715,44 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>DonationAlerts</name>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="81"/>
-        <location filename="chat_services/donationalerts.cpp" line="234"/>
-        <location filename="chat_services/donationalerts.cpp" line="239"/>
+        <location filename="chat_services/donationalerts.cpp" line="85"/>
+        <location filename="chat_services/donationalerts.cpp" line="238"/>
+        <location filename="chat_services/donationalerts.cpp" line="243"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="94"/>
+        <location filename="chat_services/donationalerts.cpp" line="98"/>
         <source>Dashboard</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="99"/>
+        <location filename="chat_services/donationalerts.cpp" line="103"/>
         <source>Donation page</source>
         <translation>Страница доната</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="105"/>
+        <location filename="chat_services/donationalerts.cpp" line="109"/>
         <source>Alternative donation page</source>
         <translation>Aльтернативная страница доната</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="199"/>
+        <location filename="chat_services/donationalerts.cpp" line="203"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="202"/>
+        <location filename="chat_services/donationalerts.cpp" line="206"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="205"/>
+        <location filename="chat_services/donationalerts.cpp" line="209"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="233"/>
+        <location filename="chat_services/donationalerts.cpp" line="237"/>
         <source>Not logged in</source>
         <translation>Не авторизован</translation>
     </message>
@@ -756,32 +761,32 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation type="vanished">Для полноценной работы войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="238"/>
+        <location filename="chat_services/donationalerts.cpp" line="242"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="244"/>
+        <location filename="chat_services/donationalerts.cpp" line="248"/>
         <source>Logged in</source>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="245"/>
+        <location filename="chat_services/donationalerts.cpp" line="249"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="300"/>
+        <location filename="chat_services/donationalerts.cpp" line="315"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="472"/>
+        <location filename="chat_services/donationalerts.cpp" line="490"/>
         <source>Anonymous</source>
         <translation>Аноним</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="517"/>
+        <location filename="chat_services/donationalerts.cpp" line="535"/>
         <source>Audio</source>
         <translation>Аудио</translation>
     </message>

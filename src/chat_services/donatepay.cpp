@@ -11,6 +11,7 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     , network(network_)
     , apiKey(settings, getSettingsGroupPath() + "/api_key", QString(), true)
     , domain("https://donatepay.ru")
+    , donationPagePrefix("https://new.donatepay.ru/@")
 {
     getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
 
@@ -26,9 +27,14 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
 
     donatePageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Donation page"), [this]()
     {
-        QDesktopServices::openUrl(QUrl("https://new.donatepay.ru/@" + info.userId));
+        QDesktopServices::openUrl(QUrl(donationPagePrefix + info.userId));
     }));
     addUIElement(donatePageButton);
+
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Transactions"), [this]()
+    {
+        QDesktopServices::openUrl(QUrl(domain + "/billing/transactions"));
+    })));
 
     updateUI();
     reconnect();

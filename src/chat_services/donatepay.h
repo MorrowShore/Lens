@@ -35,6 +35,7 @@ private:
     QWebSocket socket;
     Setting<QString> apiKey;
     const QString domain;
+    const QString donationPagePrefix;
 
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> donatePageButton;
