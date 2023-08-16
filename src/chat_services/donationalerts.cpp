@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QTimeZone>
 
 namespace
 {
@@ -444,7 +445,10 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     const double amount = data.value("amount").toDouble();
     const double amountInUserCurrency = data.value("amount_in_user_currency").toDouble(); // TODO: show
     const QString currency = data.value("currency").toString();
-    const QDateTime sendedTime = QDateTime::fromString(data.value("created_at").toString(), "YYYY-MM-DD hh:mm:ss");
+
+    QDateTime sendedTime = QDateTime::fromString(data.value("created_at").toString(), Qt::DateFormat::ISODate);
+    sendedTime.setTimeZone(QTimeZone::utc());
+    sendedTime = sendedTime.toLocalTime();
 
     const QJsonValue userNameJson = data.value("username");
     const QString userName = userNameJson.type() == QJsonValue::Type::Null ? tr("Anonymous") : data.value("username").toString();
