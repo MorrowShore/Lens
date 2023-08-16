@@ -90,7 +90,7 @@ void DonatePay::requestUser()
         const QString status = root.value("status").toString();
         if (status != "success")
         {
-            qWarning() << Q_FUNC_INFO << "status" << status << ", rawData =" << rawData;
+            qWarning() << Q_FUNC_INFO << "status" << status << ", status code =" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
             return;
         }
 
