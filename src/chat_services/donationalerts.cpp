@@ -338,7 +338,7 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
     const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
     const QJsonObject root = doc.object();
 
-    qDebug() << "received:" << doc;
+    //qDebug() << "received:" << doc;
 
     const QJsonObject result = root.value("result").toObject();
     if (result.contains("client"))
@@ -395,7 +395,7 @@ void DonationAlerts::send(const QJsonObject &params, const int method)
 
     const QJsonDocument doc(object);
 
-    qDebug() << "send:" << doc;
+    //qDebug() << "send:" << doc;
 
     socket.sendTextMessage(doc.toJson(QJsonDocument::JsonFormat::Compact));
 }
