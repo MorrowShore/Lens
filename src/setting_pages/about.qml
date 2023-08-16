@@ -211,7 +211,7 @@ ScrollView {
             highlighted: true
 
             onClicked: {
-                Qt.openUrlExternally("https://3dproger.github.io/AxelChat/");
+                Qt.openUrlExternally(APP_INFO_SITE_URL_STR);
             }
         }
 
