@@ -14,7 +14,7 @@ static const QString ClientID = OBFUSCATE(DONATIONALERTS_CLIENT_ID);
 static const int ReconncectPeriod = 6 * 1000;
 static const int PingSendTimeout = 10 * 1000;
 static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
-static const QColor BackgroundColor = QColor(117, 94, 188);
+static const QColor BackgroundColor = QColor(255, 209, 147);
 static const QColor AuthorColor = QColor(245, 144, 7);
 
 bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
@@ -373,7 +373,7 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
         }
     }
 
-    if (result.keys() == QStringList{ "recoverable", "seq", "epoch", "offset" })
+    if (result.keys() == QStringList{ "epoch", "offset", "recoverable", "seq" })
     {
         return;
     }
