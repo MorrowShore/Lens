@@ -14,7 +14,7 @@ const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
     {(int)AppSponsor::Role::TierName,   "tierName"},
 };
 
-static const QString GitHubUrlSponsors = "https://raw.githubusercontent.com/3dproger/AxelChatSponsors/main/index.json";
+static const QString GitHubUrlSponsors = "https://raw.githubusercontent.com/3dproger/AxelChatRepoServer/main/sponsors.json";
 
 };
 
