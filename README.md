@@ -47,6 +47,10 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] Discord support
 - [x] Telegram support
 - [x] DonationAlerts support
+- [ ] DonatePay support
+- [ ] StreamElements support
+- [ ] Patreon support
+- [ ] Boosty support
 - [ ] Support for other platforms
 - [x] Display avatars of participants of chat
 - [x] Displaying the number of viewers both total and for individual platforms
