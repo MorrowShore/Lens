@@ -710,59 +710,78 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>DonationAlerts</name>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="80"/>
-        <location filename="chat_services/donationalerts.cpp" line="216"/>
-        <location filename="chat_services/donationalerts.cpp" line="221"/>
+        <location filename="chat_services/donationalerts.cpp" line="81"/>
+        <location filename="chat_services/donationalerts.cpp" line="234"/>
+        <location filename="chat_services/donationalerts.cpp" line="239"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="181"/>
+        <location filename="chat_services/donationalerts.cpp" line="94"/>
+        <source>Dashboard</source>
+        <translation>Панель управления</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donationalerts.cpp" line="99"/>
+        <source>Donation page</source>
+        <translation>Страница доната</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donationalerts.cpp" line="105"/>
+        <source>Alternative donation page</source>
+        <translation>Aльтернативная страница доната</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donationalerts.cpp" line="199"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="184"/>
+        <location filename="chat_services/donationalerts.cpp" line="202"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="187"/>
+        <location filename="chat_services/donationalerts.cpp" line="205"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="215"/>
-        <source>Login for full functionality</source>
-        <translation>Для полноценной работы войдите</translation>
+        <location filename="chat_services/donationalerts.cpp" line="233"/>
+        <source>Not logged in</source>
+        <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="220"/>
+        <source>Login for full functionality</source>
+        <translation type="vanished">Для полноценной работы войдите</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donationalerts.cpp" line="238"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="226"/>
+        <location filename="chat_services/donationalerts.cpp" line="244"/>
         <source>Logged in</source>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="227"/>
+        <location filename="chat_services/donationalerts.cpp" line="245"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="282"/>
+        <location filename="chat_services/donationalerts.cpp" line="300"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="454"/>
+        <location filename="chat_services/donationalerts.cpp" line="472"/>
         <source>Anonymous</source>
         <translation>Аноним</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="499"/>
+        <location filename="chat_services/donationalerts.cpp" line="517"/>
         <source>Audio</source>
         <translation>Аудио</translation>
     </message>

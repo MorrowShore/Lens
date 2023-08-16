@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QTimeZone>
+#include <QDesktopServices>
 
 namespace
 {
@@ -75,7 +76,11 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     config.requestTokenUrl = "https://www.donationalerts.com/oauth/token";
     config.refreshTokenUrl = "https://www.donationalerts.com/oauth/token";
     auth.setConfig(config);
-    QObject::connect(&auth, &OAuth2::stateChanged, this, &DonationAlerts::onAuthStateChanged);
+    QObject::connect(&auth, &OAuth2::stateChanged, this, [this]()
+    {
+        updateUI();
+        reconnect();
+    });
 
     loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
     {
@@ -90,7 +95,22 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     }));
     addUIElement(loginButton);
 
-    onAuthStateChanged();
+    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Dashboard"), []()
+    {
+        QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/dashboard"));
+    })));
+
+    donateMainPageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Donation page"), [this]()
+    {
+        QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/r/" + info.userName));
+    }));
+    addUIElement(donateMainPageButton);
+
+    donateAlternativePageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Alternative donation page"), [this]()
+    {
+        QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/c/" + info.userName));
+    }));
+    addUIElement(donateAlternativePageButton);
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
@@ -157,6 +177,8 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
         qDebug() << Q_FUNC_INFO << "check ping timeout, disconnect";
         socket.close();
     });
+
+    updateUI();
 }
 
 ChatService::ConnectionStateType DonationAlerts::getConnectionStateType() const
@@ -202,7 +224,7 @@ TcpReply DonationAlerts::processTcpRequest(const TcpRequest &request)
     return TcpReply::createTextHtmlError("Unknown path");
 }
 
-void DonationAlerts::onAuthStateChanged()
+void DonationAlerts::updateUI()
 {
     if (!authStateInfo)
     {
@@ -212,7 +234,7 @@ void DonationAlerts::onAuthStateChanged()
     switch (auth.getState())
     {
     case OAuth2::State::NotLoggedIn:
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Login for full functionality"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Not logged in"));
         loginButton->setItemProperty("text", tr("Login"));
         break;
 
@@ -229,7 +251,16 @@ void DonationAlerts::onAuthStateChanged()
     }
     }
 
-    reconnect();
+    if (info.userId.isEmpty())
+    {
+        donateMainPageButton->setItemProperty("enabled", false);
+        donateAlternativePageButton->setItemProperty("enabled", false);
+    }
+    else
+    {
+        donateMainPageButton->setItemProperty("enabled", true);
+        donateAlternativePageButton->setItemProperty("enabled", true);
+    }
 }
 
 void DonationAlerts::requestDonations()
@@ -267,23 +298,28 @@ void DonationAlerts::requestUser()
         const QJsonObject root = QJsonDocument::fromJson(data).object();
         const QJsonObject dataJson = root.value("data").toObject();
 
-        const QString name = dataJson.value("name").toString();
+        info.userName = dataJson.value("name").toString();
         info.socketConnectionToken = dataJson.value("socket_connection_token").toString();
         info.userId = QString("%1").arg(dataJson.value("id").toVariant().toLongLong());
 
-        if (name.isEmpty() || info.socketConnectionToken.isEmpty())
+        if (info.userName.isEmpty() || info.socketConnectionToken.isEmpty())
         {
             qWarning() << Q_FUNC_INFO << "name or socket token is empty, data =" << root;
             return;
         }
 
-        if (auth.getState() == OAuth2::State::LoggedIn && authStateInfo)
+        if (auth.getState() == OAuth2::State::LoggedIn)
         {
-            authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + name + "</b>"));
+            if (authStateInfo)
+            {
+                authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + info.userName + "</b>"));
+            }
 
             socket.setProxy(network.proxy());
             socket.open(QUrl("wss://centrifugo.donationalerts.com/connection/websocket"));
         }
+
+        updateUI();
     });
 }
 
@@ -532,6 +568,8 @@ void DonationAlerts::reconnectImpl()
 {
     socket.close();
     info = Info();
+
+    updateUI();
 
     if (auth.getState() != OAuth2::State::LoggedIn || !enabled.get())
     {

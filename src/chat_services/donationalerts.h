@@ -19,7 +19,7 @@ public:
 signals:
 
 private slots:
-    void onAuthStateChanged();
+    void updateUI();
     void requestDonations();
     void requestUser();
     void requestSubscribeCentrifuge(const QString& clientId, const QString& userId);
@@ -39,6 +39,7 @@ private:
         int64_t lastMessageId = 0;
         QString socketConnectionToken;
         QString userId;
+        QString userName;
     };
 
     void send(const QJsonObject& params, const int method = -1);
@@ -59,4 +60,6 @@ private:
 
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> loginButton;
+    std::shared_ptr<UIElementBridge> donateMainPageButton;
+    std::shared_ptr<UIElementBridge> donateAlternativePageButton;
 };
