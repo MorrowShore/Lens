@@ -23,6 +23,7 @@ enum class ServiceType
     Discord,
 
     DonationAlerts,
+    DonatePay,
 };
 
 }
