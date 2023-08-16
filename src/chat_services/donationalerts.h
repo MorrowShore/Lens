@@ -4,6 +4,7 @@
 #include "oauth2.h"
 #include <QWebSocket>
 #include <QJsonArray>
+#include <QTimer>
 
 class DonationAlerts : public ChatService
 {
@@ -42,11 +43,17 @@ private:
 
     void send(const QJsonObject& params, const int method = -1);
     void sendConnectToPrivateChannels(const QList<PrivateChannelInfo>& channels);
+    void sendPing();
+
     void parseEvent(const QJsonObject& data);
 
     QNetworkAccessManager& network;
     OAuth2 auth;
     QWebSocket socket;
+
+    QTimer timerReconnect;
+    QTimer pingTimer;
+    QTimer checkPingTimer;
 
     Info info;
 

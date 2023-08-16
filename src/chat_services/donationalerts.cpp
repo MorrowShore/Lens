@@ -11,6 +11,9 @@ namespace
 {
 
 static const QString ClientID = OBFUSCATE(DONATIONALERTS_CLIENT_ID);
+static const int ReconncectPeriod = 6 * 1000;
+static const int PingSendTimeout = 10 * 1000;
+static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
 
 bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -96,10 +99,14 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         //qDebug() << Q_FUNC_INFO << "webSocket connected";
+
+        checkPingTimer.setInterval(CheckPingSendTimeout);
+        checkPingTimer.start();
+
         send(
-            {
-                { "token", info.socketConnectionToken },
-            });
+        {
+            { "token", info.socketConnectionToken },
+        });
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
@@ -116,6 +123,36 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
         qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+    });
+
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (!state.connected)
+        {
+            reconnect();
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);
+
+    QObject::connect(&pingTimer, &QTimer::timeout, this, &DonationAlerts::sendPing);
+    pingTimer.setInterval(PingSendTimeout);
+    pingTimer.start();
+
+    QObject::connect(&checkPingTimer, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        {
+            checkPingTimer.stop();
+            return;
+        }
+
+        qDebug() << Q_FUNC_INFO << "check ping timeout, disconnect";
+        socket.close();
     });
 }
 
@@ -295,11 +332,15 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
         return;
     }
 
+    checkPingTimer.setInterval(CheckPingSendTimeout);
+    checkPingTimer.start();
+
     const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
+    const QJsonObject root = doc.object();
 
     qDebug() << "received:" << doc;
 
-    const QJsonObject result = doc.object().value("result").toObject();
+    const QJsonObject result = root.value("result").toObject();
     if (result.contains("client"))
     {
         requestSubscribeCentrifuge(result.value("client").toString(), info.userId);
@@ -313,6 +354,8 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
             state.connected = true;
             emit connectedChanged(true);
             emit stateChanged();
+
+            sendPing();
         }
 
         return;
@@ -326,6 +369,12 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
             parseEvent(data.toObject());
             return;
         }
+    }
+
+    if (root.keys() == QStringList{"id" })
+    {
+        // ping
+        return;
     }
 
     qWarning() << Q_FUNC_INFO << "unknown message:" << rawData;
@@ -367,6 +416,18 @@ void DonationAlerts::sendConnectToPrivateChannels(const QList<PrivateChannelInfo
                 { "channel", channel.channel },
             }, 1);
     }
+}
+
+void DonationAlerts::sendPing()
+{
+    if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+    {
+        return;
+    }
+
+    static const int MethodHeartbeat = 7;
+
+    send(QJsonObject(), MethodHeartbeat);
 }
 
 void DonationAlerts::parseEvent(const QJsonObject &data)
@@ -463,6 +524,7 @@ void DonationAlerts::reconnectImpl()
         return;
     }
 
+    timerReconnect.start();
     requestUser();
     requestDonations();
 }
