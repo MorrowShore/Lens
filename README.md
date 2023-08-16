@@ -73,7 +73,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - Can I download a YouTube chat for an already past stream using the AxelChat? - No, use something else instead. For example, use the browser extension [Save Live Streaming Chats for YouTube™](https://chrome.google.com/webstore/detail/save-live-streaming-chats/bcclhcedlelimlnmcpfeiabljbpahnef)
 
 # How can I help the development of the project
-- Financial support. For example: [Patreon](https://www.patreon.com/axel_k)
+- [Financial support](https://3dproger.github.io/AxelChat/sponsor)
 - Recommend to your favorite streamer
 - Create new features and fix bugs. For those who know how to C++.  Just make a pull request or fork
 - Create and improve widgets using front-end technologies like React. Here is the official widget repository: https://github.com/3dproger/AxelChatWidgets
