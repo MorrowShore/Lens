@@ -19,6 +19,8 @@ signals:
 private slots:
     void updateUI();
     void requestUser();
+    void requestSocketToken();
+    void onReceiveWebSocket(const QString& rawData);
 
 protected:
     void reconnectImpl() override;
@@ -27,15 +29,24 @@ protected:
 private:
     struct Info
     {
+        int64_t lastMessageId = 0;
         QString userId;
         QString userName;
+        QString socketToken;
     };
+
+    void send(const QJsonObject& params, const int method = -1);
+    void sendPing();
 
     QNetworkAccessManager& network;
     QWebSocket socket;
     Setting<QString> apiKey;
     const QString domain;
     const QString donationPagePrefix;
+
+    QTimer timerReconnect;
+    QTimer pingTimer;
+    QTimer checkPingTimer;
 
     std::shared_ptr<UIElementBridge> authStateInfo;
     std::shared_ptr<UIElementBridge> donatePageButton;

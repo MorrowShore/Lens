@@ -6,6 +6,15 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+namespace
+{
+
+static const int ReconncectPeriod = 6 * 1000;
+static const int PingSendTimeout = 10 * 1000;
+static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
+
+}
+
 DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::DonatePayRu, false, parent)
     , network(network_)
@@ -35,6 +44,71 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     {
         QDesktopServices::openUrl(QUrl(domain + "/billing/transactions"));
     })));
+
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
+        Q_UNUSED(state)
+        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
+    });
+
+    QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &DonatePay::onReceiveWebSocket);
+
+    QObject::connect(&socket, &QWebSocket::connected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+
+        checkPingTimer.setInterval(CheckPingSendTimeout);
+        checkPingTimer.start();
+
+        send({
+            { "token", info.socketToken },
+        });
+    });
+
+    QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+
+        if (state.connected)
+        {
+            state.connected = false;
+            emit connectedChanged(false);
+            emit stateChanged();
+        }
+    });
+
+    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
+        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+    });
+
+    /*QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (!state.connected)
+        {
+            reconnect();
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);*/
+
+    QObject::connect(&pingTimer, &QTimer::timeout, this, &DonatePay::sendPing);
+    pingTimer.setInterval(PingSendTimeout);
+    pingTimer.start();
+
+    QObject::connect(&checkPingTimer, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        {
+            checkPingTimer.stop();
+            return;
+        }
+
+        qDebug() << Q_FUNC_INFO << "check ping timeout, disconnect";
+        socket.close();
+    });
 
     updateUI();
     reconnect();
@@ -94,8 +168,6 @@ void DonatePay::requestUser()
         return;
     }
 
-    info = Info();
-
     QNetworkReply* reply = network.get(QNetworkRequest(domain + "/api/v1/user?access_token=" + key));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
@@ -127,6 +199,57 @@ void DonatePay::requestUser()
     });
 }
 
+void DonatePay::requestSocketToken()
+{
+    const QString key = apiKey.get();
+    if (key.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "API key is empty";
+        return;
+    }
+
+    QNetworkRequest request(domain + "/api/v2/socket/token");
+
+    request.setRawHeader("Content-Type", "application/json");
+
+    const QByteArray data = QJsonDocument(QJsonObject({ { "access_token", key } })).toJson();
+
+    QNetworkReply* reply = network.post(request, data);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QByteArray rawData = reply->readAll();
+        const QJsonObject root = QJsonDocument::fromJson(rawData).object();
+
+        info.socketToken = root.value("token").toString();
+
+        if (!info.socketToken.isEmpty())
+        {
+            socket.open(QUrl("wss://centrifugo.donatepay.ru:43002/connection/websocket"));
+
+        }
+        else
+        {
+            qDebug() << "token is empty, root =" << root;
+        }
+    });
+}
+
+void DonatePay::onReceiveWebSocket(const QString &rawData)
+{
+    if (!enabled.get())
+    {
+        return;
+    }
+
+    checkPingTimer.setInterval(CheckPingSendTimeout);
+    checkPingTimer.start();
+
+    const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
+    const QJsonObject root = doc.object();
+
+    qDebug() << "received:" << doc;
+}
+
 void DonatePay::reconnectImpl()
 {
     const bool preConnected = state.connected;
@@ -147,7 +270,9 @@ void DonatePay::reconnectImpl()
         return;
     }
 
+    timerReconnect.start();
     requestUser();
+    requestSocketToken();
 }
 
 void DonatePay::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
@@ -170,4 +295,36 @@ void DonatePay::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> el
         setting->set(apiKey);
         reconnect();
     }
+}
+
+void DonatePay::send(const QJsonObject &params, const int method)
+{
+    info.lastMessageId++;
+
+    QJsonObject object;
+    object.insert("params", params);
+    object.insert("id", info.lastMessageId);
+
+    if (method != -1)
+    {
+        object.insert("method", method);
+    }
+
+    const QJsonDocument doc(object);
+
+    qDebug() << "send:" << doc;
+
+    socket.sendTextMessage(doc.toJson(QJsonDocument::JsonFormat::Compact));
+}
+
+void DonatePay::sendPing()
+{
+    if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+    {
+        return;
+    }
+
+    static const int MethodHeartbeat = 7;
+
+    send(QJsonObject(), MethodHeartbeat);
 }

@@ -578,5 +578,5 @@ void DonationAlerts::reconnectImpl()
 
     timerReconnect.start();
     requestUser();
-    requestDonations();
+    //requestDonations();
 }
