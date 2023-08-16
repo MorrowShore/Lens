@@ -4,7 +4,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 [Download](https://github.com/3dproger/axelchat/releases/latest/) |
 [Releases](https://github.com/3dproger/AxelChat/releases) |
 [Issues](https://github.com/3dproger/AxelChat/issues) |
-[Support]([https://patreon.com/axel_k](https://3dproger.github.io/AxelChat/support))
+[Support](https://3dproger.github.io/AxelChat/support)
 
 [<img src="misc/images/button-download.png">](https://github.com/3dproger/AxelChat/releases)
 [<img src="misc/images/button-patron.png">](https://www.patreon.com/axel_k)
