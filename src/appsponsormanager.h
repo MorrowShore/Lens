@@ -25,6 +25,30 @@ public:
     QString platform;
 };
 
+class AppSupportMethod
+{
+    Q_GADGET
+public:
+    enum class Role {
+        Name = Qt::UserRole + 1,
+        Url,
+    };
+    Q_ENUM(Role)
+
+    enum class Possibility {
+        Unknown,
+        PaidSubscription,
+        Donation,
+    };
+    Q_ENUM(Possibility)
+
+    QList<Possibility> possibilities;
+    Possibility mainPossibility = Possibility::Unknown;
+    QString name;
+    QUrl url;
+    QString icon;
+};
+
 class AppSponsorModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -46,6 +70,7 @@ class AppSponsorManager : public QObject
     Q_OBJECT
 public:
     AppSponsorModel model;
+    QList<AppSupportMethod> methods;
 
     explicit AppSponsorManager(QNetworkAccessManager& network, QObject *parent = nullptr);
 
@@ -53,6 +78,7 @@ signals:
 
 public slots:
     void requestSponsors();
+    void requestSupportMethods();
 
 private:
     QNetworkAccessManager& network;

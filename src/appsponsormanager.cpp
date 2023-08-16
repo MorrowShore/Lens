@@ -14,7 +14,8 @@ const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
     {(int)AppSponsor::Role::TierName,   "tierName"},
 };
 
-static const QString GitHubUrlSponsors = "https://raw.githubusercontent.com/3dproger/AxelChatRepoServer/main/sponsors.json";
+static const QString SponsorsUrl = "https://raw.githubusercontent.com/3dproger/AxelChatRepoServer/main/sponsors.json";
+static const QString SupportMethodsUrl = "https://raw.githubusercontent.com/3dproger/AxelChatRepoServer/main/support_methods.json";
 
 };
 
@@ -23,11 +24,12 @@ AppSponsorManager::AppSponsorManager(QNetworkAccessManager &network_, QObject *p
     , network(network_)
 {
     requestSponsors();
+    requestSupportMethods();
 }
 
 void AppSponsorManager::requestSponsors()
 {
-    QNetworkReply* reply = network.get(QNetworkRequest(GitHubUrlSponsors));
+    QNetworkReply* reply = network.get(QNetworkRequest(SponsorsUrl));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
@@ -75,27 +77,65 @@ void AppSponsorManager::requestSponsors()
 
         model.sortByTier();
     });
+}
 
-    /*//TODO
+void AppSponsorManager::requestSupportMethods()
+{
+    QNetworkReply* reply = network.get(QNetworkRequest(SupportMethodsUrl));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
+        reply->deleteLater();
 
-    AppSponsor sponsor;
+        const QString version = root.value("version").toString();
+        if (version != "1.0.0")
+        {
+            qWarning() << Q_FUNC_INFO << "unsupported version" << version;
+        }
 
-    sponsor = AppSponsor();
-    sponsor.name = "AXEL";
-    sponsor.tierName = "SUPER";
-    model.add(sponsor);
+        const QJsonArray supportMethodsJson = root.value("support_methods").toArray();
+        for (const QJsonValue& v : qAsConst(supportMethodsJson))
+        {
+            const QJsonObject methodJson = v.toObject();
 
-    sponsor = AppSponsor();
-    sponsor.name = "AXEL2";
-    sponsor.tierName = "SUPER2";
-    model.add(sponsor);
+            AppSupportMethod method;
 
-    sponsor = AppSponsor();
-    sponsor.name = "AXEL3";
-    sponsor.tierName = "SUPER3";
-    model.add(sponsor);
+            method.name = methodJson.value("name").toString();
+            method.icon = methodJson.value("icon").toString();
+            method.url = methodJson.value("url").toString();
 
-    model.sortByTier();*/
+            const QJsonArray possibilities = methodJson.value("possibilities").toArray();
+            for (const QJsonValue& v : qAsConst(possibilities))
+            {
+                const QString type = v.toString();
+                if (type == "paid_subscription")
+                {
+                    method.possibilities.append(AppSupportMethod::Possibility::PaidSubscription);
+                }
+                else if (type == "donation")
+                {
+                    method.possibilities.append(AppSupportMethod::Possibility::Donation);
+                }
+                else
+                {
+                    qWarning() << Q_FUNC_INFO << "unknown possibility" << type;
+                }
+            }
+
+            if (!method.possibilities.isEmpty())
+            {
+                method.mainPossibility = method.possibilities.first();
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "possibilities is empty, data =" << methodJson;
+            }
+
+            methods.append(method);
+        }
+
+        model.sortByTier();
+    });
 }
 
 QHash<int, QByteArray> AppSponsorModel::roleNames() const
