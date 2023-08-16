@@ -1,4 +1,4 @@
-# Choose a support method convenient for you:
+# Choose a support method convenient for You:
 
 <p align="center"> <a href="https://www.patreon.com/axel_k"> <img src="misc/images/button-patreon.png"> </a> </p>
   
