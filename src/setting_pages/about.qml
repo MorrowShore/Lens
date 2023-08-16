@@ -224,7 +224,7 @@ ScrollView {
             Material.background: "#DB61A2"
 
             onClicked: {
-                Global.windowSettings.openSponsorDialog()
+                Qt.openUrlExternally(APP_INFO_SUPPORT_URL_STR)
             }
         }
 

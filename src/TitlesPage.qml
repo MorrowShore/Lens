@@ -101,8 +101,7 @@ Item {
         Material.foreground: "white"
 
         onClicked: {
-            Global.openSettingsWindow()
-            Global.windowSettings.openSponsorDialog()
+            Qt.openUrlExternally(APP_INFO_SUPPORT_URL_STR)
         }
     }
 

@@ -28,3 +28,4 @@
 #define APP_INFO_INTERNALNAME_STR           APP_INFO_PRODUCTNAME_STR
 
 #define APP_INFO_COMPANYDOMAIN_STR          "https://www.youtube.com/channel/UCujkj8ZgVkscm34GA1Z8wTQ"
+#define APP_INFO_SUPPORT_URL_STR            "https://3dproger.github.io/AxelChat/support"
