@@ -6,4 +6,4 @@
 
 <p align="center"> <a href="https://www.donationalerts.com/r/axel_k"> <img src="misc/images/button-donationalerts.png"> </a> </p>
 
-[comment]: <> (<p align="center"> <a href="https://streamelements.com/axe1_k/tip"> <img src="misc/images/button-streamelements.png"> </a> </p>)
+<p align="center"> <a href="https://streamelements.com/axe1_k/tip"> <img src="misc/images/button-streamelements.png"> </a> </p>
