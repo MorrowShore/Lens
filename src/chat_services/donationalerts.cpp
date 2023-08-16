@@ -14,6 +14,8 @@ static const QString ClientID = OBFUSCATE(DONATIONALERTS_CLIENT_ID);
 static const int ReconncectPeriod = 6 * 1000;
 static const int PingSendTimeout = 10 * 1000;
 static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
+static const QColor BackgroundColor = QColor(117, 94, 188);
+static const QColor AuthorColor = QColor(245, 144, 7);
 
 bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -371,7 +373,12 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
         }
     }
 
-    if (root.keys() == QStringList{"id" })
+    if (result.keys() == QStringList{ "recoverable", "seq", "epoch", "offset" })
+    {
+        return;
+    }
+
+    if (root.keys() == QStringList{ "id" })
     {
         // ping
         return;
@@ -452,7 +459,10 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
         getServiceTypeId(getServiceType()) + "_" + userName,
         QUrl("qrc:/resources/images/money1-icon.svg"),
         QUrl(),
-        QStringList(), QStringList(), std::set<Author::Flag>());
+        QStringList(),
+        QStringList(),
+        std::set<Author::Flag>(),
+        AuthorColor);
 
     QList<std::shared_ptr<Message::Content>> contents;
 
@@ -497,7 +507,7 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     }
 
     std::set<Message::Flag> flags = { Message::Flag::DonateWithText };
-    QHash<Message::ColorRole, QColor> forcedColors = { { Message::ColorRole::BodyBackgroundColorRole, QColor(0, 224, 213) } };
+    QHash<Message::ColorRole, QColor> forcedColors = { { Message::ColorRole::BodyBackgroundColorRole, BackgroundColor } };
 
     std::shared_ptr<Message> message = std::make_shared<Message>(
         contents,
