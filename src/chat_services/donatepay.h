@@ -31,12 +31,13 @@ private:
         QString userName;
     };
 
-    std::shared_ptr<UIElementBridge> authStateInfo;
-
     QNetworkAccessManager& network;
     QWebSocket socket;
     Setting<QString> apiKey;
     const QString domain;
+
+    std::shared_ptr<UIElementBridge> authStateInfo;
+    std::shared_ptr<UIElementBridge> donatePageButton;
 
     Info info;
 };

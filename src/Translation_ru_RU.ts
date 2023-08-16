@@ -677,27 +677,32 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Получить API ключ</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="49"/>
+        <location filename="chat_services/donatepay.cpp" line="27"/>
+        <source>Donation page</source>
+        <translation>Страница доната</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donatepay.cpp" line="56"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="52"/>
+        <location filename="chat_services/donatepay.cpp" line="59"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="55"/>
+        <location filename="chat_services/donatepay.cpp" line="62"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="65"/>
+        <location filename="chat_services/donatepay.cpp" line="72"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="69"/>
+        <location filename="chat_services/donatepay.cpp" line="77"/>
         <source>Authorized as %1</source>
         <translation>Авторизован как %1</translation>
     </message>

@@ -24,6 +24,12 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
         QDesktopServices::openUrl(QUrl(domain + "/page/api"));
     })));
 
+    donatePageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Donation page"), [this]()
+    {
+        QDesktopServices::openUrl(QUrl("https://new.donatepay.ru/@" + info.userId));
+    }));
+    addUIElement(donatePageButton);
+
     updateUI();
     reconnect();
 }
@@ -64,10 +70,12 @@ void DonatePay::updateUI()
     if (info.userId.isEmpty())
     {
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Not authorized"));
+        donatePageButton->setItemProperty("enabled", false);
     }
     else
     {
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Authorized as %1").arg("<b>" + info.userName + "</b>"));
+        donatePageButton->setItemProperty("enabled", true);
     }
 }
 
@@ -90,7 +98,17 @@ void DonatePay::requestUser()
         const QString status = root.value("status").toString();
         if (status != "success")
         {
-            qWarning() << Q_FUNC_INFO << "status" << status << ", status code =" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+            const int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+            if (statusCode == 200)
+            {
+                qWarning() << Q_FUNC_INFO << "status" << status << ", root =" << root;
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "status" << status << ", status code =" << statusCode;
+            }
+
             return;
         }
 
