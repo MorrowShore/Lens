@@ -16,10 +16,27 @@ public:
 
 signals:
 
+private slots:
+    void updateUI();
+    void requestUser();
+
 protected:
     void reconnectImpl() override;
+    void onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element) override;
 
 private:
+    struct Info
+    {
+        QString userId;
+        QString userName;
+    };
+
+    std::shared_ptr<UIElementBridge> authStateInfo;
+
     QNetworkAccessManager& network;
     QWebSocket socket;
+    Setting<QString> apiKey;
+    const QString domain;
+
+    Info info;
 };

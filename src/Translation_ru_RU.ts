@@ -183,7 +183,8 @@
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="64"/>
-        <source>DonatePay</source>
+        <source>DonatePay.ru</source>
+        <oldsource>DonatePay</oldsource>
         <translation></translation>
     </message>
     <message>
@@ -666,19 +667,39 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>DonatePay</name>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="29"/>
+        <location filename="chat_services/donatepay.cpp" line="20"/>
+        <source>API key</source>
+        <translation>API ключ</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donatepay.cpp" line="22"/>
+        <source>Get API key</source>
+        <translation>Получить API ключ</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donatepay.cpp" line="49"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="32"/>
+        <location filename="chat_services/donatepay.cpp" line="52"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="35"/>
+        <location filename="chat_services/donatepay.cpp" line="55"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donatepay.cpp" line="65"/>
+        <source>Not authorized</source>
+        <translation>Не авторизован</translation>
+    </message>
+    <message>
+        <location filename="chat_services/donatepay.cpp" line="69"/>
+        <source>Authorized as %1</source>
+        <translation>Авторизован как %1</translation>
     </message>
 </context>
 <context>
