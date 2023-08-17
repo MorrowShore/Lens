@@ -3,11 +3,11 @@
 #include <QLocale>
 #include <QQmlEngine>
 
-I18n::I18n(QSettings& settings_, const QString& settingsGroup, QQmlApplicationEngine* qmlEngine, QObject *parent) :
+I18n::I18n(QSettings& settings_, const QString& settingsGroup, QQmlEngine* qml_, QObject *parent) :
     QObject(parent),
     settings(settings_),
     SettingsGroupPath(settingsGroup),
-    _qmlEngine(qmlEngine)
+    qml(qml_)
 {
     setLanguage(settings.value(SettingsGroupPath + "/" + SETTINGNAME_LANGUAGETAG, systemLanguage()).toString());
 }
@@ -29,9 +29,9 @@ bool I18n::setLanguage(const QString &shortTag)
         if (normTag == "c" || normTag == "en") {
             settings.setValue(SettingsGroupPath + "/" + SETTINGNAME_LANGUAGETAG, normTag);
 
-            if (_qmlEngine)
+            if (qml)
             {
-                _qmlEngine->retranslate();
+                qml->retranslate();
             }
             return true;
         }
@@ -41,14 +41,14 @@ bool I18n::setLanguage(const QString &shortTag)
         const QString fileName = ":/i18n/Translation_" + QLocale(normTag).name();
         if (!_appTranslator->load(fileName))
         {
-            qDebug(QString("Failed to load translation \"%1\" with file \"%2\"")
-                   .arg(shortTag).arg(fileName).toUtf8());
+            qDebug() << "Failed to load translation" << shortTag << "with file" << fileName;
+
             delete _appTranslator;
             _appTranslator = nullptr;
             QLocale::setDefault(QLocale("C"));
-            if (_qmlEngine)
+            if (qml)
             {
-                _qmlEngine->retranslate();
+                qml->retranslate();
             }
             emit languageChanged();
             return false;
@@ -56,14 +56,14 @@ bool I18n::setLanguage(const QString &shortTag)
 
         if (!qApp->installTranslator(_appTranslator))
         {
-            qDebug(QString("Failed to install translator for \"%1\" with file \"%2\"")
-                   .arg(shortTag).arg(fileName).toUtf8());
+            qDebug() << "Failed to install translator for" << shortTag << "with file" << fileName;
+
             delete _appTranslator;
             _appTranslator = nullptr;
             QLocale::setDefault(QLocale("C"));
-            if (_qmlEngine)
+            if (qml)
             {
-                _qmlEngine->retranslate();
+                qml->retranslate();
             }
             emit languageChanged();
             return false;
@@ -73,20 +73,20 @@ bool I18n::setLanguage(const QString &shortTag)
 
         _languageTag = normTag;
         QLocale::setDefault(normTag);
-        if (_qmlEngine)
+        if (qml)
         {
-            _qmlEngine->retranslate();
+            qml->retranslate();
         }
         emit languageChanged();
         return true;
     }
 
-    qDebug(QString("Failed set language \"%1\"")
-           .arg(shortTag).toUtf8());
+    qDebug() << "Failed set language" << shortTag;
+
     QLocale::setDefault(QLocale("C"));
-    if (_qmlEngine)
+    if (qml)
     {
-        _qmlEngine->retranslate();
+        qml->retranslate();
     }
     emit languageChanged();
     return false;
@@ -111,13 +111,4 @@ void I18n::declareQml()
 QString I18n::language() const
 {
     return _languageTag;
-}
-
-void I18n::setQmlApplicationEngine(QQmlApplicationEngine *qmlEngine)
-{
-    _qmlEngine = qmlEngine;
-    if (_qmlEngine)
-    {
-        _qmlEngine->retranslate();
-    }
 }

@@ -9,6 +9,12 @@ Tray::Tray(QObject *parent) : QObject(parent)
     QMenu* menu = new QMenu();
     QAction* action;
 
+    /*action = new QAction(QIcon(""), QTranslator::tr("Minimize to tray"), menu);
+    connect(action, &QAction::triggered, this, [this](){
+
+    });
+    menu->addAction(action);*/
+
     action = new QAction(QIcon(":/resources/images/applications-system.png"), QTranslator::tr("Settings"), menu);
     connect(action, &QAction::triggered, this, [this](){
         emit triggered("settings");

@@ -5,14 +5,13 @@
 #include "applicationinfo.h"
 #include "chathandler.h"
 #include "githubapi.h"
-#include "clipboardqml.h"
 #include "qmlutils.h"
-#include "i18n.h"
 #include "commandseditor.h"
 #include "uielementbridge.h"
+#include "appsponsormanager.h"
+#include "chatwindow.h"
 #include "CefWebEngineQt/Manager.h"
 #include "crypto/crypto.h"
-#include "appsponsormanager.h"
 #include <QApplication>
 #include <QIcon>
 #include <QStandardPaths>
@@ -32,8 +31,10 @@ int main(int argc, char *argv[])
 
     QSettings settings;
 
-    QMLUtils::declareQml();
-    QMLUtils qmlUtils(settings, "qml_utils");
+    ChatWindow::declareQml();
+
+    //QMLUtils::declareQml();
+    //QMLUtils qmlUtils(settings, "qml_utils");
 
     QApplication app(argc, argv);
 
@@ -47,36 +48,29 @@ int main(int argc, char *argv[])
     QSplashScreen* splashScreen = new QSplashScreen(QPixmap(":/icon.ico"));
     splashScreen->show();
 
-    QNetworkAccessManager network;
+    //QNetworkAccessManager network;
 
     app.setWindowIcon(QIcon(":/icon.ico"));
 
-    I18n::declareQml();
+    /*I18n::declareQml();
     I18n i18n(settings, "i18n", nullptr);
-    Q_UNUSED(i18n);
+    Q_UNUSED(i18n);*/
 
-    QString settingsPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
+    //AppSponsorManager appSponsorManager(network);
 
-    QDir dir(settingsPath);
-    if (!dir.exists() && !settingsPath.isEmpty())
-    {
-        if (!dir.mkpath(settingsPath))
-        {
-            settingsPath = "";
-        }
-    }
+    //UIElementBridge::declareQml();
 
-    AppSponsorManager appSponsorManager(network);
+    //ChatHandler::declareQml();
+    //ChatHandler chatHandler(settings, network, web);
 
-    UIElementBridge::declareQml();
+    //GitHubApi::declareQml();
+    //GitHubApi github(settings, "update_checker", network);
 
-    ChatHandler::declareQml();
-    ChatHandler chatHandler(settings, network, web);
+    //ChatWindow::declareQml();
+    ChatWindow chatWindow;
+    chatWindow.show();
 
-    GitHubApi::declareQml();
-    GitHubApi github(settings, "update_checker", network);
-
-    QQmlApplicationEngine engine;
+    /*QQmlApplicationEngine engine;
 
     i18n.setQmlApplicationEngine(&engine);
     qmlUtils.setQmlApplicationEngine(&engine);
@@ -121,7 +115,7 @@ int main(int argc, char *argv[])
     },
     Qt::QueuedConnection);
 
-    engine.load(url);
+    engine.load(url);*/
 
     splashScreen->close();
     delete splashScreen;
