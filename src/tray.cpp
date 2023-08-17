@@ -21,7 +21,7 @@ Tray::Tray(QObject *parent) : QObject(parent)
     });
     menu->addAction(_ignoreMouseAction);
 
-    action = new QAction(QIcon(""), QTranslator::tr("Clear Messages"), menu);
+    action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
     connect(action, &QAction::triggered, this, [this](){
         emit triggered("clear_messages");
     });
