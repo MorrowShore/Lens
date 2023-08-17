@@ -4,7 +4,6 @@
 #include "clipboardqml.h"
 #include "chathandler.h"
 #include "githubapi.h"
-#include "qmlutils.h"
 #include "appsponsormanager.h"
 #include "commandseditor.h"
 #include "tray.h"
@@ -23,7 +22,6 @@ signals:
 private:
     QSettings settings;
 
-    QMLUtils qmlUtils;
     cweqt::Manager web;
     QNetworkAccessManager network;
     AppSponsorManager appSponsorManager;

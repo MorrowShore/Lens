@@ -1,5 +1,6 @@
 #include "chatwindow.h"
 #include "applicationinfo.h"
+#include "qmlutils.h"
 #include <QQmlEngine>
 #include <QQuickWidget>
 #include <QQmlContext>
@@ -19,7 +20,6 @@ void ChatWindow::declareQml()
 
 ChatWindow::ChatWindow(QWidget *parent)
     : QMainWindow{parent}
-    , qmlUtils(settings, "qml_utils")
     , web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe")
     , appSponsorManager(network)
     , qml(new QQmlEngine(this))
@@ -38,7 +38,7 @@ ChatWindow::ChatWindow(QWidget *parent)
     qml->rootContext()->setContextProperty("authorQMLProvider",  &chatHandler.getAuthorQMLProvider());
     qml->rootContext()->setContextProperty("updateChecker",      &github);
     qml->rootContext()->setContextProperty("clipboard",          &qmlClipboard);
-    qml->rootContext()->setContextProperty("qmlUtils",           &qmlUtils);
+    qml->rootContext()->setContextProperty("qmlUtils",           QMLUtils::instance());
     qml->rootContext()->setContextProperty("messagesModel",      &chatHandler.getMessagesModel());
     qml->rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
     qml->rootContext()->setContextProperty("commandsEditor",     &commandsEditor);

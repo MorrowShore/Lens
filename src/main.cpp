@@ -1,16 +1,9 @@
 #if defined(AXELCHAT_LIBRARY)
 #include "axelchatlib_api.h"
 #else
-#include "tray.h"
 #include "applicationinfo.h"
-#include "chathandler.h"
-#include "githubapi.h"
 #include "qmlutils.h"
-#include "commandseditor.h"
-#include "uielementbridge.h"
-#include "appsponsormanager.h"
 #include "chatwindow.h"
-#include "CefWebEngineQt/Manager.h"
 #include "crypto/crypto.h"
 #include <QApplication>
 #include <QIcon>
@@ -33,12 +26,12 @@ int main(int argc, char *argv[])
 
     ChatWindow::declareQml();
 
-    //QMLUtils::declareQml();
-    //QMLUtils qmlUtils(settings, "qml_utils");
+    QMLUtils::declareQml();
+    QMLUtils qmlUtils(settings, "qml_utils");
 
     QApplication app(argc, argv);
 
-    cweqt::Manager web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe");
+    //cweqt::Manager web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe");
 
     if (!Crypto::test())
     {

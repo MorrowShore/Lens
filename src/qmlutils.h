@@ -13,8 +13,10 @@ class QMLUtils : public QObject
     Q_PROPERTY(QString buildCpuArchitecture READ buildCpuArchitecture CONSTANT)
 
 public:
-    explicit QMLUtils(QSettings& settings, const QString& settingsGroup, QObject *parent = nullptr);
     static void declareQml();
+    static QMLUtils* instance();
+
+    explicit QMLUtils(QSettings& settings, const QString& settingsGroup, QObject *parent = nullptr);
 
     void setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine);
 
@@ -39,6 +41,8 @@ signals:
     void dataChanged();
 
 private:
+    static QMLUtils* _instance;
+
     QSettings& settings;
     const QString SettingsGroupPath = "qml_utils";
     const QQmlApplicationEngine* qmlEngine = nullptr;

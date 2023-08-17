@@ -20,11 +20,20 @@ static const QString SK_EnabledHighDpiScaling = "enabledHighDpiScaling";
 
 }
 
+QMLUtils* QMLUtils::_instance = nullptr;
+
 QMLUtils::QMLUtils(QSettings& settings_, const QString& settingsGroup, QObject *parent)
     : QObject(parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroup)
 {
+    if (_instance)
+    {
+        qWarning() << Q_FUNC_INFO << "instance already initialized";
+    }
+
+    _instance = this;
+
     {
         if (enabledHardwareGraphicsAccelerator())
         {
@@ -125,7 +134,17 @@ void QMLUtils::updateWindowStyle(QWindow* window) const
 void QMLUtils::declareQml()
 {
     qmlRegisterUncreatableType<QMLUtils> ("AxelChat.QMLUtils",
-                                          1, 0, "QMLUtils", "Type cannot be created in QML");
+                                         1, 0, "QMLUtils", "Type cannot be created in QML");
+}
+
+QMLUtils *QMLUtils::instance()
+{
+    if (!_instance)
+    {
+        qWarning() << Q_FUNC_INFO << "instance not initialized";
+    }
+
+    return _instance;
 }
 
 void QMLUtils::setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine_)

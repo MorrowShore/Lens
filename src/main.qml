@@ -11,20 +11,14 @@ import "my_components" as MyComponents
 import "setting_pages" as SettingPages
 import "."
 
-ApplicationWindow {
+Item {
     id: root
     visible: true
-    width: 300
-    height: 600
-    minimumHeight: 200
+    //width: 300
+    //height: 600
+    /*minimumHeight: 200
     minimumWidth:  150
     title: Qt.application.name
-
-    onVisibleChanged: {
-        if (visible) {
-            qmlUtils.updateWindowStyle(this)
-        }
-    }
 
     flags: {
         var windowFlags = Qt.Window
@@ -49,6 +43,12 @@ ApplicationWindow {
         }
 
         return windowFlags
+    }*/
+
+    onVisibleChanged: {
+        if (visible) {
+            qmlUtils.updateWindowStyle(this)
+        }
     }
 
     property bool _customizeWindowHint: false
@@ -58,7 +58,7 @@ ApplicationWindow {
     }
 
     opacity: Global.windowChatWindowOpacity
-    color: Qt.rgba(0, 0, 0, Global.windowChatBackgroundOpacity)
+    //color: Qt.rgba(0, 0, 0, Global.windowChatBackgroundOpacity)
 
     property var authorWindow: null
     property var updatesWindow;
@@ -70,12 +70,12 @@ ApplicationWindow {
     }
 
     function loadGlobalSettings() {
-        Global.windowChatTransparentForInput = qmlUtils.valueBool("windowChatTransparentForInput",      Global.windowChatTransparentForInput)
+        Global.windowChatTransparentForInput        = qmlUtils.valueBool("windowChatTransparentForInput",      Global.windowChatTransparentForInput)
 
-        Global.windowChatStayOnTop          = qmlUtils.valueBool("windowChatStayOnTop",                 Global.windowChatStayOnTop)
-        Global.windowChatSystemWindowFrame  = qmlUtils.valueBool("windowChatSystemWindowFrame",         Global.windowChatSystemWindowFrame)
-        Global.windowChatWindowOpacity      = qmlUtils.valueReal("windowChatWindowOpacity",             Global.windowChatWindowOpacity)
-        Global.windowChatBackgroundOpacity  = qmlUtils.valueReal("windowChatBackgroundOpacity",         Global.windowChatBackgroundOpacity)
+        Global.windowChatStayOnTop                  = qmlUtils.valueBool("windowChatStayOnTop",                 Global.windowChatStayOnTop)
+        Global.windowChatSystemWindowFrame          = qmlUtils.valueBool("windowChatSystemWindowFrame",         Global.windowChatSystemWindowFrame)
+        Global.windowChatWindowOpacity              = qmlUtils.valueReal("windowChatWindowOpacity",             Global.windowChatWindowOpacity)
+        Global.windowChatBackgroundOpacity          = qmlUtils.valueReal("windowChatBackgroundOpacity",         Global.windowChatBackgroundOpacity)
 
         Global.windowChatMessageShowAvatar          = qmlUtils.valueBool("windowChatMessageShowAvatar",             Global.windowChatMessageShowAvatar)
         Global.windowChatMessageShowAuthorName      = qmlUtils.valueBool("windowChatMessageShowAuthorName",         Global.windowChatMessageShowAuthorName)
@@ -118,9 +118,9 @@ ApplicationWindow {
         return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
     }
 
-    onClosing: {
+    /*onClosing: {
         saveGlobalSettings()
-    }
+    }*/
 
     Component.onCompleted: {
         Global.windowChat = this
