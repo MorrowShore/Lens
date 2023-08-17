@@ -111,11 +111,16 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("APP_INFO_SITE_URL_STR", APP_INFO_SITE_URL_STR);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject *obj, const QUrl &objUrl)
+    {
         if (!obj && url == objUrl)
+        {
             QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
+        }
+
+    },
+    Qt::QueuedConnection);
+
     engine.load(url);
 
     splashScreen->close();
