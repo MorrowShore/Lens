@@ -50,6 +50,7 @@ ChatWindow::ChatWindow(QWidget *parent)
     qml->rootContext()->setContextProperty("APP_INFO_SITE_URL_STR", APP_INFO_SITE_URL_STR);
 
     QQuickWidget *view = new QQuickWidget(qml, this);
+    view->setClearColor(QColor(0, 0, 0));
 
     view->setSource(QUrl("qrc:/main.qml"));
 
