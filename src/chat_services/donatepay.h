@@ -20,6 +20,7 @@ private slots:
     void updateUI();
     void requestUser();
     void requestSocketToken();
+    void requestSubscribeCentrifuge(const QString& clientId, const QString& userId);
     void onReceiveWebSocket(const QString& rawData);
 
 protected:
@@ -36,6 +37,7 @@ private:
     };
 
     void send(const QJsonObject& params, const int method = -1);
+    void sendConnectToChannels(const QString& socketToken, const QString& client);
     void sendPing();
 
     QNetworkAccessManager& network;

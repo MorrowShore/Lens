@@ -225,12 +225,32 @@ void DonatePay::requestSocketToken()
         if (!info.socketToken.isEmpty())
         {
             socket.open(QUrl("wss://centrifugo.donatepay.ru:43002/connection/websocket"));
-
         }
         else
         {
             qDebug() << "token is empty, root =" << root;
         }
+    });
+}
+
+void DonatePay::requestSubscribeCentrifuge(const QString &clientId, const QString &userId)
+{
+    QNetworkRequest request(QString(domain + "/api/v2/centrifuge/subscribe"));
+    //request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
+    request.setRawHeader("Content-Type", "application/json");
+
+    QJsonObject data;
+
+    data.insert("client", clientId);
+
+    data.insert("channels", QJsonArray({"$public:" + userId}));
+
+    QNetworkReply* reply = network.post(request, QJsonDocument(data).toJson(QJsonDocument::JsonFormat::Compact));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        qDebug() << reply->readAll();
+
+        //sendConnectToChannels(channelsInfo);
     });
 }
 
@@ -245,9 +265,17 @@ void DonatePay::onReceiveWebSocket(const QString &rawData)
     checkPingTimer.start();
 
     const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
-    const QJsonObject root = doc.object();
 
     qDebug() << "received:" << doc;
+
+    const QJsonObject root = doc.object();
+
+    const QString client = root.value("result").toObject().value("client").toString();
+    if (!client.isEmpty())
+    {
+        requestSubscribeCentrifuge(client, info.userId);
+        return;
+    }
 }
 
 void DonatePay::reconnectImpl()
@@ -315,6 +343,14 @@ void DonatePay::send(const QJsonObject &params, const int method)
     qDebug() << "send:" << doc;
 
     socket.sendTextMessage(doc.toJson(QJsonDocument::JsonFormat::Compact));
+}
+
+void DonatePay::sendConnectToChannels(const QString& socketToken, const QString& client)
+{
+    send({
+        { "token", socketToken },
+        { "channel", client },
+    }, 1);
 }
 
 void DonatePay::sendPing()
