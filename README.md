@@ -49,6 +49,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] DonationAlerts support
 - [ ] DonatePay support
 - [ ] StreamElements support
+- [ ] Streamlabs support
 - [ ] Patreon support
 - [ ] Boosty support
 - [ ] Support for other platforms
