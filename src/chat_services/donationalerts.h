@@ -43,7 +43,7 @@ private:
     };
 
     void send(const QJsonObject& params, const int method = -1);
-    void sendConnectToChannel(const QList<PrivateChannelInfo>& channels);
+    void sendConnectToChannels(const QList<PrivateChannelInfo>& channels);
     void sendPing();
 
     void parseEvent(const QJsonObject& data);

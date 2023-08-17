@@ -360,7 +360,7 @@ void DonationAlerts::requestSubscribeCentrifuge(const QString &clientId, const Q
             channelsInfo.append(channelInfo);
         }
 
-        sendConnectToChannel(channelsInfo);
+        sendConnectToChannels(channelsInfo);
     });
 }
 
@@ -444,7 +444,7 @@ void DonationAlerts::send(const QJsonObject &params, const int method)
     socket.sendTextMessage(doc.toJson(QJsonDocument::JsonFormat::Compact));
 }
 
-void DonationAlerts::sendConnectToChannel(const QList<PrivateChannelInfo> &channels)
+void DonationAlerts::sendConnectToChannels(const QList<PrivateChannelInfo> &channels)
 {
     if (channels.isEmpty())
     {
