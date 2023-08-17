@@ -245,7 +245,15 @@ void DonationAlerts::updateUI()
 
     case OAuth2::State::LoggedIn:
     {
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in"));
+        if (info.userName.isEmpty())
+        {
+            authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in"));
+        }
+        else
+        {
+            authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + info.userName + "</b>"));
+        }
+
         loginButton->setItemProperty("text", tr("Logout"));
         break;
     }
@@ -310,11 +318,6 @@ void DonationAlerts::requestUser()
 
         if (auth.getState() == OAuth2::State::LoggedIn)
         {
-            if (authStateInfo)
-            {
-                authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + info.userName + "</b>"));
-            }
-
             socket.setProxy(network.proxy());
             socket.open(QUrl("wss://centrifugo.donationalerts.com/connection/websocket"));
         }
