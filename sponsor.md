@@ -8,5 +8,5 @@
   
 <p align="center"> <a href="https://streamelements.com/axe1_k/tip"> <img src="misc/images/button-streamelements.png"> </a> </p>
 
-<p align="center"> Vesemir should proud of you✌️ </p>
+<p align="center"> Vesemir should be proud of you✌️ </p>
 <p align="center"> <img src="misc/images/AXEL_K.png"> </p>
