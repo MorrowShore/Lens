@@ -314,22 +314,3 @@ void Message::updateHtml()
 
     trimText(html);
 }
-
-void Message::Builder::addText(const QString &text, const TextStyle &style)
-{
-    contents.append(std::make_shared<Message::Text>(text, style));
-}
-
-std::shared_ptr<Message> Message::Builder::create(const std::weak_ptr<Author> &author, const QString& id) const
-{
-    return std::make_shared<Message>(
-        contents,
-        author,
-        publishedTime.isNull() ? QDateTime::currentDateTime() : publishedTime,
-        receivedTime.isNull() ? QDateTime::currentDateTime() : receivedTime,
-        id,
-        flags,
-        forcedColors,
-        destination,
-        replyDestinationInfo);
-}

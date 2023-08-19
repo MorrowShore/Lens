@@ -262,28 +262,77 @@ public:
     class Builder
     {
     public:
-        void addText(const QString& text, const TextStyle& style = TextStyle());
-        void addHyperlink(const QString& text, const QUrl& url, const bool needSpaces = true, const TextStyle& style = TextStyle());
-        void addImage(const QUrl& url, const int height = 0, const bool needSpaces = true);
+        Builder(const std::weak_ptr<Author>& author)
+            : result(std::make_shared<Message>(QList<std::shared_ptr<Content>>(), author))
+        {}
 
-        void setPublishedTime(const QDateTime& dateTime) { publishedTime = dateTime; }
-        void setReceivedTime(const QDateTime& dateTime) { receivedTime = dateTime; }
-        void setFlag(const Flag flag);
-        void resetFlag(const Flag flag);
-        void setForcedColor(const ColorRole& role, const QColor& color);
-        void setDestination(const QStringList& destination);
+        Builder& addText(const QString& text, const TextStyle& style = TextStyle())
+        {
+            result->contents.append(std::make_shared<Text>(text, style));
+            return *this;
+        }
 
-        std::shared_ptr<Message> create(const std::weak_ptr<Author>& author, const QString& id = QString()) const;
+        Builder& addHyperlink(const QString& text, const QUrl& url, const bool needSpaces = true, const TextStyle& style = TextStyle())
+        {
+            result->contents.append(std::make_shared<Hyperlink>(text, url, needSpaces, style));
+            return *this;
+        }
+
+        Builder& addImage(const QUrl& url, const int height = 0, const bool needSpaces = true)
+        {
+            result->contents.append(std::make_shared<Image>(url, height, needSpaces));
+            return *this;
+        }
+
+        Builder& setPublishedTime(const QDateTime& dateTime)
+        {
+            result->publishedAt = dateTime;
+            return *this;
+        }
+
+        Builder& setReceivedTime(const QDateTime& dateTime)
+        {
+            result->receivedAt = dateTime;
+            return *this;
+        }
+
+        Builder& setFlag(const Flag flag)
+        {
+            result->flags.insert(flag);
+            return *this;
+        }
+
+        Builder& setForcedColor(const ColorRole& role, const QColor& color)
+        {
+            result->forcedColors.insert(role, color);
+            return *this;
+        }
+
+        Builder& setDestination(const QStringList& destination)
+        {
+            result->destination = destination;
+            return *this;
+        }
+
+        std::shared_ptr<Message> build()
+        {
+            if (result->publishedAt.isNull())
+            {
+                result->publishedAt = QDateTime::currentDateTime();
+            }
+
+            if (result->receivedAt.isNull())
+            {
+                result->receivedAt = QDateTime::currentDateTime();
+            }
+
+            result->updateHtml();
+
+            return result;
+        }
 
     private:
-        QList<std::shared_ptr<Content>> contents;
-
-        QDateTime publishedTime;
-        QDateTime receivedTime;
-        std::set<Flag> flags;
-        QHash<ColorRole, QColor> forcedColors;
-        QStringList destination;
-        ReplyDestinationInfo replyDestinationInfo;
+        std::shared_ptr<Message> result;
     };
 
     Message(const QList<std::shared_ptr<Content>>& contents,
@@ -392,8 +441,8 @@ private:
     QList<std::shared_ptr<Content>> contents;
     QString html;
     QString id;
-    const QDateTime publishedAt;
-    const QDateTime receivedAt;
+    QDateTime publishedAt;
+    QDateTime receivedAt;
     std::weak_ptr<Author> author;
     const QString authorId;
     std::set<Flag> flags;

@@ -39,31 +39,27 @@ public:
     };
     Q_ENUM(Flag)
 
+    friend class Builder;
+
     class Builder
     {
     public:
-        void setAvatar(const QString& url) { avatar = url; }
-        void setPage(const QString& url) { page = url; }
-        void addLeftBadge(const QString& url) { leftBadges.append(url); }
-        void addRightBadge(const QString& url) { rightBadges.append(url); }
-        void setFlag(const Flag flag) { flags.insert(flag); }
-        void resetFlag(const Flag flag) { flags.erase(flag); }
-        void setCustomNicknameColor(const QColor& color) { customNicknameColor = color; }
-        void setCustomNicknameBackgroundColor(const QColor& color) { customNicknameBackgroundColor = color; }
+        Builder(const AxelChat::ServiceType serviceType, const QString& id, const QString& name)
+            : result(std::make_shared<Author>(serviceType, name, id))
+        {}
 
-        std::shared_ptr<Author> create(
-            const AxelChat::ServiceType serviceType,
-            const QString& id,
-            const QString& name) const;
+        Builder& setAvatar(const QString& url) { result->avatarUrl = url; return *this; }
+        Builder& setPage(const QString& url) { result->pageUrl = url; return *this; }
+        Builder& addLeftBadge(const QString& url) { result->leftBadgesUrls.append(url); return *this; }
+        Builder& addRightBadge(const QString& url) { result->rightBadgesUrls.append(url); return *this; }
+        Builder& setFlag(const Flag flag) { result->flags.insert(flag); return *this; }
+        Builder& setCustomNicknameColor(const QColor& color) { result->customNicknameColor = color; return *this; }
+        Builder& setCustomNicknameBackgroundColor(const QColor& color) { result->customNicknameBackgroundColor = color; return *this; }
+
+        std::shared_ptr<Author> build() const { return result; }
 
     private:
-        QString avatar;
-        QString page;
-        QStringList leftBadges;
-        QStringList rightBadges;
-        std::set<Flag> flags;
-        QColor customNicknameColor;
-        QColor customNicknameBackgroundColor;
+        std::shared_ptr<Author> result;
     };
 
     Author(const AxelChat::ServiceType serviceType,

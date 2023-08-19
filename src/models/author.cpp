@@ -245,18 +245,3 @@ QJsonObject Author::toJson() const
 
     return root;
 }
-
-std::shared_ptr<Author> Author::Builder::create(const AxelChat::ServiceType serviceType, const QString &id, const QString &name) const
-{
-    return std::make_shared<Author>(
-        serviceType,
-        name,
-        id,
-        QUrl(avatar),
-        QUrl(page),
-        leftBadges,
-        rightBadges,
-        flags,
-        customNicknameColor,
-        customNicknameBackgroundColor);
-}

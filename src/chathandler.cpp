@@ -367,20 +367,18 @@ void ChatHandler::addTestMessages()
     QList<std::shared_ptr<Author>> authors;
 
     {
-        Author::Builder authorBuilder;
-
-        authorBuilder.setAvatar("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953");
-
-        std::shared_ptr<Author> author = authorBuilder.create(
+        auto author = Author::Builder(
             AxelChat::ServiceType::YouTube,
             QUuid::createUuid().toString(),
-            "Mario");
+            "Mario")
+            .setAvatar("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953")
+            .build();
 
-        Message::Builder messageBuilder;
+        auto message = Message::Builder(author)
+            .addText("Hello it's me Mario!")
+            .build();
 
-        messageBuilder.addText("Hello it's me Mario!");
-
-        messages.append(messageBuilder.create(author));
+        messages.append(message);
         authors.append(author);
     }
 
