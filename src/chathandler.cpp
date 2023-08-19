@@ -368,121 +368,126 @@ void ChatHandler::addTestMessages()
 
     {
         auto author = Author::Builder(
-            AxelChat::ServiceType::YouTube,
-            QUuid::createUuid().toString(),
-            "Mario")
-            .setAvatar("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953")
-            .build();
+                          AxelChat::ServiceType::YouTube,
+                          QUuid::createUuid().toString(),
+                          "Mario")
+                          .setAvatar("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953")
+                          .build();
 
-        auto message = Message::Builder(author)
+        messages.append(
+            Message::Builder(author)
             .addText("Hello it's me Mario!")
-            .build();
+            .build());
 
-        messages.append(message);
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::Twitch,
+                          QUuid::createUuid().toString(),
+                          "Big Smoke")
+                          .setAvatar("https://static.wikia.nocookie.net/gtawiki/images/b/bf/BigSmoke-GTASAde.png/revision/latest/scale-to-width-down/350?cb=20211113214309")
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("I’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::Trovo,
+                          QUuid::createUuid().toString(),
+                          "Luigi")
+                          .setAvatar("https://static.wikia.nocookie.net/mario/images/7/72/MPSS_Luigi.png/revision/latest/scale-to-width-down/254?cb=20220705200355")
+                          .setCustomNicknameColor(QColor("#FF00C7"))
+                          .setCustomNicknameBackgroundColor(QColor("#FFFFFF"))
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("Mamma mia!")
+                .setForcedColor(Message::ColorRole::BodyBackgroundColorRole, QColor("#A8D9FF"))
+                .setDestination({ "Underground" })
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::GoodGame,
+                          QUuid::createUuid().toString(),
+                          "CJ")
+                          .setAvatar("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252")
+                          .addLeftBadge("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252")
+                          .addLeftBadge("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252")
+                          .addRightBadge("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252")
+                          .addRightBadge("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252")
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("Here We Go Again")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::VkPlayLive,
+                          QUuid::createUuid().toString(),
+                          "Kenneth Rosenberg")
+                          .setAvatar("https://static.wikia.nocookie.net/p__/images/b/b2/Ken_rosenberg.jpg/revision/latest?cb=20130915190559&path-prefix=protagonist")
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("Hey, just like old times, huh, Tommy?")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::Telegram,
+                          QUuid::createUuid().toString(),
+                          "G-Man")
+                          .setAvatar("https://static.wikia.nocookie.net/half-life/images/4/41/G-Man_Alyx_Trailer.jpg/revision/latest/scale-to-width-down/350?cb=20191122020607&path-prefix=en")
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("Rise and shine, Mister Freeman")
+                .setDestination({ "Xen", "Stasis" })
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::Discord,
+                          QUuid::createUuid().toString(),
+                          "Gordon Freeman")
+                          .setAvatar("https://static.wikia.nocookie.net/half-life/images/1/1f/GordonALYX.png/revision/latest/scale-to-width-down/350?cb=20220520125500&path-prefix=en")
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("May I say a few words?")
+                .build());
+
         authors.append(author);
     }
 
     onReadyRead(messages, authors);
-
-    /*QList<std::shared_ptr<Message>> messages;
-    QList<std::shared_ptr<Author>> authors;
-
-    {
-        std::shared_ptr<Author> author = std::make_shared<Author>(AxelChat::ServiceType::YouTube, "Mario", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953"));
-        authors.append(author);
-
-        QList<std::shared_ptr<Message::Content>> contents;
-        contents.append(std::make_shared<Message::Text>("Hello it's me Mario!"));
-
-        std::shared_ptr<Message> message = std::make_shared<Message>(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString());
-
-        messages.append(message);
-    }
-
-    {
-        Author author(AxelChat::ServiceType::Twitch, "BigSmoke", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/gtawiki/images/b/bf/BigSmoke-GTASAde.png/revision/latest/scale-to-width-down/350?cb=20211113214309"));
-        authors.append(author);
-
-        QList<Message::Content*> contents;
-        contents.append(new Message::Text("i’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda"));
-
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
-    }
-
-    {
-        Author author(AxelChat::ServiceType::Trovo,
-                      "Luigi", QUuid::createUuid().toString(),
-                      QUrl("https://static.wikia.nocookie.net/mario/images/7/72/MPSS_Luigi.png/revision/latest/scale-to-width-down/254?cb=20220705200355"),
-                      {},
-                      {},
-                      {},
-                      {},
-                      QColor("#FF00C7"),
-                      QColor("#FFFFFF"));
-        authors.append(author);
-
-        QList<Message::Content*> contents;
-        contents.append(new Message::Text("Mamma mia!"));
-
-        messages.append(Message(contents,
-                                author,
-                                QDateTime::currentDateTime(),
-                                QDateTime::currentDateTime(),
-                                QUuid::createUuid().toString(),
-                                {},
-                                { { Message::ColorRole::BodyBackgroundColorRole, QColor("#A8D9FF") } },
-                                { "Underground" }));
-    }
-
-    {
-        Author author(AxelChat::ServiceType::GoodGame,
-                      "CJ", QUuid::createUuid().toString(),
-                      QUrl("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252"),
-                      {},
-                      { "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252", "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252" },
-                      { "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252", "https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252" },
-                      {});
-        authors.append(author);
-
-        QList<Message::Content*> contents;
-        contents.append(new Message::Text("Here We Go Again"));
-
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
-    }
-
-    {
-        Author author(AxelChat::ServiceType::VkPlayLive, "Kenneth Rosenberg", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/p__/images/b/b2/Ken_rosenberg.jpg/revision/latest?cb=20130915190559&path-prefix=protagonist"));
-        authors.append(author);
-
-        QList<Message::Content*> contents;
-        contents.append(new Message::Text("Hey, just like old times, huh, Tommy?"));
-
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
-    }
-
-    {
-        Author author(AxelChat::ServiceType::Telegram, "G-Man", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/half-life/images/4/41/G-Man_Alyx_Trailer.jpg/revision/latest/scale-to-width-down/350?cb=20191122020607&path-prefix=en"),
-                      {}, {}, {}, {}, {}, {});
-        authors.append(author);
-
-        QList<Message::Content*> contents;
-        contents.append(new Message::Text("Rise and shine, Mister Freeman"));
-
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString(),
-                                {}, {}, { "Xen", "Stasis" }));
-    }
-
-    {
-        Author author(AxelChat::ServiceType::Discord, "Gordon Freeman", QUuid::createUuid().toString(), QUrl("https://static.wikia.nocookie.net/half-life/images/1/1f/GordonALYX.png/revision/latest/scale-to-width-down/350?cb=20220520125500&path-prefix=en"));
-        authors.append(author);
-
-        QList<Message::Content*> contents;
-        contents.append(new Message::Text("May I say a few words?"));
-
-        messages.append(Message(contents, author, QDateTime::currentDateTime(), QDateTime::currentDateTime(), QUuid::createUuid().toString()));
-    }
-
-    onReadyRead(messages, authors);*/
 }
 
 #ifndef AXELCHAT_LIBRARY
