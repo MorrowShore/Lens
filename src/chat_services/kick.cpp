@@ -466,16 +466,10 @@ void Kick::parseMessageDeletedEvent(const QJsonObject &data)
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
 
-    static const std::shared_ptr<Author> author = std::make_shared<Author>(getServiceType(), "", "");
+    auto pair = Message::Builder::createDeleter(getServiceType(), messageId);
 
-    messages.append(std::make_shared<Message>(QList<std::shared_ptr<Message::Content>>(),
-                            author,
-                            QDateTime::currentDateTime(),
-                            QDateTime::currentDateTime(),
-                            messageId,
-                            std::set<Message::Flag>{Message::Flag::DeleterItem}));
-
-    authors.append(author);
+    authors.append(pair.first);
+    messages.append(pair.second);
 
     if (!messages.isEmpty())
     {
