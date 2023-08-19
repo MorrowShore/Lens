@@ -219,7 +219,7 @@ QString ChatService::generateMessageId(const QString &rawId_) const
         rawId = QUuid::createUuid().toString(QUuid::Id128);
     }
 
-    return getServiceTypeId(getServiceType()) + "/" + rawId;
+    return getServiceTypeId(getServiceType()) + "_" + rawId;
 }
 
 void ChatService::addUIElement(std::shared_ptr<UIElementBridge> element)

@@ -466,17 +466,10 @@ void YouTubeUtils::parseActionsArray(const QJsonArray &array, const QByteArray &
         {
             if (isDeleter)
             {
-                static const std::shared_ptr<Author> author = std::make_shared<Author>(ServiceType, "", "");
+                auto pair = Message::Builder::createDeleter(ServiceType, messageId);
 
-                messages.append(std::make_shared<Message>(
-                    contents,
-                    author,
-                    QDateTime::currentDateTime(),
-                    QDateTime::currentDateTime(),
-                    messageId,
-                    std::set<Message::Flag>{Message::Flag::DeleterItem}));
-
-                authors.append(author);
+                authors.append(pair.first);
+                messages.append(pair.second);
             }
             else
             {

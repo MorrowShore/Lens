@@ -314,3 +314,12 @@ void Message::updateHtml()
 
     trimText(html);
 }
+
+QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> Message::Builder::createDeleter(const AxelChat::ServiceType serviceType, const QString &id)
+{
+    auto author = Author::Builder(serviceType, QString(), QString()).build();
+
+    auto message = Builder(author, id).setFlag(Message::Flag::DeleterItem).build();
+
+    return { author, message };
+}

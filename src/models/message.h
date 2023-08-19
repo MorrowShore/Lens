@@ -1,5 +1,6 @@
 #pragma once
 
+#include "chat_services/chatservicestypes.h"
 #include <QObject>
 #include <QDateTime>
 #include <QColor>
@@ -262,8 +263,13 @@ public:
     class Builder
     {
     public:
-        Builder(const std::weak_ptr<Author>& author)
-            : result(std::make_shared<Message>(QList<std::shared_ptr<Content>>(), author))
+        Builder(const std::weak_ptr<Author>& author, const QString& id = QString())
+            : result(std::make_shared<Message>(
+                QList<std::shared_ptr<Content>>(),
+                author,
+                QDateTime(),
+                QDateTime(),
+                id))
         {}
 
         Builder& addText(const QString& text, const TextStyle& style = TextStyle())
@@ -330,6 +336,8 @@ public:
 
             return result;
         }
+
+        static QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> createDeleter(const AxelChat::ServiceType serviceType, const QString& id);
 
     private:
         std::shared_ptr<Message> result;
