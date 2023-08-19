@@ -259,6 +259,33 @@ public:
         QString messageText;
     };
 
+    class Builder
+    {
+    public:
+        void addText(const QString& text, const TextStyle& style = TextStyle());
+        void addHyperlink(const QString& text, const QUrl& url, const bool needSpaces = true, const TextStyle& style = TextStyle());
+        void addImage(const QUrl& url, const int height = 0, const bool needSpaces = true);
+
+        void setPublishedTime(const QDateTime& dateTime) { publishedTime = dateTime; }
+        void setReceivedTime(const QDateTime& dateTime) { receivedTime = dateTime; }
+        void setFlag(const Flag flag);
+        void resetFlag(const Flag flag);
+        void setForcedColor(const ColorRole& role, const QColor& color);
+        void setDestination(const QStringList& destination);
+
+        std::shared_ptr<Message> create(const std::weak_ptr<Author>& author, const QString& id = QString()) const;
+
+    private:
+        QList<std::shared_ptr<Content>> contents;
+
+        QDateTime publishedTime;
+        QDateTime receivedTime;
+        std::set<Flag> flags;
+        QHash<ColorRole, QColor> forcedColors;
+        QStringList destination;
+        ReplyDestinationInfo replyDestinationInfo;
+    };
+
     Message(const QList<std::shared_ptr<Content>>& contents,
             const std::weak_ptr<Author>& author,
             const QDateTime& publishedAt = QDateTime::currentDateTime(),

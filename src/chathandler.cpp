@@ -363,6 +363,26 @@ void ChatHandler::addService()
 
 void ChatHandler::addTestMessages()
 {
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
+
+    {
+        std::shared_ptr<Author> author = std::make_shared<Author>(
+            AxelChat::ServiceType::YouTube,
+            "Mario",
+            QUuid::createUuid().toString(),
+            QUrl("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953"));
+
+        Message::Builder builder;
+
+        builder.addText("Hello it's me Mario!");
+
+        messages.append(builder.create(author));
+        authors.append(author);
+    }
+
+    onReadyRead(messages, authors);
+
     /*QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
 
