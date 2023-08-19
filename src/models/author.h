@@ -39,6 +39,33 @@ public:
     };
     Q_ENUM(Flag)
 
+    class Builder
+    {
+    public:
+        void setAvatar(const QString& url) { avatar = url; }
+        void setPage(const QString& url) { page = url; }
+        void addLeftBadge(const QString& url) { leftBadges.append(url); }
+        void addRightBadge(const QString& url) { rightBadges.append(url); }
+        void setFlag(const Flag flag) { flags.insert(flag); }
+        void resetFlag(const Flag flag) { flags.erase(flag); }
+        void setCustomNicknameColor(const QColor& color) { customNicknameColor = color; }
+        void setCustomNicknameBackgroundColor(const QColor& color) { customNicknameBackgroundColor = color; }
+
+        std::shared_ptr<Author> create(
+            const AxelChat::ServiceType serviceType,
+            const QString& id,
+            const QString& name) const;
+
+    private:
+        QString avatar;
+        QString page;
+        QStringList leftBadges;
+        QStringList rightBadges;
+        std::set<Flag> flags;
+        QColor customNicknameColor;
+        QColor customNicknameBackgroundColor;
+    };
+
     Author(const AxelChat::ServiceType serviceType,
            const QString& name,
            const QString& authorId,
