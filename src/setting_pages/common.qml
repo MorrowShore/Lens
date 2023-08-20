@@ -70,7 +70,7 @@ ScrollView {
             }
         }
 
-        Switch {
+        /*Switch {
             text: qsTr("Stay on Top Window")
 
             Component.onCompleted: {
@@ -104,7 +104,7 @@ ScrollView {
                     Global.windowSettings.showInfo(qsTr("Mouse clicks will be ignored by the chat window. You can return to the previous state through the tray icon"))
                 }
             }
-        }
+        }*/
 
         Switch {
             text: qsTr("Clear Messages on Link Change")

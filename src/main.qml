@@ -13,47 +13,11 @@ import "."
 Item {
     id: root
     visible: true
-    //width: 300
-    //height: 600
-    /*minimumHeight: 200
-    minimumWidth:  150
-    title: Qt.application.name
-
-    flags: {
-        var windowFlags = Qt.Window
-        if (_customizeWindowHint) {
-            windowFlags |= Qt.CustomizeWindowHint
-        }
-
-        if (Global.windowChatTransparentForInput) {
-            windowFlags |= Qt.WindowTransparentForInput
-        }
-
-        if (Global.windowChatSystemWindowFrame) {
-            windowFlags |= Qt.WindowTitleHint | Qt.WindowSystemMenuHint |
-                    Qt.WindowMinimizeButtonHint | Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint
-        }
-        else {
-            windowFlags |= Qt.FramelessWindowHint
-        }
-
-        if (Global.windowChatStayOnTop) {
-            windowFlags |= Qt.WindowStaysOnTopHint
-        }
-
-        return windowFlags
-    }*/
 
     onVisibleChanged: {
         if (visible) {
             qmlUtils.updateWindowStyle(this)
         }
-    }
-
-    property bool _customizeWindowHint: false
-    function refreshByFlags() {
-        _customizeWindowHint = !_customizeWindowHint
-        _customizeWindowHint = !_customizeWindowHint
     }
 
     opacity: Global.windowChatWindowOpacity
@@ -131,8 +95,6 @@ Item {
             var component = Qt.createComponent("qrc:/updatesnotification.qml");
             root.updatesWindow = component.createObject(root);
         }
-
-        refreshByFlags()
     }
 
     Connections {
