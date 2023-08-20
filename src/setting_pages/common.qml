@@ -70,42 +70,6 @@ ScrollView {
             }
         }
 
-        /*Switch {
-            text: qsTr("Stay on Top Window")
-
-            Component.onCompleted: {
-                checked = Global.windowChatStayOnTop
-            }
-
-            onCheckedChanged: {
-                Global.windowChatStayOnTop = checked
-                Global.save()
-            }
-        }
-
-        Row {
-            Switch {
-                text: qsTr("Click-through window")
-
-                Component.onCompleted: {
-                    checked = Global.windowChatTransparentForInput
-                }
-                onCheckedChanged: {
-                    Global.windowChatTransparentForInput = checked
-                    Global.save()
-                }
-            }
-
-            RoundButton {
-                anchors.verticalCenter: parent.verticalCenter
-                flat: true
-                icon.source: "qrc:/resources/images/help-round-button.svg"
-                onClicked: {
-                    Global.windowSettings.showInfo(qsTr("Mouse clicks will be ignored by the chat window. You can return to the previous state through the tray icon"))
-                }
-            }
-        }*/
-
         Switch {
             text: qsTr("Clear Messages on Link Change")
 

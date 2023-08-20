@@ -27,19 +27,6 @@ ScrollView {
     Column {
         id: rootColumn
 
-        /*Switch {
-            text: qsTr("System Window Frame")
-
-            Component.onCompleted: {
-                checked = Global.windowChatSystemWindowFrame
-            }
-
-            onCheckedChanged: {
-                Global.windowChatSystemWindowFrame = checked
-                Global.save()
-            }
-        }*/
-
         MyComponents.SliderRow {
             name: qsTr("Background Opacity")
             from: 0

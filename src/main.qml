@@ -51,7 +51,7 @@ Item {
         Global.windowChatMessageTextFontSize        = qmlUtils.valueReal("windowChatMessageTextFontSize",           Global.windowChatMessageTextFontSize)
         Global.windowChatMessageTimeFontSize        = qmlUtils.valueReal("windowChatMessageTimeFontSize",           Global.windowChatMessageTimeFontSize)
 
-        Global.windowChatShowViewersCount           = qmlUtils.valueReal("windowChatShowViewersCount",              Global.windowChatShowViewersCount)
+        Global.windowChatShowViewersCount           = qmlUtils.valueBool("windowChatShowViewersCount",              Global.windowChatShowViewersCount)
     }
 
     function saveGlobalSettings() {

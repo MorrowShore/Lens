@@ -16,12 +16,8 @@ QtObject {
 
     property int windowSettingsServiceIndex: 0
 
-    property bool windowChatTransparentForInput : false
-
     property bool windowChatShowViewersCount : true
 
-    property bool windowChatStayOnTop : true
-    property bool windowChatSystemWindowFrame : true
     property real windowChatWindowOpacity: 1
     property real windowChatBackgroundOpacity: 0.40
 
