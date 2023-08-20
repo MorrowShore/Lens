@@ -26,6 +26,9 @@ ChatWindow::ChatWindow(QWindow *parent)
     , github(settings, "update_checker", network)
     , chatHandler(settings, network, web)
     , commandsEditor(chatHandler.getBot())
+
+    , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
+    , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
 {
     QQmlEngine* qml = engine();
 
@@ -51,11 +54,32 @@ ChatWindow::ChatWindow(QWindow *parent)
 
     setResizeMode(QQuickView::ResizeMode::SizeRootObjectToView);
 
-    setColor(QColor(0, 0, 0));
+    setColor(QColor(0, 0, 0)); // TODO opacity
+    //setOpacity(0.5); // TODO
 
     setSource(QUrl("qrc:/main.qml"));
 
 #ifdef Q_OS_WINDOWS
     AxelChat::setDarkWindowFrame(winId());
 #endif
+}
+
+bool ChatWindow::event(QEvent *event)
+{
+    if (event->type() == QEvent::WindowStateChange &&
+        windowState() & Qt::WindowMinimized &&
+        hideToTrayOnMinimize.get())
+    {
+        QTimer::singleShot(250, this, &ChatWindow::hide);
+        return true;
+    }
+
+    if (event->type() == QEvent::Close &&
+        hideToTrayOnClose.get())
+    {
+        QTimer::singleShot(250, this, &ChatWindow::hide);
+        return true;
+    }
+
+    return QQuickView::event(event);
 }

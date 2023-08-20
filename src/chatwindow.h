@@ -7,6 +7,7 @@
 #include "appsponsormanager.h"
 #include "commandseditor.h"
 #include "tray.h"
+#include "setting.h"
 #include <QQuickView>
 
 class ChatWindow : public QQuickView
@@ -16,6 +17,8 @@ public:
     static void declareQml();
 
     explicit ChatWindow(QWindow *parent = nullptr);
+
+    virtual bool event(QEvent *event) override;
 
 signals:
 
@@ -31,4 +34,7 @@ private:
     GitHubApi github;
     ChatHandler chatHandler;
     CommandsEditor commandsEditor;
+
+    Setting<bool> hideToTrayOnMinimize;
+    Setting<bool> hideToTrayOnClose;
 };
