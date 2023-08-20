@@ -24,6 +24,7 @@ signals:
 
 private:
     void toogleVisible();
+    void updateFlags();
 
     QSettings settings;
 
@@ -40,6 +41,7 @@ private:
 
     QAction* actionHideToTray = nullptr;
 
+    Setting<bool> transparentForInput;
     Setting<bool> hideToTrayOnMinimize;
     Setting<bool> hideToTrayOnClose;
 };

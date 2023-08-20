@@ -27,6 +27,7 @@ ChatWindow::ChatWindow(QWindow *parent)
     , commandsEditor(chatHandler.getBot())
     , tray(QIcon(":/resources/images/axelchat-16x16.png"))
 
+    , transparentForInput(settings, "transparentForInput", false)
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
 {
@@ -42,7 +43,6 @@ ChatWindow::ChatWindow(QWindow *parent)
         });
 
         QMenu* menu = new QMenu();
-        QAction* action;
 
         {
             actionHideToTray = new QAction(menu);
@@ -60,34 +60,48 @@ ChatWindow::ChatWindow(QWindow *parent)
             menu->addSeparator();
         }
 
-        action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
-        connect(action, &QAction::triggered, this, []()
         {
-            QMLUtils::instance()->triggered("open_settings_window");
-        });
-        menu->addAction(action);
+            QAction* action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
+            connect(action, &QAction::triggered, this, []()
+            {
+                QMLUtils::instance()->triggered("open_settings_window");
+            });
+            menu->addAction(action);
+        }
 
-        action = new QAction(QIcon(":/resources/images/input-mouse-disable.png"), QTranslator::tr("Ignore Mouse"), menu);
-        action->setCheckable(true);
-        connect(action, &QAction::triggered, this, [](){
-            //TODO
-        });
-        menu->addAction(action);
+        {
+            QAction* action = new QAction(tr("Ignore Mouse"), menu);
+            action->setCheckable(true);
 
-        action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
-        connect(action, &QAction::triggered, this, [this](){
-            chatHandler.clearMessages();
-        });
-        menu->addAction(action);
+            connect(action, &QAction::triggered, this, [this]()
+            {
+                transparentForInput.set(!transparentForInput.get());
+                updateFlags();
+            });
+            menu->addAction(action);
+
+            action->setChecked(transparentForInput.get());
+        }
+
+        {
+            QAction* action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
+            connect(action, &QAction::triggered, this, [this]()
+            {
+                chatHandler.clearMessages();
+            });
+            menu->addAction(action);
+        }
 
         menu->addSeparator();
 
-        action = new QAction(QIcon(":/resources/images/emblem-unreadable.png"), tr("Close"), menu);
-        connect(action, &QAction::triggered, this, [this]()
         {
-            QCoreApplication::quit();
-        });
-        menu->addAction(action);
+            QAction* action = new QAction(QIcon(":/resources/images/emblem-unreadable.png"), tr("Close"), menu);
+            connect(action, &QAction::triggered, this, []()
+            {
+                QCoreApplication::quit();
+            });
+            menu->addAction(action);
+        }
 
         tray.setContextMenu(menu);
         tray.show();
@@ -122,6 +136,8 @@ ChatWindow::ChatWindow(QWindow *parent)
 
         setSource(QUrl("qrc:/main.qml"));
     }
+
+    updateFlags();
 
 #ifdef Q_OS_WINDOWS
     AxelChat::setDarkWindowFrame(winId());
@@ -169,4 +185,22 @@ void ChatWindow::toogleVisible()
         show();
         requestActivate();
     }
+}
+
+void ChatWindow::updateFlags()
+{
+    Qt::WindowFlags flags;
+
+    flags.setFlag(Qt::WindowType::Window);
+    flags.setFlag(Qt::WindowType::CustomizeWindowHint);
+
+    flags.setFlag(Qt::WindowType::WindowTitleHint);
+    flags.setFlag(Qt::WindowType::WindowSystemMenuHint);
+    flags.setFlag(Qt::WindowType::WindowMinMaxButtonsHint);
+    flags.setFlag(Qt::WindowType::WindowContextHelpButtonHint);
+    flags.setFlag(Qt::WindowType::WindowCloseButtonHint);
+
+    flags.setFlag(Qt::WindowType::WindowTransparentForInput, transparentForInput.get());
+
+    setFlags(flags);
 }
