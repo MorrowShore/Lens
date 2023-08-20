@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "setting.h"
 #include "chatservicestypes.h"
-#include "uielementbridge.h"
+#include "uibridge.h"
 #include "tcprequest.h"
 #include "tcpreply.h"
 #include "tcpserver.h"
@@ -145,4 +145,6 @@ protected:
     Setting<QString> stream;
     Setting<QString> lastSavedMessageId;
     Setting<bool> enabledThirdPartyEmotes;
+
+    UIBridge uiBridge;
 };

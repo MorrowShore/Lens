@@ -143,7 +143,7 @@ Item {
         Connections {
             target: chatHandler
             function onMessagesDataChanged() {
-                listMessages.needAutoScrollToBottom = listMessages.scrollbarOnBottom() || Global.windowChatTransparentForInput;
+                listMessages.needAutoScrollToBottom = listMessages.scrollbarOnBottom();
                 Qt.callLater(listMessages.autoScroll);
                 deferredAutoScrollTimer.running = true
                 deferredAutoScrollTimer.couterTimes = 5
@@ -158,7 +158,7 @@ Item {
             repeat: true
             onTriggered: {
                 // additional scroll to fix the problem when the first time the scroll does not reach the end
-                listMessages.needAutoScrollToBottom = listMessages.scrollbarOnBottom() || Global.windowChatTransparentForInput;
+                listMessages.needAutoScrollToBottom = listMessages.scrollbarOnBottom();
                 listMessages.autoScroll()
                 couterTimes -= 1
                 if (couterTimes <= 0)

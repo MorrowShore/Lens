@@ -66,6 +66,7 @@ HEADERS += \
     setting.h \
     tcpserver.h \
     tray.h \
+    uibridge.h \
     uielementbridge.h \
     utils.h \
     websocket.h
@@ -114,6 +115,7 @@ SOURCES += \
     ssemanager.cpp \
     tcpserver.cpp \
     tray.cpp \
+    uibridge.cpp \
     uielementbridge.cpp \
     websocket.cpp
 
