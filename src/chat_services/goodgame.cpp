@@ -43,8 +43,8 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::GoodGame, false, parent)
     , network(network_)
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
-    getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
+    uiBridge.findBySetting(stream)->setItemProperty("name", tr("Channel"));
+    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {

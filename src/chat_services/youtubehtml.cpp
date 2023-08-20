@@ -24,11 +24,11 @@ static const int MaxBadLivePageReplies = 3;
 
 }
 
-YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
+YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
     , network(network_)
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
+    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
     
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTubeHtml::onTimeoutRequestChat);
     timerRequestChat.start(RequestChatInterval);

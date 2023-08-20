@@ -15,7 +15,6 @@
 #include <QCoreApplication>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QQuickItem>
 #include <set>
 
 class ChatHandler;
@@ -99,9 +98,7 @@ public:
     Q_INVOKABLE QString getName() const;
     Q_INVOKABLE QUrl getIconUrl() const;
 
-    Q_INVOKABLE int getUIElementBridgesCount() const;
-    Q_INVOKABLE int getUIElementBridgeType(const int index) const;
-    Q_INVOKABLE void bindQmlItem(const int index, QQuickItem* item);
+    Q_INVOKABLE UIBridge* getUiBridge() { return &uiBridge; }
 
 #ifdef QT_QUICK_LIB
     static void declareQml()
@@ -116,10 +113,12 @@ signals:
     void connectedChanged(const bool connected);
     void authorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
+private slots:
+    void onUIElementChanged(const std::shared_ptr<UIElementBridge>& element);
+
 private:
     const AxelChat::ServiceType serviceType;
     const QString settingsGroupPath;
-    QList<std::shared_ptr<UIElementBridge>> uiElements;
 
 protected:
 
@@ -128,17 +127,7 @@ protected:
     QString generateAuthorId(const QString& rawId) const;
     QString generateMessageId(const QString& rawId) const;
 
-    void addUIElement(std::shared_ptr<UIElementBridge> element);
-    void onUIElementChanged(const std::shared_ptr<UIElementBridge> element);
-
-    virtual void onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
-    {
-        Q_UNUSED(element)
-    }
-
     const QString& getSettingsGroupPath() const { return settingsGroupPath; }
-
-    std::shared_ptr<UIElementBridge> getUIElementBridgeBySetting(const Setting<QString>& setting);
 
     State state;
     Setting<bool> enabled;

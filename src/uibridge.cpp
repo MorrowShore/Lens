@@ -48,3 +48,21 @@ void UIBridge::bindQuickItem(const int index, QQuickItem *item)
 
     elements[index]->bindQmlItem(item);
 }
+
+std::shared_ptr<UIElementBridge> UIBridge::findBySetting(const Setting<QString> &setting) const
+{
+    for (const std::shared_ptr<UIElementBridge>& element : qAsConst(elements))
+    {
+        if (!element)
+        {
+            continue;
+        }
+
+        if (element->getSettingString() == &setting)
+        {
+            return element;
+        }
+    }
+
+    return nullptr;
+}

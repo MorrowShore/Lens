@@ -12,7 +12,9 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
 
     , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", enabledThirdPartyEmotesDefault)
 {
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&stream, tr("Stream"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&stream, tr("Stream"))));
+
+    connect(&uiBridge, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
 }
 
 QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
@@ -134,7 +136,7 @@ bool ChatService::isEnabled() const
 void ChatService::setEnabled(const bool enabled_)
 {
     enabled.set(enabled_);
-    onUIElementChanged(uiElements[0]);
+    onUIElementChanged(uiBridge.getElements().first());
     emit stateChanged();
 }
 
@@ -179,31 +181,28 @@ QUrl ChatService::getIconUrl() const
     return getIconUrl(serviceType);
 }
 
-int ChatService::getUIElementBridgesCount() const
+void ChatService::onUIElementChanged(const std::shared_ptr<UIElementBridge> &element)
 {
-    return uiElements.count();
-}
-
-int ChatService::getUIElementBridgeType(const int index) const
-{
-    if (index < 0 || index >= uiElements.count())
+    if (!element)
     {
-        qCritical() << Q_FUNC_INFO << "invalid index" << index;
-        return -1;
+        qCritical() << Q_FUNC_INFO << "element is null";
+        return;
     }
 
-    return uiElements[index]->getTypeInt();
-}
+    Setting<QString>* settingString = element->getSettingString();
+    Setting<bool>* settingBool = element->getSettingBool();
 
-void ChatService::bindQmlItem(const int index, QQuickItem *item)
-{
-    if (index < 0 || index >= uiElements.count())
+    if (settingString && *&settingString == &stream)
     {
-        qCritical() << Q_FUNC_INFO << "invalid index" << index;
-        return ;
+        stream.set(stream.get().trimmed());
+        reconnect();
+    }
+    else if (settingBool && *&settingBool == &enabled)
+    {
+        reconnect();
     }
 
-    uiElements[index]->bindQmlItem(item);
+    emit stateChanged();
 }
 
 QString ChatService::generateAuthorId(const QString &rawId) const
@@ -220,63 +219,6 @@ QString ChatService::generateMessageId(const QString &rawId_) const
     }
 
     return getServiceTypeId(getServiceType()) + "_" + rawId;
-}
-
-void ChatService::addUIElement(std::shared_ptr<UIElementBridge> element)
-{
-    if (!element)
-    {
-        qCritical() << Q_FUNC_INFO << "!element";
-        return;
-    }
-
-    connect(element.get(), &UIElementBridge::valueChanged, this, [this, element]()
-    {
-        onUIElementChanged(element);
-    });
-
-    uiElements.append(element);
-}
-
-void ChatService::onUIElementChanged(const std::shared_ptr<UIElementBridge> element)
-{
-    if (!element)
-    {
-        qCritical() << Q_FUNC_INFO << "!element";
-        return;
-    }
-
-    Setting<QString>* settingString = element->getSettingString();
-    Setting<bool>* settingBool = element->getSettingBool();
-
-    if (settingString && *&settingString == &stream)
-    {
-        stream.set(stream.get().trimmed());
-        reconnect();
-    }
-    else if (settingBool && *&settingBool == &enabled)
-    {
-        reconnect();
-    }
-    else
-    {
-        onUiElementChangedImpl(element);
-    }
-
-    emit stateChanged();
-}
-
-std::shared_ptr<UIElementBridge> ChatService::getUIElementBridgeBySetting(const Setting<QString> &setting)
-{
-    for (const std::shared_ptr<UIElementBridge>& uiElement : qAsConst(uiElements))
-    {
-        if (uiElement && uiElement->getSettingString() == &setting)
-        {
-            return uiElement;
-        }
-    }
-
-    return nullptr;
 }
 
 QJsonObject ChatService::getStateJson() const

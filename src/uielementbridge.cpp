@@ -96,7 +96,7 @@ void UIElementBridge::bindQmlItem(QQuickItem *item_)
     item = item_;
     if (!item_)
     {
-        qCritical() << Q_FUNC_INFO << "!item";
+        qCritical() << Q_FUNC_INFO << "item is null";
         return;
     }
 

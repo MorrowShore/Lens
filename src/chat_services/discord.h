@@ -18,7 +18,6 @@ public:
     QString getStateDescription() const override;
 
 protected:
-    void onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element) override;
     void reconnectImpl() override;
 
 private slots:

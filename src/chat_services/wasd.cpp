@@ -24,8 +24,8 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     , network(network_)
     , socket("https://wasd.tv/")
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
-    getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
+    uiBridge.findBySetting(stream)->setItemProperty("name", tr("Channel"));
+    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {

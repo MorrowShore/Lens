@@ -63,24 +63,24 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     , showGuildName(settings, getSettingsGroupPath() + "/show_guild_name", true)
     , showChannelName(settings, getSettingsGroupPath() + "/show_channel_name", true)
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
+    uiBridge.findBySetting(stream)->setItemProperty("visible", false);
 
     authStateInfo = std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("Loading..."));
-    addUIElement(authStateInfo);
+    uiBridge.addElement(authStateInfo);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true)));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "AbCdEfGhIjKlMnOpQrStUvWxYz.0123456789", true)));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create an app in the Discord Developer Portal"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open Discord Developer Portal"), []()
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true)));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&botToken, tr("Bot token"), "AbCdEfGhIjKlMnOpQrStUvWxYz.0123456789", true)));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("1. " + tr("Create an app in the Discord Developer Portal"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Open Discord Developer Portal"), []()
     {
         QDesktopServices::openUrl(QUrl("https://discord.com/developers"));
     })));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Copy the Application ID and paste above"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("3. " + tr("Create a bot (in Bot section)"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("4. " + tr("Allow the bot to read the message content (Message Content Intent checkbox)"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("5. " + tr("Reset the token (button Reset Token). The bot's previous token will become invalid"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("6. " + tr("Copy the bot token and paste above") + ". <b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("7. " + tr("Add the bot to the servers you need"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("2. " + tr("Copy the Application ID and paste above"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("3. " + tr("Create a bot (in Bot section)"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("4. " + tr("Allow the bot to read the message content (Message Content Intent checkbox)"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("5. " + tr("Reset the token (button Reset Token). The bot's previous token will become invalid"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("6. " + tr("Copy the bot token and paste above") + ". <b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("7. " + tr("Add the bot to the servers you need"))));
     connectBotToGuild = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Add bot to server"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://discord.com/api/oauth2/authorize"
@@ -88,12 +88,38 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
                                        "&scope=bot"
                                        "&client_id=" + applicationId.get().trimmed()));
     }));
-    addUIElement(connectBotToGuild);
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("To display private chats/channels, add the bot\n"
+    uiBridge.addElement(connectBotToGuild);
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel(tr("To display private chats/channels, add the bot\n"
                                                                                   "to these chats/channels in access rights (at your own risk)"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showGuildName, tr("Show server name"))));
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showChannelName, tr("Show channel name"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showGuildName, tr("Show server name"))));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createSwitch(&showChannelName, tr("Show channel name"))));
+
+    connect(&uiBridge, QOverload<const std::shared_ptr<UIElementBridge>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIElementBridge>& element)
+    {
+        if (!element)
+        {
+            qCritical() << Q_FUNC_INFO << "!element";
+            return;
+        }
+
+        if (Setting<QString>* setting = element->getSettingString(); setting)
+        {
+            if (*&setting == &applicationId || *&setting == &botToken)
+            {
+                reconnect();
+            }
+        }
+
+        if (Setting<bool>* setting = element->getSettingBool(); setting)
+        {
+            if (*&setting == &showNsfwChannels)
+            {
+                guilds.clear();
+                channels.clear();
+            }
+        }
+    });
 
     applicationId.setCallbackValueChanged([this](const QString&) { updateUI(); });
     botToken.setCallbackValueChanged([this](const QString&) { updateUI(); });
@@ -204,32 +230,6 @@ QString Discord::getStateDescription() const
     }
 
     return "<unknown_state>";
-}
-
-void Discord::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
-{
-    if (!element)
-    {
-        qCritical() << Q_FUNC_INFO << "!element";
-        return;
-    }
-
-    if (Setting<QString>* setting = element->getSettingString(); setting)
-    {
-        if (*&setting == &applicationId || *&setting == &botToken)
-        {
-            reconnect();
-        }
-    }
-
-    if (Setting<bool>* setting = element->getSettingBool(); setting)
-    {
-        if (*&setting == &showNsfwChannels)
-        {
-            guilds.clear();
-            channels.clear();
-        }
-    }
 }
 
 void Discord::reconnectImpl()

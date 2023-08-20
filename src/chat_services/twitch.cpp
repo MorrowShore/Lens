@@ -34,10 +34,10 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
   , authStateInfo(UIElementBridge::createLabel("Loading..."))
   , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("name", tr("Channel"));
-    getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
+    uiBridge.findBySetting(stream)->setItemProperty("name", tr("Channel"));
+    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 
-    addUIElement(authStateInfo);
+    uiBridge.addElement(authStateInfo);
 
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
@@ -64,7 +64,22 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             auth.login();
         }
     }));
-    addUIElement(loginButton);
+    uiBridge.addElement(loginButton);
+
+    connect(&uiBridge, QOverload<const std::shared_ptr<UIElementBridge>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIElementBridge>& element)
+    {
+        if (!element)
+        {
+            qCritical() << Q_FUNC_INFO << "!element";
+            return;
+        }
+
+        Setting<QString>* setting = element->getSettingString();
+        if (!setting)
+        {
+            return;
+        }
+    });
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
@@ -241,21 +256,6 @@ TcpReply Twitch::processTcpRequest(const TcpRequest &request)
     }
 
     return TcpReply::createTextHtmlError("Unknown path");
-}
-
-void Twitch::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
-{
-    if (!element)
-    {
-        qCritical() << Q_FUNC_INFO << "!element";
-        return;
-    }
-
-    Setting<QString>* setting = element->getSettingString();
-    if (!setting)
-    {
-        return;
-    }
 }
 
 void Twitch::sendIRCMessage(const QString &message)

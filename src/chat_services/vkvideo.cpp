@@ -25,9 +25,9 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
     , authStateInfo(UIElementBridge::createLabel("Loading..."))
     , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));
+    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));
 
-    addUIElement(authStateInfo);
+    uiBridge.addElement(authStateInfo);
 
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
@@ -52,7 +52,7 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
             auth.login();
         }
     }));
-    addUIElement(loginButton);
+    uiBridge.addElement(loginButton);
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &VkVideo::requestChat);
     timerRequestChat.start(RequestChatInterval);

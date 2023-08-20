@@ -25,7 +25,6 @@ private slots:
 
 protected:
     void reconnectImpl() override;
-    void onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element) override;
 
 private:
     struct Info

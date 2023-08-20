@@ -56,6 +56,7 @@ public:
         qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
                                                   1, 0, "OutputToFile", "Type cannot be created in QML");
 
+        UIBridge::declareQml();
         ChatService::declareQml();
 
         AuthorQMLProvider::declareQML();

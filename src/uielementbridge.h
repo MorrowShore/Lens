@@ -35,6 +35,9 @@ public:
     Setting<bool>* getSettingBool() { return settingBool; }
     const Setting<bool>* getSettingBool() const { return settingBool; }
 
+    Setting<int>* getSettingInt() { return settingInt; }
+    const Setting<int>* getSettingInt() const { return settingInt; }
+
     Q_INVOKABLE int getTypeInt() const { return (int)type; }
 
     bool executeInvokeCallback();
@@ -44,7 +47,7 @@ public:
 #ifdef QT_QUICK_LIB
     static void declareQml()
     {
-        qmlRegisterUncreatableType<UIElementBridge> ("AxelChat.UIElementBridge", 1, 0, "UIElementBridge", "Type cannot be created in QML");
+        qmlRegisterUncreatableType<UIElementBridge> ("UIElementBridge", 1, 0, "UIElementBridge", "Type cannot be created in QML");
     }
 #endif
 

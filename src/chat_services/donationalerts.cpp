@@ -62,9 +62,9 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     , auth(settings, getSettingsGroupPath() + "/auth", network)
     , authStateInfo(UIElementBridge::createLabel("Loading..."))
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
+    uiBridge.findBySetting(stream)->setItemProperty("visible", false);
 
-    addUIElement(authStateInfo);
+    uiBridge.addElement(authStateInfo);
 
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
@@ -93,9 +93,9 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
             auth.login();
         }
     }));
-    addUIElement(loginButton);
+    uiBridge.addElement(loginButton);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Dashboard"), []()
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Dashboard"), []()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/dashboard"));
     })));
@@ -104,13 +104,13 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/r/" + info.userName));
     }));
-    addUIElement(donateMainPageButton);
+    uiBridge.addElement(donateMainPageButton);
 
     donateAlternativePageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Alternative donation page"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/c/" + info.userName));
     }));
-    addUIElement(donateAlternativePageButton);
+    uiBridge.addElement(donateAlternativePageButton);
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)

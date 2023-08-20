@@ -22,14 +22,14 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     , domain("https://donatepay.ru")
     , donationPagePrefix("https://new.donatepay.ru/@")
 {
-    getUIElementBridgeBySetting(stream)->setItemProperty("visible", false);
+    uiBridge.findBySetting(stream)->setItemProperty("visible", false);
 
     authStateInfo = std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("Loading..."));
-    addUIElement(authStateInfo);
+    uiBridge.addElement(authStateInfo);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true)));
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true)));
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Get API key"), [this]()
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Get API key"), [this]()
     {
         QDesktopServices::openUrl(QUrl(domain + "/page/api"));
     })));
@@ -38,12 +38,34 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     {
         QDesktopServices::openUrl(QUrl(donationPagePrefix + info.userId));
     }));
-    addUIElement(donatePageButton);
+    uiBridge.addElement(donatePageButton);
 
-    addUIElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Transactions"), [this]()
+    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Transactions"), [this]()
     {
         QDesktopServices::openUrl(QUrl(domain + "/billing/transactions"));
     })));
+
+    connect(&uiBridge, QOverload<const std::shared_ptr<UIElementBridge>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIElementBridge>& element)
+    {
+        if (!element)
+        {
+            qCritical() << Q_FUNC_INFO << "!element";
+            return;
+        }
+
+        Setting<QString>* setting = element->getSettingString();
+        if (!setting)
+        {
+            return;
+        }
+
+        if (*&setting == &apiKey)
+        {
+            const QString apiKey = setting->get().trimmed();
+            setting->set(apiKey);
+            reconnect();
+        }
+    });
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
@@ -301,28 +323,6 @@ void DonatePay::reconnectImpl()
     timerReconnect.start();
     requestUser();
     requestSocketToken();
-}
-
-void DonatePay::onUiElementChangedImpl(const std::shared_ptr<UIElementBridge> element)
-{
-    if (!element)
-    {
-        qCritical() << Q_FUNC_INFO << "!element";
-        return;
-    }
-
-    Setting<QString>* setting = element->getSettingString();
-    if (!setting)
-    {
-        return;
-    }
-
-    if (*&setting == &apiKey)
-    {
-        const QString apiKey = setting->get().trimmed();
-        setting->set(apiKey);
-        reconnect();
-    }
 }
 
 void DonatePay::send(const QJsonObject &params, const int method)
