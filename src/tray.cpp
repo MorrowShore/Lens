@@ -6,6 +6,16 @@ Tray::Tray(QObject *parent) : QObject(parent)
 {
     tray = new QSystemTrayIcon(QIcon(":/resources/images/axelchat-16x16.png"), this);
 
+    tray->setToolTip(QCoreApplication::applicationName());
+
+    connect(tray, QOverload<QSystemTrayIcon::ActivationReason>::of(&QSystemTrayIcon::activated), this, [](QSystemTrayIcon::ActivationReason reason)
+    {
+        if (reason == QSystemTrayIcon::ActivationReason::Trigger)
+        {
+            qDebug() << "activated";
+        }
+    });
+
     QMenu* menu = new QMenu();
     QAction* action;
 
