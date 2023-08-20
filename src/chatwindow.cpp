@@ -45,7 +45,7 @@ ChatWindow::ChatWindow(QWindow *parent)
         QAction* action;
 
         {
-            actionHideToTray = new QAction(QIcon(""), tr("Hide to tray"), menu);
+            actionHideToTray = new QAction(menu);
 
             QFont font = actionHideToTray->font();
             font.setBold(true);
@@ -63,9 +63,24 @@ ChatWindow::ChatWindow(QWindow *parent)
         action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
         connect(action, &QAction::triggered, this, [this]()
         {
-
+            //TODO
         });
         menu->addAction(action);
+
+        action = new QAction(QIcon(":/resources/images/input-mouse-disable.png"), QTranslator::tr("Ignore Mouse"), menu);
+        action->setCheckable(true);
+        connect(action, &QAction::triggered, this, [this](){
+            //TODO
+        });
+        menu->addAction(action);
+
+        action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
+        connect(action, &QAction::triggered, this, [this](){
+            //TODO
+        });
+        menu->addAction(action);
+
+        menu->addSeparator();
 
         action = new QAction(QIcon(":/resources/images/emblem-unreadable.png"), tr("Close"), menu);
         connect(action, &QAction::triggered, this, [this]()
@@ -117,11 +132,11 @@ bool ChatWindow::event(QEvent *event)
 {
     if (isVisible())
     {
-        actionHideToTray->setText(tr("Hide to tray"));
+        actionHideToTray->setText(tr("Hide"));
     }
     else
     {
-        actionHideToTray->setText(tr("Open"));
+        actionHideToTray->setText(tr("Show"));
     }
 
     if (event->type() == QEvent::WindowStateChange)

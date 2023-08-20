@@ -200,10 +200,8 @@
 <context>
     <name>ChatWindow</name>
     <message>
-        <location filename="chatwindow.cpp" line="48"/>
-        <location filename="chatwindow.cpp" line="120"/>
         <source>Hide to tray</source>
-        <translation>Спрятать в трей</translation>
+        <translation type="vanished">Спрятать в трей</translation>
     </message>
     <message>
         <location filename="chatwindow.cpp" line="63"/>
@@ -211,14 +209,23 @@
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="70"/>
+        <location filename="chatwindow.cpp" line="85"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="124"/>
+        <location filename="chatwindow.cpp" line="135"/>
+        <source>Hide</source>
+        <translation>Скрыть</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="139"/>
+        <source>Show</source>
+        <translation>Показать</translation>
+    </message>
+    <message>
         <source>Open</source>
-        <translation>Открыть</translation>
+        <translation type="vanished">Открыть</translation>
     </message>
 </context>
 <context>
@@ -1004,12 +1011,14 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Настройки</translation>
     </message>
     <message>
+        <location filename="chatwindow.cpp" line="70"/>
         <location filename="tray.cpp" line="34"/>
         <location filename="tray.cpp" line="70"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
+        <location filename="chatwindow.cpp" line="77"/>
         <location filename="tray.cpp" line="40"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>
