@@ -2,7 +2,6 @@
 #include "applicationinfo.h"
 #include "qmlutils.h"
 #include <QQmlEngine>
-#include <QQuickWidget>
 #include <QQmlContext>
 #include <QGuiApplication>
 
@@ -18,17 +17,18 @@ void ChatWindow::declareQml()
     Tray::declareQml();
 }
 
-ChatWindow::ChatWindow(QWidget *parent)
-    : QMainWindow{parent}
+ChatWindow::ChatWindow(QWindow *parent)
+    : QQuickView(parent)
     , web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe")
     , appSponsorManager(network)
-    , qml(new QQmlEngine(this))
-    , tray(qml)
-    , i18n(settings, "i18n", qml)
+    , tray(engine())
+    , i18n(settings, "i18n", engine())
     , github(settings, "update_checker", network)
     , chatHandler(settings, network, web)
     , commandsEditor(chatHandler.getBot())
 {
+    QQmlEngine* qml = engine();
+
     qml->rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
 
     qml->rootContext()->setContextProperty("i18n",               &i18n);
@@ -49,11 +49,9 @@ ChatWindow::ChatWindow(QWidget *parent)
     qml->rootContext()->setContextProperty("APP_INFO_SUPPORT_URL_STR", APP_INFO_SUPPORT_URL_STR);
     qml->rootContext()->setContextProperty("APP_INFO_SITE_URL_STR", APP_INFO_SITE_URL_STR);
 
-    QQuickWidget *view = new QQuickWidget(qml, this);
-    view->setClearColor(QColor(0, 0, 0));
-    view->setResizeMode(QQuickWidget::ResizeMode::SizeRootObjectToView);
+    setResizeMode(QQuickView::ResizeMode::SizeRootObjectToView);
 
-    view->setSource(QUrl("qrc:/main.qml"));
+    setColor(QColor(0, 0, 0));
 
-    setCentralWidget(view);
+    setSource(QUrl("qrc:/main.qml"));
 }

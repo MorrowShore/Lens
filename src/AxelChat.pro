@@ -1,4 +1,4 @@
-QT += widgets gui quick quickwidgets multimedia websockets network svg
+QT += widgets gui quick multimedia websockets network svg
 
 include(CefWebEngineQt/CefWebEngineQt.pri)
 

@@ -7,15 +7,15 @@
 #include "appsponsormanager.h"
 #include "commandseditor.h"
 #include "tray.h"
-#include <QMainWindow>
+#include <QQuickView>
 
-class ChatWindow : public QMainWindow
+class ChatWindow : public QQuickView
 {
     Q_OBJECT
 public:
     static void declareQml();
 
-    explicit ChatWindow(QWidget *parent = nullptr);
+    explicit ChatWindow(QWindow *parent = nullptr);
 
 signals:
 
@@ -25,7 +25,6 @@ private:
     cweqt::Manager web;
     QNetworkAccessManager network;
     AppSponsorManager appSponsorManager;
-    QQmlEngine* qml = nullptr;
     Tray tray;
     I18n i18n;
     ClipboardQml qmlClipboard;
