@@ -56,6 +56,8 @@ ChatWindow::ChatWindow(QWindow *parent)
                 toogleVisible();
             });
             menu->addAction(actionHideToTray);
+
+            menu->addSeparator();
         }
 
         action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
