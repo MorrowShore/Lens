@@ -6,9 +6,9 @@
 #include "githubapi.h"
 #include "appsponsormanager.h"
 #include "commandseditor.h"
-#include "tray.h"
 #include "setting.h"
 #include <QQuickView>
+#include <QSystemTrayIcon>
 
 class ChatWindow : public QQuickView
 {
@@ -28,12 +28,13 @@ private:
     cweqt::Manager web;
     QNetworkAccessManager network;
     AppSponsorManager appSponsorManager;
-    Tray tray;
     I18n i18n;
     ClipboardQml qmlClipboard;
     GitHubApi github;
     ChatHandler chatHandler;
     CommandsEditor commandsEditor;
+
+    QSystemTrayIcon tray;
 
     Setting<bool> hideToTrayOnMinimize;
     Setting<bool> hideToTrayOnClose;

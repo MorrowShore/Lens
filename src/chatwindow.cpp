@@ -14,50 +14,65 @@ void ChatWindow::declareQml()
     GitHubApi::declareQml();
     ClipboardQml::declareQml();
     CommandsEditor::declareQml();
-    Tray::declareQml();
 }
 
 ChatWindow::ChatWindow(QWindow *parent)
     : QQuickView(parent)
     , web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe")
     , appSponsorManager(network)
-    , tray(engine())
     , i18n(settings, "i18n", engine())
     , github(settings, "update_checker", network)
     , chatHandler(settings, network, web)
     , commandsEditor(chatHandler.getBot())
+    , tray(QIcon(":/resources/images/axelchat-16x16.png"))
 
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
 {
-    QQmlEngine* qml = engine();
+    {
+        tray.setToolTip(QCoreApplication::applicationName());
 
-    qml->rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
+        connect(&tray, QOverload<QSystemTrayIcon::ActivationReason>::of(&QSystemTrayIcon::activated), this, [this](QSystemTrayIcon::ActivationReason reason)
+        {
+            if (reason == QSystemTrayIcon::ActivationReason::Trigger)
+            {
+                show();
+                requestActivate();
+            }
+        });
 
-    qml->rootContext()->setContextProperty("i18n",               &i18n);
-    qml->rootContext()->setContextProperty("chatHandler",        &chatHandler);
-    qml->rootContext()->setContextProperty("outputToFile",       &chatHandler.getOutputToFile());
-    qml->rootContext()->setContextProperty("chatBot",            &chatHandler.getBot());
-    qml->rootContext()->setContextProperty("authorQMLProvider",  &chatHandler.getAuthorQMLProvider());
-    qml->rootContext()->setContextProperty("updateChecker",      &github);
-    qml->rootContext()->setContextProperty("clipboard",          &qmlClipboard);
-    qml->rootContext()->setContextProperty("qmlUtils",           QMLUtils::instance());
-    qml->rootContext()->setContextProperty("messagesModel",      &chatHandler.getMessagesModel());
-    qml->rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
-    qml->rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
-    qml->rootContext()->setContextProperty("tray",               &tray);
+        tray.show();
+    }
 
-    qml->rootContext()->setContextProperty("APP_INFO_LEGALCOPYRIGHT_STR_U", APP_INFO_LEGALCOPYRIGHT_STR_U);
-    qml->rootContext()->setContextProperty("APP_INFO_EMAIL_STR", APP_INFO_EMAIL_STR);
-    qml->rootContext()->setContextProperty("APP_INFO_SUPPORT_URL_STR", APP_INFO_SUPPORT_URL_STR);
-    qml->rootContext()->setContextProperty("APP_INFO_SITE_URL_STR", APP_INFO_SITE_URL_STR);
+    {
+        QQmlEngine* qml = engine();
 
-    setResizeMode(QQuickView::ResizeMode::SizeRootObjectToView);
+        qml->rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
 
-    setColor(QColor(0, 0, 0)); // TODO opacity
-    //setOpacity(0.5); // TODO
+        qml->rootContext()->setContextProperty("i18n",               &i18n);
+        qml->rootContext()->setContextProperty("chatHandler",        &chatHandler);
+        qml->rootContext()->setContextProperty("outputToFile",       &chatHandler.getOutputToFile());
+        qml->rootContext()->setContextProperty("chatBot",            &chatHandler.getBot());
+        qml->rootContext()->setContextProperty("authorQMLProvider",  &chatHandler.getAuthorQMLProvider());
+        qml->rootContext()->setContextProperty("updateChecker",      &github);
+        qml->rootContext()->setContextProperty("clipboard",          &qmlClipboard);
+        qml->rootContext()->setContextProperty("qmlUtils",           QMLUtils::instance());
+        qml->rootContext()->setContextProperty("messagesModel",      &chatHandler.getMessagesModel());
+        qml->rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
+        qml->rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
 
-    setSource(QUrl("qrc:/main.qml"));
+        qml->rootContext()->setContextProperty("APP_INFO_LEGALCOPYRIGHT_STR_U", APP_INFO_LEGALCOPYRIGHT_STR_U);
+        qml->rootContext()->setContextProperty("APP_INFO_EMAIL_STR", APP_INFO_EMAIL_STR);
+        qml->rootContext()->setContextProperty("APP_INFO_SUPPORT_URL_STR", APP_INFO_SUPPORT_URL_STR);
+        qml->rootContext()->setContextProperty("APP_INFO_SITE_URL_STR", APP_INFO_SITE_URL_STR);
+
+        setResizeMode(QQuickView::ResizeMode::SizeRootObjectToView);
+
+        setColor(QColor(0, 0, 0)); // TODO opacity
+        //setOpacity(0.5); // TODO
+
+        setSource(QUrl("qrc:/main.qml"));
+    }
 
 #ifdef Q_OS_WINDOWS
     AxelChat::setDarkWindowFrame(winId());

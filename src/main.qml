@@ -5,7 +5,6 @@ import Qt.labs.settings 1.1
 import AxelChat.ChatHandler 1.0
 import AxelChat.ChatService 1.0
 import AxelChat.UpdateChecker 1.0
-import AxelChat.Tray 1.0
 import QtQuick.Window 2.15
 import "my_components" as MyComponents
 import "setting_pages" as SettingPages
@@ -151,7 +150,7 @@ Item {
         }
     }
 
-    Connections {
+    /*Connections {
         target: tray
 
         function onTriggered(actionName) {
@@ -179,7 +178,7 @@ Item {
         function onWindowChatTransparentForInputChanged() {
             tray.ignoredMouse = Global.windowChatTransparentForInput
         }
-    }
+    }*/
 
     MouseArea {
         anchors.fill: parent
