@@ -51,6 +51,7 @@ ChatWindow::ChatWindow(QWidget *parent)
 
     QQuickWidget *view = new QQuickWidget(qml, this);
     view->setClearColor(QColor(0, 0, 0));
+    view->setResizeMode(QQuickWidget::ResizeMode::SizeRootObjectToView);
 
     view->setSource(QUrl("qrc:/main.qml"));
 
