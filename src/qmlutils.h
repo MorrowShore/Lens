@@ -39,6 +39,7 @@ public:
 
 signals:
     void dataChanged();
+    void triggered(const QString& action);
 
 private:
     static QMLUtils* _instance;

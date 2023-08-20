@@ -150,6 +150,21 @@ Item {
         }
     }
 
+    Connections {
+        target: qmlUtils
+        function onTriggered(action) {
+            if (action === "open_settings_window") {
+                Global.openSettingsWindow()
+            }
+            else if (action === "input_transparent_toggle") {
+                Global.windowChatTransparentForInput = !Global.windowChatTransparentForInput
+            }
+            else {
+                console.log("Unknown triggered action '", action, "'")
+            }
+        }
+    }
+
     /*Connections {
         target: tray
 

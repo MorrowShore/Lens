@@ -61,22 +61,22 @@ ChatWindow::ChatWindow(QWindow *parent)
         }
 
         action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
-        connect(action, &QAction::triggered, this, [this]()
+        connect(action, &QAction::triggered, this, []()
         {
-            //TODO
+            QMLUtils::instance()->triggered("open_settings_window");
         });
         menu->addAction(action);
 
         action = new QAction(QIcon(":/resources/images/input-mouse-disable.png"), QTranslator::tr("Ignore Mouse"), menu);
         action->setCheckable(true);
-        connect(action, &QAction::triggered, this, [this](){
+        connect(action, &QAction::triggered, this, [](){
             //TODO
         });
         menu->addAction(action);
 
         action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
         connect(action, &QAction::triggered, this, [this](){
-            //TODO
+            chatHandler.clearMessages();
         });
         menu->addAction(action);
 
