@@ -36,6 +36,8 @@ private:
 
     QSystemTrayIcon tray;
 
+    QAction* actionHideToTray = nullptr;
+
     Setting<bool> hideToTrayOnMinimize;
     Setting<bool> hideToTrayOnClose;
 };

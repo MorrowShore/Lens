@@ -4,6 +4,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QGuiApplication>
+#include <QMenu>
 
 void ChatWindow::declareQml()
 {
@@ -41,6 +42,39 @@ ChatWindow::ChatWindow(QWindow *parent)
             }
         });
 
+        QMenu* menu = new QMenu();
+        QAction* action;
+
+        actionHideToTray = new QAction(QIcon(""), tr("Hide to tray"), menu);
+        connect(actionHideToTray, &QAction::triggered, this, [this]()
+        {
+            if (isVisible())
+            {
+                hide();
+            }
+            else
+            {
+                show();
+                requestActivate();
+            }
+        });
+        menu->addAction(actionHideToTray);
+
+        action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
+        connect(action, &QAction::triggered, this, [this]()
+        {
+
+        });
+        menu->addAction(action);
+
+        action = new QAction(QIcon(":/resources/images/emblem-unreadable.png"), tr("Close"), menu);
+        connect(action, &QAction::triggered, this, [this]()
+        {
+            QCoreApplication::quit();
+        });
+        menu->addAction(action);
+
+        tray.setContextMenu(menu);
         tray.show();
     }
 
@@ -81,12 +115,22 @@ ChatWindow::ChatWindow(QWindow *parent)
 
 bool ChatWindow::event(QEvent *event)
 {
-    if (event->type() == QEvent::WindowStateChange &&
-        windowState() & Qt::WindowMinimized &&
-        hideToTrayOnMinimize.get())
+    if (isVisible())
     {
-        QTimer::singleShot(250, this, &ChatWindow::hide);
-        return true;
+        actionHideToTray->setText(tr("Hide to tray"));
+    }
+    else
+    {
+        actionHideToTray->setText(tr("Open"));
+    }
+
+    if (event->type() == QEvent::WindowStateChange)
+    {
+        if (windowState() & Qt::WindowMinimized && hideToTrayOnMinimize.get())
+        {
+            QTimer::singleShot(250, this, &ChatWindow::hide);
+            return true;
+        }
     }
 
     if (event->type() == QEvent::Close &&

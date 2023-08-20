@@ -198,6 +198,30 @@
     </message>
 </context>
 <context>
+    <name>ChatWindow</name>
+    <message>
+        <location filename="chatwindow.cpp" line="48"/>
+        <location filename="chatwindow.cpp" line="120"/>
+        <source>Hide to tray</source>
+        <translation>Спрятать в трей</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="63"/>
+        <source>Settings</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="70"/>
+        <source>Close</source>
+        <translation>Закрыть</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="124"/>
+        <source>Open</source>
+        <translation>Открыть</translation>
+    </message>
+</context>
+<context>
     <name>CommandSingleEditor</name>
     <message>
         <location filename="commandsingleeditor.ui" line="14"/>
@@ -667,47 +691,47 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>DonatePay</name>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="20"/>
+        <location filename="chat_services/donatepay.cpp" line="30"/>
         <source>API key</source>
         <translation>API ключ</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="22"/>
+        <location filename="chat_services/donatepay.cpp" line="32"/>
         <source>Get API key</source>
         <translation>Получить API ключ</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="27"/>
+        <location filename="chat_services/donatepay.cpp" line="37"/>
         <source>Donation page</source>
         <translation>Страница доната</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="33"/>
+        <location filename="chat_services/donatepay.cpp" line="43"/>
         <source>Transactions</source>
         <translation>Транзакции</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="61"/>
+        <location filename="chat_services/donatepay.cpp" line="136"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="64"/>
+        <location filename="chat_services/donatepay.cpp" line="139"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="67"/>
+        <location filename="chat_services/donatepay.cpp" line="142"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="77"/>
+        <location filename="chat_services/donatepay.cpp" line="152"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/donatepay.cpp" line="82"/>
+        <location filename="chat_services/donatepay.cpp" line="157"/>
         <source>Authorized as %1</source>
         <translation>Авторизован как %1</translation>
     </message>
@@ -766,27 +790,27 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="248"/>
+        <location filename="chat_services/donationalerts.cpp" line="250"/>
         <source>Logged in</source>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="249"/>
+        <location filename="chat_services/donationalerts.cpp" line="257"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="315"/>
+        <location filename="chat_services/donationalerts.cpp" line="254"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="490"/>
+        <location filename="chat_services/donationalerts.cpp" line="493"/>
         <source>Anonymous</source>
         <translation>Аноним</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="535"/>
+        <location filename="chat_services/donationalerts.cpp" line="538"/>
         <source>Audio</source>
         <translation>Аудио</translation>
     </message>
@@ -975,28 +999,28 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation type="vanished">Тестовое сообщение</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="12"/>
+        <location filename="tray.cpp" line="28"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="18"/>
-        <location filename="tray.cpp" line="54"/>
+        <location filename="tray.cpp" line="34"/>
+        <location filename="tray.cpp" line="70"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="24"/>
+        <location filename="tray.cpp" line="40"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="30"/>
+        <location filename="tray.cpp" line="46"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="49"/>
+        <location filename="tray.cpp" line="65"/>
         <source>Don&apos;t Ignore Mouse</source>
         <translation>Не игнорировать мышь</translation>
     </message>
@@ -1620,22 +1644,22 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>WaitAnimationPage</name>
     <message>
-        <location filename="WaitAnimationPage.qml" line="63"/>
+        <location filename="WaitAnimationPage.qml" line="62"/>
         <source>Nothing connected</source>
         <translation>Ничего не подключено</translation>
     </message>
     <message>
-        <location filename="WaitAnimationPage.qml" line="67"/>
+        <location filename="WaitAnimationPage.qml" line="66"/>
         <source>Right click on the window to open the settings</source>
         <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
     </message>
     <message>
-        <location filename="WaitAnimationPage.qml" line="72"/>
+        <location filename="WaitAnimationPage.qml" line="71"/>
         <source>Connected!</source>
         <translation>Подключено!</translation>
     </message>
     <message>
-        <location filename="WaitAnimationPage.qml" line="72"/>
+        <location filename="WaitAnimationPage.qml" line="71"/>
         <source>But no one has written anything yet</source>
         <translation>Но пока никто ничего не написал</translation>
     </message>
