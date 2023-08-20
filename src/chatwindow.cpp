@@ -37,28 +37,26 @@ ChatWindow::ChatWindow(QWindow *parent)
         {
             if (reason == QSystemTrayIcon::ActivationReason::Trigger)
             {
-                show();
-                requestActivate();
+                toogleVisible();
             }
         });
 
         QMenu* menu = new QMenu();
         QAction* action;
 
-        actionHideToTray = new QAction(QIcon(""), tr("Hide to tray"), menu);
-        connect(actionHideToTray, &QAction::triggered, this, [this]()
         {
-            if (isVisible())
+            actionHideToTray = new QAction(QIcon(""), tr("Hide to tray"), menu);
+
+            QFont font = actionHideToTray->font();
+            font.setBold(true);
+            actionHideToTray->setFont(font);
+
+            connect(actionHideToTray, &QAction::triggered, this, [this]()
             {
-                hide();
-            }
-            else
-            {
-                show();
-                requestActivate();
-            }
-        });
-        menu->addAction(actionHideToTray);
+                toogleVisible();
+            });
+            menu->addAction(actionHideToTray);
+        }
 
         action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
         connect(action, &QAction::triggered, this, [this]()
@@ -141,4 +139,17 @@ bool ChatWindow::event(QEvent *event)
     }
 
     return QQuickView::event(event);
+}
+
+void ChatWindow::toogleVisible()
+{
+    if (isVisible())
+    {
+        hide();
+    }
+    else
+    {
+        show();
+        requestActivate();
+    }
 }

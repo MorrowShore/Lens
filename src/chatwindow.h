@@ -23,6 +23,8 @@ public:
 signals:
 
 private:
+    void toogleVisible();
+
     QSettings settings;
 
     cweqt::Manager web;
