@@ -28,6 +28,7 @@ ChatWindow::ChatWindow(QWindow *parent)
     , tray(QIcon(":/resources/images/axelchat-16x16.png"))
 
     , transparentForInput(settings, "transparentForInput", false)
+    , stayOnTop(settings, "stayOnTop", false)
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
 {
@@ -73,14 +74,28 @@ ChatWindow::ChatWindow(QWindow *parent)
             QAction* action = new QAction(tr("Ignore Mouse"), menu);
             action->setCheckable(true);
 
-            connect(action, &QAction::triggered, this, [this]()
+            connect(action, &QAction::triggered, this, [this, action]()
             {
-                transparentForInput.set(!transparentForInput.get());
+                transparentForInput.set(action->isChecked());
                 updateFlags();
             });
             menu->addAction(action);
 
             action->setChecked(transparentForInput.get());
+        }
+
+        {
+            QAction* action = new QAction(tr("Stay on top"), menu);
+            action->setCheckable(true);
+
+            connect(action, &QAction::triggered, this, [this, action]()
+            {
+                stayOnTop.set(action->isChecked());
+                updateFlags();
+            });
+            menu->addAction(action);
+
+            action->setChecked(stayOnTop.get());
         }
 
         {
@@ -200,6 +215,7 @@ void ChatWindow::updateFlags()
     flags.setFlag(Qt::WindowType::WindowContextHelpButtonHint);
     flags.setFlag(Qt::WindowType::WindowCloseButtonHint);
 
+    flags.setFlag(Qt::WindowType::WindowStaysOnTopHint, stayOnTop.get());
     flags.setFlag(Qt::WindowType::WindowTransparentForInput, transparentForInput.get());
 
     setFlags(flags);
