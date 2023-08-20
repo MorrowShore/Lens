@@ -54,4 +54,8 @@ ChatWindow::ChatWindow(QWindow *parent)
     setColor(QColor(0, 0, 0));
 
     setSource(QUrl("qrc:/main.qml"));
+
+#ifdef Q_OS_WINDOWS
+    AxelChat::setDarkWindowFrame(winId());
+#endif
 }
