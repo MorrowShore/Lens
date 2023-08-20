@@ -323,3 +323,17 @@ QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> Message::Builder::creat
 
     return { author, message };
 }
+
+QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> Message::Builder::createSoftware(const QString &text)
+{
+    static const auto author = Author::Builder(
+                                   AxelChat::ServiceType::Software,
+                                   "____SOFTWARE____",
+                                   QCoreApplication::applicationName()).build();
+
+    const auto message = Message::Builder(author)
+        .addText(text)
+        .build();
+
+    return { author, message };
+}

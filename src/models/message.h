@@ -339,6 +339,8 @@ public:
 
         static QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> createDeleter(const AxelChat::ServiceType serviceType, const QString& id);
 
+        static QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> createSoftware(const QString& text);
+
     private:
         std::shared_ptr<Message> result;
     };
