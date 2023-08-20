@@ -204,32 +204,37 @@
         <translation type="vanished">Спрятать в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="65"/>
+        <location filename="chatwindow.cpp" line="66"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="74"/>
+        <location filename="chatwindow.cpp" line="75"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="88"/>
+        <location filename="chatwindow.cpp" line="89"/>
         <source>Stay on top</source>
         <translation>Поверх всех окон</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="113"/>
+        <location filename="chatwindow.cpp" line="103"/>
+        <source>Window frame</source>
+        <translation>Оконная рамка</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="128"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="166"/>
+        <location filename="chatwindow.cpp" line="181"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="170"/>
+        <location filename="chatwindow.cpp" line="185"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -1027,7 +1032,7 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="102"/>
+        <location filename="chatwindow.cpp" line="117"/>
         <location filename="tray.cpp" line="40"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>

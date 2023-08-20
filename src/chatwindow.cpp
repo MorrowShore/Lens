@@ -29,6 +29,7 @@ ChatWindow::ChatWindow(QWindow *parent)
 
     , transparentForInput(settings, "transparentForInput", false)
     , stayOnTop(settings, "stayOnTop", false)
+    , windowFrame(settings, "windowFrame", true)
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
 {
@@ -65,7 +66,7 @@ ChatWindow::ChatWindow(QWindow *parent)
             QAction* action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
             connect(action, &QAction::triggered, this, []()
             {
-                QMLUtils::instance()->triggered("open_settings_window");
+                emit QMLUtils::instance()->triggered("open_settings_window");
             });
             menu->addAction(action);
         }
@@ -96,6 +97,20 @@ ChatWindow::ChatWindow(QWindow *parent)
             menu->addAction(action);
 
             action->setChecked(stayOnTop.get());
+        }
+
+        {
+            QAction* action = new QAction(tr("Window frame"), menu);
+            action->setCheckable(true);
+
+            connect(action, &QAction::triggered, this, [this, action]()
+            {
+                windowFrame.set(action->isChecked());
+                updateFlags();
+            });
+            menu->addAction(action);
+
+            action->setChecked(windowFrame.get());
         }
 
         {
@@ -215,8 +230,9 @@ void ChatWindow::updateFlags()
     flags.setFlag(Qt::WindowType::WindowContextHelpButtonHint);
     flags.setFlag(Qt::WindowType::WindowCloseButtonHint);
 
-    flags.setFlag(Qt::WindowType::WindowStaysOnTopHint, stayOnTop.get());
     flags.setFlag(Qt::WindowType::WindowTransparentForInput, transparentForInput.get());
+    flags.setFlag(Qt::WindowType::WindowStaysOnTopHint, stayOnTop.get());
+    flags.setFlag(Qt::WindowType::FramelessWindowHint, !windowFrame.get());
 
     setFlags(flags);
 }

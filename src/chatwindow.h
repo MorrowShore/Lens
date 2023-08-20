@@ -43,6 +43,7 @@ private:
 
     Setting<bool> transparentForInput;
     Setting<bool> stayOnTop;
+    Setting<bool> windowFrame;
     Setting<bool> hideToTrayOnMinimize;
     Setting<bool> hideToTrayOnClose;
 };
