@@ -14,7 +14,7 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&stream, tr("Stream"))));
+    ui.addLineEdit(&stream, tr("Stream"));
     
     connect(&ui, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
 }

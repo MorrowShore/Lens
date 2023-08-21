@@ -22,7 +22,7 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
     
     authStateInfo = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("Loading..."));
     ui.addElement(authStateInfo);
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
+    ui.addLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true);
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("1. " + tr("Create a bot with @BotFather"))));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Open @BotFather"), []()
     {

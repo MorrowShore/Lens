@@ -1,32 +1,6 @@
 #include "uibridgeelement.h"
 #include <QAction>
 
-UIBridgeElement* UIBridgeElement::createLineEdit(Setting<QString> *setting, const QString &name, const QString &placeHolder, const bool passwordEcho)
-{
-    UIBridgeElement* element = new UIBridgeElement();
-
-    element->type = Type::LineEdit;
-    element->settingString = setting;
-
-    element->setItemProperty("name", name);
-    element->setItemProperty("placeholderText", placeHolder);
-
-    element->setItemProperty("passwordEcho", passwordEcho);
-
-    if (setting)
-    {
-        element->setItemProperty("text", setting->get());
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << "setting is null";
-    }
-
-    element->updateItemProperties();
-
-    return element;
-}
-
 UIBridgeElement* UIBridgeElement::createButton(const QString &text, std::function<void()> invokeCallback)
 {
     UIBridgeElement* element = new UIBridgeElement();
@@ -84,6 +58,11 @@ UIBridgeElement *UIBridgeElement::createComboBox(Setting<int> *settingInt, const
     element->updateItemProperties();
 
     return element;
+}
+
+UIBridgeElement::UIBridgeElement(QObject *parent)
+{
+
 }
 
 void UIBridgeElement::bindQuickItem(QQuickItem *item_)

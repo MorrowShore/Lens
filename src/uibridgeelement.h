@@ -11,6 +11,8 @@ class UIBridgeElement : public QObject
     Q_OBJECT
 
 public:
+    friend class UIBridge;
+
     enum class Type
     {
         Unknown = -1,
@@ -21,11 +23,12 @@ public:
         ComboBox = 40,
     };
 
-    static UIBridgeElement* createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
     static UIBridgeElement* createButton(const QString& text, std::function<void()> invokeCallback);
     static UIBridgeElement* createLabel(const QString& text);
     static UIBridgeElement* createSwitch(Setting<bool>* settingBool, const QString& name);
     static UIBridgeElement* createComboBox(Setting<int>* settingInt, const QString& name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged);
+
+    explicit UIBridgeElement(QObject *parent = nullptr);
 
     Q_INVOKABLE void bindQuickItem(QQuickItem* item);
 
@@ -65,8 +68,6 @@ private slots:
     void onCheckedChanged();
 
 private:
-    UIBridgeElement(){}
-
     QQuickItem* item = nullptr;
 
     Setting<QString>* settingString;

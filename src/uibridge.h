@@ -9,6 +9,8 @@ class UIBridge : public QObject
 public:
     explicit UIBridge(QObject *parent = nullptr);
 
+    std::shared_ptr<UIBridgeElement> addLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
+
     void addElement(const std::shared_ptr<UIBridgeElement>& element);
 
     Q_INVOKABLE int getElementsCount() const;

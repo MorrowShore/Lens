@@ -27,8 +27,8 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     authStateInfo = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("Loading..."));
     ui.addElement(authStateInfo);
     
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true)));
-    
+    ui.addLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true);
+
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Get API key"), [this]()
     {
         QDesktopServices::openUrl(QUrl(domain + "/page/api"));
