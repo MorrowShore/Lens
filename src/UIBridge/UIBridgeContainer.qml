@@ -13,9 +13,7 @@ Rectangle
         id: column
     }
 
-    function createComponent(index, type, component) {
-        var container = column
-
+    function createComponent(container, index, type, component) {
         if (component.status === Component.Ready) {
             bridge.bindQuickItem(index, component.createObject(container))
         }
@@ -38,6 +36,8 @@ Rectangle
             Slider:     40,
         }
 
+        var container = column
+
         var labelComponent      = Qt.createComponent("UIBridgeLabel.qml")
         var lineEditComponent   = Qt.createComponent("UIBridgeLineEdit.qml")
         var buttonComponent     = Qt.createComponent("UIBridgeButton.qml")
@@ -50,11 +50,11 @@ Rectangle
 
             switch (type)
             {
-            case Types.Label:       createComponent(i, type, labelComponent);       break
-            case Types.LineEdit:    createComponent(i, type, lineEditComponent);    break
-            case Types.Button:      createComponent(i, type, buttonComponent);      break
-            case Types.Switch:      createComponent(i, type, switchComponent);      break
-            case Types.Slider:      createComponent(i, type, sliderComponent);      break
+            case Types.Label:       createComponent(container, i, type, labelComponent);       break
+            case Types.LineEdit:    createComponent(container, i, type, lineEditComponent);    break
+            case Types.Button:      createComponent(container, i, type, buttonComponent);      break
+            case Types.Switch:      createComponent(container, i, type, switchComponent);      break
+            case Types.Slider:      createComponent(container, i, type, sliderComponent);      break
 
             default:
                 console.error("Unknown bridge component type ", type)
