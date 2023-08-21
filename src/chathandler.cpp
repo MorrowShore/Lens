@@ -72,7 +72,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService<Telegram>();
     addService<Discord>();
     addService<DonationAlerts>();
-    addService<DonatePay>();
+    //addService<DonatePay>();
 
     QTimer::singleShot(2000, [this]()
     {
