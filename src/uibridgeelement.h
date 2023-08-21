@@ -20,11 +20,9 @@ public:
         LineEdit = 20,
         Button = 30,
         Switch = 32,
-        ComboBox = 40,
     };
 
     static UIBridgeElement* createSwitch(Setting<bool>* settingBool, const QString& name);
-    static UIBridgeElement* createComboBox(Setting<int>* settingInt, const QString& name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged);
 
     explicit UIBridgeElement(QObject *parent = nullptr);
 

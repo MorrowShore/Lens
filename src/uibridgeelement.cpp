@@ -19,21 +19,6 @@ UIBridgeElement* UIBridgeElement::createSwitch(Setting<bool> *settingBool, const
     return element;
 }
 
-UIBridgeElement *UIBridgeElement::createComboBox(Setting<int> *settingInt, const QString &name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged)
-{
-    UIBridgeElement* element = new UIBridgeElement();
-
-    element->type = Type::ComboBox;
-    element->settingInt = settingInt;
-    element->setItemProperty("text", name);
-    element->comboBoxValues = values;
-    element->invokeCallback = valueChanged;
-
-    element->updateItemProperties();
-
-    return element;
-}
-
 UIBridgeElement::UIBridgeElement(QObject *parent)
     : QObject(parent)
 {
