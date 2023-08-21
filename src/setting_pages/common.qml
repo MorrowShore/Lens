@@ -5,6 +5,7 @@ import AxelChat.QMLUtils 1.0
 import AxelChat.I18n 1.0
 import AxelChat.ChatWindow 1.0
 import "../my_components" as MyComponents
+import "../UIBridge" as UIBridge
 import "../"
 
 ScrollView {
@@ -81,7 +82,7 @@ ScrollView {
             }
         }
 
-        MyComponents.UIBridgeContainer {
+        UIBridge.UIBridgeContainer {
             bridge: chatWindow.getUiBridge()
         }
 

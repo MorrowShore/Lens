@@ -20,16 +20,16 @@
         <file>my_components/MyTextArea.qml</file>
         <file>setting_pages/service.qml</file>
         <file>setting_pages/widgets.qml</file>
-        <file>my_components/BridgedLabel.qml</file>
-        <file>my_components/BridgedLineEdit.qml</file>
-        <file>my_components/BridgedButton.qml</file>
-        <file>my_components/BridgedSwitch.qml</file>
         <file>setting_pages/add_connection.qml</file>
         <file>ChatPage.qml</file>
         <file>WaitAnimationPage.qml</file>
         <file>TitlesPage.qml</file>
-        <file>my_components/UIBridgeContainer.qml</file>
-        <file>my_components/UIBridgeSlider.qml</file>
         <file>my_components/SeparatorWithText.qml</file>
+        <file>UIBridge/UIBridgeButton.qml</file>
+        <file>UIBridge/UIBridgeContainer.qml</file>
+        <file>UIBridge/UIBridgeLineEdit.qml</file>
+        <file>UIBridge/UIBridgeLabel.qml</file>
+        <file>UIBridge/UIBridgeSlider.qml</file>
+        <file>UIBridge/UIBridgeSwitch.qml</file>
     </qresource>
 </RCC>

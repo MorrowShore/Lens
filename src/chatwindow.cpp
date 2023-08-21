@@ -278,17 +278,17 @@ void ChatWindow::hideAll()
 
 void ChatWindow::saveWindowSize()
 {
-    normalSizeWidthSetting.set(width());
-    normalSizeHeightSetting.set(height());
+    const QSize size = geometry().size();
+    normalSizeWidthSetting.set(size.width());
+    normalSizeHeightSetting.set(size.height());
 }
 
 void ChatWindow::loadWindowSize()
 {
-    setWidth(normalSizeWidthSetting.get());
-    setHeight(normalSizeHeightSetting.get());
+    setGeometry(QRect(0, 0, normalSizeWidthSetting.get(), normalSizeHeightSetting.get()));
 
-    int width = frameGeometry().width();
-    int height = frameGeometry().height();
+    int width = geometry().width();
+    int height = geometry().height();
 
     if (QScreen *screen = QApplication::primaryScreen(); screen)
     {

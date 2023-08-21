@@ -21,7 +21,7 @@ Rectangle
 
         var Types = {
             Label: 10,
-            LineEdit: 20,
+            Edit: 20,
             Button: 30,
             Switch: 32,
             Slider: 40,
@@ -29,11 +29,11 @@ Rectangle
 
         var container = column
 
-        var labelComponent = Qt.createComponent("../my_components/BridgedLabel.qml")
-        var lineEditComponent = Qt.createComponent("../my_components/BridgedLineEdit.qml")
-        var buttonComponent = Qt.createComponent("../my_components/BridgedButton.qml")
-        var switchComponent = Qt.createComponent("../my_components/BridgedSwitch.qml")
-        var sliderComponent = Qt.createComponent("../my_components/UIBridgeSlider.qml")
+        var labelComponent      = Qt.createComponent("UIBridgeLabel.qml")
+        var lineEditComponent   = Qt.createComponent("UIBridgeLineEdit.qml")
+        var buttonComponent     = Qt.createComponent("UIBridgeButton.qml")
+        var switchComponent     = Qt.createComponent("UIBridgeSwitch.qml")
+        var sliderComponent     = Qt.createComponent("UIBridgeSlider.qml")
 
         for (var i = 0; i < bridge.getElementsCount(); ++i)
         {
