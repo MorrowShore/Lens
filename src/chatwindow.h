@@ -28,6 +28,7 @@ signals:
 private slots:
     void toogleVisible();
     void updateWindow();
+    void hideAll();
 
 private:
     QSettings settings;

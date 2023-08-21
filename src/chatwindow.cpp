@@ -194,7 +194,7 @@ bool ChatWindow::event(QEvent *event)
     {
         if (windowState() & Qt::WindowMinimized && hideToTrayOnMinimize.get())
         {
-            QTimer::singleShot(250, this, &ChatWindow::hide);
+            QTimer::singleShot(250, this, &ChatWindow::hideAll);
             return true;
         }
     }
@@ -203,7 +203,7 @@ bool ChatWindow::event(QEvent *event)
     {
         if (hideToTrayOnClose.get())
         {
-            QTimer::singleShot(250, this, &ChatWindow::hide);
+            QTimer::singleShot(250, this, &ChatWindow::hideAll);
             return true;
         }
         else
@@ -219,12 +219,7 @@ void ChatWindow::toogleVisible()
 {
     if (isVisible())
     {
-        const QWindowList windows = QApplication::topLevelWindows();
-
-        for (QWindow *window : windows)
-        {
-            window->hide();
-        }
+        hideAll();
     }
     else
     {
@@ -254,4 +249,14 @@ void ChatWindow::updateWindow()
 
     setColor(QColor(0, 0, 0, 255 * backgroundOpacity.get()));
     setOpacity(windowOpacity.get());
+}
+
+void ChatWindow::hideAll()
+{
+    const QWindowList windows = QApplication::topLevelWindows();
+
+    for (QWindow *window : windows)
+    {
+        window->hide();
+    }
 }
