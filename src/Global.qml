@@ -18,9 +18,6 @@ QtObject {
 
     property bool windowChatShowViewersCount : true
 
-    property real windowChatWindowOpacity: 1
-    property real windowChatBackgroundOpacity: 0.40
-
     property bool windowChatMessageShowAvatar : true
     property bool windowChatMessageShowAuthorName : true
     property bool windowChatMessageShowPlatformIcon : true

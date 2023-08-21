@@ -27,7 +27,7 @@ signals:
 
 private slots:
     void toogleVisible();
-    void updateFlags();
+    void updateWindow();
 
 private:
     QSettings settings;

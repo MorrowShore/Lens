@@ -20,9 +20,6 @@ Item {
         }
     }
 
-    opacity: Global.windowChatWindowOpacity
-    //color: Qt.rgba(0, 0, 0, Global.windowChatBackgroundOpacity)
-
     property var authorWindow: null
     property var updatesWindow;
 
@@ -33,9 +30,6 @@ Item {
     }
 
     function loadGlobalSettings() {
-        Global.windowChatWindowOpacity              = qmlUtils.valueReal("windowChatWindowOpacity",             Global.windowChatWindowOpacity)
-        Global.windowChatBackgroundOpacity          = qmlUtils.valueReal("windowChatBackgroundOpacity",         Global.windowChatBackgroundOpacity)
-
         Global.windowChatMessageShowAvatar          = qmlUtils.valueBool("windowChatMessageShowAvatar",             Global.windowChatMessageShowAvatar)
         Global.windowChatMessageShowAuthorName      = qmlUtils.valueBool("windowChatMessageShowAuthorName",         Global.windowChatMessageShowAuthorName)
         Global.windowChatMessageShowTime            = qmlUtils.valueBool("windowChatMessageShowTime",               Global.windowChatMessageShowTime)
@@ -51,9 +45,6 @@ Item {
     }
 
     function saveGlobalSettings() {
-        qmlUtils.setValue("windowChatWindowOpacity",        Global.windowChatWindowOpacity)
-        qmlUtils.setValue("windowChatBackgroundOpacity",    Global.windowChatBackgroundOpacity)
-
         qmlUtils.setValue("windowChatMessageShowAvatar",        Global.windowChatMessageShowAvatar)
         qmlUtils.setValue("windowChatMessageShowAuthorName",    Global.windowChatMessageShowAuthorName)
         qmlUtils.setValue("windowChatMessageShowTime",          Global.windowChatMessageShowTime)

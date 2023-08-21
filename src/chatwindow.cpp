@@ -40,11 +40,11 @@ ChatWindow::ChatWindow(QWindow *parent)
 {
     transparentForInput.setCallbackValueChanged([this](bool)
     {
-        updateFlags();
+        updateWindow();
     });
 
-    ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0.0, 1.0, true);
-    ui.addSlider(&windowOpacity, tr("Window opacity"), 0.1, 1.0, true);
+    connect(ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0.0, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
+    connect(ui.addSlider(&windowOpacity, tr("Window opacity"), 0.1, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
 
     {
         tray.setToolTip(QCoreApplication::applicationName());
@@ -92,7 +92,7 @@ ChatWindow::ChatWindow(QWindow *parent)
 
             menu->addAction(action);
 
-            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
+            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
         }
 
         {
@@ -103,7 +103,7 @@ ChatWindow::ChatWindow(QWindow *parent)
 
             menu->addAction(action);
 
-            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
+            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
         }
 
         {
@@ -114,7 +114,7 @@ ChatWindow::ChatWindow(QWindow *parent)
 
             menu->addAction(action);
 
-            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
+            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
         }
 
         {
@@ -166,13 +166,10 @@ ChatWindow::ChatWindow(QWindow *parent)
 
         setResizeMode(QQuickView::ResizeMode::SizeRootObjectToView);
 
-        setColor(QColor(0, 0, 0)); // TODO opacity
-        //setOpacity(0.5); // TODO
-
         setSource(QUrl("qrc:/main.qml"));
     }
 
-    updateFlags();
+    updateWindow();
 
 #ifdef Q_OS_WINDOWS
     AxelChat::setDarkWindowFrame(winId());
@@ -233,7 +230,7 @@ void ChatWindow::toogleVisible()
     }
 }
 
-void ChatWindow::updateFlags()
+void ChatWindow::updateWindow()
 {
     Qt::WindowFlags flags;
 
@@ -251,4 +248,7 @@ void ChatWindow::updateFlags()
     flags.setFlag(Qt::WindowType::FramelessWindowHint, !windowFrame.get());
 
     setFlags(flags);
+
+    setColor(QColor(0, 0, 0, 255 * backgroundOpacity.get()));
+    setOpacity(windowOpacity.get());
 }

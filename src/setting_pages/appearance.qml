@@ -27,38 +27,6 @@ ScrollView {
     Column {
         id: rootColumn
 
-        MyComponents.SliderRow {
-            name: qsTr("Background Opacity")
-            from: 0
-            to: 1
-            stepSize: 0.01
-            defaultValue: 0.40
-            valueToPercent: true
-
-            value: Global.windowChatBackgroundOpacity
-            onValueChanged: {
-                Global.windowChatBackgroundOpacity = value
-                Global.save()
-                Global.windowChat.refreshByFlags()
-            }
-        }
-
-        MyComponents.SliderRow {
-            name: qsTr("Window Opacity")
-            from: 0.1
-            to: 1
-            stepSize: 0.01
-            defaultValue: 1
-            valueToPercent: true
-
-            value: Global.windowChatWindowOpacity
-            onValueChanged: {
-                Global.windowChatWindowOpacity = value
-                Global.save()
-                Global.windowChat.refreshByFlags()
-            }
-        }
-
         Switch {
             text: qsTr("Show Viewers Count")
 
