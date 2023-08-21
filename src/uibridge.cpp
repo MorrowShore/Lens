@@ -94,8 +94,13 @@ std::shared_ptr<UIBridgeElement> UIBridge::addSlider(Setting<double> *setting, c
     element->setItemProperty("name", name);
     element->setItemProperty("from", minValue);
     element->setItemProperty("to", maxValue);
-    element->setItemProperty("defaultValue", setting->getDefaultValue());
-    element->setItemProperty("value", setting->get());
+
+    if (setting)
+    {
+        element->setItemProperty("defaultValue", setting->getDefaultValue());
+        element->setItemProperty("value", setting->get());
+    }
+
     element->setItemProperty("valueShowAsPercent", valueShowAsPercent);
 
     element->updateItemProperties();

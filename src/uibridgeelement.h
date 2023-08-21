@@ -61,6 +61,7 @@ private slots:
     void onInvoked();
     void onTextChanged();
     void onCheckedChanged();
+    void onValueChanged();
 
 private:
     QQuickItem* item = nullptr;

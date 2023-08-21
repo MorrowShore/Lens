@@ -31,6 +31,8 @@ void UIBridgeElement::bindQuickItem(QQuickItem *item_)
         }
     });
 
+    updateItemProperties();
+
     if (type == Type::Button)
     {
         QObject::connect(item, SIGNAL(clicked()), this, SLOT(onInvoked()));
@@ -46,7 +48,10 @@ void UIBridgeElement::bindQuickItem(QQuickItem *item_)
         QObject::connect(item, SIGNAL(checkedChanged()), this, SLOT(onCheckedChanged()));
     }
 
-    updateItemProperties();
+    if (type == Type::Slider)
+    {
+        QObject::connect(item, SIGNAL(valueChanged()), this, SLOT(onValueChanged()));
+    }
 }
 
 void UIBridgeElement::bindAction(QAction *action_)
@@ -232,6 +237,46 @@ void UIBridgeElement::onCheckedChanged()
         {
             updateItemProperties();
         }
+    }
+
+    if (changed)
+    {
+        emit valueChanged();
+    }
+}
+
+void UIBridgeElement::onValueChanged()
+{
+    QObject* sender_ = sender();
+    if (!sender_)
+    {
+        qCritical() << Q_FUNC_INFO << "sender is null";
+        return;
+    }
+
+    bool changed = false;
+
+    const double value = sender_->property("value").toDouble();
+
+    if (value != parameters.value("value"))
+    {
+        changed = true;
+    }
+
+    parameters.insert("value", value);
+
+    if (settingString)
+    {
+        if (value != settingDouble->get())
+        {
+            changed = true;
+        }
+
+        settingDouble->set(value);
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "setting is null";
     }
 
     if (changed)
