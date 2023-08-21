@@ -13,6 +13,17 @@ Rectangle
         id: column
     }
 
+    function createComponent(index, type, component) {
+        var container = column
+
+        if (component.status === Component.Ready) {
+            bridge.bindQuickItem(index, component.createObject(container))
+        }
+        else {
+            console.log("Bridge component type " + type + " not ready, status =", component.status, ", errorString =", component.errorString())
+        }
+    }
+
     Component.onCompleted: {
         if (!bridge) {
             console.log("Bridge is null");
@@ -20,14 +31,12 @@ Rectangle
         }
 
         var Types = {
-            Label: 10,
-            Edit: 20,
-            Button: 30,
-            Switch: 32,
-            Slider: 40,
+            Label:      10,
+            LineEdit:   20,
+            Button:     30,
+            Switch:     32,
+            Slider:     40,
         }
-
-        var container = column
 
         var labelComponent      = Qt.createComponent("UIBridgeLabel.qml")
         var lineEditComponent   = Qt.createComponent("UIBridgeLineEdit.qml")
@@ -38,52 +47,14 @@ Rectangle
         for (var i = 0; i < bridge.getElementsCount(); ++i)
         {
             var type = bridge.getElementType(i)
+
             switch (type)
             {
-            case Types.Label:
-                if (labelComponent.status === Component.Ready) {
-                    bridge.bindQuickItem(i, labelComponent.createObject(container))
-                }
-                else {
-                    console.log("Bridge component type " + type + " not ready, status =", labelComponent.status)
-                }
-                break
-
-            case Types.LineEdit:
-                if (lineEditComponent.status === Component.Ready) {
-                    bridge.bindQuickItem(i, lineEditComponent.createObject(container))
-                }
-                else {
-                    console.log("Bridge component type " + type + " not ready, status =", lineEditComponent.status)
-                }
-                break
-
-            case Types.Button:
-                if (buttonComponent.status === Component.Ready) {
-                    bridge.bindQuickItem(i, buttonComponent.createObject(container))
-                }
-                else {
-                    console.log("Bridge component type " + type + " not ready, status =", buttonComponent.status)
-                }
-                break
-
-            case Types.Switch:
-                if (switchComponent.status === Component.Ready) {
-                    bridge.bindQuickItem(i, switchComponent.createObject(container))
-                }
-                else {
-                    console.log("Bridge component type " + type + " not ready, status =", switchComponent.status)
-                }
-                break
-
-            case Types.Slider:
-                if (sliderComponent.status === Component.Ready) {
-                    bridge.bindQuickItem(i, sliderComponent.createObject(container))
-                }
-                else {
-                    console.log("Bridge component type " + type + " not ready, status =", sliderComponent.status)
-                }
-                break
+            case Types.Label:       createComponent(i, type, labelComponent);       break
+            case Types.LineEdit:    createComponent(i, type, lineEditComponent);    break
+            case Types.Button:      createComponent(i, type, buttonComponent);      break
+            case Types.Switch:      createComponent(i, type, switchComponent);      break
+            case Types.Slider:      createComponent(i, type, sliderComponent);      break
 
             default:
                 console.error("Unknown bridge component type ", type)
