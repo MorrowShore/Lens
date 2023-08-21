@@ -62,9 +62,9 @@ Item {
         return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
     }
 
-    /*onClosing: {
+    Component.onDestruction: {
         saveGlobalSettings()
-    }*/
+    }
 
     Component.onCompleted: {
         Global.windowChat = this
