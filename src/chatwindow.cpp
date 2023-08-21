@@ -6,6 +6,7 @@
 #include <QGuiApplication>
 #include <QApplication>
 #include <QMenu>
+#include <QScreen>
 
 void ChatWindow::declareQml()
 {
@@ -22,6 +23,8 @@ void ChatWindow::declareQml()
 
 ChatWindow::ChatWindow(QWindow *parent)
     : QQuickView(parent)
+    , normalSizeWidthSetting(settings, "normalSizeWidth", 350)
+    , normalSizeHeightSetting(settings, "normalSizeHeight", 600)
     , web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe")
     , appSponsorManager(network)
     , i18n(settings, "i18n", engine())
@@ -177,6 +180,8 @@ ChatWindow::ChatWindow(QWindow *parent)
 #ifdef Q_OS_WINDOWS
     AxelChat::setDarkWindowFrame(winId());
 #endif
+
+    loadWindowSize();
 }
 
 bool ChatWindow::event(QEvent *event)
@@ -201,6 +206,8 @@ bool ChatWindow::event(QEvent *event)
 
     if (event->type() == QEvent::Close)
     {
+        saveWindowSize();
+
         if (hideToTrayOnClose.get())
         {
             QTimer::singleShot(250, this, &ChatWindow::hideAll);
@@ -258,5 +265,28 @@ void ChatWindow::hideAll()
     for (QWindow *window : windows)
     {
         window->hide();
+    }
+}
+
+void ChatWindow::saveWindowSize()
+{
+    normalSizeWidthSetting.set(width());
+    normalSizeHeightSetting.set(height());
+}
+
+void ChatWindow::loadWindowSize()
+{
+    setWidth(normalSizeWidthSetting.get());
+    setHeight(normalSizeHeightSetting.get());
+
+    int width = frameGeometry().width();
+    int height = frameGeometry().height();
+
+    if (QScreen *screen = QApplication::primaryScreen(); screen)
+    {
+        int screenWidth = screen->geometry().width();
+        int screenHeight = screen->geometry().height();
+
+        setGeometry((screenWidth / 2) - (width / 2), (screenHeight / 2) - (height / 2), width, height);
     }
 }

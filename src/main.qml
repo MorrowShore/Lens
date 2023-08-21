@@ -25,8 +25,6 @@ Item {
 
     Settings {
         category: "chat_window"
-        property alias window_width:  root.width;
-        property alias window_height: root.height;
     }
 
     function loadGlobalSettings() {

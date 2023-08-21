@@ -29,9 +29,14 @@ private slots:
     void toogleVisible();
     void updateWindow();
     void hideAll();
+    void saveWindowSize();
+    void loadWindowSize();
 
 private:
     QSettings settings;
+
+    Setting<int> normalSizeWidthSetting;
+    Setting<int> normalSizeHeightSetting;
 
     cweqt::Manager web;
     QNetworkAccessManager network;
