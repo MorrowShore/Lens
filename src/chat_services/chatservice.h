@@ -57,7 +57,7 @@ public:
     };
 
     explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
-    virtual ~ChatService(){}
+    virtual ~ChatService(){ qDebug() << "delete ChatService"; }
 
     ChatService (const ChatService&) = delete;
     ChatService (ChatService&&) = delete;
@@ -98,7 +98,7 @@ public:
     Q_INVOKABLE QString getName() const;
     Q_INVOKABLE QUrl getIconUrl() const;
 
-    Q_INVOKABLE UIBridge* getUiBridge() { return &uiBridge; }
+    Q_INVOKABLE UIBridge* getUiBridge() const { return &const_cast<UIBridge&>(uiBridge); }
 
 #ifdef QT_QUICK_LIB
     static void declareQml()

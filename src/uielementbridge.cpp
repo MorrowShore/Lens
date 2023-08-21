@@ -85,7 +85,7 @@ UIElementBridge *UIElementBridge::createComboBox(Setting<int> *settingInt, const
     return element;
 }
 
-void UIElementBridge::bindQmlItem(QQuickItem *item_)
+void UIElementBridge::bindQuickItem(QQuickItem *item_)
 {
     if (item)
     {

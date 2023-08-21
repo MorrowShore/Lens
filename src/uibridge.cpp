@@ -46,7 +46,7 @@ void UIBridge::bindQuickItem(const int index, QQuickItem *item)
         return ;
     }
 
-    elements[index]->bindQmlItem(item);
+    elements[index]->bindQuickItem(item);
 }
 
 std::shared_ptr<UIElementBridge> UIBridge::findBySetting(const Setting<QString> &setting) const

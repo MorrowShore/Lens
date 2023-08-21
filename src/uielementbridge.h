@@ -27,7 +27,7 @@ public:
     static UIElementBridge* createSwitch(Setting<bool>* settingBool, const QString& name);
     static UIElementBridge* createComboBox(Setting<int>* settingInt, const QString& name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged);
 
-    Q_INVOKABLE void bindQmlItem(QQuickItem* item);
+    Q_INVOKABLE void bindQuickItem(QQuickItem* item);
 
     Setting<QString>* getSettingString() { return settingString; }
     const Setting<QString>* getSettingString() const { return settingString; }

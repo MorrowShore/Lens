@@ -8,6 +8,7 @@ class UIBridge : public QObject
     Q_OBJECT
 public:
     explicit UIBridge(QObject *parent = nullptr);
+    ~UIBridge() { qDebug() << "delete UIBridge"; }
 
     void addElement(const std::shared_ptr<UIElementBridge>& element);
 

@@ -137,19 +137,39 @@ ScrollView {
                 switch (type)
                 {
                 case Types.Label:
-                    uiBridge.bindQuickItem(i, labelComponent.createObject(container))
+                    if (labelComponent.status === Component.Ready) {
+                        uiBridge.bindQuickItem(i, labelComponent.createObject(container))
+                    }
+                    else {
+                        console.log("Bridge type " + type + " not ready, status =", labelComponent.status)
+                    }
                     break
 
                 case Types.LineEdit:
-                    uiBridge.bindQuickItem(i, lineEditComponent.createObject(container))
+                    if (lineEditComponent.status === Component.Ready) {
+                        uiBridge.bindQuickItem(i, lineEditComponent.createObject(container))
+                    }
+                    else {
+                        console.log("Bridge type " + type + " not ready, status =", lineEditComponent.status)
+                    }
                     break
 
                 case Types.Button:
-                    uiBridge.bindQuickItem(i, buttonComponent.createObject(container))
+                    if (buttonComponent.status === Component.Ready) {
+                        uiBridge.bindQuickItem(i, buttonComponent.createObject(container))
+                    }
+                    else {
+                        console.log("Bridge type " + type + " not ready, status =", buttonComponent.status)
+                    }
                     break
 
                 case Types.Switch:
-                    uiBridge.bindQuickItem(i, switchComponent.createObject(container))
+                    if (switchComponent.status === Component.Ready) {
+                        uiBridge.bindQuickItem(i, switchComponent.createObject(container))
+                    }
+                    else {
+                        console.log("Bridge type " + type + " not ready, status =", switchComponent.status)
+                    }
                     break
 
                 default:
