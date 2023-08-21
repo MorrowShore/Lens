@@ -219,17 +219,17 @@
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="88"/>
+        <location filename="chatwindow.cpp" line="110"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="99"/>
+        <location filename="chatwindow.cpp" line="88"/>
         <source>Stay on top</source>
         <translation>Поверх всех окон</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="110"/>
+        <location filename="chatwindow.cpp" line="99"/>
         <source>Window frame</source>
         <translation>Оконная рамка</translation>
     </message>
@@ -239,12 +239,12 @@
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="186"/>
+        <location filename="chatwindow.cpp" line="183"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="190"/>
+        <location filename="chatwindow.cpp" line="187"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -2029,57 +2029,55 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Системная оконная рамка</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="31"/>
         <source>Background Opacity</source>
-        <translation>Непрозрачность фона</translation>
+        <translation type="vanished">Непрозрачность фона</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="47"/>
         <source>Window Opacity</source>
-        <translation>Непрозрачность окна</translation>
+        <translation type="vanished">Непрозрачность окна</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="63"/>
+        <location filename="setting_pages/appearance.qml" line="31"/>
         <source>Show Viewers Count</source>
         <translation>Показывать количество зрителей</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="75"/>
+        <location filename="setting_pages/appearance.qml" line="43"/>
         <source>Show Avatars</source>
         <translation>Показывать аватары</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="87"/>
+        <location filename="setting_pages/appearance.qml" line="55"/>
         <source>Show Message Author Name</source>
         <translation>Показывать имя автора сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="99"/>
+        <location filename="setting_pages/appearance.qml" line="67"/>
         <source>Show Platform Icon</source>
         <translation>Показывать значёк платформы</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="111"/>
+        <location filename="setting_pages/appearance.qml" line="79"/>
         <source>Show Message Time</source>
         <translation>Показывать время сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="123"/>
+        <location filename="setting_pages/appearance.qml" line="91"/>
         <source>Avatar Size</source>
         <translation>Размер аватара</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="137"/>
+        <location filename="setting_pages/appearance.qml" line="105"/>
         <source>Font Size (Author Name)</source>
         <translation>Размер шрифта (Имя автора)</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="151"/>
+        <location filename="setting_pages/appearance.qml" line="119"/>
         <source>Font Size (Message Text)</source>
         <translation>Размер шрифта (Текст сообщения)</translation>
     </message>
     <message>
-        <location filename="setting_pages/appearance.qml" line="165"/>
+        <location filename="setting_pages/appearance.qml" line="133"/>
         <source>Font Size (Message Time)</source>
         <translation>Размер шрифта (Время сообщения)</translation>
     </message>
@@ -2265,6 +2263,11 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Пропускать клики мыши</translation>
     </message>
     <message>
+        <location filename="setting_pages/common.qml" line="23"/>
+        <source>Miscellaneous</source>
+        <translation>Разное</translation>
+    </message>
+    <message>
         <location filename="setting_pages/common.qml" line="79"/>
         <source>Clear Messages on Link Change</source>
         <translation>Очистить сообщения при смене ссылки</translation>
@@ -2295,6 +2298,11 @@ Latest version available: %2</oldsource>
         <translation>Папка программы</translation>
     </message>
     <message>
+        <location filename="setting_pages/common.qml" line="244"/>
+        <source>Window</source>
+        <translation>Окно</translation>
+    </message>
+    <message>
         <source>Changes will take effect after restarting the program</source>
         <translation type="vanished">Изменения вступят в силу после перезапуска программы</translation>
     </message>
@@ -2304,7 +2312,7 @@ Latest version available: %2</oldsource>
         <translation>Включить звук при получении нового сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="26"/>
+        <location filename="setting_pages/common.qml" line="30"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>

@@ -19,6 +19,10 @@ ScrollView {
     Column {
         id: rootColumn
 
+        MyComponents.SeparatorWithText {
+            text: qsTr("Miscellaneous")
+        }
+
         Row {
             spacing: 10
 
@@ -69,10 +73,6 @@ ScrollView {
                 fillMode: Image.PreserveAspectFit
                 source: "qrc:/resources/images/language-svgrepo-com.svg"
             }
-        }
-
-        MyComponents.UIBridgeContainer {
-            bridge: chatWindow.getUiBridge()
         }
 
         Switch {
@@ -238,6 +238,20 @@ ScrollView {
             onClicked: {
                 chatHandler.openProgramFolder();
             }
+        }
+
+        MyComponents.SeparatorWithText {
+            text: qsTr("Window")
+        }
+
+        Rectangle {
+            width: 10
+            height: 20
+            color: "transparent"
+        }
+
+        MyComponents.UIBridgeContainer {
+            bridge: chatWindow.getUiBridge()
         }
     }
 }
