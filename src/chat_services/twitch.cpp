@@ -37,8 +37,6 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
     
-    ui.addElement(authStateInfo);
-
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
     config.clientId = ClientID;
@@ -64,8 +62,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             auth.login();
         }
     });
-    ui.addElement(loginButton);
-    
+
     connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)

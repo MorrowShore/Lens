@@ -27,8 +27,6 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
 {
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));
     
-    ui.addElement(authStateInfo);
-
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
     config.clientId = OBFUSCATE(VK_APP_ID);

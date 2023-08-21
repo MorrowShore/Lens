@@ -64,8 +64,6 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
 {
     ui.findBySetting(stream)->setItemProperty("visible", false);
     
-    ui.addElement(authStateInfo);
-
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
     config.clientId = ClientID;

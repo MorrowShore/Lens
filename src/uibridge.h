@@ -14,8 +14,6 @@ public:
     std::shared_ptr<UIBridgeElement> addLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
     std::shared_ptr<UIBridgeElement> addSwitch(Setting<bool>* settingBool, const QString& name);
 
-    void addElement(const std::shared_ptr<UIBridgeElement>& element);
-
     Q_INVOKABLE int getElementsCount() const;
     Q_INVOKABLE int getElementType(const int index) const;
 
@@ -37,5 +35,7 @@ signals:
     void elementChanged(const std::shared_ptr<UIBridgeElement>& element);
 
 private:
+    void addElement(const std::shared_ptr<UIBridgeElement>& element);
+
     QList<std::shared_ptr<UIBridgeElement>> elements;
 };
