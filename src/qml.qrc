@@ -28,5 +28,6 @@
         <file>ChatPage.qml</file>
         <file>WaitAnimationPage.qml</file>
         <file>TitlesPage.qml</file>
+        <file>my_components/UIBridgeContainer.qml</file>
     </qresource>
 </RCC>

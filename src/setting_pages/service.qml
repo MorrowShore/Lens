@@ -109,74 +109,8 @@ ScrollView {
             }
         }
 
-        Column {
-            id: newElementsColumn
-            spacing: 6
-        }
-
-        Component.onCompleted: {
-            var Types = {
-                Label: 10,
-                LineEdit: 20,
-                Button: 30,
-                Switch: 32,
-            }
-
-            var container = newElementsColumn
-
-            var labelComponent = Qt.createComponent("../my_components/BridgedLabel.qml")
-            var lineEditComponent = Qt.createComponent("../my_components/BridgedLineEdit.qml")
-            var buttonComponent = Qt.createComponent("../my_components/BridgedButton.qml")
-            var switchComponent = Qt.createComponent("../my_components/BridgedSwitch.qml")
-
-            var uiBridge = chatService.getUiBridge()
-
-            for (var i = 0; i < uiBridge.getElementsCount(); ++i)
-            {
-                var type = uiBridge.getElementType(i)
-                switch (type)
-                {
-                case Types.Label:
-                    if (labelComponent.status === Component.Ready) {
-                        uiBridge.bindQuickItem(i, labelComponent.createObject(container))
-                    }
-                    else {
-                        console.log("Bridge type " + type + " not ready, status =", labelComponent.status)
-                    }
-                    break
-
-                case Types.LineEdit:
-                    if (lineEditComponent.status === Component.Ready) {
-                        uiBridge.bindQuickItem(i, lineEditComponent.createObject(container))
-                    }
-                    else {
-                        console.log("Bridge type " + type + " not ready, status =", lineEditComponent.status)
-                    }
-                    break
-
-                case Types.Button:
-                    if (buttonComponent.status === Component.Ready) {
-                        uiBridge.bindQuickItem(i, buttonComponent.createObject(container))
-                    }
-                    else {
-                        console.log("Bridge type " + type + " not ready, status =", buttonComponent.status)
-                    }
-                    break
-
-                case Types.Switch:
-                    if (switchComponent.status === Component.Ready) {
-                        uiBridge.bindQuickItem(i, switchComponent.createObject(container))
-                    }
-                    else {
-                        console.log("Bridge type " + type + " not ready, status =", switchComponent.status)
-                    }
-                    break
-
-                default:
-                    console.error("Unknown bridge type ", type)
-                    break
-                }
-            }
+        MyComponents.UIBridgeContainer {
+            bridge: chatService.getUiBridge()
         }
 
         Row {
