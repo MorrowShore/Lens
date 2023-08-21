@@ -37,8 +37,8 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
     , network(network_)
     , sse(network)
 {
-    uiBridge.findBySetting(stream)->setItemProperty("name", tr("Stream"));
-    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Stream link..."));
+    ui.findBySetting(stream)->setItemProperty("name", tr("Stream"));
+    ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Stream link..."));
 
     QObject::connect(&sse, &SseManager::started, this, [this]()
     {

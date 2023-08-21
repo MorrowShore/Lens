@@ -34,10 +34,10 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     , authStateInfo(UIBridgeElement::createLabel("Loading..."))
   , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
-    uiBridge.findBySetting(stream)->setItemProperty("name", tr("Channel"));
-    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
-
-    uiBridge.addElement(authStateInfo);
+    ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));
+    ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
+    
+    ui.addElement(authStateInfo);
 
     OAuth2::Config config;
     config.flowType = OAuth2::FlowType::AuthorizationCode;
@@ -64,9 +64,9 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             auth.login();
         }
     }));
-    uiBridge.addElement(loginButton);
+    ui.addElement(loginButton);
     
-    connect(&uiBridge, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIBridgeElement>& element)
+    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {

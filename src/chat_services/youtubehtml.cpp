@@ -28,7 +28,7 @@ YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathPa
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
     , network(network_)
 {
-    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
+    ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
     
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTubeHtml::onTimeoutRequestChat);
     timerRequestChat.start(RequestChatInterval);

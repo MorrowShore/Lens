@@ -19,7 +19,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
     , network(network_)
     , web(web_)
 {
-    uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
+    ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
@@ -70,7 +70,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
         openWindow();
     }));
     openChatButton->setItemProperty("enabled", false);
-    uiBridge.addElement(openChatButton);
+    ui.addElement(openChatButton);
 }
 
 ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const

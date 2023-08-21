@@ -18,26 +18,26 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
     , showChatTitle(settings, getSettingsGroupPath() + "/show_chat_title", true)
     , allowPrivateChat(settings, getSettingsGroupPath() + "/allow_private_chats", false)
 {
-    uiBridge.findBySetting(stream)->setItemProperty("visible", false);
+    ui.findBySetting(stream)->setItemProperty("visible", false);
     
     authStateInfo = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("Loading..."));
-    uiBridge.addElement(authStateInfo);
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("1. " + tr("Create a bot with @BotFather"))));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Open @BotFather"), []()
+    ui.addElement(authStateInfo);
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true)));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("1. " + tr("Create a bot with @BotFather"))));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Open @BotFather"), []()
     {
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
     })));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("2. " + tr("Copy and paste bot token above") + ". <b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("3. " + tr("Add the bot to the desired groups/channels"))));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("4. " + tr("Give admin rights to the bot in these groups/channels"))));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel(" ")));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel(tr("It is not recommended to use a bot that is already being used for other purposes"))));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel(tr("It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()))));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&showChatTitle, tr("Show chat name when possible"))));
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"))));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("2. " + tr("Copy and paste bot token above") + ". <b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("3. " + tr("Add the bot to the desired groups/channels"))));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("4. " + tr("Give admin rights to the bot in these groups/channels"))));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel(" ")));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel(tr("It is not recommended to use a bot that is already being used for other purposes"))));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel(tr("It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()))));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&showChatTitle, tr("Show chat name when possible"))));
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"))));
     
-    connect(&uiBridge, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
+    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {

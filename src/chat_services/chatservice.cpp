@@ -12,9 +12,11 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
 
     , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", enabledThirdPartyEmotesDefault)
 {
-    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&stream, tr("Stream"))));
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
-    connect(&uiBridge, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
+    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&stream, tr("Stream"))));
+    
+    connect(&ui, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
 }
 
 QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
@@ -136,7 +138,7 @@ bool ChatService::isEnabled() const
 void ChatService::setEnabled(const bool enabled_)
 {
     enabled.set(enabled_);
-    onUIElementChanged(uiBridge.getElements().first());
+    onUIElementChanged(ui.getElements().first());
     emit stateChanged();
 }
 

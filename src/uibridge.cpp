@@ -3,7 +3,7 @@
 UIBridge::UIBridge(QObject *parent)
     : QObject{parent}
 {
-
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 }
 
 void UIBridge::addElement(const std::shared_ptr<UIBridgeElement> &element)
