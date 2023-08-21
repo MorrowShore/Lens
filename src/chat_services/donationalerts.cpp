@@ -60,7 +60,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::DonationAlerts, false, parent)
     , network(network_)
     , auth(settings, getSettingsGroupPath() + "/auth", network)
-    , authStateInfo(UIBridgeElement::createLabel("Loading..."))
+    , authStateInfo(ui.addLabel("Loading..."))
 {
     ui.findBySetting(stream)->setItemProperty("visible", false);
     

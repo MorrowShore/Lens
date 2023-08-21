@@ -6,6 +6,20 @@ UIBridge::UIBridge(QObject *parent)
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 }
 
+std::shared_ptr<UIBridgeElement> UIBridge::addLabel(const QString &text)
+{
+    std::shared_ptr<UIBridgeElement> element = std::make_shared<UIBridgeElement>();
+
+    element->type = UIBridgeElement::Type::Label;
+    element->setItemProperty("text", text);
+
+    element->updateItemProperties();
+
+    addElement(element);
+
+    return element;
+}
+
 std::shared_ptr<UIBridgeElement> UIBridge::addButton(const QString &text, std::function<void ()> invokeCallback)
 {
     std::shared_ptr<UIBridgeElement> element = std::make_shared<UIBridgeElement>();

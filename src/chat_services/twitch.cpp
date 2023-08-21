@@ -31,7 +31,7 @@ static const int UpdateStreamInfoPeriod = 10 * 1000;
 Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
   : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Twitch, true, parent)
   , network(network_)
-    , authStateInfo(UIBridgeElement::createLabel("Loading..."))
+  , authStateInfo(ui.addLabel("Loading..."))
   , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
     ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));

@@ -21,11 +21,9 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     , apiKey(settings, getSettingsGroupPath() + "/api_key", QString(), true)
     , domain("https://donatepay.ru")
     , donationPagePrefix("https://new.donatepay.ru/@")
+    , authStateInfo(ui.addLabel("Loading..."))
 {
     ui.findBySetting(stream)->setItemProperty("visible", false);
-    
-    authStateInfo = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("Loading..."));
-    ui.addElement(authStateInfo);
     
     ui.addLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true);
 

@@ -1,18 +1,6 @@
 #include "uibridgeelement.h"
 #include <QAction>
 
-UIBridgeElement* UIBridgeElement::createLabel(const QString &text)
-{
-    UIBridgeElement* element = new UIBridgeElement();
-
-    element->type = Type::Label;
-    element->setItemProperty("text", text);
-
-    element->updateItemProperties();
-
-    return element;
-}
-
 UIBridgeElement* UIBridgeElement::createSwitch(Setting<bool> *settingBool, const QString &name)
 {
     UIBridgeElement* element = new UIBridgeElement();
