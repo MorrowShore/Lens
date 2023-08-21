@@ -204,47 +204,58 @@
         <translation type="vanished">Спрятать в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="46"/>
+        <location filename="chatwindow.cpp" line="49"/>
         <source>Background opacity</source>
         <translation>Непрозрачность фона</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="47"/>
+        <location filename="chatwindow.cpp" line="50"/>
         <source>Window opacity</source>
         <translation>Непрозрачность окна</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="79"/>
+        <location filename="chatwindow.cpp" line="82"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="110"/>
+        <location filename="chatwindow.cpp" line="113"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="88"/>
+        <location filename="chatwindow.cpp" line="91"/>
         <source>Stay on top</source>
         <translation>Поверх всех окон</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="99"/>
+        <location filename="chatwindow.cpp" line="46"/>
+        <source>Hide to tray when minimized</source>
+        <oldsource>Hide to tray on minimize</oldsource>
+        <translation>Скрыть в трей при сворачивании</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="47"/>
+        <source>Hide to tray on close</source>
+        <translation>Скрыть в трей при закрытии</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="102"/>
         <source>Window frame</source>
         <translation>Оконная рамка</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="132"/>
+        <location filename="chatwindow.cpp" line="135"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="183"/>
+        <location filename="chatwindow.cpp" line="186"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="187"/>
+        <location filename="chatwindow.cpp" line="190"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -1042,7 +1053,7 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="121"/>
+        <location filename="chatwindow.cpp" line="124"/>
         <location filename="tray.cpp" line="40"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>
@@ -2233,7 +2244,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прокси</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="184"/>
+        <location filename="setting_pages/common.qml" line="190"/>
         <source>Host name...</source>
         <translation>Имя хоста...</translation>
     </message>
@@ -2242,7 +2253,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Сервер...</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="205"/>
+        <location filename="setting_pages/common.qml" line="211"/>
         <source>Port...</source>
         <translation>Порт...</translation>
     </message>
@@ -2268,37 +2279,37 @@ Latest version available: %2</oldsource>
         <translation>Разное</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="79"/>
+        <location filename="setting_pages/common.qml" line="85"/>
         <source>Clear Messages on Link Change</source>
         <translation>Очистить сообщения при смене ссылки</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="91"/>
+        <location filename="setting_pages/common.qml" line="97"/>
         <source>Enabled Hardware Graphics Accelerator</source>
         <translation>Включить аппаратный ускоритель графики</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="107"/>
+        <location filename="setting_pages/common.qml" line="113"/>
         <source>Enabled HighDpi scaling</source>
         <translation>Включить HighDpi масштабирование</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="143"/>
+        <location filename="setting_pages/common.qml" line="149"/>
         <source>Show when author changes name</source>
         <translation>Показывать, когда автор меняет имя</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="160"/>
+        <location filename="setting_pages/common.qml" line="166"/>
         <source>Works only when output to file is enabled</source>
         <translation>Работает только при включенном выводе в файл</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="236"/>
+        <location filename="setting_pages/common.qml" line="242"/>
         <source>Program folder</source>
         <translation>Папка программы</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="244"/>
+        <location filename="setting_pages/common.qml" line="256"/>
         <source>Window</source>
         <translation>Окно</translation>
     </message>
@@ -2307,12 +2318,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="123"/>
+        <location filename="setting_pages/common.qml" line="129"/>
         <source>Enable Sound when New Message Received</source>
         <translation>Включить звук при получении нового сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="30"/>
+        <location filename="setting_pages/common.qml" line="36"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
@@ -2321,7 +2332,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Не обрабатывать ввод</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="169"/>
+        <location filename="setting_pages/common.qml" line="175"/>
         <source>Proxy (SOCKS5)</source>
         <translation>Прокси (SOCKS5)</translation>
     </message>

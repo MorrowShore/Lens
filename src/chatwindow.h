@@ -47,11 +47,12 @@ private:
 
     QAction* actionHideToTray = nullptr;
 
+    Setting<bool> hideToTrayOnMinimize;
+    Setting<bool> hideToTrayOnClose;
+
     Setting<bool> transparentForInput;
     Setting<bool> stayOnTop;
     Setting<bool> windowFrame;
-    Setting<bool> hideToTrayOnMinimize;
-    Setting<bool> hideToTrayOnClose;
 
     Setting<double> backgroundOpacity;
     Setting<double> windowOpacity;

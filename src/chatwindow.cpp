@@ -30,11 +30,11 @@ ChatWindow::ChatWindow(QWindow *parent)
     , commandsEditor(chatHandler.getBot())
     , tray(QIcon(":/resources/images/axelchat-16x16.png"))
 
+    , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", false)
+    , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
     , transparentForInput(settings, "transparentForInput", false)
     , stayOnTop(settings, "stayOnTop", false)
     , windowFrame(settings, "windowFrame", true)
-    , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
-    , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
     , backgroundOpacity(settings, "backgroundOpacity", 0.4)
     , windowOpacity(settings, "windowOpacity", 1.0)
 {
@@ -42,6 +42,9 @@ ChatWindow::ChatWindow(QWindow *parent)
     {
         updateWindow();
     });
+
+    ui.addSwitch(&hideToTrayOnMinimize, tr("Hide to tray when minimized"));
+    ui.addSwitch(&hideToTrayOnClose, tr("Hide to tray on close"));
 
     connect(ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0.0, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
     connect(ui.addSlider(&windowOpacity, tr("Window opacity"), 0.1, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
