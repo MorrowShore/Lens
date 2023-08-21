@@ -84,6 +84,27 @@ std::shared_ptr<UIBridgeElement> UIBridge::addSwitch(Setting<bool> *settingBool,
     return element;
 }
 
+std::shared_ptr<UIBridgeElement> UIBridge::addSlider(Setting<int> *settingInt, const QString &name, const int minValue, const int maxValue, const bool valueShowAsPercent)
+{
+    std::shared_ptr<UIBridgeElement> element = std::make_shared<UIBridgeElement>();
+
+    element->type = UIBridgeElement::Type::Slider;
+    element->settingInt = settingInt;
+
+    element->setItemProperty("name", name);
+    element->setItemProperty("from", minValue);
+    element->setItemProperty("to", maxValue);
+    element->setItemProperty("defaultValue", settingInt->getDefaultValue());
+    element->setItemProperty("value", settingInt->get());
+    element->setItemProperty("valueShowAsPercent", valueShowAsPercent);
+
+    element->updateItemProperties();
+
+    addElement(element);
+
+    return element;
+}
+
 void UIBridge::addElement(const std::shared_ptr<UIBridgeElement> &element)
 {
     if (!element)

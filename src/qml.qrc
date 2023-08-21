@@ -29,5 +29,6 @@
         <file>WaitAnimationPage.qml</file>
         <file>TitlesPage.qml</file>
         <file>my_components/UIBridgeContainer.qml</file>
+        <file>my_components/UIBridgeSlider.qml</file>
     </qresource>
 </RCC>

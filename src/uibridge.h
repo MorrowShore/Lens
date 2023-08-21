@@ -13,6 +13,7 @@ public:
     std::shared_ptr<UIBridgeElement> addButton(const QString& text, std::function<void()> invokeCallback);
     std::shared_ptr<UIBridgeElement> addLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
     std::shared_ptr<UIBridgeElement> addSwitch(Setting<bool>* settingBool, const QString& name);
+    std::shared_ptr<UIBridgeElement> addSlider(Setting<int>* settingInt, const QString& name, const int minValue, const int maxValue, const bool valueShowAsPercent = false);
 
     Q_INVOKABLE int getElementsCount() const;
     Q_INVOKABLE int getElementType(const int index) const;

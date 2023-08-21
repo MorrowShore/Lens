@@ -35,11 +35,16 @@ ChatWindow::ChatWindow(QWindow *parent)
     , windowFrame(settings, "windowFrame", true)
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
+    , backgroundOpacity(settings, "backgroundOpacity", 40)
+    , windowOpacity(settings, "windowOpacity", 100)
 {
     transparentForInput.setCallbackValueChanged([this](bool)
     {
         updateFlags();
     });
+
+    ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0, 100, true);
+    ui.addSlider(&windowOpacity, tr("Window opacity"), 10, 100, true);
 
     {
         tray.setToolTip(QCoreApplication::applicationName());
@@ -80,17 +85,6 @@ ChatWindow::ChatWindow(QWindow *parent)
         }
 
         {
-            auto element = ui.addSwitch(&transparentForInput, tr("Ignore Mouse"));
-
-            QAction* action = new QAction(menu);
-            element->bindAction(action);
-
-            menu->addAction(action);
-
-            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
-        }
-
-        {
             auto element = ui.addSwitch(&stayOnTop, tr("Stay on top"));
 
             QAction* action = new QAction(menu);
@@ -103,6 +97,17 @@ ChatWindow::ChatWindow(QWindow *parent)
 
         {
             auto element = ui.addSwitch(&windowFrame, tr("Window frame"));
+
+            QAction* action = new QAction(menu);
+            element->bindAction(action);
+
+            menu->addAction(action);
+
+            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
+        }
+
+        {
+            auto element = ui.addSwitch(&transparentForInput, tr("Ignore Mouse"));
 
             QAction* action = new QAction(menu);
             element->bindAction(action);

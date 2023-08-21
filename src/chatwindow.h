@@ -52,4 +52,7 @@ private:
     Setting<bool> windowFrame;
     Setting<bool> hideToTrayOnMinimize;
     Setting<bool> hideToTrayOnClose;
+
+    Setting<int> backgroundOpacity;
+    Setting<int> windowOpacity;
 };

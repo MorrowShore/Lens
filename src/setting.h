@@ -10,10 +10,11 @@ template<typename T>
 class Setting
 {
 public:
-    Setting(QSettings& settings_, const QString& key_, const T& defaultValue = T(), const bool encrypt_ = false)
+    Setting(QSettings& settings_, const QString& key_, const T& defaultValue_ = T(), const bool encrypt_ = false)
         : settings(settings_)
         , key(key_)
-        , value(defaultValue)
+        , value(defaultValue_)
+        , defaultValue(defaultValue_)
         , encrypt(encrypt_)
     {
         bool loaded = false;
@@ -46,6 +47,11 @@ public:
     inline const T& get() const
     {
         return value;
+    }
+
+    inline const T& getDefaultValue() const
+    {
+        return defaultValue;
     }
 
     bool set(const T& value_)
@@ -91,6 +97,7 @@ private:
     QSettings& settings;
     const QString key;
     T value;
+    const T defaultValue;
     const bool encrypt;
 
     std::function<void(const T& value)> valueChangedCallback = nullptr;

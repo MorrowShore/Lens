@@ -20,6 +20,7 @@ public:
         LineEdit = 20,
         Button = 30,
         Switch = 32,
+        Slider = 40,
     };
 
     explicit UIBridgeElement(QObject *parent = nullptr);
