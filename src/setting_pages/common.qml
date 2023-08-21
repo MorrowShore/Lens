@@ -23,6 +23,12 @@ ScrollView {
             text: qsTr("Miscellaneous")
         }
 
+        Rectangle {
+            color: "transparent"
+            width: 10
+            height: 10
+        }
+
         Row {
             spacing: 10
 
@@ -238,6 +244,12 @@ ScrollView {
             onClicked: {
                 chatHandler.openProgramFolder();
             }
+        }
+
+        Rectangle {
+            color: "transparent"
+            width: 10
+            height: 20
         }
 
         MyComponents.SeparatorWithText {
