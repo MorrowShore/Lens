@@ -1,7 +1,17 @@
 import QtQuick 2.0
 
-Column {
+Rectangle
+{
     property var bridge: null
+
+    width: column.width
+    height: column.height
+
+    color: "transparent"
+
+    Column {
+        id: column
+    }
 
     Component.onCompleted: {
         if (!bridge) {
@@ -16,7 +26,7 @@ Column {
             Switch: 32,
         }
 
-        var container = parent
+        var container = column
 
         var labelComponent = Qt.createComponent("../my_components/BridgedLabel.qml")
         var lineEditComponent = Qt.createComponent("../my_components/BridgedLineEdit.qml")
