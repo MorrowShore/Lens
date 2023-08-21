@@ -28,7 +28,7 @@ Rectangle
             return;
         }
 
-        var Types = {
+        const Types = {
             Label:      10,
             LineEdit:   20,
             Button:     30,
@@ -36,17 +36,17 @@ Rectangle
             Slider:     40,
         }
 
-        var container = column
+        const container = column
 
-        var labelComponent      = Qt.createComponent("UIBridgeLabel.qml")
-        var lineEditComponent   = Qt.createComponent("UIBridgeLineEdit.qml")
-        var buttonComponent     = Qt.createComponent("UIBridgeButton.qml")
-        var switchComponent     = Qt.createComponent("UIBridgeSwitch.qml")
-        var sliderComponent     = Qt.createComponent("UIBridgeSlider.qml")
+        const labelComponent      = Qt.createComponent("UIBridgeLabel.qml")
+        const lineEditComponent   = Qt.createComponent("UIBridgeLineEdit.qml")
+        const buttonComponent     = Qt.createComponent("UIBridgeButton.qml")
+        const switchComponent     = Qt.createComponent("UIBridgeSwitch.qml")
+        const sliderComponent     = Qt.createComponent("UIBridgeSlider.qml")
 
         for (var i = 0; i < bridge.getElementsCount(); ++i)
         {
-            var type = bridge.getElementType(i)
+            const type = bridge.getElementType(i)
 
             switch (type)
             {
