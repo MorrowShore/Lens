@@ -4,10 +4,13 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QGuiApplication>
+#include <QApplication>
 #include <QMenu>
 
 void ChatWindow::declareQml()
 {
+    qmlRegisterUncreatableType<UIBridge> ("AxelChat.ChatWindow", 1, 0, "ChatWindow", "Type cannot be created in QML");
+
     UIBridge::declareQml();
     QMLUtils::declareQml();
     I18n::declareQml();
@@ -33,6 +36,10 @@ ChatWindow::ChatWindow(QWindow *parent)
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
 {
+    {
+        //ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&transparentForInput, tr("Ignore Mouse"))));
+    }
+
     {
         tray.setToolTip(QCoreApplication::applicationName());
 
@@ -128,7 +135,7 @@ ChatWindow::ChatWindow(QWindow *parent)
             QAction* action = new QAction(QIcon(":/resources/images/emblem-unreadable.png"), tr("Close"), menu);
             connect(action, &QAction::triggered, this, []()
             {
-                QCoreApplication::quit();
+                QApplication::quit();
             });
             menu->addAction(action);
         }
@@ -142,6 +149,7 @@ ChatWindow::ChatWindow(QWindow *parent)
 
         qml->rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
 
+        qml->rootContext()->setContextProperty("chatWindow",         this);
         qml->rootContext()->setContextProperty("i18n",               &i18n);
         qml->rootContext()->setContextProperty("chatHandler",        &chatHandler);
         qml->rootContext()->setContextProperty("outputToFile",       &chatHandler.getOutputToFile());
@@ -194,11 +202,17 @@ bool ChatWindow::event(QEvent *event)
         }
     }
 
-    if (event->type() == QEvent::Close &&
-        hideToTrayOnClose.get())
+    if (event->type() == QEvent::Close)
     {
-        QTimer::singleShot(250, this, &ChatWindow::hide);
-        return true;
+        if (hideToTrayOnClose.get())
+        {
+            QTimer::singleShot(250, this, &ChatWindow::hide);
+            return true;
+        }
+        else
+        {
+            QApplication::quit();
+        }
     }
 
     return QQuickView::event(event);
@@ -208,7 +222,12 @@ void ChatWindow::toogleVisible()
 {
     if (isVisible())
     {
-        hide();
+        const QWindowList windows = QApplication::topLevelWindows();
+
+        for (QWindow *window : windows)
+        {
+            window->hide();
+        }
     }
     else
     {

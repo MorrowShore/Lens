@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    QApplication::setQuitOnLastWindowClosed(false);
+
     if (!Crypto::test())
     {
         qCritical() << Q_FUNC_INFO << "crypto test failed";

@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import AxelChat.QMLUtils 1.0
 import AxelChat.I18n 1.0
+import AxelChat.ChatWindow 1.0
 import "../my_components" as MyComponents
 import "../"
 
@@ -38,7 +39,7 @@ ScrollView {
 
                 property bool enableForEditing: false
                 Component.onCompleted: {
-                    if (i18n.language == "ru")
+                    if (i18n.language === "ru")
                         currentIndex = 1;
                     else
                         currentIndex = 0;
@@ -68,6 +69,10 @@ ScrollView {
                 fillMode: Image.PreserveAspectFit
                 source: "qrc:/resources/images/language-svgrepo-com.svg"
             }
+        }
+
+        MyComponents.UIBridgeContainer {
+            bridge: chatWindow.getUiBridge()
         }
 
         Switch {

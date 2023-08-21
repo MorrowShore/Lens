@@ -7,6 +7,7 @@
 #include "appsponsormanager.h"
 #include "commandseditor.h"
 #include "setting.h"
+#include "uibridge.h"
 #include <QQuickView>
 #include <QSystemTrayIcon>
 
@@ -19,6 +20,8 @@ public:
     explicit ChatWindow(QWindow *parent = nullptr);
 
     virtual bool event(QEvent *event) override;
+
+    Q_INVOKABLE UIBridge* getUiBridge() const { return &const_cast<UIBridge&>(ui); }
 
 signals:
 
@@ -38,6 +41,8 @@ private:
     CommandsEditor commandsEditor;
 
     QSystemTrayIcon tray;
+
+    UIBridge ui;
 
     QAction* actionHideToTray = nullptr;
 
