@@ -15,12 +15,12 @@ public:
 
     enum class Type
     {
-        Unknown = -1,
-        Label = 10,
-        LineEdit = 20,
-        Button = 30,
-        Switch = 32,
-        Slider = 40,
+        Unknown     = -1,
+        Label       = 10,
+        LineEdit    = 20,
+        Button      = 30,
+        Switch      = 32,
+        Slider      = 40,
     };
 
     explicit UIBridgeElement(QObject *parent = nullptr);
