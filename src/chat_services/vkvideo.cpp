@@ -22,7 +22,7 @@ static const int StickerImageHeight = 128;
 VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::VkVideo, false, parent)
     , network(network_)
-    , authStateInfo(UIElementBridge::createLabel("Loading..."))
+    , authStateInfo(UIBridgeElement::createLabel("Loading..."))
     , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
     uiBridge.findBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));
@@ -39,8 +39,8 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
     config.requestTokenUrl = "https://oauth.vk.com/access_token";
     auth.setConfig(config);
     QObject::connect(&auth, &OAuth2::stateChanged, this, &VkVideo::updateUI);
-
-    loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
+    
+    loginButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Login"), [this]()
     {
         if (auth.isLoggedIn())
         {

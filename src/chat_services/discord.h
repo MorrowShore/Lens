@@ -117,8 +117,8 @@ private:
 
     Setting<QString> applicationId;
     Setting<QString> botToken;
-    std::shared_ptr<UIElementBridge> authStateInfo;
-    std::shared_ptr<UIElementBridge> connectBotToGuild;
+    std::shared_ptr<UIBridgeElement> authStateInfo;
+    std::shared_ptr<UIBridgeElement> connectBotToGuild;
     Setting<bool> showNsfwChannels;
     Setting<bool> showGuildName;
     Setting<bool> showChannelName;

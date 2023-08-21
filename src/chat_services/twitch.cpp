@@ -31,7 +31,7 @@ static const int UpdateStreamInfoPeriod = 10 * 1000;
 Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
   : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Twitch, true, parent)
   , network(network_)
-  , authStateInfo(UIElementBridge::createLabel("Loading..."))
+    , authStateInfo(UIBridgeElement::createLabel("Loading..."))
   , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
     uiBridge.findBySetting(stream)->setItemProperty("name", tr("Channel"));
@@ -52,8 +52,8 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     config.revokeTokenUrl = "https://id.twitch.tv/oauth2/revoke";
     auth.setConfig(config);
     QObject::connect(&auth, &OAuth2::stateChanged, this, &Twitch::onAuthStateChanged);
-
-    loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
+    
+    loginButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Login"), [this]()
     {
         if (auth.isLoggedIn())
         {
@@ -65,8 +65,8 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
         }
     }));
     uiBridge.addElement(loginButton);
-
-    connect(&uiBridge, QOverload<const std::shared_ptr<UIElementBridge>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIElementBridge>& element)
+    
+    connect(&uiBridge, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {

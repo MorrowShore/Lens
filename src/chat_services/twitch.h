@@ -74,9 +74,9 @@ private:
     QNetworkAccessManager& network;
 
     QWebSocket socket;
-
-    std::shared_ptr<UIElementBridge> authStateInfo;
-    std::shared_ptr<UIElementBridge> loginButton;
+    
+    std::shared_ptr<UIBridgeElement> authStateInfo;
+    std::shared_ptr<UIBridgeElement> loginButton;
 
     QTimer timerReconnect;
     QTimer timerPing;

@@ -60,7 +60,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::DonationAlerts, false, parent)
     , network(network_)
     , auth(settings, getSettingsGroupPath() + "/auth", network)
-    , authStateInfo(UIElementBridge::createLabel("Loading..."))
+    , authStateInfo(UIBridgeElement::createLabel("Loading..."))
 {
     uiBridge.findBySetting(stream)->setItemProperty("visible", false);
 
@@ -81,8 +81,8 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
         updateUI();
         reconnect();
     });
-
-    loginButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Login"), [this]()
+    
+    loginButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Login"), [this]()
     {
         if (auth.isLoggedIn())
         {
@@ -94,19 +94,19 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
         }
     }));
     uiBridge.addElement(loginButton);
-
-    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Dashboard"), []()
+    
+    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Dashboard"), []()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/dashboard"));
     })));
-
-    donateMainPageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Donation page"), [this]()
+    
+    donateMainPageButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Donation page"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/r/" + info.userName));
     }));
     uiBridge.addElement(donateMainPageButton);
-
-    donateAlternativePageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Alternative donation page"), [this]()
+    
+    donateAlternativePageButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Alternative donation page"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/c/" + info.userName));
     }));

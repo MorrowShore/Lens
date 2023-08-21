@@ -6,7 +6,7 @@
 #include <QQuickItem>
 #include <set>
 
-class UIElementBridge : public QObject
+class UIBridgeElement : public QObject
 {
     Q_OBJECT
 
@@ -21,11 +21,11 @@ public:
         ComboBox = 40,
     };
 
-    static UIElementBridge* createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
-    static UIElementBridge* createButton(const QString& text, std::function<void()> invokeCallback);
-    static UIElementBridge* createLabel(const QString& text);
-    static UIElementBridge* createSwitch(Setting<bool>* settingBool, const QString& name);
-    static UIElementBridge* createComboBox(Setting<int>* settingInt, const QString& name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged);
+    static UIBridgeElement* createLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
+    static UIBridgeElement* createButton(const QString& text, std::function<void()> invokeCallback);
+    static UIBridgeElement* createLabel(const QString& text);
+    static UIBridgeElement* createSwitch(Setting<bool>* settingBool, const QString& name);
+    static UIBridgeElement* createComboBox(Setting<int>* settingInt, const QString& name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged);
 
     Q_INVOKABLE void bindQuickItem(QQuickItem* item);
 
@@ -47,7 +47,7 @@ public:
 #ifdef QT_QUICK_LIB
     static void declareQml()
     {
-        qmlRegisterUncreatableType<UIElementBridge> ("UIElementBridge", 1, 0, "UIElementBridge", "Type cannot be created in QML");
+        qmlRegisterUncreatableType<UIBridgeElement> ("UIBridgeElement", 1, 0, "UIBridgeElement", "Type cannot be created in QML");
     }
 #endif
 
@@ -63,7 +63,7 @@ private slots:
     void onCheckedChanged();
 
 private:
-    UIElementBridge(){}
+    UIBridgeElement(){}
 
     QQuickItem* item = nullptr;
 

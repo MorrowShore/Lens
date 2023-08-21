@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import AxelChat.ChatHandler 1.0
 import AxelChat.ChatService 1.0
-import UIElementBridge 1.0
+import UIBridgeElement 1.0
 import UIBridge 1.0
 import "../my_components" as MyComponents
 import "../"
@@ -19,10 +19,8 @@ ScrollView {
     ScrollBar.vertical.policy: height < contentHeight ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
 
     property var chatService: null
-    property var uiBridge: null
     Component.onCompleted: {
         chatService = chatHandler.getServiceAtIndex(Global.windowSettingsServiceIndex)
-        uiBridge = chatService.getUiBridge()
     }
 
     Column {
@@ -130,6 +128,8 @@ ScrollView {
             var lineEditComponent = Qt.createComponent("../my_components/BridgedLineEdit.qml")
             var buttonComponent = Qt.createComponent("../my_components/BridgedButton.qml")
             var switchComponent = Qt.createComponent("../my_components/BridgedSwitch.qml")
+
+            var uiBridge = chatService.getUiBridge()
 
             for (var i = 0; i < uiBridge.getElementsCount(); ++i)
             {

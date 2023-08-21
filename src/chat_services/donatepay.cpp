@@ -23,29 +23,29 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     , donationPagePrefix("https://new.donatepay.ru/@")
 {
     uiBridge.findBySetting(stream)->setItemProperty("visible", false);
-
-    authStateInfo = std::shared_ptr<UIElementBridge>(UIElementBridge::createLabel("Loading..."));
+    
+    authStateInfo = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("Loading..."));
     uiBridge.addElement(authStateInfo);
-
-    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true)));
-
-    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Get API key"), [this]()
+    
+    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true)));
+    
+    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Get API key"), [this]()
     {
         QDesktopServices::openUrl(QUrl(domain + "/page/api"));
     })));
-
-    donatePageButton = std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Donation page"), [this]()
+    
+    donatePageButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Donation page"), [this]()
     {
         QDesktopServices::openUrl(QUrl(donationPagePrefix + info.userId));
     }));
     uiBridge.addElement(donatePageButton);
-
-    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createButton(tr("Transactions"), [this]()
+    
+    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Transactions"), [this]()
     {
         QDesktopServices::openUrl(QUrl(domain + "/billing/transactions"));
     })));
-
-    connect(&uiBridge, QOverload<const std::shared_ptr<UIElementBridge>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIElementBridge>& element)
+    
+    connect(&uiBridge, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {

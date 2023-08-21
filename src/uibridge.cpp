@@ -6,7 +6,7 @@ UIBridge::UIBridge(QObject *parent)
 
 }
 
-void UIBridge::addElement(const std::shared_ptr<UIElementBridge> &element)
+void UIBridge::addElement(const std::shared_ptr<UIBridgeElement> &element)
 {
     if (!element)
     {
@@ -14,7 +14,7 @@ void UIBridge::addElement(const std::shared_ptr<UIElementBridge> &element)
         return;
     }
 
-    connect(element.get(), &UIElementBridge::valueChanged, this, [this, element]()
+    connect(element.get(), &UIBridgeElement::valueChanged, this, [this, element]()
     {
         emit elementChanged(element);
     });
@@ -49,9 +49,9 @@ void UIBridge::bindQuickItem(const int index, QQuickItem *item)
     elements[index]->bindQuickItem(item);
 }
 
-std::shared_ptr<UIElementBridge> UIBridge::findBySetting(const Setting<QString> &setting) const
+std::shared_ptr<UIBridgeElement> UIBridge::findBySetting(const Setting<QString> &setting) const
 {
-    for (const std::shared_ptr<UIElementBridge>& element : qAsConst(elements))
+    for (const std::shared_ptr<UIBridgeElement>& element : qAsConst(elements))
     {
         if (!element)
         {

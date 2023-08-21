@@ -12,7 +12,7 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
 
     , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", enabledThirdPartyEmotesDefault)
 {
-    uiBridge.addElement(std::shared_ptr<UIElementBridge>(UIElementBridge::createLineEdit(&stream, tr("Stream"))));
+    uiBridge.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLineEdit(&stream, tr("Stream"))));
 
     connect(&uiBridge, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
 }
@@ -181,7 +181,7 @@ QUrl ChatService::getIconUrl() const
     return getIconUrl(serviceType);
 }
 
-void ChatService::onUIElementChanged(const std::shared_ptr<UIElementBridge> &element)
+void ChatService::onUIElementChanged(const std::shared_ptr<UIBridgeElement> &element)
 {
     if (!element)
     {

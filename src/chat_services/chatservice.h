@@ -114,7 +114,7 @@ signals:
     void authorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values);
 
 private slots:
-    void onUIElementChanged(const std::shared_ptr<UIElementBridge>& element);
+    void onUIElementChanged(const std::shared_ptr<UIBridgeElement>& element);
 
 private:
     const AxelChat::ServiceType serviceType;

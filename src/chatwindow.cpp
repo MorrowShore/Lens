@@ -8,7 +8,7 @@
 
 void ChatWindow::declareQml()
 {
-    UIElementBridge::declareQml();
+    UIBridgeElement::declareQml();
     QMLUtils::declareQml();
     I18n::declareQml();
     ChatHandler::declareQml();

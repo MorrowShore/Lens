@@ -38,8 +38,8 @@ private:
     };
 
     Info info;
-
-    std::shared_ptr<UIElementBridge> authStateInfo;
+    
+    std::shared_ptr<UIBridgeElement> authStateInfo;
 
     QTimer timerRequestUpdates;
 

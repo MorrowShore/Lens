@@ -52,9 +52,9 @@ private:
 
     QTimer timerRequestChat;
     QTimer timerRequestVideo;
-
-    std::shared_ptr<UIElementBridge> authStateInfo;
-    std::shared_ptr<UIElementBridge> loginButton;
+    
+    std::shared_ptr<UIBridgeElement> authStateInfo;
+    std::shared_ptr<UIBridgeElement> loginButton;
     OAuth2 auth;
 
     std::unordered_map<int64_t, User> users;

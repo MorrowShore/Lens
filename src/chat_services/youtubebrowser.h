@@ -29,6 +29,6 @@ private:
     QTimer timerReconnect;
     QTimer timerCheckConnection;
     QTimer timerRequestStreamPage;
-
-    std::shared_ptr<UIElementBridge> openChatButton;
+    
+    std::shared_ptr<UIBridgeElement> openChatButton;
 };

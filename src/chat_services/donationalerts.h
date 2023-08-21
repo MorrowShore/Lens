@@ -57,9 +57,9 @@ private:
     QTimer checkPingTimer;
 
     Info info;
-
-    std::shared_ptr<UIElementBridge> authStateInfo;
-    std::shared_ptr<UIElementBridge> loginButton;
-    std::shared_ptr<UIElementBridge> donateMainPageButton;
-    std::shared_ptr<UIElementBridge> donateAlternativePageButton;
+    
+    std::shared_ptr<UIBridgeElement> authStateInfo;
+    std::shared_ptr<UIBridgeElement> loginButton;
+    std::shared_ptr<UIBridgeElement> donateMainPageButton;
+    std::shared_ptr<UIBridgeElement> donateAlternativePageButton;
 };

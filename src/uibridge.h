@@ -1,6 +1,6 @@
 #pragma once
 
-#include "uielementbridge.h"
+#include "uibridgeelement.h"
 #include <QObject>
 
 class UIBridge : public QObject
@@ -10,14 +10,14 @@ public:
     explicit UIBridge(QObject *parent = nullptr);
     ~UIBridge() { qDebug() << "delete UIBridge"; }
 
-    void addElement(const std::shared_ptr<UIElementBridge>& element);
+    void addElement(const std::shared_ptr<UIBridgeElement>& element);
 
     Q_INVOKABLE int getElementsCount() const;
     Q_INVOKABLE int getElementType(const int index) const;
 
-    std::shared_ptr<UIElementBridge> findBySetting(const Setting<QString>& setting) const;
+    std::shared_ptr<UIBridgeElement> findBySetting(const Setting<QString>& setting) const;
 
-    const QList<std::shared_ptr<UIElementBridge>>& getElements() const { return elements; }
+    const QList<std::shared_ptr<UIBridgeElement>>& getElements() const { return elements; }
 
 #ifdef QT_QUICK_LIB
     Q_INVOKABLE void bindQuickItem(const int index, QQuickItem* item);
@@ -25,13 +25,13 @@ public:
     static void declareQml()
     {
         qmlRegisterUncreatableType<UIBridge> ("UIBridge", 1, 0, "UIBridge", "Type cannot be created in QML");
-        UIElementBridge::declareQml();
+        UIBridgeElement::declareQml();
     }
 #endif
 
 signals:
-    void elementChanged(const std::shared_ptr<UIElementBridge>& element);
+    void elementChanged(const std::shared_ptr<UIBridgeElement>& element);
 
 private:
-    QList<std::shared_ptr<UIElementBridge>> elements;
+    QList<std::shared_ptr<UIBridgeElement>> elements;
 };

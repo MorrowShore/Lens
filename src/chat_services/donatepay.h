@@ -48,9 +48,9 @@ private:
     QTimer timerReconnect;
     QTimer pingTimer;
     QTimer checkPingTimer;
-
-    std::shared_ptr<UIElementBridge> authStateInfo;
-    std::shared_ptr<UIElementBridge> donatePageButton;
+    
+    std::shared_ptr<UIBridgeElement> authStateInfo;
+    std::shared_ptr<UIBridgeElement> donatePageButton;
 
     Info info;
 };

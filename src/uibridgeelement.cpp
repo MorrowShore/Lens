@@ -1,8 +1,8 @@
-#include "uielementbridge.h"
+#include "uibridgeelement.h"
 
-UIElementBridge* UIElementBridge::createLineEdit(Setting<QString> *setting, const QString &name, const QString &placeHolder, const bool passwordEcho)
+UIBridgeElement* UIBridgeElement::createLineEdit(Setting<QString> *setting, const QString &name, const QString &placeHolder, const bool passwordEcho)
 {
-    UIElementBridge* element = new UIElementBridge();
+    UIBridgeElement* element = new UIBridgeElement();
 
     element->type = Type::LineEdit;
     element->settingString = setting;
@@ -26,9 +26,9 @@ UIElementBridge* UIElementBridge::createLineEdit(Setting<QString> *setting, cons
     return element;
 }
 
-UIElementBridge* UIElementBridge::createButton(const QString &text, std::function<void()> invokeCallback)
+UIBridgeElement* UIBridgeElement::createButton(const QString &text, std::function<void()> invokeCallback)
 {
-    UIElementBridge* element = new UIElementBridge();
+    UIBridgeElement* element = new UIBridgeElement();
 
     element->type = Type::Button;
 
@@ -40,9 +40,9 @@ UIElementBridge* UIElementBridge::createButton(const QString &text, std::functio
     return element;
 }
 
-UIElementBridge* UIElementBridge::createLabel(const QString &text)
+UIBridgeElement* UIBridgeElement::createLabel(const QString &text)
 {
-    UIElementBridge* element = new UIElementBridge();
+    UIBridgeElement* element = new UIBridgeElement();
 
     element->type = Type::Label;
     element->setItemProperty("text", text);
@@ -52,9 +52,9 @@ UIElementBridge* UIElementBridge::createLabel(const QString &text)
     return element;
 }
 
-UIElementBridge* UIElementBridge::createSwitch(Setting<bool> *settingBool, const QString &name)
+UIBridgeElement* UIBridgeElement::createSwitch(Setting<bool> *settingBool, const QString &name)
 {
-    UIElementBridge* element = new UIElementBridge();
+    UIBridgeElement* element = new UIBridgeElement();
 
     element->type = Type::Switch;
     element->settingBool = settingBool;
@@ -70,9 +70,9 @@ UIElementBridge* UIElementBridge::createSwitch(Setting<bool> *settingBool, const
     return element;
 }
 
-UIElementBridge *UIElementBridge::createComboBox(Setting<int> *settingInt, const QString &name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged)
+UIBridgeElement *UIBridgeElement::createComboBox(Setting<int> *settingInt, const QString &name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged)
 {
-    UIElementBridge* element = new UIElementBridge();
+    UIBridgeElement* element = new UIBridgeElement();
 
     element->type = Type::ComboBox;
     element->settingInt = settingInt;
@@ -85,7 +85,7 @@ UIElementBridge *UIElementBridge::createComboBox(Setting<int> *settingInt, const
     return element;
 }
 
-void UIElementBridge::bindQuickItem(QQuickItem *item_)
+void UIBridgeElement::bindQuickItem(QQuickItem *item_)
 {
     if (item)
     {
@@ -123,7 +123,7 @@ void UIElementBridge::bindQuickItem(QQuickItem *item_)
     updateItemProperties();
 }
 
-void UIElementBridge::setItemProperty(const QByteArray &name, const QVariant &value)
+void UIBridgeElement::setItemProperty(const QByteArray &name, const QVariant &value)
 {
     parameters.insert(name, value);
 
@@ -133,7 +133,7 @@ void UIElementBridge::setItemProperty(const QByteArray &name, const QVariant &va
     }
 }
 
-void UIElementBridge::updateItemProperties()
+void UIBridgeElement::updateItemProperties()
 {
     if (!item)
     {
@@ -146,7 +146,7 @@ void UIElementBridge::updateItemProperties()
     }
 }
 
-void UIElementBridge::onInvoked()
+void UIBridgeElement::onInvoked()
 {
     if (invokeCallback)
     {
@@ -158,7 +158,7 @@ void UIElementBridge::onInvoked()
     }
 }
 
-void UIElementBridge::onTextChanged()
+void UIBridgeElement::onTextChanged()
 {
     QObject* sender_ = sender();
     if (!sender_)
@@ -198,7 +198,7 @@ void UIElementBridge::onTextChanged()
     }
 }
 
-void UIElementBridge::onCheckedChanged()
+void UIBridgeElement::onCheckedChanged()
 {
     QObject* sender_ = sender();
     if (!sender_)
