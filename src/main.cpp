@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/icon.ico"));
 
     ChatWindow chatWindow;
-    chatWindow.show();
 
     splashScreen->close();
     delete splashScreen;

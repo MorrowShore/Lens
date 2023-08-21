@@ -55,6 +55,7 @@ private:
 
     Setting<bool> hideToTrayOnMinimize;
     Setting<bool> hideToTrayOnClose;
+    Setting<bool> runMinimizedToTray;
 
     Setting<bool> transparentForInput;
     Setting<bool> stayOnTop;

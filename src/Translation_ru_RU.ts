@@ -204,58 +204,63 @@
         <translation type="vanished">Спрятать в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="49"/>
+        <location filename="chatwindow.cpp" line="55"/>
         <source>Background opacity</source>
         <translation>Непрозрачность фона</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="50"/>
+        <location filename="chatwindow.cpp" line="56"/>
         <source>Window opacity</source>
         <translation>Непрозрачность окна</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="82"/>
+        <location filename="chatwindow.cpp" line="88"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="113"/>
+        <location filename="chatwindow.cpp" line="119"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="91"/>
+        <location filename="chatwindow.cpp" line="97"/>
         <source>Stay on top</source>
         <translation>Поверх всех окон</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="46"/>
+        <location filename="chatwindow.cpp" line="50"/>
         <source>Hide to tray when minimized</source>
         <oldsource>Hide to tray on minimize</oldsource>
         <translation>Скрыть в трей при сворачивании</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="47"/>
+        <location filename="chatwindow.cpp" line="51"/>
         <source>Hide to tray on close</source>
         <translation>Скрыть в трей при закрытии</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="102"/>
+        <location filename="chatwindow.cpp" line="53"/>
+        <source>Run minimized to tray</source>
+        <translation>Запускать свёрнутым в трей</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="108"/>
         <source>Window frame</source>
         <translation>Оконная рамка</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="135"/>
+        <location filename="chatwindow.cpp" line="141"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="186"/>
+        <location filename="chatwindow.cpp" line="194"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="190"/>
+        <location filename="chatwindow.cpp" line="198"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -1053,7 +1058,7 @@ to these chats/channels in access rights (at your own risk)</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="124"/>
+        <location filename="chatwindow.cpp" line="130"/>
         <location filename="tray.cpp" line="40"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>

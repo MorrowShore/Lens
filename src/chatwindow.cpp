@@ -35,6 +35,7 @@ ChatWindow::ChatWindow(QWindow *parent)
 
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", false)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
+    , runMinimizedToTray(settings, "runMinimizedToTray", false)
     , transparentForInput(settings, "transparentForInput", false)
     , stayOnTop(settings, "stayOnTop", false)
     , windowFrame(settings, "windowFrame", true)
@@ -48,6 +49,8 @@ ChatWindow::ChatWindow(QWindow *parent)
 
     ui.addSwitch(&hideToTrayOnMinimize, tr("Hide to tray when minimized"));
     ui.addSwitch(&hideToTrayOnClose, tr("Hide to tray on close"));
+
+    ui.addSwitch(&runMinimizedToTray, tr("Run minimized to tray"));
 
     connect(ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0.0, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
     connect(ui.addSlider(&windowOpacity, tr("Window opacity"), 0.1, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
@@ -182,6 +185,11 @@ ChatWindow::ChatWindow(QWindow *parent)
 #endif
 
     loadWindowSize();
+
+    if (!runMinimizedToTray.get())
+    {
+        show();
+    }
 }
 
 bool ChatWindow::event(QEvent *event)
