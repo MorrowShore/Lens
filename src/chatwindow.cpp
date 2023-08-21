@@ -36,8 +36,13 @@ ChatWindow::ChatWindow(QWindow *parent)
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
 {
+    transparentForInput.setCallbackValueChanged([this](bool)
     {
-        //ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&transparentForInput, tr("Ignore Mouse"))));
+        updateFlags();
+    });
+
+    {
+        ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&transparentForInput, tr("Ignore Mouse"))));
     }
 
     {
@@ -85,7 +90,6 @@ ChatWindow::ChatWindow(QWindow *parent)
             connect(action, &QAction::triggered, this, [this, action]()
             {
                 transparentForInput.set(action->isChecked());
-                updateFlags();
             });
             menu->addAction(action);
 
