@@ -87,34 +87,32 @@ ChatWindow::ChatWindow(QWindow *parent)
             element->bindAction(action);
 
             menu->addAction(action);
+
+            connect(element, &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
         }
 
         {
-            QAction* action = new QAction(tr("Stay on top"), menu);
-            action->setCheckable(true);
+            UIBridgeElement* element = UIBridgeElement::createSwitch(&stayOnTop, tr("Stay on top"));
+            ui.addElement(std::shared_ptr<UIBridgeElement>(element));
 
-            connect(action, &QAction::triggered, this, [this, action]()
-            {
-                stayOnTop.set(action->isChecked());
-                updateFlags();
-            });
+            QAction* action = new QAction(menu);
+            element->bindAction(action);
+
             menu->addAction(action);
 
-            action->setChecked(stayOnTop.get());
+            connect(element, &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
         }
 
         {
-            QAction* action = new QAction(tr("Window frame"), menu);
-            action->setCheckable(true);
+            UIBridgeElement* element = UIBridgeElement::createSwitch(&windowFrame, tr("Window frame"));
+            ui.addElement(std::shared_ptr<UIBridgeElement>(element));
 
-            connect(action, &QAction::triggered, this, [this, action]()
-            {
-                windowFrame.set(action->isChecked());
-                updateFlags();
-            });
+            QAction* action = new QAction(menu);
+            element->bindAction(action);
+
             menu->addAction(action);
 
-            action->setChecked(windowFrame.get());
+            connect(element, &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
         }
 
         {

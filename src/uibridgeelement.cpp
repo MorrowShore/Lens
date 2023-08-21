@@ -146,7 +146,10 @@ void UIBridgeElement::bindAction(QAction *action_)
         }
     });
 
-    action->setText(parameters.value("text").toString());
+    if (action->text().isEmpty())
+    {
+        action->setText(parameters.value("text").toString());
+    }
 
     if (type == Type::Switch)
     {

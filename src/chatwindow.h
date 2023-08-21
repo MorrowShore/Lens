@@ -25,10 +25,11 @@ public:
 
 signals:
 
-private:
+private slots:
     void toogleVisible();
     void updateFlags();
 
+private:
     QSettings settings;
 
     cweqt::Manager web;
