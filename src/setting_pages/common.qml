@@ -20,13 +20,13 @@ ScrollView {
         id: rootColumn
 
         MyComponents.SeparatorWithText {
-            text: qsTr("Miscellaneous")
+            text: qsTr("Window")
         }
 
         Rectangle {
-            color: "transparent"
             width: 10
-            height: 10
+            height: 20
+            color: "transparent"
         }
 
         Row {
@@ -81,16 +81,8 @@ ScrollView {
             }
         }
 
-        Switch {
-            text: qsTr("Clear Messages on Link Change")
-
-            Component.onCompleted: {
-                checked = chatHandler.enabledClearMessagesOnLinkChange;
-            }
-
-            onCheckedChanged: {
-                chatHandler.enabledClearMessagesOnLinkChange = checked;
-            }
+        MyComponents.UIBridgeContainer {
+            bridge: chatWindow.getUiBridge()
         }
 
         Switch {
@@ -122,6 +114,28 @@ ScrollView {
 
             onClicked: {
                 Global.windowSettings.showRestartDialog()
+            }
+        }
+
+        MyComponents.SeparatorWithText {
+            text: qsTr("Miscellaneous")
+        }
+
+        Rectangle {
+            color: "transparent"
+            width: 10
+            height: 10
+        }
+
+        Switch {
+            text: qsTr("Clear Messages on Link Change")
+
+            Component.onCompleted: {
+                checked = chatHandler.enabledClearMessagesOnLinkChange;
+            }
+
+            onCheckedChanged: {
+                chatHandler.enabledClearMessagesOnLinkChange = checked;
             }
         }
 
@@ -244,26 +258,6 @@ ScrollView {
             onClicked: {
                 chatHandler.openProgramFolder();
             }
-        }
-
-        Rectangle {
-            color: "transparent"
-            width: 10
-            height: 20
-        }
-
-        MyComponents.SeparatorWithText {
-            text: qsTr("Window")
-        }
-
-        Rectangle {
-            width: 10
-            height: 20
-            color: "transparent"
-        }
-
-        MyComponents.UIBridgeContainer {
-            bridge: chatWindow.getUiBridge()
         }
     }
 }
