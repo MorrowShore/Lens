@@ -1,4 +1,5 @@
 #include "uibridgeelement.h"
+#include <QAction>
 
 UIBridgeElement* UIBridgeElement::createLineEdit(Setting<QString> *setting, const QString &name, const QString &placeHolder, const bool passwordEcho)
 {
@@ -18,7 +19,7 @@ UIBridgeElement* UIBridgeElement::createLineEdit(Setting<QString> *setting, cons
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "!setting";
+        qWarning() << Q_FUNC_INFO << "setting is null";
     }
 
     element->updateItemProperties();
@@ -94,6 +95,7 @@ void UIBridgeElement::bindQuickItem(QQuickItem *item_)
     }
 
     item = item_;
+
     if (!item_)
     {
         qCritical() << Q_FUNC_INFO << "item is null";
@@ -102,7 +104,10 @@ void UIBridgeElement::bindQuickItem(QQuickItem *item_)
 
     QObject::connect(item_, &QQuickItem::destroyed, this, [this]()
     {
-        item = nullptr;
+        if (sender() == item)
+        {
+            item = nullptr;
+        }
     });
 
     if (type == Type::Button)
@@ -121,6 +126,47 @@ void UIBridgeElement::bindQuickItem(QQuickItem *item_)
     }
 
     updateItemProperties();
+}
+
+void UIBridgeElement::bindAction(QAction *action_)
+{
+    action = action_;
+
+    if (!action)
+    {
+        qCritical() << Q_FUNC_INFO << "action is null";
+        return;
+    }
+
+    connect(action, &QAction::destroyed, this, [this]()
+    {
+        if (sender() == action)
+        {
+            action = nullptr;
+        }
+    });
+
+    action->setText(parameters.value("text").toString());
+
+    if (type == Type::Switch)
+    {
+        action->setCheckable(true);
+
+        if (settingBool)
+        {
+            action->setChecked(settingBool->get());
+
+            connect(action, &QAction::triggered, this, &UIBridgeElement::onCheckedChanged);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "setting of bool is null";
+        }
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "incompatible with this type";
+    }
 }
 
 void UIBridgeElement::setItemProperty(const QByteArray &name, const QVariant &value)
@@ -163,7 +209,7 @@ void UIBridgeElement::onTextChanged()
     QObject* sender_ = sender();
     if (!sender_)
     {
-        qCritical() << Q_FUNC_INFO << "!sender_";
+        qCritical() << Q_FUNC_INFO << "sender is null";
         return;
     }
 
@@ -189,7 +235,7 @@ void UIBridgeElement::onTextChanged()
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "!setting";
+        qWarning() << Q_FUNC_INFO << "setting is null";
     }
 
     if (changed)
@@ -203,13 +249,30 @@ void UIBridgeElement::onCheckedChanged()
     QObject* sender_ = sender();
     if (!sender_)
     {
-        qCritical() << Q_FUNC_INFO << "!sender_";
+        qCritical() << Q_FUNC_INFO << "sender is null";
+        return;
+    }
+
+    QQuickItem* itemSender = dynamic_cast<QQuickItem*>(sender_);
+    QAction* actionSender = dynamic_cast<QAction*>(sender_);
+
+    bool checked = false;
+
+    if (itemSender)
+    {
+        checked = itemSender->property("checked").toBool();
+    }
+    else if (actionSender)
+    {
+        checked = actionSender->isChecked();
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown sender" << sender_;
         return;
     }
 
     bool changed = false;
-
-    const bool checked = sender_->property("checked").toBool();
 
     if (checked != parameters.value("checked"))
     {
@@ -229,7 +292,22 @@ void UIBridgeElement::onCheckedChanged()
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "!setting";
+        qWarning() << Q_FUNC_INFO << "setting is null";
+    }
+
+    if (itemSender)
+    {
+        if (action)
+        {
+            action->setChecked(checked);
+        }
+    }
+    else if (actionSender)
+    {
+        if (item)
+        {
+            updateItemProperties();
+        }
     }
 
     if (changed)

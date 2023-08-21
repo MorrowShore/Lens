@@ -33,10 +33,6 @@ Item {
     }
 
     function loadGlobalSettings() {
-        Global.windowChatTransparentForInput        = qmlUtils.valueBool("windowChatTransparentForInput",      Global.windowChatTransparentForInput)
-
-        Global.windowChatStayOnTop                  = qmlUtils.valueBool("windowChatStayOnTop",                 Global.windowChatStayOnTop)
-        Global.windowChatSystemWindowFrame          = qmlUtils.valueBool("windowChatSystemWindowFrame",         Global.windowChatSystemWindowFrame)
         Global.windowChatWindowOpacity              = qmlUtils.valueReal("windowChatWindowOpacity",             Global.windowChatWindowOpacity)
         Global.windowChatBackgroundOpacity          = qmlUtils.valueReal("windowChatBackgroundOpacity",         Global.windowChatBackgroundOpacity)
 
@@ -55,10 +51,6 @@ Item {
     }
 
     function saveGlobalSettings() {
-        qmlUtils.setValue("windowChatTransparentForInput",  Global.windowChatTransparentForInput)
-
-        qmlUtils.setValue("windowChatStayOnTop",            Global.windowChatStayOnTop)
-        qmlUtils.setValue("windowChatSystemWindowFrame",    Global.windowChatSystemWindowFrame)
         qmlUtils.setValue("windowChatWindowOpacity",        Global.windowChatWindowOpacity)
         qmlUtils.setValue("windowChatBackgroundOpacity",    Global.windowChatBackgroundOpacity)
 
@@ -118,44 +110,11 @@ Item {
             if (action === "open_settings_window") {
                 Global.openSettingsWindow()
             }
-            else if (action === "input_transparent_toggle") {
-                Global.windowChatTransparentForInput = !Global.windowChatTransparentForInput
-            }
             else {
                 console.log("Unknown triggered action '", action, "'")
             }
         }
     }
-
-    /*Connections {
-        target: tray
-
-        function onTriggered(actionName) {
-            if (actionName === "settings") {
-                Global.openSettingsWindow()
-            }
-            else if (actionName === "input_transparent_toggle") {
-                Global.windowChatTransparentForInput = !Global.windowChatTransparentForInput
-            }
-            else if (actionName === "close_application") {
-                Qt.quit()
-            }
-            else if (actionName === "clear_messages") {
-                chatHandler.clearMessages()
-            }
-            else {
-                console.log("Unknown tray action '", actionName, "'")
-            }
-        }
-    }
-
-    Connections {
-        target: Global
-
-        function onWindowChatTransparentForInputChanged() {
-            tray.ignoredMouse = Global.windowChatTransparentForInput
-        }
-    }*/
 
     MouseArea {
         anchors.fill: parent

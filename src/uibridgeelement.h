@@ -29,6 +29,8 @@ public:
 
     Q_INVOKABLE void bindQuickItem(QQuickItem* item);
 
+    void bindAction(QAction* action);
+
     Setting<QString>* getSettingString() { return settingString; }
     const Setting<QString>* getSettingString() const { return settingString; }
 
@@ -70,6 +72,8 @@ private:
     Setting<QString>* settingString;
     Setting<bool>* settingBool;
     Setting<int>* settingInt;
+
+    QAction* action = nullptr;
 
     QList<QPair<int, QString>> comboBoxValues;
 

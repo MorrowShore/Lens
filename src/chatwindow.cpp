@@ -42,10 +42,6 @@ ChatWindow::ChatWindow(QWindow *parent)
     });
 
     {
-        ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&transparentForInput, tr("Ignore Mouse"))));
-    }
-
-    {
         tray.setToolTip(QCoreApplication::applicationName());
 
         connect(&tray, QOverload<QSystemTrayIcon::ActivationReason>::of(&QSystemTrayIcon::activated), this, [this](QSystemTrayIcon::ActivationReason reason)
@@ -84,16 +80,13 @@ ChatWindow::ChatWindow(QWindow *parent)
         }
 
         {
-            QAction* action = new QAction(tr("Ignore Mouse"), menu);
-            action->setCheckable(true);
+            UIBridgeElement* element = UIBridgeElement::createSwitch(&transparentForInput, tr("Ignore Mouse"));
+            ui.addElement(std::shared_ptr<UIBridgeElement>(element));
 
-            connect(action, &QAction::triggered, this, [this, action]()
-            {
-                transparentForInput.set(action->isChecked());
-            });
+            QAction* action = new QAction(menu);
+            element->bindAction(action);
+
             menu->addAction(action);
-
-            action->setChecked(transparentForInput.get());
         }
 
         {
