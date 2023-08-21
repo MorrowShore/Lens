@@ -24,10 +24,10 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
     ui.addElement(authStateInfo);
     ui.addLineEdit(&botToken, tr("Bot token"), "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true);
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("1. " + tr("Create a bot with @BotFather"))));
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Open @BotFather"), []()
+    ui.addButton(tr("Open @BotFather"), []()
     {
         QDesktopServices::openUrl(QUrl("https://telegram.me/botfather"));
-    })));
+    });
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("2. " + tr("Copy and paste bot token above") + ". <b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("3. " + tr("Add the bot to the desired groups/channels"))));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("4. " + tr("Give admin rights to the bot in these groups/channels"))));

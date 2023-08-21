@@ -23,7 +23,6 @@ public:
         ComboBox = 40,
     };
 
-    static UIBridgeElement* createButton(const QString& text, std::function<void()> invokeCallback);
     static UIBridgeElement* createLabel(const QString& text);
     static UIBridgeElement* createSwitch(Setting<bool>* settingBool, const QString& name);
     static UIBridgeElement* createComboBox(Setting<int>* settingInt, const QString& name, const QList<QPair<int, QString>>& values, std::function<void()> valueChanged);

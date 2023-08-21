@@ -53,7 +53,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     auth.setConfig(config);
     QObject::connect(&auth, &OAuth2::stateChanged, this, &Twitch::onAuthStateChanged);
     
-    loginButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Login"), [this]()
+    loginButton = ui.addButton(tr("Login"), [this]()
     {
         if (auth.isLoggedIn())
         {
@@ -63,7 +63,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
         {
             auth.login();
         }
-    }));
+    });
     ui.addElement(loginButton);
     
     connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIBridgeElement>& element)

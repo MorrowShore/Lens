@@ -64,13 +64,13 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
 
     QObject::connect(&timerRequestStreamPage, &QTimer::timeout, this, &YouTubeBrowser::requestStreamPage);
     timerRequestStreamPage.start(RequestStreamInterval);
-    
-    openChatButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Open chat"), [this]()
+
+    openChatButton = ui.addButton(tr("Open chat"), [this]()
     {
         openWindow();
-    }));
+    });
+    
     openChatButton->setItemProperty("enabled", false);
-    ui.addElement(openChatButton);
 }
 
 ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const

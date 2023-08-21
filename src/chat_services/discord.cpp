@@ -71,24 +71,25 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     ui.addLineEdit(&applicationId, tr("Application ID"), "0000000000000000000", true);
     ui.addLineEdit(&botToken, tr("Bot token"), "AbCdEfGhIjKlMnOpQrStUvWxYz.0123456789", true);
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("1. " + tr("Create an app in the Discord Developer Portal"))));
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Open Discord Developer Portal"), []()
+    ui.addButton(tr("Open Discord Developer Portal"), []()
     {
         QDesktopServices::openUrl(QUrl("https://discord.com/developers"));
-    })));
+    });
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("2. " + tr("Copy the Application ID and paste above"))));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("3. " + tr("Create a bot (in Bot section)"))));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("4. " + tr("Allow the bot to read the message content (Message Content Intent checkbox)"))));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("5. " + tr("Reset the token (button Reset Token). The bot's previous token will become invalid"))));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("6. " + tr("Copy the bot token and paste above") + ". <b><font color=\"red\">" + tr("DON'T DISCLOSE THE BOT'S TOKEN!") + "</b></font>")));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel("7. " + tr("Add the bot to the servers you need"))));
-    connectBotToGuild = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Add bot to server"), [this]()
+
+    connectBotToGuild = ui.addButton(tr("Add bot to server"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://discord.com/api/oauth2/authorize"
                                        "?permissions=1024"
                                        "&scope=bot"
                                        "&client_id=" + applicationId.get().trimmed()));
-    }));
-    ui.addElement(connectBotToGuild);
+    });
+
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createLabel(tr("To display private chats/channels, add the bot\n"
                                                                                   "to these chats/channels in access rights (at your own risk)"))));
     ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()))));

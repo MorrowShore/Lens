@@ -1,20 +1,6 @@
 #include "uibridgeelement.h"
 #include <QAction>
 
-UIBridgeElement* UIBridgeElement::createButton(const QString &text, std::function<void()> invokeCallback)
-{
-    UIBridgeElement* element = new UIBridgeElement();
-
-    element->type = Type::Button;
-
-    element->invokeCallback = invokeCallback;
-    element->setItemProperty("text", text);
-
-    element->updateItemProperties();
-
-    return element;
-}
-
 UIBridgeElement* UIBridgeElement::createLabel(const QString &text)
 {
     UIBridgeElement* element = new UIBridgeElement();
@@ -61,6 +47,7 @@ UIBridgeElement *UIBridgeElement::createComboBox(Setting<int> *settingInt, const
 }
 
 UIBridgeElement::UIBridgeElement(QObject *parent)
+    : QObject(parent)
 {
 
 }

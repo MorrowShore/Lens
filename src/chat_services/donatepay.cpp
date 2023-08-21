@@ -29,21 +29,20 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     
     ui.addLineEdit(&apiKey, tr("API key"), "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789", true);
 
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Get API key"), [this]()
+    ui.addButton(tr("Get API key"), [this]()
     {
         QDesktopServices::openUrl(QUrl(domain + "/page/api"));
-    })));
+    });
     
-    donatePageButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Donation page"), [this]()
+    donatePageButton = ui.addButton(tr("Donation page"), [this]()
     {
         QDesktopServices::openUrl(QUrl(donationPagePrefix + info.userId));
-    }));
-    ui.addElement(donatePageButton);
+    });
     
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Transactions"), [this]()
+    ui.addButton(tr("Transactions"), [this]()
     {
         QDesktopServices::openUrl(QUrl(domain + "/billing/transactions"));
-    })));
+    });
     
     connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {

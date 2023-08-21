@@ -82,7 +82,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
         reconnect();
     });
     
-    loginButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Login"), [this]()
+    loginButton = ui.addButton(tr("Login"), [this]()
     {
         if (auth.isLoggedIn())
         {
@@ -92,25 +92,22 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
         {
             auth.login();
         }
-    }));
-    ui.addElement(loginButton);
+    });
     
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Dashboard"), []()
+    ui.addButton(tr("Dashboard"), []()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/dashboard"));
-    })));
+    });
     
-    donateMainPageButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Donation page"), [this]()
+    donateMainPageButton = ui.addButton(tr("Donation page"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/r/" + info.userName));
-    }));
-    ui.addElement(donateMainPageButton);
+    });
     
-    donateAlternativePageButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Alternative donation page"), [this]()
+    donateAlternativePageButton = ui.addButton(tr("Alternative donation page"), [this]()
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/c/" + info.userName));
-    }));
-    ui.addElement(donateAlternativePageButton);
+    });
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)

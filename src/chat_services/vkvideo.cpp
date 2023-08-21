@@ -40,7 +40,7 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
     auth.setConfig(config);
     QObject::connect(&auth, &OAuth2::stateChanged, this, &VkVideo::updateUI);
     
-    loginButton = std::shared_ptr<UIBridgeElement>(UIBridgeElement::createButton(tr("Login"), [this]()
+    loginButton = ui.addButton(tr("Login"), [this]()
     {
         if (auth.isLoggedIn())
         {
@@ -51,8 +51,7 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
         {
             auth.login();
         }
-    }));
-    ui.addElement(loginButton);
+    });
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &VkVideo::requestChat);
     timerRequestChat.start(RequestChatInterval);
