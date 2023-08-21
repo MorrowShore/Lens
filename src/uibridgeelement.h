@@ -47,7 +47,7 @@ public:
 #ifdef QT_QUICK_LIB
     static void declareQml()
     {
-        qmlRegisterUncreatableType<UIBridgeElement> ("UIBridgeElement", 1, 0, "UIBridgeElement", "Type cannot be created in QML");
+        qmlRegisterUncreatableType<UIBridgeElement> ("AxelChat.UIBridgeElement", 1, 0, "UIBridgeElement", "Type cannot be created in QML");
     }
 #endif
 

@@ -3,8 +3,8 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import AxelChat.ChatHandler 1.0
 import AxelChat.ChatService 1.0
-import UIBridgeElement 1.0
-import UIBridge 1.0
+import AxelChat.UIBridgeElement 1.0
+import AxelChat.UIBridge 1.0
 import "../my_components" as MyComponents
 import "../"
 

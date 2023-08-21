@@ -24,7 +24,7 @@ public:
 
     static void declareQml()
     {
-        qmlRegisterUncreatableType<UIBridge> ("UIBridge", 1, 0, "UIBridge", "Type cannot be created in QML");
+        qmlRegisterUncreatableType<UIBridge> ("AxelChat.UIBridge", 1, 0, "UIBridge", "Type cannot be created in QML");
         UIBridgeElement::declareQml();
     }
 #endif
