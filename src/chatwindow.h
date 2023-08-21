@@ -53,6 +53,6 @@ private:
     Setting<bool> hideToTrayOnMinimize;
     Setting<bool> hideToTrayOnClose;
 
-    Setting<int> backgroundOpacity;
-    Setting<int> windowOpacity;
+    Setting<double> backgroundOpacity;
+    Setting<double> windowOpacity;
 };

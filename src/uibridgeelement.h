@@ -35,8 +35,8 @@ public:
     Setting<bool>* getSettingBool() { return settingBool; }
     const Setting<bool>* getSettingBool() const { return settingBool; }
 
-    Setting<int>* getSettingInt() { return settingInt; }
-    const Setting<int>* getSettingInt() const { return settingInt; }
+    Setting<double>* getSettingDouble() { return settingDouble; }
+    const Setting<double>* getSettingDouble() const { return settingDouble; }
 
     Q_INVOKABLE int getTypeInt() const { return (int)type; }
 
@@ -67,7 +67,7 @@ private:
 
     Setting<QString>* settingString;
     Setting<bool>* settingBool;
-    Setting<int>* settingInt;
+    Setting<double>* settingDouble;
 
     QAction* action = nullptr;
 

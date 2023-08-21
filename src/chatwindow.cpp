@@ -35,16 +35,16 @@ ChatWindow::ChatWindow(QWindow *parent)
     , windowFrame(settings, "windowFrame", true)
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", true)
     , hideToTrayOnClose(settings, "hideToTrayOnClose", false)
-    , backgroundOpacity(settings, "backgroundOpacity", 40)
-    , windowOpacity(settings, "windowOpacity", 100)
+    , backgroundOpacity(settings, "backgroundOpacity", 0.4)
+    , windowOpacity(settings, "windowOpacity", 1.0)
 {
     transparentForInput.setCallbackValueChanged([this](bool)
     {
         updateFlags();
     });
 
-    ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0, 100, true);
-    ui.addSlider(&windowOpacity, tr("Window opacity"), 10, 100, true);
+    ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0.0, 1.0, true);
+    ui.addSlider(&windowOpacity, tr("Window opacity"), 0.1, 1.0, true);
 
     {
         tray.setToolTip(QCoreApplication::applicationName());

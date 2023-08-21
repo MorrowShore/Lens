@@ -64,17 +64,17 @@ std::shared_ptr<UIBridgeElement> UIBridge::addLineEdit(Setting<QString> *setting
     return element;
 }
 
-std::shared_ptr<UIBridgeElement> UIBridge::addSwitch(Setting<bool> *settingBool, const QString &name)
+std::shared_ptr<UIBridgeElement> UIBridge::addSwitch(Setting<bool> *setting, const QString &name)
 {
     std::shared_ptr<UIBridgeElement> element = std::make_shared<UIBridgeElement>();
 
     element->type = UIBridgeElement::Type::Switch;
-    element->settingBool = settingBool;
+    element->settingBool = setting;
     element->setItemProperty("text", name);
 
-    if (settingBool)
+    if (setting)
     {
-        element->setItemProperty("checked", settingBool->get());
+        element->setItemProperty("checked", setting->get());
     }
 
     element->updateItemProperties();
@@ -84,18 +84,18 @@ std::shared_ptr<UIBridgeElement> UIBridge::addSwitch(Setting<bool> *settingBool,
     return element;
 }
 
-std::shared_ptr<UIBridgeElement> UIBridge::addSlider(Setting<int> *settingInt, const QString &name, const int minValue, const int maxValue, const bool valueShowAsPercent)
+std::shared_ptr<UIBridgeElement> UIBridge::addSlider(Setting<double> *setting, const QString &name, const double minValue, const double maxValue, const bool valueShowAsPercent)
 {
     std::shared_ptr<UIBridgeElement> element = std::make_shared<UIBridgeElement>();
 
     element->type = UIBridgeElement::Type::Slider;
-    element->settingInt = settingInt;
+    element->settingDouble = setting;
 
     element->setItemProperty("name", name);
     element->setItemProperty("from", minValue);
     element->setItemProperty("to", maxValue);
-    element->setItemProperty("defaultValue", settingInt->getDefaultValue());
-    element->setItemProperty("value", settingInt->get());
+    element->setItemProperty("defaultValue", setting->getDefaultValue());
+    element->setItemProperty("value", setting->get());
     element->setItemProperty("valueShowAsPercent", valueShowAsPercent);
 
     element->updateItemProperties();
