@@ -92,9 +92,9 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     ui.addLabel(tr("To display private chats/channels, add the bot\n"
                    "to these chats/channels in access rights (at your own risk)"));
 
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()))));
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&showGuildName, tr("Show server name"))));
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&showChannelName, tr("Show channel name"))));
+    ui.addSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()));
+    ui.addSwitch(&showGuildName, tr("Show server name"));
+    ui.addSwitch(&showChannelName, tr("Show channel name"));
     
     connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {

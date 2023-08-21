@@ -12,6 +12,7 @@ public:
     std::shared_ptr<UIBridgeElement> addLabel(const QString& text);
     std::shared_ptr<UIBridgeElement> addButton(const QString& text, std::function<void()> invokeCallback);
     std::shared_ptr<UIBridgeElement> addLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
+    std::shared_ptr<UIBridgeElement> addSwitch(Setting<bool>* settingBool, const QString& name);
 
     void addElement(const std::shared_ptr<UIBridgeElement>& element);
 

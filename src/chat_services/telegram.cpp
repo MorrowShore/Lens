@@ -34,8 +34,8 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
     ui.addLabel(" ");
     ui.addLabel(tr("It is not recommended to use a bot that is already being used for other purposes"));
     ui.addLabel(tr("It is not recommended to use more than one %1 with the same bot").arg(QCoreApplication::applicationName()));
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&showChatTitle, tr("Show chat name when possible"))));
-    ui.addElement(std::shared_ptr<UIBridgeElement>(UIBridgeElement::createSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"))));
+    ui.addSwitch(&showChatTitle, tr("Show chat name when possible"));
+    ui.addSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"));
     
     connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {

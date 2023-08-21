@@ -22,8 +22,6 @@ public:
         Switch = 32,
     };
 
-    static UIBridgeElement* createSwitch(Setting<bool>* settingBool, const QString& name);
-
     explicit UIBridgeElement(QObject *parent = nullptr);
 
     Q_INVOKABLE void bindQuickItem(QQuickItem* item);

@@ -1,24 +1,6 @@
 #include "uibridgeelement.h"
 #include <QAction>
 
-UIBridgeElement* UIBridgeElement::createSwitch(Setting<bool> *settingBool, const QString &name)
-{
-    UIBridgeElement* element = new UIBridgeElement();
-
-    element->type = Type::Switch;
-    element->settingBool = settingBool;
-    element->setItemProperty("text", name);
-
-    if (settingBool)
-    {
-        element->setItemProperty("checked", settingBool->get());
-    }
-
-    element->updateItemProperties();
-
-    return element;
-}
-
 UIBridgeElement::UIBridgeElement(QObject *parent)
     : QObject(parent)
 {

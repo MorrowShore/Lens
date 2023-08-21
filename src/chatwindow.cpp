@@ -80,39 +80,36 @@ ChatWindow::ChatWindow(QWindow *parent)
         }
 
         {
-            UIBridgeElement* element = UIBridgeElement::createSwitch(&transparentForInput, tr("Ignore Mouse"));
-            ui.addElement(std::shared_ptr<UIBridgeElement>(element));
+            auto element = ui.addSwitch(&transparentForInput, tr("Ignore Mouse"));
 
             QAction* action = new QAction(menu);
             element->bindAction(action);
 
             menu->addAction(action);
 
-            connect(element, &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
+            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
         }
 
         {
-            UIBridgeElement* element = UIBridgeElement::createSwitch(&stayOnTop, tr("Stay on top"));
-            ui.addElement(std::shared_ptr<UIBridgeElement>(element));
+            auto element = ui.addSwitch(&stayOnTop, tr("Stay on top"));
 
             QAction* action = new QAction(menu);
             element->bindAction(action);
 
             menu->addAction(action);
 
-            connect(element, &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
+            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
         }
 
         {
-            UIBridgeElement* element = UIBridgeElement::createSwitch(&windowFrame, tr("Window frame"));
-            ui.addElement(std::shared_ptr<UIBridgeElement>(element));
+            auto element = ui.addSwitch(&windowFrame, tr("Window frame"));
 
             QAction* action = new QAction(menu);
             element->bindAction(action);
 
             menu->addAction(action);
 
-            connect(element, &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
+            connect(element.get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateFlags);
         }
 
         {
