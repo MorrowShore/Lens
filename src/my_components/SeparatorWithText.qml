@@ -20,10 +20,9 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
 
         Rectangle {
-            height: 1
+            height: 2
             width: 250
-            color: "white"
-            opacity: 0.25
+            color: "#626466"
 
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -36,10 +35,9 @@ Rectangle {
         }
 
         Rectangle {
-            height: 1
+            height: 2
             width: 250
-            color: "white"
-            opacity: 0.25
+            color: "#626466"
 
             anchors.verticalCenter: parent.verticalCenter
         }
