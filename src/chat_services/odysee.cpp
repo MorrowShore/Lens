@@ -150,6 +150,14 @@ void Odysee::reconnectImpl()
     info.channel = "AxelChatDev:3";
     info.video = "teststream_ad230j034f:5";
 
+    if (!info.channel.isEmpty() && !info.video.isEmpty())
+    {
+        state.streamUrl = "https://odysee.com/@" + info.channel + "/" + info.video;
+        state.chatUrl = "https://odysee.com/$/popout/@" + info.channel + "/" + info.video;
+    }
+
+    state.controlPanelUrl = "https://odysee.com/$/livestream";
+
     if (!enabled.get())
     {
         return;
