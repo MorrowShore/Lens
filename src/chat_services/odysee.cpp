@@ -313,6 +313,8 @@ void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QS
     link = AxelChat::removeFromStart(link, "/", Qt::CaseInsensitive);
     link = AxelChat::removeFromStart(link, "@", Qt::CaseInsensitive);
 
+    link = QUrl::fromPercentEncoding(link.toUtf8());
+
     const QStringList part = link.split('/', Qt::SplitBehaviorFlags::SkipEmptyParts);
     if (part.count() >= 2)
     {
