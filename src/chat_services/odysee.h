@@ -45,4 +45,6 @@ private:
     QTimer checkPingTimer;
 
     Info info;
+
+    QHash<QString, QString> avatars; // <channelId, avatarUrl>
 };

@@ -196,6 +196,16 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
     {
         parseRemoved(data);
     }
+    /*else if (type == "livestream")
+    {
+        //TODO
+        // {"data":{"channel_id":"00f95108658709853f623c0c4bca4d8df22bf461","end_time":"0001-01-01T00:00:00Z","live":true,"live_claim_id":"bc4cf0556397ad419f8f2bef6308aa1be7d2f482","live_time":"2023-08-22T23:05:30.692281748Z","protected":false,"release_time":"2023-08-22T23:00:00Z"},"type":"livestream"}
+    }*/
+    /*else if (type == "viewers")
+    {
+        //TODO
+        // {"data":{"connected":1},"type":"viewers"}
+    }*/
     else
     {
         qWarning() << Q_FUNC_INFO << "unknown type" << type << ", received =" << doc;
