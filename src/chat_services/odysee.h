@@ -2,6 +2,7 @@
 
 #include "chatservice.h"
 #include <QJsonObject>
+#include <QWebSocket>
 #include <QTimer>
 
 class Odysee : public ChatService
@@ -15,17 +16,27 @@ public:
 
 protected:
     void reconnectImpl() override;
+    void onReceiveWebSocket(const QString& rawData);
+
+private slots:
+    void requestClaimId();
+    void requestLive();
+    void sendPing();
 
 private:
     struct Info
     {
+        QString channel;
+        QString video;
         QString claimId;
     };
 
-    void requestClaimId();
-    void requestLive();
-
     QNetworkAccessManager& network;
+    QWebSocket socket;
+
+    QTimer timerReconnect;
+    QTimer pingTimer;
+    QTimer checkPingTimer;
 
     Info info;
 };

@@ -8,6 +8,9 @@
 namespace
 {
 
+static const int PingSendTimeout = 10 * 1000;
+static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
+
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
     resultData.clear();
@@ -35,6 +38,46 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Odysee, false, parent)
     , network(network_)
 {
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
+        Q_UNUSED(state)
+        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
+    });
+
+    QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Odysee::onReceiveWebSocket);
+
+    QObject::connect(&socket, &QWebSocket::connected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+
+        if (!state.connected)
+        {
+            state.connected = true;
+            emit connectedChanged(true);
+            emit stateChanged();
+
+            sendPing();
+        }
+
+        checkPingTimer.setInterval(CheckPingSendTimeout);
+        checkPingTimer.start();
+    });
+
+    QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
+    {
+        //qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+
+        if (state.connected)
+        {
+            state.connected = false;
+            emit connectedChanged(false);
+            emit stateChanged();
+        }
+    });
+
+    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
+        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+    });
+
     reconnect();
 }
 
@@ -85,12 +128,31 @@ void Odysee::reconnectImpl()
     state = State();
     info = Info();
 
+    info.channel = "AxelChatDev:3";
+    info.video = "teststream_ad230j034f:5";
+
     if (!enabled.get())
     {
         return;
     }
 
     requestClaimId();
+}
+
+void Odysee::onReceiveWebSocket(const QString &rawData)
+{
+    if (!enabled.get())
+    {
+        return;
+    }
+
+    checkPingTimer.setInterval(CheckPingSendTimeout);
+    checkPingTimer.start();
+
+    const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
+    const QJsonObject root = doc.object();
+
+    qDebug() << "received:" << doc;
 }
 
 void Odysee::requestClaimId()
@@ -100,7 +162,7 @@ void Odysee::requestClaimId()
         return;
     }
 
-    const QJsonArray urls = { "lbry://@AxelChatDev#3/teststream_ad230j034f#5" }; //TODO
+    const QJsonArray urls = { "lbry://@" + info.channel.replace(':', '#') + "/" + info.video.replace(':', '#') };
     const QJsonObject params = { { "urls", urls } };
     const QByteArray data = QJsonDocument(QJsonObject(
     {
@@ -175,5 +237,20 @@ void Odysee::requestLive()
         }
 
         emit stateChanged();
+
+        if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        {
+            socket.open(
+                "wss://sockety.odysee.tv/ws/commentron?id=" +
+                info.claimId +
+                "&category=@" +
+                info.video +
+                "&sub_category=commenter");
+        }
     });
+}
+
+void Odysee::sendPing()
+{
+    qWarning() << Q_FUNC_INFO << "not implemented";
 }
