@@ -1,4 +1,6 @@
 #include "odysee.h"
+#include "models/message.h"
+#include "models/author.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -170,6 +172,22 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
     const QJsonObject root = doc.object();
 
     qDebug() << "received:" << doc;
+
+    const QJsonObject data = root.value("data").toObject();
+
+    const QString type = root.value("type").toString();
+    if (type == "delta")
+    {
+        parseComment(data);
+    }
+    else if (type == "removed")
+    {
+        parseRemoved(data);
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown type" << type << ", received =" << doc;
+    }
 }
 
 void Odysee::requestClaimId()
@@ -270,4 +288,40 @@ void Odysee::requestLive()
 void Odysee::sendPing()
 {
     qWarning() << Q_FUNC_INFO << "not implemented";
+}
+
+void Odysee::parseComment(const QJsonObject &data)
+{
+    const QJsonObject comment = data.value("comment").toObject();
+
+    const int64_t timestamp = comment.value("timestamp").toVariant().toLongLong();
+
+    const QString rawText = comment.value("comment").toString();
+
+    const auto author = Author::Builder(
+        getServiceType(),
+        generateAuthorId(comment.value("channel_id").toString()),
+        comment.value("channel_name").toString())
+        .build();
+
+    const auto message = Message::Builder(
+        author,
+        generateMessageId(comment.value("comment_id").toString()))
+        .addText(rawText)
+        .setReceivedTime(QDateTime::currentDateTime())
+        .setPublishedTime(QDateTime::fromSecsSinceEpoch(timestamp))
+        .build();
+
+    emit readyRead({ message}, { author });
+}
+
+void Odysee::parseRemoved(const QJsonObject &data)
+{
+    const QJsonObject comment = data.value("comment").toObject();
+
+    const QString messageId = generateMessageId(comment.value("comment_id").toString());
+
+    const auto pair = Message::Builder::createDeleter(getServiceType(), messageId);
+
+    emit readyRead({ pair.second }, { pair.first });
 }

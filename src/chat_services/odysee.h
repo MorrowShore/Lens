@@ -31,6 +31,9 @@ private:
         QString claimId;
     };
 
+    void parseComment(const QJsonObject& data);
+    void parseRemoved(const QJsonObject& data);
+
     QNetworkAccessManager& network;
     QWebSocket socket;
 
