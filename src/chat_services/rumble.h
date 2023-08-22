@@ -23,6 +23,7 @@ private:
     {
         QString chatId;
         QString videoId;
+        QString viewerId;
     };
 
     struct DonutColor
@@ -31,6 +32,7 @@ private:
         QColor color;
     };
 
+    static QString generateViewerId();
     static QString extractLinkId(const QString& rawLink);
     static QString parseChatId(const QByteArray& html);
     static QString parseVideoId(const QByteArray& html);

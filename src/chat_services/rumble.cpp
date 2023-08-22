@@ -1,6 +1,7 @@
 #include "rumble.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QRandomGenerator>
 
 namespace
 {
@@ -180,7 +181,27 @@ void Rumble::reconnectImpl()
         return;
     }
 
+    info.viewerId = generateViewerId();
+
     requestVideoPage();
+}
+
+QString Rumble::generateViewerId()
+{
+    static const QString possibleCharacters("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+    static const int Length = 8;
+
+    QRandomGenerator random;
+
+    QString result;
+    for (int i = 0; i< Length; ++i)
+    {
+        const int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
+        const QChar c = possibleCharacters.at(index);
+        result.append(c);
+    }
+
+    return result;
 }
 
 QString Rumble::extractLinkId(const QString &rawLink)
@@ -220,8 +241,6 @@ void Rumble::requestVideoPage()
             return;
         }
 
-        qDebug(data);
-
         const QString chatId = parseChatId(data);
         if (chatId.isEmpty())
         {
@@ -258,8 +277,13 @@ void Rumble::requestViewers()
         return;
     }
 
-    QNetworkRequest request("https://wn0.rumble.com/service.php?name=video.watching_now&video=" + info.videoId);
-    QNetworkReply* reply = network.get(request);
+    QNetworkRequest request(QUrl("https://wn0.rumble.com/service.php?name=video.watching-now"));
+
+    request.setRawHeader("Content-type", "application/x-www-form-urlencoded");
+\
+    const QByteArray data = "video_id=" + info.chatId.toUtf8() + "&viewer_id=" + info.viewerId.toUtf8();
+
+    QNetworkReply* reply = network.post(request, data);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
