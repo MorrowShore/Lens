@@ -32,6 +32,7 @@ private:
     };
 
     static void extractChannelAndVideo(const QString& rawLink, QString& channel, QString& video);
+    static QString extractChannelUrl(const QString& rawLink);
 
     void parseComment(const QJsonObject& data);
     void parseRemoved(const QJsonObject& data);

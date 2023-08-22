@@ -323,18 +323,40 @@ void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QS
     }
 }
 
+QString Odysee::extractChannelUrl(const QString &rawLink)
+{
+    QString link = rawLink.trimmed();
+    link = AxelChat::removeFromStart(link, "lbry://", Qt::CaseInsensitive);
+
+    if (!link.contains('#'))
+    {
+        qWarning() << Q_FUNC_INFO << "not found '#' in" << rawLink;
+        return QString();
+    }
+
+    link = link.left(link.indexOf('#') + 2).replace('#', ':');
+
+    if (!link.startsWith('@'))
+    {
+        link = '@' + link;
+    }
+
+    link = "https://odysee.com/" + link;
+
+    return link;
+}
+
 void Odysee::parseComment(const QJsonObject &data)
 {
     const QJsonObject comment = data.value("comment").toObject();
-
     const int64_t timestamp = comment.value("timestamp").toVariant().toLongLong();
-
     const QString rawText = comment.value("comment").toString();
 
     const auto author = Author::Builder(
         getServiceType(),
         generateAuthorId(comment.value("channel_id").toString()),
         comment.value("channel_name").toString())
+        .setPage(extractChannelUrl(comment.value("channel_url").toString()))
         .build();
 
     const auto message = Message::Builder(
