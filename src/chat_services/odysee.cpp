@@ -41,6 +41,9 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Odysee, false, parent)
     , network(network_)
 {
+    ui.findBySetting(stream)->setItemProperty("name", tr("Stream"));
+    ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Stream link..."));
+
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
         //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
@@ -147,8 +150,8 @@ void Odysee::reconnectImpl()
     state = State();
     info = Info();
 
-    info.channel = "AxelChatDev:3";
-    info.video = "teststream_ad230j034f:5";
+    extractChannelAndVideo(stream.get(), info.channel, info.video);
+    state.streamId = info.channel + "/" + info.video;
 
     if (!info.channel.isEmpty() && !info.video.isEmpty())
     {
@@ -296,6 +299,24 @@ void Odysee::requestLive()
 void Odysee::sendPing()
 {
     qWarning() << Q_FUNC_INFO << "not implemented";
+}
+
+void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QString &video)
+{
+    channel = QString();
+    video = QString();
+
+    QString link = AxelChat::simplifyUrl(rawLink.trimmed());
+
+    link = AxelChat::removeFromStart(link, "odysee.com/", Qt::CaseInsensitive);
+    link = AxelChat::removeFromStart(link, "@", Qt::CaseInsensitive);
+
+    const QStringList part = link.split('/', Qt::SplitBehaviorFlags::SkipEmptyParts);
+    if (part.count() >= 2)
+    {
+        channel = part[0];
+        video = part[1];
+    }
 }
 
 void Odysee::parseComment(const QJsonObject &data)

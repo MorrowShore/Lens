@@ -58,7 +58,14 @@ static QString simplifyUrl(const QString& url)
         withoutQuery = withoutHttpsWWW.left(withoutHttpsWWW.indexOf('?'));
     }
 
-    return withoutQuery;
+    //#
+    QString withoutSign = withoutQuery;
+    if (withoutQuery.contains('#'))
+    {
+        withoutSign = withoutSign.left(withoutSign.indexOf('#'));
+    }
+
+    return withoutSign;
 }
 
 static void saveDebugDataToFile(const QString& folder, const QString& fileName, const QByteArray& data)

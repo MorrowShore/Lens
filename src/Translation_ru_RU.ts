@@ -1008,27 +1008,37 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>Odysee</name>
     <message>
-        <location filename="chat_services/odysee.cpp" line="31"/>
+        <location filename="chat_services/odysee.cpp" line="44"/>
+        <source>Stream</source>
+        <translation>Стрим</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="45"/>
+        <source>Stream link...</source>
+        <translation>Ссылка на стрим...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="125"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="36"/>
+        <location filename="chat_services/odysee.cpp" line="130"/>
         <source>The channel is not correct</source>
         <translation>Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="39"/>
+        <location filename="chat_services/odysee.cpp" line="133"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="42"/>
+        <location filename="chat_services/odysee.cpp" line="136"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="45"/>
+        <location filename="chat_services/odysee.cpp" line="139"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>

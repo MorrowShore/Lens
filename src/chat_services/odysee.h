@@ -31,6 +31,8 @@ private:
         QString claimId;
     };
 
+    static void extractChannelAndVideo(const QString& rawLink, QString& channel, QString& video);
+
     void parseComment(const QJsonObject& data);
     void parseRemoved(const QJsonObject& data);
 
