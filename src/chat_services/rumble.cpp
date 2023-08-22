@@ -220,6 +220,8 @@ void Rumble::requestVideoPage()
             return;
         }
 
+        qDebug(data);
+
         const QString chatId = parseChatId(data);
         if (chatId.isEmpty())
         {
@@ -317,7 +319,7 @@ void Rumble::requestEmotes()
 
 QString Rumble::parseChatId(const QByteArray &html)
 {
-    return AxelChat::find(html, "class=\"rumbles-vote rumbles-vote-with-bar\" data-type=\"1\" data-id=\"", '"', 128);
+    return AxelChat::find(html, "data-id=\"", '"', 128);
 }
 
 QString Rumble::parseVideoId(const QByteArray &html)
