@@ -23,9 +23,8 @@
 <context>
     <name>BridgedLineEdit</name>
     <message>
-        <location filename="my_components/BridgedLineEdit.qml" line="59"/>
         <source>Paste</source>
-        <translation>Вставить</translation>
+        <translation type="vanished">Вставить</translation>
     </message>
 </context>
 <context>
@@ -53,7 +52,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="184"/>
+        <location filename="chathandler.cpp" line="186"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -107,7 +106,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="289"/>
+        <location filename="chathandler.cpp" line="291"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -116,28 +115,28 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="52"/>
-        <location filename="chat_services/chatservice.cpp" line="71"/>
+        <location filename="chat_services/chatservice.cpp" line="53"/>
+        <location filename="chat_services/chatservice.cpp" line="73"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="55"/>
+        <location filename="chat_services/chatservice.cpp" line="56"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="56"/>
+        <location filename="chat_services/chatservice.cpp" line="57"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="57"/>
+        <location filename="chat_services/chatservice.cpp" line="58"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="58"/>
+        <location filename="chat_services/chatservice.cpp" line="61"/>
         <source>Rumble</source>
         <translation></translation>
     </message>
@@ -148,41 +147,46 @@
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="60"/>
-        <source>GoodGame</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="chat_services/chatservice.cpp" line="61"/>
-        <source>VK Play Live</source>
+        <source>Odysee</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="62"/>
-        <source>VK Video</source>
-        <translation>VK Видео</translation>
+        <source>GoodGame</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="63"/>
-        <source>WASD</source>
+        <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="64"/>
+        <source>VK Video</source>
+        <translation>VK Видео</translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="65"/>
+        <source>WASD</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="66"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="65"/>
+        <location filename="chat_services/chatservice.cpp" line="67"/>
         <source>Discord</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="67"/>
+        <location filename="chat_services/chatservice.cpp" line="69"/>
         <source>DonationAlerts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="68"/>
+        <location filename="chat_services/chatservice.cpp" line="70"/>
         <source>DonatePay.ru</source>
         <oldsource>DonatePay</oldsource>
         <translation></translation>
@@ -255,12 +259,12 @@
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="194"/>
+        <location filename="chatwindow.cpp" line="199"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="198"/>
+        <location filename="chatwindow.cpp" line="203"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -1002,6 +1006,34 @@ to these chats/channels in access rights (at your own risk)</source>
     </message>
 </context>
 <context>
+    <name>Odysee</name>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="31"/>
+        <source>Channel not specified</source>
+        <translation>Канал не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="36"/>
+        <source>The channel is not correct</source>
+        <translation>Канал некорректен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="39"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="42"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="45"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
+    </message>
+</context>
+<context>
     <name>OutputToFile</name>
     <message>
         <source>Broadcast URL: %1</source>
@@ -1082,37 +1114,37 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>Rumble</name>
     <message>
-        <location filename="chat_services/rumble.cpp" line="40"/>
+        <location filename="chat_services/rumble.cpp" line="41"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="41"/>
+        <location filename="chat_services/rumble.cpp" line="42"/>
         <source>Stream link...</source>
         <translation>Ссылка на стрим...</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="141"/>
+        <location filename="chat_services/rumble.cpp" line="142"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="146"/>
+        <location filename="chat_services/rumble.cpp" line="147"/>
         <source>The channel is not correct</source>
         <translation>Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="149"/>
+        <location filename="chat_services/rumble.cpp" line="150"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="152"/>
+        <location filename="chat_services/rumble.cpp" line="153"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/rumble.cpp" line="155"/>
+        <location filename="chat_services/rumble.cpp" line="156"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
@@ -1552,6 +1584,14 @@ It is not recommended to use more than one %1 with the same bot</source>
         <location filename="chat_services/twitch.cpp" line="749"/>
         <source>Logout</source>
         <translation>Выйти</translation>
+    </message>
+</context>
+<context>
+    <name>UIBridgeLineEdit</name>
+    <message>
+        <location filename="UIBridge/UIBridgeLineEdit.qml" line="59"/>
+        <source>Paste</source>
+        <translation>Вставить</translation>
     </message>
 </context>
 <context>
@@ -2249,7 +2289,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прокси</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="190"/>
+        <location filename="setting_pages/common.qml" line="205"/>
         <source>Host name...</source>
         <translation>Имя хоста...</translation>
     </message>
@@ -2258,7 +2298,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Сервер...</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="211"/>
+        <location filename="setting_pages/common.qml" line="226"/>
         <source>Port...</source>
         <translation>Порт...</translation>
     </message>
@@ -2279,42 +2319,42 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Пропускать клики мыши</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="23"/>
+        <location filename="setting_pages/common.qml" line="122"/>
         <source>Miscellaneous</source>
         <translation>Разное</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="85"/>
+        <location filename="setting_pages/common.qml" line="132"/>
         <source>Clear Messages on Link Change</source>
         <translation>Очистить сообщения при смене ссылки</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="97"/>
+        <location filename="setting_pages/common.qml" line="90"/>
         <source>Enabled Hardware Graphics Accelerator</source>
         <translation>Включить аппаратный ускоритель графики</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="113"/>
+        <location filename="setting_pages/common.qml" line="106"/>
         <source>Enabled HighDpi scaling</source>
         <translation>Включить HighDpi масштабирование</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="149"/>
+        <location filename="setting_pages/common.qml" line="164"/>
         <source>Show when author changes name</source>
         <translation>Показывать, когда автор меняет имя</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="166"/>
+        <location filename="setting_pages/common.qml" line="181"/>
         <source>Works only when output to file is enabled</source>
         <translation>Работает только при включенном выводе в файл</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="242"/>
+        <location filename="setting_pages/common.qml" line="257"/>
         <source>Program folder</source>
         <translation>Папка программы</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="256"/>
+        <location filename="setting_pages/common.qml" line="24"/>
         <source>Window</source>
         <translation>Окно</translation>
     </message>
@@ -2323,12 +2363,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Изменения вступят в силу после перезапуска программы</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="129"/>
+        <location filename="setting_pages/common.qml" line="144"/>
         <source>Enable Sound when New Message Received</source>
         <translation>Включить звук при получении нового сообщения</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="36"/>
+        <location filename="setting_pages/common.qml" line="37"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
@@ -2337,7 +2377,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Не обрабатывать ввод</translation>
     </message>
     <message>
-        <location filename="setting_pages/common.qml" line="175"/>
+        <location filename="setting_pages/common.qml" line="190"/>
         <source>Proxy (SOCKS5)</source>
         <translation>Прокси (SOCKS5)</translation>
     </message>
@@ -2534,7 +2574,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Ссылка...</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="104"/>
+        <location filename="setting_pages/service.qml" line="105"/>
         <source>Disabled</source>
         <translation>Выключено</translation>
     </message>
@@ -2543,22 +2583,22 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Вставить</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="120"/>
+        <location filename="setting_pages/service.qml" line="121"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="130"/>
+        <location filename="setting_pages/service.qml" line="131"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="154"/>
+        <location filename="setting_pages/service.qml" line="155"/>
         <source>%1 emotes</source>
         <translation>%1 эмодзи</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="176"/>
+        <location filename="setting_pages/service.qml" line="177"/>
         <source>Allow to display emotes from %1. To display channel (custom) emotes, login to a Twitch account that is linked to these services</source>
         <oldsource>Allow to display emotes from %1. To display chennel (custom) emotes, login to a Twitch account that is linked to these services</oldsource>
         <translation>Включает отображение эмодзи из %1. Чтобы отображались эмодзи канала (кастомные), войдите в аккаунт Twitch, который привязан к этим сервисам</translation>
@@ -2568,7 +2608,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="139"/>
+        <location filename="setting_pages/service.qml" line="140"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

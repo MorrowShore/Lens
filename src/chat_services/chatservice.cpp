@@ -29,8 +29,9 @@ QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::YouTube: return "youtube";
     case AxelChat::ServiceType::Twitch: return "twitch";
     case AxelChat::ServiceType::Trovo: return "trovo";
-    case AxelChat::ServiceType::Rumble: return "rumble";
     case AxelChat::ServiceType::Kick: return "kick";
+    case AxelChat::ServiceType::Odysee: return "odysee";
+    case AxelChat::ServiceType::Rumble: return "rumble";
     case AxelChat::ServiceType::GoodGame: return "goodgame";
     case AxelChat::ServiceType::VkPlayLive: return "vkplaylive";
     case AxelChat::ServiceType::VkVideo: return "vkvideo";
@@ -55,8 +56,9 @@ QString ChatService::getName(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::YouTube: return tr("YouTube");
     case AxelChat::ServiceType::Twitch: return tr("Twitch");
     case AxelChat::ServiceType::Trovo: return tr("Trovo");
-    case AxelChat::ServiceType::Rumble: return tr("Rumble");
     case AxelChat::ServiceType::Kick: return tr("Kick");
+    case AxelChat::ServiceType::Odysee: return tr("Odysee");
+    case AxelChat::ServiceType::Rumble: return tr("Rumble");
     case AxelChat::ServiceType::GoodGame: return tr("GoodGame");
     case AxelChat::ServiceType::VkPlayLive: return tr("VK Play Live");
     case AxelChat::ServiceType::VkVideo: return tr("VK Video");
@@ -81,8 +83,9 @@ QUrl ChatService::getIconUrl(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::YouTube: return QUrl("qrc:/resources/images/youtube-icon.svg");
     case AxelChat::ServiceType::Twitch: return QUrl("qrc:/resources/images/twitch-icon.svg");
     case AxelChat::ServiceType::Trovo: return QUrl("qrc:/resources/images/trovo-icon.svg");
-    case AxelChat::ServiceType::Rumble: return QUrl("qrc:/resources/images/rumble-icon.svg");
     case AxelChat::ServiceType::Kick: return QUrl("qrc:/resources/images/kick-icon.svg");
+    case AxelChat::ServiceType::Odysee: return QUrl("qrc:/resources/images/odysee-icon.svg");
+    case AxelChat::ServiceType::Rumble: return QUrl("qrc:/resources/images/rumble-icon.svg");
     case AxelChat::ServiceType::GoodGame: return QUrl("qrc:/resources/images/goodgame-icon.svg");
     case AxelChat::ServiceType::VkPlayLive: return QUrl("qrc:/resources/images/vkplaylive-icon.svg");
     case AxelChat::ServiceType::VkVideo: return QUrl("qrc:/resources/images/vkvideo-icon.svg");

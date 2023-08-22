@@ -20,6 +20,7 @@ HEADERS += \
     chat_services/donatepay.h \
     chat_services/donationalerts.h \
     chat_services/kick.h \
+    chat_services/odysee.h \
     chat_services/rumble.h \
     chat_services/vkvideo.h \
     chat_services/wasd.h \
@@ -78,6 +79,7 @@ SOURCES += \
     chat_services/donatepay.cpp \
     chat_services/donationalerts.cpp \
     chat_services/kick.cpp \
+    chat_services/odysee.cpp \
     chat_services/rumble.cpp \
     chat_services/telegram.cpp \
     chat_services/trovo.cpp \

@@ -99,5 +99,6 @@
         <file>resources/images/streamelements-icon.png</file>
         <file>resources/images/money1-icon.svg</file>
         <file>resources/images/donatepay-icon.svg</file>
+        <file>resources/images/odysee-icon.svg</file>
     </qresource>
 </RCC>

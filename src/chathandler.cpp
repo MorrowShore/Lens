@@ -11,6 +11,7 @@
 #include "chat_services/vkvideo.h"
 #include "chat_services/wasd.h"
 #include "chat_services/kick.h"
+#include "chat_services/odysee.h"
 #include "chat_services/donationalerts.h"
 #include "chat_services/donatepay.h"
 #include "models/author.h"
@@ -63,8 +64,9 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     //addService<YouTubeBrowser>();
     addService<Twitch>();
     addService<Trovo>();
-    addService<Rumble>();
     addService<Kick>();
+    addService<Odysee>();
+    addService<Rumble>();
     addService<GoodGame>();
     addService<VkPlayLive>();
     addService<VkVideo>();
