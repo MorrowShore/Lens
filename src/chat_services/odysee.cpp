@@ -151,17 +151,18 @@ void Odysee::reconnectImpl()
     info = Info();
 
     extractChannelAndVideo(stream.get(), info.channel, info.video);
-    state.streamId = info.channel + "/" + info.video;
 
     if (!info.channel.isEmpty() && !info.video.isEmpty())
     {
+        state.streamId = info.channel + "/" + info.video;
+
         state.streamUrl = "https://odysee.com/@" + info.channel + "/" + info.video;
         state.chatUrl = "https://odysee.com/$/popout/@" + info.channel + "/" + info.video;
     }
 
     state.controlPanelUrl = "https://odysee.com/$/livestream";
 
-    if (!enabled.get())
+    if (!enabled.get() || state.streamId.isEmpty())
     {
         return;
     }
@@ -308,7 +309,8 @@ void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QS
 
     QString link = AxelChat::simplifyUrl(rawLink.trimmed());
 
-    link = AxelChat::removeFromStart(link, "odysee.com/", Qt::CaseInsensitive);
+    link = AxelChat::removeFromStart(link, "odysee.com", Qt::CaseInsensitive);
+    link = AxelChat::removeFromStart(link, "/", Qt::CaseInsensitive);
     link = AxelChat::removeFromStart(link, "@", Qt::CaseInsensitive);
 
     const QStringList part = link.split('/', Qt::SplitBehaviorFlags::SkipEmptyParts);
