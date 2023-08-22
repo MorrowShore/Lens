@@ -17,6 +17,15 @@ protected:
     void reconnectImpl() override;
 
 private:
+    struct Info
+    {
+        QString claimId;
+    };
+
+    void requestClaimId();
+    void requestLive();
+
     QNetworkAccessManager& network;
 
+    Info info;
 };
