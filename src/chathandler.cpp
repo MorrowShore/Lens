@@ -65,8 +65,8 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService<Twitch>();
     addService<Trovo>();
     addService<Kick>();
-    addService<Odysee>();
     addService<Rumble>();
+    addService<Odysee>();
     addService<GoodGame>();
     addService<VkPlayLive>();
     addService<VkVideo>();
