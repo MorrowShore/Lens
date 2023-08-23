@@ -398,6 +398,7 @@ Item {
                 id: avatarImage
                 visible: Global.windowChatMessageShowAvatar && !messageMarkedAsDeleted
                 //cache: false // TODO: need check
+                fillMode: Image.PreserveAspectCrop
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
                          source !== chatHandler.getServiceIconUrl(authorServiceType);
