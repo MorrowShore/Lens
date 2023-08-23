@@ -49,5 +49,5 @@ private:
 
     Info info;
 
-    QHash<QString, QString> avatars; // <author id, avatarUrl>
+    QHash<QString, QUrl> avatars; // <author id, avatarUrl>
 };

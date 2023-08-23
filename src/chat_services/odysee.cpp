@@ -14,6 +14,8 @@ static const int ReconncectPeriod = 5000;
 static const int PingSendTimeout = 10 * 1000;
 static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
 
+static const QUrl DefaultAvatar = QUrl("https://thumbnails.odycdn.com/optimize/s:160:160/quality:85/plain/https://spee.ch/spaceman-png:2.png");
+
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
     resultData.clear();
@@ -314,6 +316,8 @@ void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
         return;
     }
 
+    qDebug() << lbryUrl;
+
     const QJsonArray urls = { lbryUrl };
     const QJsonObject params = { { "urls", urls } };
     const QByteArray data = QJsonDocument(QJsonObject(
@@ -346,13 +350,13 @@ void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
 
         const QJsonObject data = result.value(keys.first()).toObject();
 
-        const QString avatartUrl = data.value("value").toObject()
+        QUrl avatartUrl = QUrl(data.value("value").toObject()
             .value("thumbnail").toObject()
-            .value("url").toString();
+            .value("url").toString());
 
         if (avatartUrl.isEmpty())
         {
-            return;
+            avatartUrl = DefaultAvatar;
         }
 
         avatars.insert(authorId, avatartUrl);
