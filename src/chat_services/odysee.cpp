@@ -316,8 +316,6 @@ void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
         return;
     }
 
-    qDebug() << lbryUrl;
-
     const QJsonArray urls = { lbryUrl };
     const QJsonObject params = { { "urls", urls } };
     const QByteArray data = QJsonDocument(QJsonObject(
@@ -425,6 +423,7 @@ void Odysee::parseComment(const QJsonObject &data)
     const QString authorId = generateAuthorId(comment.value("channel_id").toString());
 
     const bool isModerator = comment.value("is_moderator").toBool(false);
+    const bool isCreator = comment.value("is_creator").toBool(false);
 
     QUrl avatarUrl;
 
@@ -447,6 +446,11 @@ void Odysee::parseComment(const QJsonObject &data)
     if (isModerator)
     {
         authorBuilder.addRightBadge("qrc:/resources/images/odysee/badges/moderator.svg");
+    }
+
+    if (isCreator)
+    {
+        authorBuilder.addRightBadge("qrc:/resources/images/odysee/badges/creator.svg");
     }
 
     const auto author = authorBuilder.build();

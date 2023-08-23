@@ -103,6 +103,6 @@
         <file>resources/images/odysee/badges/esau.svg</file>
         <file>resources/images/odysee/badges/moderator.svg</file>
         <file>resources/images/odysee/badges/premium_plus.svg</file>
-        <file>resources/images/odysee/badges/streamer.svg</file>
+        <file>resources/images/odysee/badges/creator.svg</file>
     </qresource>
 </RCC>
