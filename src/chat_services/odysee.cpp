@@ -307,6 +307,60 @@ void Odysee::requestLive()
     });
 }
 
+void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
+{
+    if (!enabled.get())
+    {
+        return;
+    }
+
+    const QJsonArray urls = { lbryUrl };
+    const QJsonObject params = { { "urls", urls } };
+    const QByteArray data = QJsonDocument(QJsonObject(
+                                              {
+                                                  { "jsonrpc", "2.0" },
+                                                  { "method", "resolve" },
+                                                  { "params", params }
+                                              })).toJson();
+
+    QNetworkRequest request(QUrl("https://api.na-backend.odysee.com/api/v1/proxy"));
+    request.setRawHeader("Content-Type", "application/json-rpc");
+
+    QNetworkReply* reply = network.post(request, data);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, authorId, reply]()
+    {
+        QByteArray raw;
+        if (!checkReply(reply, Q_FUNC_INFO, raw))
+        {
+            return;
+        }
+
+        const QJsonObject root = QJsonDocument::fromJson(raw).object();
+        const QJsonObject result = root.value("result").toObject();
+        const QStringList keys = result.keys();
+        if (keys.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "keys of result is empty, root =" << root;
+            return;
+        }
+
+        const QJsonObject data = result.value(keys.first()).toObject();
+
+        const QString avatartUrl = data.value("value").toObject()
+            .value("thumbnail").toObject()
+            .value("url").toString();
+
+        if (avatartUrl.isEmpty())
+        {
+            return;
+        }
+
+        avatars.insert(authorId, avatartUrl);
+
+        emit authorDataUpdated(authorId, { { Author::Role::AvatarUrl, QUrl(avatartUrl) } });
+    });
+}
+
 void Odysee::sendPing()
 {
     qWarning() << Q_FUNC_INFO << "not implemented";
@@ -333,27 +387,25 @@ void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QS
     }
 }
 
-QString Odysee::extractChannelUrl(const QString &rawLink)
+QString Odysee::extractChannelId(const QString &rawLink)
 {
-    QString link = rawLink.trimmed();
-    link = AxelChat::removeFromStart(link, "lbry://", Qt::CaseInsensitive);
+    QString id = rawLink.trimmed();
+    id = AxelChat::removeFromStart(id, "lbry://", Qt::CaseInsensitive);
 
-    if (!link.contains('#'))
+    if (!id.contains('#'))
     {
         qWarning() << Q_FUNC_INFO << "not found '#' in" << rawLink;
         return QString();
     }
 
-    link = link.left(link.indexOf('#') + 2).replace('#', ':');
+    id = id.left(id.indexOf('#') + 2).replace('#', ':');
 
-    if (!link.startsWith('@'))
+    if (!id.startsWith('@'))
     {
-        link = '@' + link;
+        id = '@' + id;
     }
 
-    link = "https://odysee.com/" + link;
-
-    return link;
+    return id;
 }
 
 void Odysee::parseComment(const QJsonObject &data)
@@ -362,11 +414,28 @@ void Odysee::parseComment(const QJsonObject &data)
     const int64_t timestamp = comment.value("timestamp").toVariant().toLongLong();
     const QString rawText = comment.value("comment").toString();
 
+    const QString lbryUrl = comment.value("channel_url").toString();
+
+    const QString channelId = extractChannelId(lbryUrl);
+
+    const QString authorId = generateAuthorId(comment.value("channel_id").toString());
+
+    QUrl avatarUrl;
+
+    if (avatars.contains(authorId))
+    {
+        avatarUrl = avatars.value(authorId);
+    }
+    else
+    {
+        requestChannelInfo(lbryUrl, authorId);
+    }
+
     const auto author = Author::Builder(
         getServiceType(),
-        generateAuthorId(comment.value("channel_id").toString()),
+        authorId,
         comment.value("channel_name").toString())
-        .setPage(extractChannelUrl(comment.value("channel_url").toString()))
+        .setPage("https://odysee.com/" + channelId)
         .build();
 
     const auto message = Message::Builder(

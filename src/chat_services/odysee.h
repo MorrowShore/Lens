@@ -21,6 +21,9 @@ protected:
 private slots:
     void requestClaimId();
     void requestLive();
+
+    void requestChannelInfo(const QString& lbryUrl, const QString& authorId);
+
     void sendPing();
 
 private:
@@ -32,7 +35,7 @@ private:
     };
 
     static void extractChannelAndVideo(const QString& rawLink, QString& channel, QString& video);
-    static QString extractChannelUrl(const QString& rawLink);
+    static QString extractChannelId(const QString& rawLink);
 
     void parseComment(const QJsonObject& data);
     void parseRemoved(const QJsonObject& data);
@@ -46,5 +49,5 @@ private:
 
     Info info;
 
-    QHash<QString, QString> avatars; // <channelId, avatarUrl>
+    QHash<QString, QString> avatars; // <author id, avatarUrl>
 };
