@@ -173,7 +173,6 @@ ScrollView {
 
         Button {
             id: buttonReleases
-            x: 500
             y: 62
             text: qsTr("Releases")
             anchors.right: parent.right
@@ -253,13 +252,26 @@ ScrollView {
         }
 
         Button {
-            id: buttonLicense
-            x: 10
-            y: 224
-            text: qsTr("License")
+            id: buttonPrivacy
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            y: 170
+            text: qsTr("Privacy Policy")
 
             onClicked: {
-                Qt.openUrlExternally("https://raw.githubusercontent.com/3dproger/AxelChat/main/LICENSE");
+                Qt.openUrlExternally("https://3dproger.github.io/AxelChat/privacy");
+            }
+        }
+
+        Button {
+            id: buttonLicense
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            y: 224
+            text: qsTr("License, Terms and Conditions")
+
+            onClicked: {
+                Qt.openUrlExternally("https://github.com/3dproger/AxelChat/blob/main/LICENSE");
             }
         }
     }
