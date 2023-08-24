@@ -187,7 +187,7 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
     const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
     const QJsonObject root = doc.object();
 
-    qDebug() << "received:" << doc;
+    //qDebug() << "received:" << doc;
 
     const QJsonObject data = root.value("data").toObject();
 
@@ -200,11 +200,11 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
     {
         parseRemoved(data);
     }
-    /*else if (type == "livestream")
+    else if (type == "livestream")
     {
-        //TODO
+        // ignore, example:
         // {"data":{"channel_id":"00f95108658709853f623c0c4bca4d8df22bf461","end_time":"0001-01-01T00:00:00Z","live":true,"live_claim_id":"bc4cf0556397ad419f8f2bef6308aa1be7d2f482","live_time":"2023-08-22T23:05:30.692281748Z","protected":false,"release_time":"2023-08-22T23:00:00Z"},"type":"livestream"}
-    }*/
+    }
     else if (type == "viewers")
     {
         state.viewersCount = data.value("connected").toInt();
@@ -367,6 +367,7 @@ void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
 
 void Odysee::sendPing()
 {
+    socket.sendTextMessage("{\"type\":\"ping\"}");
     qWarning() << Q_FUNC_INFO << "not implemented";
 }
 
