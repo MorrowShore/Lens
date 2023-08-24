@@ -271,7 +271,7 @@ Item {
                 y: authorRow.y - 1
                 width: authorNameText.width + 12
                 height: authorNameText.height + 2
-                radius: 2
+                radius: 4
                 color: authorHasCustomNicknameBackgroundColor ? authorCustomNicknameBackgroundColor : "transparent"
                 visible: authorRow.visible
             }
