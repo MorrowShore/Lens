@@ -458,6 +458,7 @@ void Odysee::parseComment(const QJsonObject &data)
     {
         authorBuilder.addRightBadge("qrc:/resources/images/odysee/badges/creator.svg");
         authorBuilder.setCustomNicknameBackgroundColor(CreatorNicknameBackgroundColor);
+        authorBuilder.setCustomNicknameColor(QColor(255, 255, 255));
     }
 
     const auto author = authorBuilder.build();
