@@ -40,16 +40,19 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] VK Play Live support
 - [x] VK Video support
 - [x] Kick support
-- [ ] TikTok/Douyin support
+- [ ] TikTok (Douyin) support
 - [ ] Bigo Live support
 - [x] Rumble support
 - [x] Odysee support
 - [ ] Dlive support
 - [x] WASD support
+- [ ] Facebook Live support
+- [ ] Nimo TV (Huya Live) support
 - [x] Discord support
 - [x] Telegram support
 - [x] DonationAlerts support
-- [ ] DonatePay support
+- [ ] DonatePay.ru support
+- [ ] DonatePay.eu support
 - [ ] StreamElements support
 - [ ] Streamlabs support
 - [ ] Patreon support
