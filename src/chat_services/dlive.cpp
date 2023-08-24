@@ -3,7 +3,8 @@
 DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager&, cweqt::Manager&, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::DLive, false, parent)
 {
-
+    ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));
+    ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
 }
 
 ChatService::ConnectionStateType DLive::getConnectionStateType() const
@@ -25,16 +26,10 @@ QString DLive::getStateDescription() const
     switch (getConnectionStateType())
     {
     case ConnectionStateType::NotConnected:
-        if (stream.get().isEmpty())
+        if (state.streamId.isEmpty())
         {
             return tr("Channel not specified");
         }
-
-        if (state.streamId.isEmpty())
-        {
-            return tr("The channel is not correct");
-        }
-
         return tr("Not connected");
 
     case ConnectionStateType::Connecting:

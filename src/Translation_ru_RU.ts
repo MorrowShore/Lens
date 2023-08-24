@@ -495,27 +495,36 @@
 <context>
     <name>DLive</name>
     <message>
-        <location filename="chat_services/dlive.cpp" line="30"/>
+        <location filename="chat_services/dlive.cpp" line="31"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="35"/>
         <source>The channel is not correct</source>
-        <translation>Канал некорректен</translation>
+        <translation type="vanished">Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="38"/>
+        <location filename="chat_services/dlive.cpp" line="6"/>
+        <source>Channel</source>
+        <translation>Канал</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="7"/>
+        <source>Link or channel name...</source>
+        <translation>Ссылка или имя канала...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="33"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="41"/>
+        <location filename="chat_services/dlive.cpp" line="36"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="44"/>
+        <location filename="chat_services/dlive.cpp" line="39"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
