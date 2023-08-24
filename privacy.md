@@ -1,4 +1,4 @@
-**Privacy Policy**
+# Privacy Policy
 
 3dproger aka AXEL_K aka AxelChatDev aka AXEL5K (hereinafter referred to as the DEVELOPER) built the AxelChat app as an Open Source app. This SERVICE is provided by DEVELOPER at no cost and is intended for use as is.
 
