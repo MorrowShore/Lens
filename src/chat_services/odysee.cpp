@@ -126,12 +126,12 @@ QString Odysee::getStateDescription() const
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())
         {
-            return tr("Channel not specified");
+            return tr("Broadcast not specified");
         }
 
         if (state.streamId.isEmpty())
         {
-            return tr("The channel is not correct");
+            return tr("The broadcast is not correct");
         }
 
         return tr("Not connected");

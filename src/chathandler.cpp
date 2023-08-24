@@ -9,6 +9,7 @@
 #include "chat_services/telegram.h"
 #include "chat_services/discord.h"
 #include "chat_services/vkvideo.h"
+#include "chat_services/dlive.h"
 #include "chat_services/wasd.h"
 #include "chat_services/kick.h"
 #include "chat_services/odysee.h"
@@ -66,6 +67,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     addService<Trovo>();
     addService<Kick>();
     addService<Rumble>();
+    addService<DLive>();
     addService<Odysee>();
     addService<GoodGame>();
     addService<VkPlayLive>();

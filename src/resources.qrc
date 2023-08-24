@@ -103,5 +103,6 @@
         <file>resources/images/odysee/badges/moderator.svg</file>
         <file>resources/images/odysee/badges/premium_plus.svg</file>
         <file>resources/images/odysee/badges/creator.svg</file>
+        <file>resources/images/dlive-icon.svg</file>
     </qresource>
 </RCC>

@@ -52,7 +52,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="186"/>
+        <location filename="chathandler.cpp" line="188"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -106,7 +106,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="291"/>
+        <location filename="chathandler.cpp" line="293"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -115,78 +115,83 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="53"/>
-        <location filename="chat_services/chatservice.cpp" line="73"/>
+        <location filename="chat_services/chatservice.cpp" line="54"/>
+        <location filename="chat_services/chatservice.cpp" line="75"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="56"/>
+        <location filename="chat_services/chatservice.cpp" line="57"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="57"/>
+        <location filename="chat_services/chatservice.cpp" line="58"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="58"/>
+        <location filename="chat_services/chatservice.cpp" line="59"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="61"/>
+        <location filename="chat_services/chatservice.cpp" line="62"/>
         <source>Rumble</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="59"/>
+        <location filename="chat_services/chatservice.cpp" line="60"/>
         <source>Kick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="60"/>
+        <location filename="chat_services/chatservice.cpp" line="61"/>
         <source>Odysee</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="62"/>
-        <source>GoodGame</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="chat_services/chatservice.cpp" line="63"/>
-        <source>VK Play Live</source>
+        <source>DLive</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="64"/>
-        <source>VK Video</source>
-        <translation>VK Видео</translation>
+        <source>GoodGame</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="65"/>
-        <source>WASD</source>
+        <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="66"/>
+        <source>VK Video</source>
+        <translation>VK Видео</translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="67"/>
+        <source>WASD</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="68"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="67"/>
+        <location filename="chat_services/chatservice.cpp" line="69"/>
         <source>Discord</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="69"/>
+        <location filename="chat_services/chatservice.cpp" line="71"/>
         <source>DonationAlerts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="70"/>
+        <location filename="chat_services/chatservice.cpp" line="72"/>
         <source>DonatePay.ru</source>
         <oldsource>DonatePay</oldsource>
         <translation></translation>
@@ -485,6 +490,34 @@
         <location filename="commandseditor.cpp" line="133"/>
         <source>Are you sure you want to delete the command?</source>
         <translation>Вы уверены, что хотите удалить команду?</translation>
+    </message>
+</context>
+<context>
+    <name>DLive</name>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="30"/>
+        <source>Channel not specified</source>
+        <translation>Канал не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="35"/>
+        <source>The channel is not correct</source>
+        <translation>Канал некорректен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="38"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="41"/>
+        <source>Connecting...</source>
+        <translation>Подключение...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="44"/>
+        <source>Successfully connected!</source>
+        <translation>Успешно подключено!</translation>
     </message>
 </context>
 <context>
@@ -1008,37 +1041,47 @@ to these chats/channels in access rights (at your own risk)</source>
 <context>
     <name>Odysee</name>
     <message>
-        <location filename="chat_services/odysee.cpp" line="44"/>
+        <location filename="chat_services/odysee.cpp" line="48"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="45"/>
+        <location filename="chat_services/odysee.cpp" line="49"/>
         <source>Stream link...</source>
         <translation>Ссылка на стрим...</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="125"/>
         <source>Channel not specified</source>
-        <translation>Канал не указан</translation>
+        <translation type="vanished">Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="130"/>
         <source>The channel is not correct</source>
-        <translation>Канал некорректен</translation>
+        <translation type="vanished">Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="133"/>
+        <location filename="chat_services/odysee.cpp" line="129"/>
+        <source>Broadcast not specified</source>
+        <oldsource>Stream not specified</oldsource>
+        <translation>Трансляция не указана</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="134"/>
+        <source>The broadcast is not correct</source>
+        <oldsource>The stream is not correct</oldsource>
+        <translation>Трансляция указана некорректно</translation>
+    </message>
+    <message>
+        <location filename="chat_services/odysee.cpp" line="137"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="136"/>
+        <location filename="chat_services/odysee.cpp" line="140"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/odysee.cpp" line="139"/>
+        <location filename="chat_services/odysee.cpp" line="143"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
