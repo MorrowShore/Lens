@@ -5,6 +5,8 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
 {
     ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
+
+    reconnect();
 }
 
 ChatService::ConnectionStateType DLive::getConnectionStateType() const
@@ -46,4 +48,6 @@ QString DLive::getStateDescription() const
 void DLive::reconnectImpl()
 {
     state = State();
+
+    state.controlPanelUrl = "https://dlive.tv/s/dashboard#0";
 }
