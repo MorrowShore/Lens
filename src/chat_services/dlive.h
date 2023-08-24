@@ -18,5 +18,5 @@ protected:
 private slots:
 
 private:
-
+    static QString extractChannelName(const QString& stream);
 };

@@ -50,4 +50,38 @@ void DLive::reconnectImpl()
     state = State();
 
     state.controlPanelUrl = "https://dlive.tv/s/dashboard#0";
+
+    state.streamId = extractChannelName(stream.get());
+
+    if (state.streamId.isEmpty())
+    {
+        return;
+    }
+
+    state.streamUrl = "https://dlive.tv/" + state.streamId;
+
+    if (!enabled.get())
+    {
+        return;
+    }
+}
+
+QString DLive::extractChannelName(const QString &stream)
+{
+    QRegExp rx;
+
+    const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(stream);
+    rx = QRegExp("^dlive.tv/([^/]*)$", Qt::CaseInsensitive);
+    if (rx.indexIn(simpleUserSpecifiedUserChannel) != -1)
+    {
+        return rx.cap(1);
+    }
+
+    rx = QRegExp("^[a-zA-Z0-9_]+$", Qt::CaseInsensitive);
+    if (rx.indexIn(stream) != -1)
+    {
+        return stream;
+    }
+
+    return QString();
 }
