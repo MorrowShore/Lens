@@ -15,6 +15,8 @@ static const int PingSendTimeout = 10 * 1000;
 static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
 
 static const QUrl DefaultAvatar = QUrl("https://thumbnails.odycdn.com/optimize/s:160:160/quality:85/plain/https://spee.ch/spaceman-png:2.png");
+static const QColor BackgroundDonationColor = QColor(255, 209, 147);
+static const QColor CreatorNicknameBackgroundColor = QColor(166, 10, 67);
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
@@ -424,6 +426,10 @@ void Odysee::parseComment(const QJsonObject &data)
 
     const bool isModerator = comment.value("is_moderator").toBool(false);
     const bool isCreator = comment.value("is_creator").toBool(false);
+    const bool isFiat = comment.value("is_fiat").toBool(false);
+
+    const double supportAmount = comment.value("support_amount").toDouble(0);
+    const QString currency = comment.value("currency").toString().toUpper();
 
     QUrl avatarUrl;
 
@@ -451,17 +457,30 @@ void Odysee::parseComment(const QJsonObject &data)
     if (isCreator)
     {
         authorBuilder.addRightBadge("qrc:/resources/images/odysee/badges/creator.svg");
+        authorBuilder.setCustomNicknameBackgroundColor(CreatorNicknameBackgroundColor);
     }
 
     const auto author = authorBuilder.build();
 
-    const auto message = Message::Builder(
+    Message::Builder messageBuilder(
         author,
-        generateMessageId(comment.value("comment_id").toString()))
+        generateMessageId(comment.value("comment_id").toString()));
+
+    if (supportAmount > 0)
+    {
+        Message::TextStyle style;
+        style.bold = true;
+        messageBuilder.addText(QString("%1 %2\n").arg(supportAmount, 0, 'f', 2).arg(currency), style);
+
+        messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, BackgroundDonationColor);
+    }
+
+    messageBuilder
         .addText(rawText)
         .setReceivedTime(QDateTime::currentDateTime())
-        .setPublishedTime(QDateTime::fromSecsSinceEpoch(timestamp))
-        .build();
+        .setPublishedTime(QDateTime::fromSecsSinceEpoch(timestamp));
+
+    const auto message = messageBuilder.build();
 
     emit readyRead({ message}, { author });
 }
