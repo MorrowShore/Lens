@@ -387,7 +387,7 @@ void VkPlayLive::sendHeartbeat()
 
 void VkPlayLive::parseMessage(const QJsonObject &data)
 {
-    //qDebug("\n" + QJsonDocument(data).toJson() + "\n");
+    //qDebug() << data;
 
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
