@@ -253,10 +253,11 @@ void YouTubeHtml::onReplyStreamPage()
         return;
     }
 
-    if (const int viewers = YouTubeUtils::parseViews(rawData); viewers != -1)
+    state.viewersCount = YouTubeUtils::parseViews(rawData);
+    emit stateChanged();
+
+    if (state.viewersCount != -1)
     {
-        state.viewersCount = viewers;
-        emit stateChanged();
         badLivePageReplies = 0;
     }
     else

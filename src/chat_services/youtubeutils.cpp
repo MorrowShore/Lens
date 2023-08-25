@@ -691,18 +691,13 @@ void YouTubeUtils::parseText(const QJsonObject &message, QList<std::shared_ptr<M
 
 int YouTubeUtils::parseViews(const QByteArray &rawData)
 {
-    static const QByteArray Prefix = "{\"videoViewCountRenderer\":{\"viewCount\":{\"runs\":[";
+    static const QByteArray Prefix = "\"originalViewCount\":\"";
 
     const int start = rawData.indexOf(Prefix);
     if (start == -1)
     {
-        if (rawData.contains("videoViewCountRenderer\":{\"viewCount\":{}"))
-        {
-            return -1;
-        }
-
-        qDebug() << Q_FUNC_INFO << ": failed to parse videoViewCountRenderer";
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_videoViewCountRenderer_from_html_youtube.html", rawData);
+        qDebug() << Q_FUNC_INFO << ": failed to parse originalViewCount";
+        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_originalViewCount_from_html_youtube.html", rawData);
         return -1;
     }
 
@@ -710,7 +705,7 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
     for (int i = start + Prefix.length(); i < rawData.length(); ++i)
     {
         const QChar& c = rawData[i];
-        if (c == ']')
+        if (c == '"')
         {
             lastPos = i;
             break;
@@ -724,18 +719,9 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
     }
 
     const QByteArray data = rawData.mid(start + Prefix.length(), lastPos - (start + Prefix.length()));
-    const QByteArray digits = extractDigitsOnly(data);
-    if (digits.isEmpty())
-    {
-        YouTubeUtils::printData(Q_FUNC_INFO + QString(": failed to find digits"), data);
-
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_no_digits_youtube.html", rawData);
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_no_digits_youtube.json", data);
-        return -1;
-    }
 
     bool ok = false;
-    const int viewers = digits.toInt(&ok);
+    const int viewers = data.toInt(&ok);
     if (!ok)
     {
         YouTubeUtils::printData(Q_FUNC_INFO + QString(": failed to convert to number"), data);

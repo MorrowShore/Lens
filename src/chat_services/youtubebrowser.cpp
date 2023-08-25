@@ -245,11 +245,8 @@ void YouTubeBrowser::requestStreamPage()
             return;
         }
 
-        if (const int viewers = YouTubeUtils::parseViews(data); viewers != -1)
-        {
-            state.viewersCount = viewers;
-            emit stateChanged();
-        }
+        state.viewersCount = YouTubeUtils::parseViews(data);
+        emit stateChanged();
     });
 }
 
