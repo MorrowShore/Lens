@@ -90,7 +90,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     });
 
     ui.addLabel(tr("To display private chats/channels, add the bot\n"
-                   "to these chats/channels in access rights (at your own risk)"));
+                   "to these chats/channels"));
 
     ui.addSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()));
     ui.addSwitch(&showGuildName, tr("Show server name"));
