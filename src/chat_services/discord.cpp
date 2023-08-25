@@ -540,8 +540,9 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
     const QJsonObject jsonAuthor = jsonMessage.value("author").toObject();
 
     const QString userName = jsonAuthor.value("username").toString();
-    const QString displayName = jsonAuthor.value("display_name").toString();
-    const QString authorName = displayName.isEmpty() ? userName : displayName;
+    const QString globalName = jsonAuthor.value("global_name").toString();
+
+    const QString authorName = globalName.isEmpty() ? userName : globalName;
     const QString userId = jsonAuthor.value("id").toString();
     const QString avatarHash = jsonAuthor.value("avatar").toString();
 
