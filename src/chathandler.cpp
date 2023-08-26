@@ -81,7 +81,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     QTimer::singleShot(2000, [this]()
     {
         Q_UNUSED(this)
-        //addTestMessages();
+        addTestMessages();
     });
 }
 
@@ -424,6 +424,56 @@ void ChatHandler::addTestMessages()
 
     {
         auto author = Author::Builder(
+                          AxelChat::ServiceType::Kick,
+                          QUuid::createUuid().toString(),
+                          "Sonic")
+                          .setAvatar("https://static.wikia.nocookie.net/sonic/images/5/57/Sonic_Superstars_Sonic.png/revision/latest/smart/width/53/height/53?cb=20230801191457")
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("Don't slow down!")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::Rumble,
+                          QUuid::createUuid().toString(),
+                          "Battle Kid")
+                          .setAvatar("https://static.wikia.nocookie.net/gamegrumps/images/6/67/Battle_Kid_Fortress_of_Peril.png/revision/latest?cb=20141019030833")
+                          .setCustomNicknameColor(QColor(133, 199, 66))
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("The evil boss has been taken down!")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::Odysee,
+                          QUuid::createUuid().toString(),
+                          "Commander Keen")
+                          .setAvatar("https://static.wikia.nocookie.net/p__/images/c/c5/248240-ck_goodbye_large.gif/revision/latest?cb=20161124032446&path-prefix=protagonist")
+                          .setCustomNicknameColor(QColor(255, 140, 0))
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("Let's go!")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
                           AxelChat::ServiceType::GoodGame,
                           QUuid::createUuid().toString(),
                           "CJ")
@@ -460,6 +510,40 @@ void ChatHandler::addTestMessages()
 
     {
         auto author = Author::Builder(
+                          AxelChat::ServiceType::VkVideo,
+                          QUuid::createUuid().toString(),
+                          "Axel Stone")
+                          .setAvatar("https://static.wikia.nocookie.net/streetsofrage/images/6/60/PXZ2-Axel_Stone.png/revision/latest?cb=20190829173626")
+                          .setCustomNicknameColor(QColor(255, 255, 0))
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("My fists can shatter any obstacle in my path!")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::Wasd,
+                          QUuid::createUuid().toString(),
+                          "Doom Guy")
+                          .setAvatar("https://static.wikia.nocookie.net/doom/images/3/30/Doomguyface.jpg/revision/latest?cb=20110328073223")
+                          .setCustomNicknameColor(QColor(255, 0, 0))
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addImage(QUrl("https://static.wikia.nocookie.net/doom/images/b/b4/Shotgun_prev.png/revision/latest?cb=20200318133934"), 40)
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
                           AxelChat::ServiceType::Telegram,
                           QUuid::createUuid().toString(),
                           "G-Man")
@@ -469,7 +553,6 @@ void ChatHandler::addTestMessages()
         messages.append(
             Message::Builder(author)
                 .addText("Rise and shine, Mister Freeman")
-                .setDestination({ "Xen", "Stasis" })
                 .build());
 
         authors.append(author);
@@ -485,7 +568,28 @@ void ChatHandler::addTestMessages()
 
         messages.append(
             Message::Builder(author)
-                .addText("May I say a few words?")
+                .setDestination({ "Xen", "Stasis" })
+                .addText("\U0001F914")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::DonationAlerts,
+                          QUuid::createUuid().toString(),
+                          "S.D.")
+                          .setAvatar("https://melmagazine.com/wp-content/uploads/2022/07/ggAsDmL-1-1024x726.jpeg")
+                          .setCustomNicknameColor(QColor(245, 144, 7))
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("1 USD\n", Message::TextStyle(true, false))
+                .addText("I’d buy that for a dollar!")
+                .setForcedColor(Message::ColorRole::BodyBackgroundColorRole, QColor(255, 209, 147))
+                .setFlag(Message::Flag::DonateWithText)
                 .build());
 
         authors.append(author);

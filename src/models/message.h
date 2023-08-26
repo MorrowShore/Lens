@@ -82,6 +82,11 @@ public:
             , italic(false)
         {}
 
+        TextStyle(bool bold_, bool italic_)
+            : bold(bold_)
+            , italic(italic_)
+        {}
+
         bool bold;
         bool italic;
     };
