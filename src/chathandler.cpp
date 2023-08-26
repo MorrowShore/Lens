@@ -457,6 +457,22 @@ void ChatHandler::addTestMessages()
 
     {
         auto author = Author::Builder(
+                          AxelChat::ServiceType::DLive,
+                          QUuid::createUuid().toString(),
+                          "Knuckles")
+                          .setAvatar("https://static.wikia.nocookie.net/sega/images/6/6e/Knuckles_the_Echidna_Sonic_Frontiers.webp/revision/latest?cb=20221108144328")
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("Dr. Robotnik, I trusted you")
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
                           AxelChat::ServiceType::Odysee,
                           QUuid::createUuid().toString(),
                           "Commander Keen")
@@ -588,6 +604,26 @@ void ChatHandler::addTestMessages()
             Message::Builder(author)
                 .addText("1 USD\n", Message::TextStyle(true, false))
                 .addText("I’d buy that for a dollar!")
+                .setForcedColor(Message::ColorRole::BodyBackgroundColorRole, QColor(255, 209, 147))
+                .setFlag(Message::Flag::DonateWithText)
+                .build());
+
+        authors.append(author);
+    }
+
+    {
+        auto author = Author::Builder(
+                          AxelChat::ServiceType::DonatePayRu,
+                          QUuid::createUuid().toString(),
+                          "Scrooge McDuck")
+                          .setAvatar("https://static.wikia.nocookie.net/disney/images/3/38/Scrooge_%28Mickey_Mouse_2013%29.jpeg/revision/latest/scale-to-width-down/1000?cb=20150114140251")
+                          .setCustomNicknameColor(QColor(68, 171, 79))
+                          .build();
+
+        messages.append(
+            Message::Builder(author)
+                .addText("1000000 USD\n", Message::TextStyle(true, false))
+                .addText("A modest donation to my favorite streamer")
                 .setForcedColor(Message::ColorRole::BodyBackgroundColorRole, QColor(255, 209, 147))
                 .setFlag(Message::Flag::DonateWithText)
                 .build());
