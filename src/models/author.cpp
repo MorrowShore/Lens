@@ -37,7 +37,8 @@ const std::shared_ptr<Author> Author::getSoftwareAuthor()
     static const std::shared_ptr<Author> author = std::make_shared<Author>(
         AxelChat::ServiceType::Software,
         QCoreApplication::applicationName(),
-        authorId);
+        authorId,
+        QUrl("qrc:/resources/images/axelchat-rounded.svg"));
 
     return author;
 }

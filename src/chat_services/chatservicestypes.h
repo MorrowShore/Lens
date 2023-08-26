@@ -17,10 +17,10 @@ enum class ServiceType
     Kick,
     DLive,
     Rumble,
-    BigoLive,
-    TikTok,
-    FacebookLive,
-    NimoLive,
+    //BigoLive,
+    //TikTok,
+    //FacebookLive,
+    //NimoLive,
     Odysee,
     VkPlayLive,
     VkVideo,
@@ -29,14 +29,14 @@ enum class ServiceType
     Telegram,
     Discord,
 
-    StreamElements,
-    Streamlabs,
+    //StreamElements,
+    //Streamlabs,
     DonationAlerts,
     DonatePayRu,
-    DonatePayEu,
+    //DonatePayEu,
 
-    Patreon,
-    Boosty,
+    //Patreon,
+    //Boosty,
 };
 
 }

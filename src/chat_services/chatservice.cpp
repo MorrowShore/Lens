@@ -80,7 +80,7 @@ QUrl ChatService::getIconUrl(const AxelChat::ServiceType serviceType)
     switch (serviceType)
     {
     case AxelChat::ServiceType::Unknown: return QUrl();
-    case AxelChat::ServiceType::Software: return QUrl("qrc:/resources/images/axelchat-rounded.svg");
+    case AxelChat::ServiceType::Software: return QUrl("qrc:/resources/images/axelchat-icon.svg");
 
     case AxelChat::ServiceType::YouTube: return QUrl("qrc:/resources/images/youtube-icon.svg");
     case AxelChat::ServiceType::Twitch: return QUrl("qrc:/resources/images/twitch-icon.svg");

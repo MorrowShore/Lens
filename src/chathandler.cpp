@@ -370,6 +370,10 @@ void ChatHandler::addTestMessages()
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
 
+    sendSoftwareMessage("Hello, world!");
+
+    sendTestMessage("Hello developer!");
+
     {
         auto author = Author::Builder(
                           AxelChat::ServiceType::YouTube,

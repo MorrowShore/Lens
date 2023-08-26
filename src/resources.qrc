@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/images/youtube-icon.svg</file>
-        <file>resources/images/axelchat.svg</file>
         <file>resources/images/axelchat-rounded.svg</file>
         <file>resources/images/king.svg</file>
         <file>resources/images/download-button.svg</file>
@@ -104,5 +103,6 @@
         <file>resources/images/odysee/badges/premium_plus.svg</file>
         <file>resources/images/odysee/badges/creator.svg</file>
         <file>resources/images/dlive-icon.svg</file>
+        <file>resources/images/axelchat-icon.svg</file>
     </qresource>
 </RCC>

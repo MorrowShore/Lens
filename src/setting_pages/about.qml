@@ -71,7 +71,7 @@ ScrollView {
             height: 100
             anchors.horizontalCenter: parent.horizontalCenter
             mipmap: true
-            source: "qrc:/resources/images/axelchat.svg"
+            source: "qrc:/resources/images/axelchat-icon.svg"
             fillMode: Image.PreserveAspectFit
         }
 

@@ -298,7 +298,7 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsServiceMessage;
+                        hoverEnabled: true
                         cursorShape: {
                             if (hoverEnabled)
                                 return Qt.PointingHandCursor;
@@ -317,7 +317,7 @@ Item {
                         var prefix = "";
                         var postfix = "";
 
-                        if (Global.windowChatMessageShowPlatformIcon && authorServiceType !== Global._SoftwareServiceType)
+                        if (Global.windowChatMessageShowPlatformIcon)
                         {
                             prefix += createImgHtmlTag(chatHandler.getServiceIconUrl(authorServiceType), badgePixelSize) + " "
                         }
@@ -432,7 +432,7 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent;
-                    hoverEnabled: authorServiceType !== Global._SoftwareServiceType && !messageIsServiceMessage;
+                    hoverEnabled: true;
                     acceptedButtons: Qt.LeftButton;
                     cursorShape: {
                         if (hoverEnabled)
@@ -459,7 +459,6 @@ Item {
                 text: messageHtml
                 font.weight: messageIsBotCommand ? Font.Black : Font.DemiBold
                 font.italic: messageMarkedAsDeleted || messageIsTwitchAction
-                font.bold: authorServiceType === Global._SoftwareServiceType
                 selectByMouse: true
                 selectByKeyboard: true
                 readOnly: true
