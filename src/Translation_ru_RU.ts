@@ -698,27 +698,40 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation>Стикер(ы)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="699"/>
+        <location filename="chat_services/discord.cpp" line="703"/>
         <source>Bot status</source>
         <translation>Статус бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="709"/>
+        <location filename="chat_services/discord.cpp" line="713"/>
         <source>authorized as %1</source>
         <translation>авторизован как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="711"/>
+        <location filename="chat_services/discord.cpp" line="721"/>
+        <source>Not connected to any servers</source>
+        <translation>Не подключён к каким-либо серверам</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="725"/>
+        <source>Connected to servers (%1):</source>
+        <translation>Подключён к серверам (%1):</translation>
+    </message>
+    <message>
+        <location filename="chat_services/discord.cpp" line="744"/>
+        <source>Servers loading...</source>
+        <translation>Загрузка серверов...</translation>
+    </message>
+    <message>
         <source>Located on servers:</source>
-        <translation>Находится на серверах:</translation>
+        <translation type="vanished">Находится на серверах:</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="719"/>
         <source>Loading...</source>
-        <translation>Загрузка...</translation>
+        <translation type="vanished">Загрузка...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="724"/>
+        <location filename="chat_services/discord.cpp" line="749"/>
         <source>not authorized</source>
         <translation>не авторизован</translation>
     </message>
@@ -732,42 +745,42 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="941"/>
+        <location filename="chat_services/discord.cpp" line="966"/>
         <source>generic</source>
         <translation>общий</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="942"/>
+        <location filename="chat_services/discord.cpp" line="967"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="943"/>
+        <location filename="chat_services/discord.cpp" line="968"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="944"/>
+        <location filename="chat_services/discord.cpp" line="969"/>
         <source>gif-animation</source>
         <translation>gif-анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="945"/>
+        <location filename="chat_services/discord.cpp" line="970"/>
         <source>article</source>
         <translation>статья</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="946"/>
+        <location filename="chat_services/discord.cpp" line="971"/>
         <source>link</source>
         <translation>ссылка</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="948"/>
+        <location filename="chat_services/discord.cpp" line="973"/>
         <source>unknown &quot;%1&quot;</source>
         <translation>неизвестно &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="1002"/>
+        <location filename="chat_services/discord.cpp" line="1027"/>
         <source>File: %1</source>
         <translation>Файл: %1</translation>
     </message>

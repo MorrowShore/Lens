@@ -528,7 +528,7 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType;
+        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType << ", message =" << jsonMessage;
     }
 }
 
@@ -689,6 +689,10 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
         return;
     }
 
+    qWarning() << Q_FUNC_INFO << "not implemented";
+
+    qDebug() << jsonMessage;
+
     //TODO: show join user
 }
 
@@ -701,22 +705,43 @@ void Discord::updateUI()
     if (state.connected)
     {
         QString displayName = "<b>" + info.userName + "</b>";
-        if (!info.userDiscriminator.isEmpty())
+        if (!info.userDiscriminator.isEmpty() && info.userDiscriminator != "0")
         {
             displayName += "#" + info.userDiscriminator;
         }
 
         text += tr("authorized as %1").arg(displayName);
         text = "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text;
-        text += "<br>" + tr("Located on servers:") + " ";
+        text += "<br>";
 
         if (info.guildsLoaded)
         {
-            text += QString("%1").arg(info.guilds.count());
+            if (info.guilds.isEmpty())
+            {
+                text += tr("Not connected to any servers");
+            }
+            else
+            {
+                text += tr("Connected to servers (%1):").arg(info.guilds.count()) + " ";
+
+                QString guildsText;
+
+                for (const Guild& guild : qAsConst(info.guilds))
+                {
+                    if (!guildsText.isEmpty())
+                    {
+                        guildsText += ", ";
+                    }
+
+                    guildsText += guild.name;
+                }
+
+                text += guildsText;
+            }
         }
         else
         {
-            text += tr("Loading...");
+            text += tr("Servers loading...");
         }
     }
     else

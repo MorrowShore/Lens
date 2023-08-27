@@ -81,7 +81,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     QTimer::singleShot(2000, [this]()
     {
         Q_UNUSED(this)
-        addTestMessages();
+        //addTestMessages();
     });
 }
 
