@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chatservice.h"
+#include "../chatservice.h"
 #include "models/message.h"
 #include "models/author.h"
 #include <QWebSocket>

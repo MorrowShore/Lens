@@ -7,7 +7,7 @@
 #include "chat_services/goodgame.h"
 #include "chat_services/vkplaylive.h"
 #include "chat_services/telegram.h"
-#include "chat_services/discord.h"
+#include "chat_services/discord/discord.h"
 #include "chat_services/vkvideo.h"
 #include "chat_services/dlive.h"
 #include "chat_services/wasd.h"

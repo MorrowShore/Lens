@@ -43,7 +43,7 @@ HEADERS += \
     tcprequest.h \
     chat_services/chatservice.h \
     chat_services/chatservicestypes.h \
-    chat_services/discord.h \
+    chat_services/discord/discord.h \
     chat_services/telegram.h \
     chat_services/trovo.h \
     chat_services/vkplaylive.h \
@@ -76,7 +76,7 @@ HEADERS += \
 SOURCES += \
     appsponsormanager.cpp \
     chat_services/chatservice.cpp \
-    chat_services/discord.cpp \
+    chat_services/discord/discord.cpp \
     chat_services/dlive.cpp \
     chat_services/donatepay.cpp \
     chat_services/donationalerts.cpp \
