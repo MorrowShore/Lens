@@ -761,6 +761,8 @@ void Discord::requestGuilds()
             if (const std::optional<Guild> guild = Guild::fromJson(v.toObject()); guild)
             {
                 info.guilds.insert(guild->id, *guild);
+
+                requestChannels(guild->id);
             }
             else
             {
@@ -768,11 +770,56 @@ void Discord::requestGuilds()
             }
         }
 
-        info.guildsLoaded = true;
-
         updateUI();
+    });
+}
 
-        tryProcessConnected();
+void Discord::requestChannels(const QString &guildId)
+{
+    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/guilds/" + guildId + "/channels"));
+    connect(reply, &QNetworkReply::finished, this, [this, reply, guildId]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        Guild& guild = info.guilds[guildId];
+
+        const QJsonArray array = QJsonDocument::fromJson(data).array();
+        for (const QJsonValue& v : qAsConst(array))
+        {
+            const QJsonObject object = v.toObject();
+            const std::optional<Channel> channel = Channel::fromJson(object);
+            if (channel)
+            {
+                guild.channels.insert(channel->id, *channel);
+            }
+            else
+            {
+                qWarning() << Q_FUNC_INFO << "failed to parse channel, object =" << object;
+            }
+        }
+
+        guild.channelsLoaded = true;
+
+        bool allGuildLoadedChannels = true;
+        for (const Guild& guild : qAsConst(info.guilds))
+        {
+            if (!guild.channelsLoaded)
+            {
+                allGuildLoadedChannels = false;
+                break;
+            }
+        }
+
+        if (allGuildLoadedChannels)
+        {
+            info.guildsLoaded = true;
+            updateUI();
+            tryProcessConnected();
+        }
     });
 }
 

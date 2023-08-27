@@ -26,27 +26,6 @@ private slots:
     void sendIdentify();
 
 private:
-    struct Guild
-    {
-        static std::optional<Guild> fromJson(const QJsonObject& object)
-        {
-            Guild guild;
-
-            guild.id = object.value("id").toString().trimmed();
-            guild.name = object.value("name").toString().trimmed();
-
-            if (guild.id.isEmpty() || guild.name.isEmpty())
-            {
-                return std::nullopt;
-            }
-
-            return guild;
-        }
-
-        QString id;
-        QString name;
-    };
-
     struct Channel
     {
         static std::optional<Channel> fromJson(const QJsonObject& object)
@@ -68,6 +47,30 @@ private:
         QString id;
         QString name;
         bool nsfw = false;
+    };
+
+    struct Guild
+    {
+        static std::optional<Guild> fromJson(const QJsonObject& object)
+        {
+            Guild guild;
+
+            guild.id = object.value("id").toString().trimmed();
+            guild.name = object.value("name").toString().trimmed();
+
+            if (guild.id.isEmpty() || guild.name.isEmpty())
+            {
+                return std::nullopt;
+            }
+
+            return guild;
+        }
+
+        QString id;
+        QString name;
+
+        QMap<QString, Channel> channels;
+        bool channelsLoaded = false;
     };
 
     struct User
@@ -141,6 +144,7 @@ private:
     void updateUI();
 
     void requestGuilds();
+    void requestChannels(const QString& guildId);
     void requestChannel(const QString& channelId);
 
     void processDeferredMessages(const std::optional<QString>& guildId, const std::optional<QString>& channelId);
