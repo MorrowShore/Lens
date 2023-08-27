@@ -141,7 +141,7 @@ private:
     void updateUI();
 
     void requestCurrentUserGuilds();
-    void requestGuild(const QString& guildId);
+    //void requestGuild(const QString& guildId);
     void requestChannel(const QString& channelId);
 
     void processDeferredMessages(const std::optional<QString>& guildId, const std::optional<QString>& channelId);
@@ -171,7 +171,6 @@ private:
     QTimer heartbeatTimer;
     QTimer heartbeatAcknowledgementTimer;
 
-    QMap<QString, Guild> guilds;
     QMap<QString, Channel> channels;
 
     QMap<QString, QString> requestedGuildsChannels; // <guildId, channelId>

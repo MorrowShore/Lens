@@ -113,15 +113,6 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
                 reconnect();
             }
         }
-
-        if (Setting<bool>* setting = element->getSettingBool(); setting)
-        {
-            if (*&setting == &showNsfwChannels)
-            {
-                guilds.clear();
-                channels.clear();
-            }
-        }
     });
 
     applicationId.setCallbackValueChanged([this](const QString&) { updateUI(); });
@@ -628,12 +619,6 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 
     bool needDeffered = false;
 
-    if (!guilds.contains(guildId))
-    {
-        needDeffered = true;
-        requestGuild(guildId);
-    }
-
     if (!channels.contains(channelId))
     {
         needDeffered = true;
@@ -658,7 +643,7 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
     }
     else
     {
-        const Guild& guild = guilds[guildId];
+        const Guild guild = info.guilds.value(guildId);
         const Channel& channel = channels[channelId];
 
         message->setDestination(getDestination(guild, channel));
@@ -784,7 +769,7 @@ void Discord::requestCurrentUserGuilds()
     });
 }
 
-void Discord::requestGuild(const QString &guildId)
+/*void Discord::requestGuild(const QString &guildId)
 {
     QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/guilds/" + guildId));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
@@ -807,7 +792,7 @@ void Discord::requestGuild(const QString &guildId)
             qWarning() << Q_FUNC_INFO << "failed to parse guild";
         }
     });
-}
+}*/
 
 void Discord::requestChannel(const QString &channelId)
 {
@@ -892,7 +877,7 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
         return;
     }
 
-    if (!guilds.contains(guildId) || !channels.contains(channelId))
+    if (!channels.contains(channelId))
     {
         return;
     }
@@ -903,7 +888,7 @@ void Discord::processDeferredMessages(const std::optional<QString> &guildId_, co
     const QList<QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>> currentDeferredMessages = deferredMessages.value(key);
     deferredMessages.remove(key);
 
-    const Guild& guild = guilds.value(guildId);
+    const Guild guild = info.guilds.value(guildId);
     const Channel& channel = channels.value(channelId);
 
     QList<std::shared_ptr<Message>> messages;
