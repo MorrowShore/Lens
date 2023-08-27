@@ -537,9 +537,8 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 
 void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 {
-    const QString guildId = jsonMessage.value("guild_id").toString();
-    const QString channelId = jsonMessage.value("channel_id").toString();
-
+    const Guild& guild = info.guilds[jsonMessage.value("guild_id").toString()];
+    const Channel& channel = guild.channels[jsonMessage.value("channel_id").toString()];
     const User user = User::fromJson(jsonMessage.value("author").toObject());
 
     //TODO: timestamp
@@ -626,46 +625,17 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         author,
         dateTime,
         QDateTime::currentDateTime(),
-        messageId);
+        messageId,
+        std::set<Message::Flag>(),
+        QHash<Message::ColorRole, QColor>(),
+        getDestination(guild, channel));
 
-    bool needDeffered = false;
-
-    if (!channels.contains(channelId))
+    if (isValidForShow(*message.get(), *author.get(), guild, channel))
     {
-        needDeffered = true;
-        requestChannel(channelId);
-    }
+        QList<std::shared_ptr<Message>> messages({ message });
+        QList<std::shared_ptr<Author>> authors({ author });
 
-    if (needDeffered)
-    {
-        const QPair<QString, QString> key = { guildId, channelId };
-        const QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> value = { message, author };
-
-        if (deferredMessages.contains(key))
-        {
-            deferredMessages[key].append(value);
-        }
-        else
-        {
-            deferredMessages.insert(key, { value });
-        }
-
-        requestedGuildsChannels.insert(guildId, channelId);
-    }
-    else
-    {
-        const Guild guild = info.guilds.value(guildId);
-        const Channel& channel = channels[channelId];
-
-        message->setDestination(getDestination(guild, channel));
-
-        if (isValidForShow(*message.get(), *author.get(), guild, channel))
-        {
-            QList<std::shared_ptr<Message>> messages({ message });
-            QList<std::shared_ptr<Author>> authors({ author });
-
-            emit readyRead(messages, authors);
-        }
+        emit readyRead(messages, authors);
     }
 }
 
@@ -827,126 +797,6 @@ void Discord::requestChannels(const QString &guildId)
             tryProcessConnected();
         }
     });
-}
-
-void Discord::requestChannel(const QString &channelId)
-{
-    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/channels/" + channelId));
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        QByteArray data;
-        if (!checkReply(reply, Q_FUNC_INFO, data))
-        {
-            return;
-        }
-
-        const QJsonObject root = QJsonDocument::fromJson(data).object();
-
-        if (const std::optional<Channel> channel = Channel::fromJson(root); channel)
-        {
-            channels.insert(channel->id, *channel);
-            processDeferredMessages(std::nullopt, channel->id);
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << "failed to parse channel";
-        }
-    });
-}
-
-void Discord::processDeferredMessages(const std::optional<QString> &guildId_, const std::optional<QString> &channelId_)
-{
-    if (guildId_ && channelId_)
-    {
-        qWarning() << Q_FUNC_INFO << "guildId_ && channelId_";
-        return;
-    }
-
-    QString guildId;
-    QString channelId;
-
-    if (guildId_)
-    {
-        guildId = *guildId_;
-
-        if (requestedGuildsChannels.contains(*guildId_))
-        {
-            channelId = requestedGuildsChannels.value(*guildId_);
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << "channel of guild not exists";
-            return;
-        }
-    }
-    else if (channelId_)
-    {
-        channelId = *channelId_;
-
-        const QList<QString> values = requestedGuildsChannels.values();
-        if (values.contains(*channelId_))
-        {
-            guildId = requestedGuildsChannels.key(*channelId_);
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << "guild of channel not exists";
-            return;
-        }
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << "!guildId_ && !channelId_";
-        return;
-    }
-
-    if (guildId.isEmpty())
-    {
-        qWarning() << Q_FUNC_INFO << "guildId is empty";
-        return;
-    }
-
-    if (channelId.isEmpty())
-    {
-        qWarning() << Q_FUNC_INFO << "channelId is empty";
-        return;
-    }
-
-    if (!channels.contains(channelId))
-    {
-        return;
-    }
-
-    requestedGuildsChannels.remove(guildId);
-
-    const QPair<QString, QString> key = { guildId, channelId };
-    const QList<QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>> currentDeferredMessages = deferredMessages.value(key);
-    deferredMessages.remove(key);
-
-    const Guild guild = info.guilds.value(guildId);
-    const Channel& channel = channels.value(channelId);
-
-    QList<std::shared_ptr<Message>> messages;
-    QList<std::shared_ptr<Author>> authors;
-
-    for (const QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>& messageAuthor : qAsConst(currentDeferredMessages))
-    {
-        std::shared_ptr<Message> message = messageAuthor.first;
-        message->setDestination(getDestination(guild, channel));
-
-        std::shared_ptr<Author> author = messageAuthor.second;
-
-        if (isValidForShow(*message.get(), *author.get(), guild, channel))
-        {
-            messages.append(message);
-            authors.append(author);
-        }
-    }
-
-    if (!messages.isEmpty() && !authors.isEmpty())
-    {
-        emit readyRead(messages, authors);
-    }
 }
 
 QStringList Discord::getDestination(const Guild &guild, const Channel &channel) const

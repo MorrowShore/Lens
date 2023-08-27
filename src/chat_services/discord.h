@@ -145,9 +145,7 @@ private:
 
     void requestGuilds();
     void requestChannels(const QString& guildId);
-    void requestChannel(const QString& channelId);
 
-    void processDeferredMessages(const std::optional<QString>& guildId, const std::optional<QString>& channelId);
     QStringList getDestination(const Guild& guild, const Channel& channel) const;
     bool isValidForShow(const Message& message, const Author& author, const Guild& guild, const Channel& channel) const;
 
@@ -173,9 +171,4 @@ private:
     QTimer timerReconnect;
     QTimer heartbeatTimer;
     QTimer heartbeatAcknowledgementTimer;
-
-    QMap<QString, Channel> channels;
-
-    QMap<QString, QString> requestedGuildsChannels; // <guildId, channelId>
-    QMap<QPair<QString, QString>, QList<QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>>> deferredMessages; // QMap<<guildId, channelId>, QList<QPair<Messsage, Author>>>
 };
