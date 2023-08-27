@@ -514,6 +514,12 @@ void Discord::parseInvalidSession(const bool resumableSession)
 
 void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 {
+    if (!info.guildsLoaded)
+    {
+        qWarning() << Q_FUNC_INFO << "ignore message, guilds not loaded yet";
+        return;
+    }
+
     const int messageType = jsonMessage.value("type").toInt();
     if (messageType == MESSAGE_TYPE_DEFAULT)
     {
