@@ -734,8 +734,6 @@ void Discord::requestGuilds()
             return;
         }
 
-        info.guilds.clear();
-
         const QJsonArray jsonGuilds = QJsonDocument::fromJson(data).array();
         for (const QJsonValue& v : qAsConst(jsonGuilds))
         {
