@@ -542,8 +542,8 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 
 void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 {
-    const Guild& guild = info.guilds[jsonMessage.value("guild_id").toString()];
-    const Channel& channel = guild.channels[jsonMessage.value("channel_id").toString()];
+    const Guild& guild = info.getGuild(jsonMessage.value("guild_id").toString());
+    const Channel& channel = guild.getChannel(jsonMessage.value("channel_id").toString());
     const User user = User::fromJson(jsonMessage.value("author").toObject());
 
     //TODO: timestamp
@@ -659,7 +659,7 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
         return;
     }
 
-    const Guild guild = info.guilds.value(jsonMessage.value("guild_id").toString());
+    const Guild& guild = info.getGuild(jsonMessage.value("guild_id").toString());
 
     const auto author = getServiceAuthor();
 
@@ -686,17 +686,19 @@ void Discord::updateUI()
 
         if (info.guildsLoaded)
         {
-            if (info.guilds.isEmpty())
+            const auto& guilds = info.getGuilds();
+
+            if (guilds.isEmpty())
             {
                 text += tr("Not connected to any servers");
             }
             else
             {
-                text += tr("Connected to servers (%1):").arg(info.guilds.count()) + " ";
+                text += tr("Connected to servers (%1):").arg(guilds.count()) + " ";
 
                 QString guildsText;
 
-                for (const Guild& guild : qAsConst(info.guilds))
+                for (const Guild& guild : qAsConst(guilds))
                 {
                     if (!guildsText.isEmpty())
                     {
@@ -739,8 +741,7 @@ void Discord::requestGuilds()
         {
             if (const std::optional<Guild> guild = Guild::fromJson(v.toObject()); guild)
             {
-                info.guilds.insert(guild->id, *guild);
-
+                info.addGuild(*guild);
                 requestChannels(guild->id);
             }
             else
@@ -764,7 +765,7 @@ void Discord::requestChannels(const QString &guildId)
             return;
         }
 
-        Guild& guild = info.guilds[guildId];
+        Guild& guild = info.getGuild(guildId);
 
         const QJsonArray array = QJsonDocument::fromJson(data).array();
         for (const QJsonValue& v : qAsConst(array))
@@ -773,7 +774,7 @@ void Discord::requestChannels(const QString &guildId)
             const std::optional<Channel> channel = Channel::fromJson(object);
             if (channel)
             {
-                guild.channels.insert(channel->id, *channel);
+                guild.addChannel(*channel);
             }
             else
             {
@@ -784,7 +785,7 @@ void Discord::requestChannels(const QString &guildId)
         guild.channelsLoaded = true;
 
         bool allGuildLoadedChannels = true;
-        for (const Guild& guild : qAsConst(info.guilds))
+        for (const Guild& guild : qAsConst(info.getGuilds()))
         {
             if (!guild.channelsLoaded)
             {
@@ -808,11 +809,21 @@ QStringList Discord::getDestination(const Guild &guild, const Channel &channel) 
 
     if (showGuildName.get())
     {
+        if (guild.name.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "guild with id" << guild.id << "has empty name";
+        }
+
         result.append(guild.name);
     }
 
     if (showChannelName.get())
     {
+        if (channel.name.isEmpty())
+        {
+            qWarning() << Q_FUNC_INFO << "channel with id" << channel.id << "has empty name";
+        }
+
         result.append(channel.name);
     }
 

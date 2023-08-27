@@ -69,8 +69,49 @@ private:
         QString id;
         QString name;
 
-        QMap<QString, Channel> channels;
         bool channelsLoaded = false;
+
+        Channel& getChannel(const QString& id)
+        {
+            if (channels.contains(id))
+            {
+                return channels[id];
+            }
+
+            qWarning() << Q_FUNC_INFO << "channel with id" << id << "not found";
+
+            static Channel channel;
+
+            return channel;
+        }
+
+        const Channel& getChannel(const QString& id) const
+        {
+            return const_cast<Guild&>(*this).getChannel(id);
+        }
+
+        void addChannel(const Channel& channel)
+        {
+            if (channel.id.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "channel has empty id, name =" << channel.name;
+            }
+
+            if (channel.name.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "channel has empty name, id =" << channel.id;
+            }
+
+            channels.insert(channel.id, channel);
+        }
+
+        const QMap<QString, Channel>& getChannels() const
+        {
+            return channels;
+        }
+
+    private:
+        QMap<QString, Channel> channels;
     };
 
     struct User
@@ -121,8 +162,49 @@ private:
         int heartbeatInterval = 30000;
         QJsonValue lastSequence;
         User botUser;
-        QMap<QString, Guild> guilds;
         bool guildsLoaded = false;
+
+        Guild& getGuild(const QString& id)
+        {
+            if (guilds.contains(id))
+            {
+                return guilds[id];
+            }
+
+            qWarning() << Q_FUNC_INFO << "guild with id" << id << "not found";
+
+            static Guild guild;
+
+            return guild;
+        }
+
+        const Guild& getGuild(const QString& id) const
+        {
+            return const_cast<Info&>(*this).getGuild(id);
+        }
+
+        void addGuild(const Guild& guild)
+        {
+            if (guild.id.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "guild has empty id, name =" << guild.name;
+            }
+
+            if (guild.name.isEmpty())
+            {
+                qWarning() << Q_FUNC_INFO << "guild has empty name, id =" << guild.id;
+            }
+
+            guilds.insert(guild.id, guild);
+        }
+
+        const QMap<QString, Guild>& getGuilds() const
+        {
+            return guilds;
+        }
+
+    private:
+        QMap<QString, Guild> guilds;
     };
 
     QNetworkRequest createRequestAsBot(const QUrl& url) const;
