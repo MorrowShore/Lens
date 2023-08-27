@@ -96,7 +96,7 @@ private:
         QString id;
         QString username;
 
-        QString getDisplayName(const bool includeDiscriminatorIfNeedAndValid = false) const
+        QString getDisplayName(const bool includeDiscriminatorIfNeedAndValid) const
         {
             if (globalName.isEmpty())
             {

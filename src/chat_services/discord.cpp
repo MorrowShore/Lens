@@ -536,14 +536,7 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
     const QString guildId = jsonMessage.value("guild_id").toString();
     const QString channelId = jsonMessage.value("channel_id").toString();
 
-    const QJsonObject jsonAuthor = jsonMessage.value("author").toObject();
-
-    const QString userName = jsonAuthor.value("username").toString();
-    const QString globalName = jsonAuthor.value("global_name").toString();
-
-    const QString authorName = globalName.isEmpty() ? userName : globalName;
-    const QString userId = jsonAuthor.value("id").toString();
-    const QString avatarHash = jsonAuthor.value("avatar").toString();
+    const User user = User::fromJson(jsonMessage.value("author").toObject());
 
     //TODO: timestamp
     //TODO: flags
@@ -553,10 +546,10 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 
     std::shared_ptr<Author> author = std::make_shared<Author>(
         getServiceType(),
-        authorName,
-        userId,
-        QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(userId, avatarHash).arg(AvatarSize)),
-        QUrl("https://discordapp.com/users/" + userId));
+        user.getDisplayName(false),
+        user.id,
+        QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(user.id, user.avatarHash).arg(AvatarSize)),
+        QUrl("https://discordapp.com/users/" + user.id));
 
     const QString messageId = jsonMessage.value("id").toString();
 
@@ -687,6 +680,8 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
         reconnect();
         return;
     }
+
+    const QString guildId = jsonMessage.value("guild_id").toString();
 
     qWarning() << Q_FUNC_INFO << "not implemented";
 
