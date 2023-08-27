@@ -425,8 +425,13 @@ void Discord::processDisconnected()
     updateUI();
 }
 
-void Discord::processConnected()
+void Discord::tryProcessConnected()
 {
+    if (!info.guildsLoaded)
+    {
+        return;
+    }
+
     if (!state.connected)
     {
         state.connected = true;
@@ -470,7 +475,7 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
 {
     if (eventType == "READY")
     {
-        processConnected();
+        tryProcessConnected();
 
         info.botUser = User::fromJson(data.value("user").toObject());
 
@@ -766,6 +771,8 @@ void Discord::requestGuilds()
         info.guildsLoaded = true;
 
         updateUI();
+
+        tryProcessConnected();
     });
 }
 

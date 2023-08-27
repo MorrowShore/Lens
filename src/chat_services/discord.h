@@ -126,7 +126,7 @@ private:
     bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
     bool isCanConnect() const;
     void processDisconnected();
-    void processConnected();
+    void tryProcessConnected();
 
     void send(const int opCode, const QJsonValue& data);
 
