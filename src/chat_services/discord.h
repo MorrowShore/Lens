@@ -162,6 +162,7 @@ private:
     Setting<bool> showNsfwChannels;
     Setting<bool> showGuildName;
     Setting<bool> showChannelName;
+    Setting<bool> showJoinsToServer;
 
     QWebSocket socket;
 

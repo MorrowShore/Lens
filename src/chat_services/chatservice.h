@@ -127,6 +127,8 @@ protected:
     QString generateAuthorId(const QString& rawId) const;
     QString generateMessageId(const QString& rawId) const;
 
+    std::shared_ptr<Author> getServiceAuthor() const;
+
     const QString& getSettingsGroupPath() const { return settingsGroupPath; }
 
     State state;

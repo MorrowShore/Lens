@@ -229,6 +229,16 @@ QString ChatService::generateMessageId(const QString &rawId_) const
     return getServiceTypeId(getServiceType()) + "_" + rawId;
 }
 
+std::shared_ptr<Author> ChatService::getServiceAuthor() const
+{
+    return Author::Builder(
+                getServiceType(),
+                getServiceTypeId(getServiceType()),
+                getName())
+                .setAvatar(getIconUrl().toString())
+                .build();
+}
+
 QJsonObject ChatService::getStateJson() const
 {
     QJsonObject root;

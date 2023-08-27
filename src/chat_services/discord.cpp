@@ -62,6 +62,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     , showNsfwChannels(settings, getSettingsGroupPath() + "/show_nsfw_channels", false)
     , showGuildName(settings, getSettingsGroupPath() + "/show_guild_name", true)
     , showChannelName(settings, getSettingsGroupPath() + "/show_channel_name", true)
+    , showJoinsToServer(settings, getSettingsGroupPath() + "/show_joins_to_server", false)
 {
     ui.findBySetting(stream)->setItemProperty("visible", false);
     
@@ -92,6 +93,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     ui.addLabel(tr("To display private chats/channels, add the bot\n"
                    "to these chats/channels"));
 
+    ui.addSwitch(&showJoinsToServer, tr("Show joins to the server"));
     ui.addSwitch(&showNsfwChannels, tr("Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord").arg(QCoreApplication::applicationName()));
     ui.addSwitch(&showGuildName, tr("Show server name"));
     ui.addSwitch(&showChannelName, tr("Show channel name"));
@@ -499,12 +501,12 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "GUILD_MEMBER_UPDATE for unknown user";
+            qWarning() << Q_FUNC_INFO << "GUILD_MEMBER_UPDATE for unknown user, data =" << data;
         }
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unkown event type" << eventType;
+        qWarning() << Q_FUNC_INFO << "unkown event type" << eventType << ", data =" << data;
     }
 }
 
@@ -673,6 +675,11 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 
 void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
 {
+    if (!showJoinsToServer.get())
+    {
+        return;
+    }
+
     const User user = User::fromJson(jsonMessage.value("author").toObject());
 
     if (user.id == info.botUser.id)
@@ -681,13 +688,17 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
         return;
     }
 
-    const QString guildId = jsonMessage.value("guild_id").toString();
+    const Guild guild = guilds.value(jsonMessage.value("guild_id").toString());
 
-    qWarning() << Q_FUNC_INFO << "not implemented";
+    const auto author = getServiceAuthor();
 
-    qDebug() << jsonMessage;
+    const auto message = Message::Builder(author)
+        .addText(user.getDisplayName(false), Message::TextStyle(true, false))
+        .addText(" " + tr("joined the server") + " ")
+        .addText(guild.name, Message::TextStyle(true, false))
+        .build();
 
-    //TODO: show join user
+    emit readyRead({ message }, { author });
 }
 
 void Discord::updateUI()
