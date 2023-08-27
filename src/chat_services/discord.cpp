@@ -500,6 +500,11 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
             qWarning() << Q_FUNC_INFO << "GUILD_MEMBER_UPDATE for unknown user, data =" << data;
         }
     }
+    else if (eventType == "MESSAGE_DELETE")
+    {
+        const auto deleter = Message::Builder::createDeleter(getServiceType(), generateMessageId(data.value("id").toString()));
+        emit readyRead({ deleter.second }, { deleter.first });
+    }
     else
     {
         qWarning() << Q_FUNC_INFO << "unkown event type" << eventType << ", data =" << data;
@@ -554,7 +559,7 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         QUrl(QString("https://cdn.discordapp.com/avatars/%1/%2.png?size=%3").arg(user.id, user.avatarHash).arg(AvatarSize)),
         QUrl("https://discordapp.com/users/" + user.id));
 
-    const QString messageId = jsonMessage.value("id").toString();
+    const QString messageId = generateMessageId(jsonMessage.value("id").toString());
 
     const QDateTime dateTime = QDateTime::fromString(jsonMessage.value("timestamp").toString(), Qt::ISODateWithMs).toLocalTime();
 
