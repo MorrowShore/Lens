@@ -140,8 +140,7 @@ private:
 
     void updateUI();
 
-    void requestCurrentUserGuilds();
-    //void requestGuild(const QString& guildId);
+    void requestGuilds();
     void requestChannel(const QString& channelId);
 
     void processDeferredMessages(const std::optional<QString>& guildId, const std::optional<QString>& channelId);

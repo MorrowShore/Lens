@@ -474,7 +474,7 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
 
         info.botUser = User::fromJson(data.value("user").toObject());
 
-        requestCurrentUserGuilds();
+        requestGuilds();
 
         updateUI();
     }
@@ -737,7 +737,7 @@ void Discord::updateUI()
     authStateInfo->setItemProperty("text", text);
 }
 
-void Discord::requestCurrentUserGuilds()
+void Discord::requestGuilds()
 {
     QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/users/@me/guilds"));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
@@ -768,31 +768,6 @@ void Discord::requestCurrentUserGuilds()
         updateUI();
     });
 }
-
-/*void Discord::requestGuild(const QString &guildId)
-{
-    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/guilds/" + guildId));
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        QByteArray data;
-        if (!checkReply(reply, Q_FUNC_INFO, data))
-        {
-            return;
-        }
-
-        const QJsonObject root = QJsonDocument::fromJson(data).object();
-
-        if (const std::optional<Guild> guild = Guild::fromJson(root); guild)
-        {
-            guilds.insert(guild->id, *guild);
-            processDeferredMessages(guild->id, std::nullopt);
-        }
-        else
-        {
-            qWarning() << Q_FUNC_INFO << "failed to parse guild";
-        }
-    });
-}*/
 
 void Discord::requestChannel(const QString &channelId)
 {
