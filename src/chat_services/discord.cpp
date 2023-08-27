@@ -479,10 +479,8 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
     {
         processConnected();
 
-        const QJsonObject jsonUser = data.value("user").toObject();
-        info.userId = jsonUser.value("id").toString();
-        info.userName = jsonUser.value("username").toString();
-        info.userDiscriminator = jsonUser.value("discriminator").toString();
+        info.botUser = User::fromJson(data.value("user").toObject());
+
         requestCurrentUserGuilds();
 
         updateUI();
@@ -493,8 +491,9 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
     }
     else if (eventType == "GUILD_MEMBER_UPDATE")
     {
-        const QJsonObject jsonUser = data.value("user").toObject();
-        if (jsonUser.value("id").toString() == info.userId)
+        const User user = User::fromJson(data.value("user").toObject());
+
+        if (user.id == info.botUser.id)
         {
             reconnect();
         }
@@ -681,9 +680,9 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 
 void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
 {
-    const QJsonObject jsonAuthor = jsonMessage.value("author").toObject();
-    const QString userId = jsonAuthor.value("id").toString();
-    if (userId == info.userId)
+    const User user = User::fromJson(jsonMessage.value("author").toObject());
+
+    if (user.id == info.botUser.id)
     {
         reconnect();
         return;
@@ -704,13 +703,7 @@ void Discord::updateUI()
 
     if (state.connected)
     {
-        QString displayName = "<b>" + info.userName + "</b>";
-        if (!info.userDiscriminator.isEmpty() && info.userDiscriminator != "0")
-        {
-            displayName += "#" + info.userDiscriminator;
-        }
-
-        text += tr("authorized as %1").arg(displayName);
+        text += tr("authorized as %1").arg("<b>" + info.botUser.getDisplayName(true) + "</b>");
         text = "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text;
         text += "<br>";
 
