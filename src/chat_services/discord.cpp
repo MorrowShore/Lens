@@ -688,7 +688,7 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
         return;
     }
 
-    const Guild guild = guilds.value(jsonMessage.value("guild_id").toString());
+    const Guild guild = info.guilds.value(jsonMessage.value("guild_id").toString());
 
     const auto author = getServiceAuthor();
 
@@ -770,7 +770,7 @@ void Discord::requestCurrentUserGuilds()
         {
             if (const std::optional<Guild> guild = Guild::fromJson(v.toObject()); guild)
             {
-                info.guilds.append(*guild);
+                info.guilds.insert(guild->id, *guild);
             }
             else
             {

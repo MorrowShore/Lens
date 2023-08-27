@@ -118,7 +118,7 @@ private:
         int heartbeatInterval = 30000;
         QJsonValue lastSequence;
         User botUser;
-        QList<Guild> guilds;
+        QMap<QString, Guild> guilds;
         bool guildsLoaded = false;
     };
 
@@ -134,6 +134,7 @@ private:
     void parseHello(const QJsonObject& data);
     void parseInvalidSession(const bool resumableSession);
     void parseMessageCreate(const QJsonObject& jsonMessage);
+
     void parseMessageCreateDefault(const QJsonObject& jsonMessage);
     void parseMessageCreateUserJoin(const QJsonObject& jsonMessage);
 
