@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../chatservice.h"
+#include "Guild.h"
+#include "User.h"
 #include "models/message.h"
 #include "models/author.h"
 #include <QWebSocket>
@@ -26,136 +28,6 @@ private slots:
     void sendIdentify();
 
 private:
-    struct Channel
-    {
-        static std::optional<Channel> fromJson(const QJsonObject& object)
-        {
-            Channel channel;
-
-            channel.id = object.value("id").toString().trimmed();
-            channel.name = object.value("name").toString().trimmed();
-            channel.nsfw = object.value("nsfw").toBool(channel.nsfw);
-
-            if (channel.id.isEmpty() || channel.name.isEmpty())
-            {
-                return std::nullopt;
-            }
-
-            return channel;
-        }
-
-        QString id;
-        QString name;
-        bool nsfw = false;
-    };
-
-    struct Guild
-    {
-        static std::optional<Guild> fromJson(const QJsonObject& object)
-        {
-            Guild guild;
-
-            guild.id = object.value("id").toString().trimmed();
-            guild.name = object.value("name").toString().trimmed();
-
-            if (guild.id.isEmpty() || guild.name.isEmpty())
-            {
-                return std::nullopt;
-            }
-
-            return guild;
-        }
-
-        QString id;
-        QString name;
-
-        bool channelsLoaded = false;
-
-        Channel& getChannel(const QString& id)
-        {
-            if (channels.contains(id))
-            {
-                return channels[id];
-            }
-
-            qWarning() << Q_FUNC_INFO << "channel with id" << id << "not found";
-
-            static Channel channel;
-
-            return channel;
-        }
-
-        const Channel& getChannel(const QString& id) const
-        {
-            return const_cast<Guild&>(*this).getChannel(id);
-        }
-
-        void addChannel(const Channel& channel)
-        {
-            if (channel.id.isEmpty())
-            {
-                qWarning() << Q_FUNC_INFO << "channel has empty id, name =" << channel.name;
-            }
-
-            if (channel.name.isEmpty())
-            {
-                qWarning() << Q_FUNC_INFO << "channel has empty name, id =" << channel.id;
-            }
-
-            channels.insert(channel.id, channel);
-        }
-
-        const QMap<QString, Channel>& getChannels() const
-        {
-            return channels;
-        }
-
-    private:
-        QMap<QString, Channel> channels;
-    };
-
-    struct User
-    {
-        static User fromJson(const QJsonObject& json)
-        {
-            User user;
-
-            user.avatarHash = json.value("avatar").toString();
-            user.discriminator = json.value("discriminator").toString();
-            user.globalName = json.value("global_name").toString();
-            user.id = json.value("id").toString();
-            user.username = json.value("username").toString();
-
-            return user;
-        }
-
-        static bool isValidDiscriminator(const QString& discriminator)
-        {
-            return !discriminator.isEmpty() && discriminator != "0";
-        }
-
-        QString avatarHash;
-        QString discriminator;
-        QString globalName;
-        QString id;
-        QString username;
-
-        QString getDisplayName(const bool includeDiscriminatorIfNeedAndValid) const
-        {
-            if (globalName.isEmpty())
-            {
-                QString name = username;
-                if (includeDiscriminatorIfNeedAndValid && isValidDiscriminator(discriminator))
-                {
-                    name += "#" + discriminator;
-                }
-
-                return name;
-            }
-
-            return globalName;
-        }
-    };
 
     struct Info
     {

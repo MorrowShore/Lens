@@ -17,6 +17,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     appsponsormanager.h \
+    chat_services/discord/Channel.h \
+    chat_services/discord/Guild.h \
+    chat_services/discord/User.h \
     chat_services/dlive.h \
     chat_services/donatepay.h \
     chat_services/donationalerts.h \
