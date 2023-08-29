@@ -52,17 +52,17 @@ bool Guild::isChannelsLoaded() const
 
 void Guild::addChannel(const Channel &channel)
 {
-    if (channel.id.isEmpty())
+    if (channel.getId().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "channel has empty id, name =" << channel.name;
+        qWarning() << Q_FUNC_INFO << "channel has empty id, name =" << channel.getName();
     }
 
-    if (channel.name.isEmpty())
+    if (channel.getName().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "channel has empty name, id =" << channel.id;
+        qWarning() << Q_FUNC_INFO << "channel has empty name, id =" << channel.getId();
     }
 
-    channels.insert(channel.id, channel);
+    channels.insert(channel.getId(), channel);
 }
 
 const QMap<QString, Channel> &Guild::getChannels() const

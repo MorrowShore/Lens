@@ -13,6 +13,7 @@ struct User
         user.globalName = json.value("global_name").toString();
         user.id = json.value("id").toString();
         user.username = json.value("username").toString();
+        user.bot = json.value("bot").toBool();
 
         return user;
     }
@@ -27,6 +28,7 @@ struct User
     QString globalName;
     QString id;
     QString username;
+    bool bot = false;
 
     QString getDisplayName(const bool includeDiscriminatorIfNeedAndValid) const
     {

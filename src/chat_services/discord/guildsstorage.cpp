@@ -95,18 +95,18 @@ void GuildsStorage::addGuild(std::shared_ptr<Guild> guild)
         return;
     }
 
-    if (guild->id.isEmpty())
+    if (guild->getId().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "guild has empty id, ignore, name =" << guild->name;
+        qWarning() << Q_FUNC_INFO << "guild has empty id, ignore, name =" << guild->getName();
         return;
     }
 
-    if (guild->name.isEmpty())
+    if (guild->getName().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "guild has empty name, id =" << guild->id;
+        qWarning() << Q_FUNC_INFO << "guild has empty name, id =" << guild->getId();
     }
 
-    guilds.insert(guild->id, guild);
+    guilds.insert(guild->getId(), guild);
 }
 
 bool GuildsStorage::checkChannelsLoaded() const

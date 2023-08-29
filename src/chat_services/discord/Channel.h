@@ -2,8 +2,9 @@
 
 #include <QJsonObject>
 
-struct Channel
+class Channel
 {
+public:
     static std::optional<Channel> fromJson(const QJsonObject& object)
     {
         Channel channel;
@@ -20,6 +21,11 @@ struct Channel
         return channel;
     }
 
+    QString getId() const { return id; }
+    QString getName() const { return name; }
+    bool isNsfw() const { return nsfw; }
+
+private:
     QString id;
     QString name;
     bool nsfw = false;

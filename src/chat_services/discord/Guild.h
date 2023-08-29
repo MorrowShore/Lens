@@ -14,9 +14,6 @@ public:
 
     explicit Guild(const QString& id, const QString& name, GuildsStorage& storage, Discord& discord, QNetworkAccessManager& network, QObject *parent = nullptr);
 
-    QString id;
-    QString name;
-
     Channel& getChannel(const QString& id);
 
     const Channel& getChannel(const QString& id) const;
@@ -27,8 +24,15 @@ public:
 
     void requestChannels(std::function<void()> onLoaded);
 
+    QString getId() const { return id; }
+
+    QString getName() const { return name; }
+
 private:
     void addChannel(const Channel& channel);
+
+    const QString id;
+    const QString name;
 
     GuildsStorage& storage;
     Discord& discord;

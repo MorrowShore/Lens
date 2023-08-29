@@ -683,7 +683,7 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
     const auto message = Message::Builder(author)
         .addText(user.getDisplayName(false), Message::TextStyle(true, false))
         .addText(" " + tr("joined the server") + " ")
-        .addText(guild->name, Message::TextStyle(true, false))
+        .addText(guild->getName(), Message::TextStyle(true, false))
         .build();
 
     emit readyRead({ message }, { author });
@@ -727,7 +727,7 @@ void Discord::updateUI()
                         guildsText += ", ";
                     }
 
-                    guildsText += guild->name;
+                    guildsText += guild->getName();
                 }
 
                 text += guildsText;
@@ -753,22 +753,22 @@ QStringList Discord::getDestination(const Guild &guild, const Channel &channel) 
 
     if (showGuildName.get())
     {
-        if (guild.name.isEmpty())
+        if (guild.getName().isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "guild with id" << guild.id << "has empty name";
+            qWarning() << Q_FUNC_INFO << "guild with id" << guild.getId() << "has empty name";
         }
 
-        result.append(guild.name);
+        result.append(guild.getName());
     }
 
     if (showChannelName.get())
     {
-        if (channel.name.isEmpty())
+        if (channel.getName().isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "channel with id" << channel.id << "has empty name";
+            qWarning() << Q_FUNC_INFO << "channel with id" << channel.getId() << "has empty name";
         }
 
-        result.append(channel.name);
+        result.append(channel.getName());
     }
 
     return result;
@@ -780,7 +780,7 @@ bool Discord::isValidForShow(const Message &message, const Author &author, const
     Q_UNUSED(author)
     Q_UNUSED(guild)
 
-    if (!showNsfwChannels.get() && channel.nsfw)
+    if (!showNsfwChannels.get() && channel.isNsfw())
     {
         return false;
     }
