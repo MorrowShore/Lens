@@ -5,7 +5,7 @@ import QtQuick.Controls.Material 2.12
 import "../my_components" as MyComponents
 
 Window {
-    id: window
+    id: root
     width: 610
     height: 407
     minimumHeight: 200
@@ -33,21 +33,23 @@ Window {
         anchors.topMargin: 0
         ScrollBar.horizontal.policy: width < contentWidth ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
         ScrollBar.vertical.policy: height < contentHeight ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+
         TextArea {
             id: textInputCommands
 
             text: ""
-            /*anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: button.top*/
-            font.pixelSize: 12
+            anchors.left: root.left
+            anchors.right: root.right
+            anchors.top: root.top
+            //anchors.bottom: button.top
+            font.pixelSize: 14
             anchors.bottomMargin: 6
             anchors.rightMargin: 14
             anchors.topMargin: 13
             anchors.leftMargin: 7
             readOnly: true
             background.visible: false
+            wrapMode: Text.WordWrap
         }
     }
 

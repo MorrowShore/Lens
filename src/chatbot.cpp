@@ -262,7 +262,7 @@ QString ChatBot::commandsText() const
 
     for (int i = 0; i < _actions.count(); ++i)
     {
-        addLineToCommandsText(text, _actions.at(i));
+        addCommandsText(text, _actions.at(i));
     }
 
     text += "\n=================== " + tr("Built-in commands") + " ===================\n";
@@ -272,14 +272,14 @@ QString ChatBot::commandsText() const
         BotAction* action = _builtInActions.at(i);
         if (!action->soundUrl().toString().contains("2nd_channel"))
         {
-            addLineToCommandsText(text, action);
+            addCommandsText(text, action);
         }
     }
 
     return text;
 }
 
-void ChatBot::addLineToCommandsText(QString& text, const BotAction* action) const
+void ChatBot::addCommandsText(QString& text, const BotAction* action) const
 {
 
     for (int j = 0; j < action->_keywords.count(); ++j)
@@ -294,7 +294,8 @@ void ChatBot::addLineToCommandsText(QString& text, const BotAction* action) cons
         }
     }
 
-    text += "\n";
+    text += " ";
+    //text += "\n";
 }
 
 QStringList keysInGroup(QSettings& settings, const QString& path)

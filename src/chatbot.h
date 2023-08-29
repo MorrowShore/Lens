@@ -54,8 +54,8 @@ private:
     void initBuiltinCommands();
     void saveCommands();
     void loadCommands();
-
-    void addLineToCommandsText(QString& text, const BotAction* action) const;
+    
+    void addCommandsText(QString& text, const BotAction* action) const;
 
     QSettings& settings;
     const QString SettingsGroupPath = "chat_bot";
