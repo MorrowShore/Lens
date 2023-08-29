@@ -23,7 +23,6 @@
         <file>resources/sound/commands/sad_trombone.mp3</file>
         <file>resources/sound/commands/sadaffleck.mp3</file>
         <file>resources/sound/commands/sad-violin.mp3</file>
-        <file>resources/sound/commands/saspens.mp3</file>
         <file>resources/sound/commands/saxophone.mp3</file>
         <file>resources/sound/commands/to_be_continued.mp3</file>
         <file>resources/sound/commands/tuturu.mp3</file>
@@ -40,5 +39,6 @@
         <file>resources/sound/commands/tralala.mp3</file>
         <file>resources/sound/commands/uwu.mp3</file>
         <file>resources/sound/commands/yeay-childrens.mp3</file>
+        <file>resources/sound/commands/suspense.mp3</file>
     </qresource>
 </RCC>

@@ -354,11 +354,30 @@ void ChatBot::initBuiltinCommands()
     _builtInActions.append(BotAction::createSoundPlay({"!final"},               QUrl(FilePrefix + "final.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!gandalf", "!gendalf"}, QUrl(FilePrefix + "gandalf_shallnotpass.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!gas", "!gaz"},         QUrl(FilePrefix + "gas.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!gg"},                  QUrl(FilePrefix + "gg.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!gigaChad"},            QUrl(FilePrefix + "giga-chad-music.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!missionCompleted"},    QUrl(FilePrefix + "gta-sa-done.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!quack"},               QUrl(FilePrefix + "mac-quack.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!toasty"},              QUrl(FilePrefix + "mk-toasty.mp3")));
-
-
-
+    _builtInActions.append(BotAction::createSoundPlay({"!nooo"},                QUrl(FilePrefix + "nooo.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!omaewamou"},           QUrl(FilePrefix + "omaewamou.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!omaewamou2"},          QUrl(FilePrefix + "omaewamou2.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!phub"},                QUrl(FilePrefix + "phub-x-see-you-again.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!run"},                 QUrl(FilePrefix + "run.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!fail"},                QUrl(FilePrefix + "sad_trombone.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!sad"},                 QUrl(FilePrefix + "sadaffleck.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!sad2"},                QUrl(FilePrefix + "sad-violin.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!saxophone"},           QUrl(FilePrefix + "saxophone.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!surprise"},            QUrl(FilePrefix + "surprise-mf.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!suspense"},            QUrl(FilePrefix + "suspense.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!toBeContinued"},       QUrl(FilePrefix + "to_be_continued.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!tobyfox"},             QUrl(FilePrefix + "tobyfox.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!tralala"},             QUrl(FilePrefix + "tralala.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!tuturu"},              QUrl(FilePrefix + "tuturu.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!uwu"},                 QUrl(FilePrefix + "uwu.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!wow"},                 QUrl(FilePrefix + "wow.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!xFiles"},              QUrl(FilePrefix + "x-files.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!yeay"},                QUrl(FilePrefix + "yeay-childrens.mp3")));
 }
 
 void ChatBot::saveCommands()
