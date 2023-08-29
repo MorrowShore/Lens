@@ -2,68 +2,38 @@
 
 #include "Channel.h"
 #include <QJsonObject>
+#include <QNetworkAccessManager>
 
-struct Guild
+class Discord;
+class GuildsStorage;
+
+class Guild : public QObject
 {
-    static std::optional<Guild> fromJson(const QJsonObject& object)
-    {
-        Guild guild;
+public:
+    static Guild* fromJson(const QJsonObject& object, GuildsStorage& storage, Discord& discord, QNetworkAccessManager& network, QObject *parent = nullptr);
 
-        guild.id = object.value("id").toString().trimmed();
-        guild.name = object.value("name").toString().trimmed();
-
-        if (guild.id.isEmpty() || guild.name.isEmpty())
-        {
-            return std::nullopt;
-        }
-
-        return guild;
-    }
+    explicit Guild(const QString& id, const QString& name, GuildsStorage& storage, Discord& discord, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     QString id;
     QString name;
 
-    bool channelsLoaded = false;
+    Channel& getChannel(const QString& id);
 
-    Channel& getChannel(const QString& id)
-    {
-        if (channels.contains(id))
-        {
-            return channels[id];
-        }
+    const Channel& getChannel(const QString& id) const;
 
-        qWarning() << Q_FUNC_INFO << "channel with id" << id << "not found";
+    bool isChannelsLoaded() const;
 
-        static Channel channel;
+    const QMap<QString, Channel>& getChannels() const;
 
-        return channel;
-    }
-
-    const Channel& getChannel(const QString& id) const
-    {
-        return const_cast<Guild&>(*this).getChannel(id);
-    }
-
-    void addChannel(const Channel& channel)
-    {
-        if (channel.id.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "channel has empty id, name =" << channel.name;
-        }
-
-        if (channel.name.isEmpty())
-        {
-            qWarning() << Q_FUNC_INFO << "channel has empty name, id =" << channel.id;
-        }
-
-        channels.insert(channel.id, channel);
-    }
-
-    const QMap<QString, Channel>& getChannels() const
-    {
-        return channels;
-    }
+    void requestChannels(std::function<void()> onLoaded);
 
 private:
+    void addChannel(const Channel& channel);
+
+    GuildsStorage& storage;
+    Discord& discord;
+    QNetworkAccessManager& network;
+
+    bool channelsLoaded = false;
     QMap<QString, Channel> channels;
 };

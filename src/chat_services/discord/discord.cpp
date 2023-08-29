@@ -22,8 +22,6 @@ static const int HeartAckbeatOpCode = 11;
 static const int INTENT_GUILD_MESSAGES = 1 << 9;
 static const int INTENT_MESSAGE_CONTENT = 1 << 15;
 
-static const QString ApiUrlPrefix = "https://discord.com/api/v10";
-
 static const int MESSAGE_TYPE_DEFAULT = 0;
 static const int MESSAGE_TYPE_RECIPIENT_ADD = 1;
 static const int MESSAGE_TYPE_RECIPIENT_REMOVE = 2;
@@ -54,9 +52,12 @@ static const int MESSAGE_TYPE_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32;
 
 }
 
+const QString Discord::ApiPrefix = "https://discord.com/api/v10";
+
 Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
     : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Discord, false, parent)
     , network(network_)
+    , info(*this, network_)
     , applicationId(settings, getSettingsGroupPath() + "/client_id", QString(), true)
     , botToken(settings, getSettingsGroupPath() + "/bot_token", QString(), true)
     , showNsfwChannels(settings, getSettingsGroupPath() + "/show_nsfw_channels", false)
@@ -231,7 +232,8 @@ void Discord::reconnectImpl()
     socket.close();
 
     state = State();
-    info = Info();
+
+    info = Info(*this, network);
 
     processDisconnected();
 
@@ -240,7 +242,7 @@ void Discord::reconnectImpl()
         return;
     }
 
-    QNetworkReply* reply = network.get(createRequestAsBot(QUrl(ApiUrlPrefix + "/gateway/bot")));
+    QNetworkReply* reply = network.get(createRequestAsBot(QUrl(ApiPrefix + "/gateway/bot")));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
@@ -427,7 +429,7 @@ void Discord::processDisconnected()
 
 void Discord::tryProcessConnected()
 {
-    if (!info.guildsLoaded)
+    if (!info.guilds->isGuildsLoaded())
     {
         return;
     }
@@ -479,9 +481,11 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
 
         info.botUser = User::fromJson(data.value("user").toObject());
 
-        requestGuilds();
-
-        updateUI();
+        info.guilds->requestGuilds([this]()
+        {
+            updateUI();
+            tryProcessConnected();
+        });
     }
     else if (eventType == "MESSAGE_CREATE")
     {
@@ -519,7 +523,7 @@ void Discord::parseInvalidSession(const bool resumableSession)
 
 void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 {
-    if (!info.guildsLoaded)
+    if (!info.guilds->isGuildsLoaded())
     {
         qWarning() << Q_FUNC_INFO << "ignore message, guilds not loaded yet";
         return;
@@ -542,8 +546,15 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 
 void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 {
-    const Guild& guild = info.getGuild(jsonMessage.value("guild_id").toString());
-    const Channel& channel = guild.getChannel(jsonMessage.value("channel_id").toString());
+    const QString guildId = jsonMessage.value("guild_id").toString();
+    const std::shared_ptr<Guild> guild = info.guilds->getGuild(guildId);
+    if (!guild)
+    {
+        qWarning() << Q_FUNC_INFO << "guild not found, guild id =" << guildId;
+        return;
+    }
+
+    const Channel& channel = guild->getChannel(jsonMessage.value("channel_id").toString());
     const User user = User::fromJson(jsonMessage.value("author").toObject());
 
     //TODO: timestamp
@@ -633,9 +644,9 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
         messageId,
         std::set<Message::Flag>(),
         QHash<Message::ColorRole, QColor>(),
-        getDestination(guild, channel));
+        getDestination(*guild, channel));
 
-    if (isValidForShow(*message.get(), *author.get(), guild, channel))
+    if (isValidForShow(*message.get(), *author.get(), *guild, channel))
     {
         QList<std::shared_ptr<Message>> messages({ message });
         QList<std::shared_ptr<Author>> authors({ author });
@@ -659,14 +670,20 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
         return;
     }
 
-    const Guild& guild = info.getGuild(jsonMessage.value("guild_id").toString());
+    const QString guildId = jsonMessage.value("guild_id").toString();
+    const std::shared_ptr<Guild> guild = info.guilds->getGuild(guildId);
+    if (!guild)
+    {
+        qWarning() << Q_FUNC_INFO << "guild not found, guild id =" << guildId;
+        return;
+    }
 
     const auto author = getServiceAuthor();
 
     const auto message = Message::Builder(author)
         .addText(user.getDisplayName(false), Message::TextStyle(true, false))
         .addText(" " + tr("joined the server") + " ")
-        .addText(guild.name, Message::TextStyle(true, false))
+        .addText(guild->name, Message::TextStyle(true, false))
         .build();
 
     emit readyRead({ message }, { author });
@@ -684,9 +701,9 @@ void Discord::updateUI()
         text = "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text;
         text += "<br>";
 
-        if (info.guildsLoaded)
+        if (info.guilds->isGuildsLoaded())
         {
-            const auto& guilds = info.getGuilds();
+            const auto& guilds = info.guilds->getGuilds();
 
             if (guilds.isEmpty())
             {
@@ -698,14 +715,19 @@ void Discord::updateUI()
 
                 QString guildsText;
 
-                for (const Guild& guild : qAsConst(guilds))
+                for (const std::shared_ptr<Guild>& guild : qAsConst(guilds))
                 {
+                    if (!guild)
+                    {
+                        continue;
+                    }
+
                     if (!guildsText.isEmpty())
                     {
                         guildsText += ", ";
                     }
 
-                    guildsText += guild.name;
+                    guildsText += guild->name;
                 }
 
                 text += guildsText;
@@ -723,84 +745,6 @@ void Discord::updateUI()
     }
 
     authStateInfo->setItemProperty("text", text);
-}
-
-void Discord::requestGuilds()
-{
-    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/users/@me/guilds"));
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
-    {
-        QByteArray data;
-        if (!checkReply(reply, Q_FUNC_INFO, data))
-        {
-            return;
-        }
-
-        const QJsonArray jsonGuilds = QJsonDocument::fromJson(data).array();
-        for (const QJsonValue& v : qAsConst(jsonGuilds))
-        {
-            if (const std::optional<Guild> guild = Guild::fromJson(v.toObject()); guild)
-            {
-                info.addGuild(*guild);
-                requestChannels(guild->id);
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << "failed to parse guild";
-            }
-        }
-
-        updateUI();
-    });
-}
-
-void Discord::requestChannels(const QString &guildId)
-{
-    QNetworkReply* reply = network.get(createRequestAsBot(ApiUrlPrefix + "/guilds/" + guildId + "/channels"));
-    connect(reply, &QNetworkReply::finished, this, [this, reply, guildId]()
-    {
-        QByteArray data;
-        if (!checkReply(reply, Q_FUNC_INFO, data))
-        {
-            return;
-        }
-
-        Guild& guild = info.getGuild(guildId);
-
-        const QJsonArray array = QJsonDocument::fromJson(data).array();
-        for (const QJsonValue& v : qAsConst(array))
-        {
-            const QJsonObject object = v.toObject();
-            const std::optional<Channel> channel = Channel::fromJson(object);
-            if (channel)
-            {
-                guild.addChannel(*channel);
-            }
-            else
-            {
-                qWarning() << Q_FUNC_INFO << "failed to parse channel, object =" << object;
-            }
-        }
-
-        guild.channelsLoaded = true;
-
-        bool allGuildLoadedChannels = true;
-        for (const Guild& guild : qAsConst(info.getGuilds()))
-        {
-            if (!guild.channelsLoaded)
-            {
-                allGuildLoadedChannels = false;
-                break;
-            }
-        }
-
-        if (allGuildLoadedChannels)
-        {
-            info.guildsLoaded = true;
-            updateUI();
-            tryProcessConnected();
-        }
-    });
 }
 
 QStringList Discord::getDestination(const Guild &guild, const Channel &channel) const

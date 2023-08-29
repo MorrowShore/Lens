@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../chatservice.h"
-#include "Guild.h"
+#include "guildsstorage.h"
 #include "User.h"
 #include "models/message.h"
 #include "models/author.h"
@@ -14,10 +14,15 @@ class Discord : public ChatService
 {
     Q_OBJECT
 public:
+    static const QString ApiPrefix;
+
     explicit Discord(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
 
     ConnectionStateType getConnectionStateType() const override;
     QString getStateDescription() const override;
+
+    QNetworkRequest createRequestAsBot(const QUrl& url) const;
+    bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
 
 protected:
     void reconnectImpl() override;
@@ -31,56 +36,17 @@ private:
 
     struct Info
     {
+        Info(Discord& discord, QNetworkAccessManager& network)
+            : guilds(std::make_unique<GuildsStorage>(discord, network))
+        {
+        }
+
         int heartbeatInterval = 30000;
         QJsonValue lastSequence;
         User botUser;
-        bool guildsLoaded = false;
-
-        Guild& getGuild(const QString& id)
-        {
-            if (guilds.contains(id))
-            {
-                return guilds[id];
-            }
-
-            qWarning() << Q_FUNC_INFO << "guild with id" << id << "not found";
-
-            static Guild guild;
-
-            return guild;
-        }
-
-        const Guild& getGuild(const QString& id) const
-        {
-            return const_cast<Info&>(*this).getGuild(id);
-        }
-
-        void addGuild(const Guild& guild)
-        {
-            if (guild.id.isEmpty())
-            {
-                qWarning() << Q_FUNC_INFO << "guild has empty id, name =" << guild.name;
-            }
-
-            if (guild.name.isEmpty())
-            {
-                qWarning() << Q_FUNC_INFO << "guild has empty name, id =" << guild.id;
-            }
-
-            guilds.insert(guild.id, guild);
-        }
-
-        const QMap<QString, Guild>& getGuilds() const
-        {
-            return guilds;
-        }
-
-    private:
-        QMap<QString, Guild> guilds;
+        std::unique_ptr<GuildsStorage> guilds;
     };
 
-    QNetworkRequest createRequestAsBot(const QUrl& url) const;
-    bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
     bool isCanConnect() const;
     void processDisconnected();
     void tryProcessConnected();
@@ -96,9 +62,6 @@ private:
     void parseMessageCreateUserJoin(const QJsonObject& jsonMessage);
 
     void updateUI();
-
-    void requestGuilds();
-    void requestChannels(const QString& guildId);
 
     QStringList getDestination(const Guild& guild, const Channel& channel) const;
     bool isValidForShow(const Message& message, const Author& author, const Guild& guild, const Channel& channel) const;

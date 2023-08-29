@@ -20,6 +20,7 @@ HEADERS += \
     chat_services/discord/Channel.h \
     chat_services/discord/Guild.h \
     chat_services/discord/User.h \
+    chat_services/discord/guildsstorage.h \
     chat_services/dlive.h \
     chat_services/donatepay.h \
     chat_services/donationalerts.h \
@@ -79,7 +80,9 @@ HEADERS += \
 SOURCES += \
     appsponsormanager.cpp \
     chat_services/chatservice.cpp \
+    chat_services/discord/Guild.cpp \
     chat_services/discord/discord.cpp \
+    chat_services/discord/guildsstorage.cpp \
     chat_services/dlive.cpp \
     chat_services/donatepay.cpp \
     chat_services/donationalerts.cpp \
