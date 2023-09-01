@@ -389,16 +389,14 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 {
     //qDebug() << data;
 
-    QList<std::shared_ptr<Message>> messages;
-    QList<std::shared_ptr<Author>> authors;
-
-    QStringList leftBadges;
-
     const QJsonObject rawAuthor = data.value("author").toObject();
 
     const QString authorName = rawAuthor.value("displayName").toString();
-    const QString authorAvatarUrl = rawAuthor.value("avatarUrl").toString();
-    const QString authorId = QString("%1").arg(rawAuthor.value("id").toVariant().toLongLong());
+    const QString authorId = generateAuthorId(QString("%1").arg(rawAuthor.value("id").toVariant().toLongLong()));
+
+    Author::Builder authorBuilder(getServiceType(), authorId, authorName);
+
+    authorBuilder.setAvatar(rawAuthor.value("avatarUrl").toString());
 
     const QJsonArray badges = rawAuthor.value("badges").toArray();
     for (const QJsonValue& v : qAsConst(badges))
@@ -406,11 +404,11 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         const QString url = v.toObject().value("smallUrl").toString().trimmed();
         if (!url.isEmpty())
         {
-            leftBadges.append(url);
+            authorBuilder.addLeftBadge(url);
         }
     }
 
-    const QString vkplayProfileUrl = rawAuthor.value("vkplayProfileLink").toString();
+    authorBuilder.setPage(rawAuthor.value("vkplayProfileLink").toString());
 
     const QJsonArray roles = rawAuthor.value("roles").toArray();
     for (const QJsonValue& v : qAsConst(roles))
@@ -421,13 +419,40 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         const QString url = v.toObject().value("smallUrl").toString().trimmed();
         if (!url.isEmpty())
         {
-            leftBadges.append(url);
+            authorBuilder.addLeftBadge(url);
             break;//TODO
         }
     }
 
-    //TODO: nicname color. rawAuthor.value("nickColor").toInt();
-    //TODO: 8 -> #1DBBA1
+    const int colorIndex = rawAuthor.value("nickColor").toInt();
+
+    static const QMap<int, QColor> Colors = // TODO: add other colors
+    {
+        { 0,    QColor(214, 110, 52 ) },
+        { 1,    QColor(184, 170, 255) },
+        { 2,    QColor(0,   87,  159) },
+
+        { 4,    QColor(89,  168, 64 ) },
+        { 5,    QColor(212, 81,  36 ) },
+        { 6,    QColor(222, 100, 137) },
+        { 7,    QColor(32,  187, 161) },
+        { 8,    QColor(248, 179, 1  ) },
+        { 9,    QColor(0,   153, 187) },
+        { 10,   QColor(0,   153, 187) },
+        { 11,   QColor(229, 66,  255) },
+        { 12,   QColor(163, 108, 89 ) },
+        { 13,   QColor(139, 162, 89 ) },
+        { 14,   QColor(0,   169, 255) },
+    };
+
+    if (Colors.contains(colorIndex))
+    {
+        authorBuilder.setCustomNicknameColor(Colors.value(colorIndex));
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "unknown color index" << colorIndex << ", author name =" << authorName;
+    }
 
     QDateTime publishedAt;
 
@@ -546,13 +571,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
     }
 
-    std::shared_ptr<Author> author = std::make_shared<Author>(
-        getServiceType(),
-        authorName,
-        authorId,
-        authorAvatarUrl,
-        QUrl(vkplayProfileUrl),
-        leftBadges);
+    auto author = authorBuilder.build();
 
     std::shared_ptr<Message> message = std::make_shared<Message>(
         contents,
@@ -561,11 +580,5 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         QDateTime::currentDateTime(),
         getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
 
-    messages.append(message);
-    authors.append(author);
-
-    if (!messages.isEmpty())
-    {
-        emit readyRead(messages, authors);
-    }
+    emit readyRead({ message }, { author });
 }
