@@ -431,7 +431,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         { 0,    QColor(214, 110, 52 ) },
         { 1,    QColor(184, 170, 255) },
         { 2,    QColor(0,   87,  159) },
-
+        { 3,    QColor(139, 63,  253) },
         { 4,    QColor(89,  168, 64 ) },
         { 5,    QColor(212, 81,  36 ) },
         { 6,    QColor(222, 100, 137) },
