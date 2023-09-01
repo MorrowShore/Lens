@@ -333,7 +333,7 @@ void GoodGame::reconnectImpl()
 
 void GoodGame::onWebSocketReceived(const QString &rawData)
 {
-    //qDebug(rawData.toUtf8());
+    //qDebug("\n" + rawData.toUtf8());
 
     if (!enabled.get())
     {
