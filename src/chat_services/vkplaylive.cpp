@@ -426,7 +426,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 
     const int colorIndex = rawAuthor.value("nickColor").toInt();
 
-    static const QMap<int, QColor> Colors = // TODO: add other colors
+    static const QMap<int, QColor> Colors =
     {
         { 0,    QColor(214, 110, 52 ) },
         { 1,    QColor(184, 170, 255) },
