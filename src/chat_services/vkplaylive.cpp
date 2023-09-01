@@ -282,11 +282,21 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
     else if (!result.isEmpty())
     {
         const QJsonObject data = result.value("data").toObject().value("data").toObject();
+
+
+
         const QString type = data.value("type").toString();
 
         if (type == "message")
         {
             parseMessage(data.value("data").toObject());
+        }
+        else if (type == "delete_message")
+        {
+            const QString messageId = generateMessageId(QString("%1").arg(data.value("id").toVariant().toLongLong()));
+            auto deleter = Message::Builder::createDeleter(getServiceType(), messageId);
+
+            emit readyRead({ deleter.second }, { deleter.first });
         }
         else if (type == "stream_online_status")
         {
@@ -468,7 +478,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         publishedAt = QDateTime::currentDateTime();
     }
 
-    const QString messageId = QString("%1").arg(data.value("id").toVariant().toLongLong());
+    const QString messageId = generateMessageId(QString("%1").arg(data.value("id").toVariant().toLongLong()));
 
     QList<std::shared_ptr<Message::Content>> contents;
 
@@ -579,7 +589,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         author,
         publishedAt,
         QDateTime::currentDateTime(),
-        getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
+        messageId);
 
     emit readyRead({ message }, { author });
 }
