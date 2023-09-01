@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QJsonParseError>
 #include <QJsonObject>
+#include <QColor>
 #include <qwindowdefs.h>
 
 #ifdef Q_OS_WINDOWS
@@ -290,6 +291,24 @@ static QByteArray find(const QByteArray& data, const QByteArray& prefix, const Q
     }
 
     return data.mid(resultStartPos, resultLastPos - resultStartPos);
+}
+
+static QColor generateColor(const QString& hash, const QList<QColor>& colors)
+{
+    if (colors.isEmpty())
+    {
+        qWarning() << Q_FUNC_INFO << "colors is empty";
+        return QColor();
+    }
+
+    uint32_t sum = 0;
+
+    for (const QChar& c : qAsConst(hash))
+    {
+        sum += c.unicode();
+    }
+
+    return colors.at(sum % colors.count());
 }
 
 }

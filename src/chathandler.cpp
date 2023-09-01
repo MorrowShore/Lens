@@ -35,6 +35,26 @@ static const QString SettingsProxyEnabled                       = SettingsGroupP
 static const QString SettingsProxyAddress                       = SettingsGroupPath + "/proxyServerAddress";
 static const QString SettingsProxyPort                          = SettingsGroupPath + "/proxyServerPort";
 
+static const QList<QColor> GeneratingColors =
+{
+    QColor(255, 30,  30 ),
+    QColor(141, 0,   206),
+    QColor(60,  60,  255),
+    QColor(141, 143, 244),
+    QColor(60,  143, 244),
+    QColor(191, 55,  206),
+    QColor(255, 107, 161),
+    QColor(119, 204, 249),
+    QColor(157, 0,   157),
+    QColor(194, 0,   105),
+    QColor(255, 97,  12 ),
+    QColor(255, 221, 0  ),
+    QColor(0,   255, 144),
+    QColor(0,   255, 255),
+    QColor(61,  201, 61 ),
+    QColor(224, 0,   78 ),
+};
+
 }
 
 ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
@@ -135,6 +155,8 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
             continue;
         }
 
+        //author->setValue(Author::Role::CustomNicknameColor, AxelChat::generateColor(author->getId(), GeneratingColors));
+
         messagesModel.addAuthor(author);
 
         if ((service && service->isEnabledThirdPartyEmotes()) || !service)
@@ -152,9 +174,6 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
         return;
     }
 
-    outputToFile.writeMessages(messagesValidToAdd, serviceType);
-    webSocket.sendMessages(messagesValidToAdd);
-
     for (int i = 0; i < messagesValidToAdd.count(); ++i)
     {
         const std::shared_ptr<Message>& message = messagesValidToAdd[i];
@@ -168,6 +187,9 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
         
         messagesModel.addMessage(message);
     }
+
+    outputToFile.writeMessages(messagesValidToAdd, serviceType);
+    webSocket.sendMessages(messagesValidToAdd);
 
     emit messagesDataChanged();
 
