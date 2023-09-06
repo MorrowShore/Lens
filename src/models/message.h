@@ -70,7 +70,7 @@ public:
         case Message::ColorRole::BodyBackgroundColorRole: return "bodyBackground";
         }
 
-        qWarning() << Q_FUNC_INFO << "unknown color role" << (int)role;
+        qWarning() << "unknown color role" << (int)role;
 
         return "<unknown>";
     }

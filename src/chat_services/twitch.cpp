@@ -67,7 +67,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     {
         if (!element)
         {
-            qCritical() << Q_FUNC_INFO << "!element";
+            qCritical() << "!element";
             return;
         }
 
@@ -80,14 +80,14 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
+        //qDebug() << "webSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Twitch::onIRCMessage);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+        //qDebug() << "webSocket connected";
 
         if (state.connected)
         {
@@ -110,7 +110,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+        //qDebug() << "webSocket disconnected";
 
         if (state.connected)
         {
@@ -123,7 +123,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
-        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -151,7 +151,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
         if (state.connected)
         {
-            qWarning() << Q_FUNC_INFO << "Pong timeout! Reconnection...";
+            qWarning() << "Pong timeout! Reconnection...";
 
             auto author = Author::getSoftwareAuthor();
 
@@ -257,7 +257,7 @@ TcpReply Twitch::processTcpRequest(const TcpRequest &request)
 
 void Twitch::sendIRCMessage(const QString &message)
 {
-    //qDebug() << Q_FUNC_INFO << "send:" << message.toUtf8() << "\n";
+    //qDebug() << "send:" << message.toUtf8() << "\n";
     socket.sendTextMessage(message);
 }
 
@@ -337,7 +337,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             continue;
         }
 
-        //qDebug() << Q_FUNC_INFO << "received:" << rawMessage.toUtf8() << "\n";
+        //qDebug() << "received:" << rawMessage.toUtf8() << "\n";
 
         if (rawMessage.startsWith("PING", Qt::CaseSensitivity::CaseInsensitive))
         {
@@ -413,7 +413,7 @@ void Twitch::onIRCMessage(const QString &rawData)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "not found login, message =" << rawMessage;
+            qWarning() << "not found login, message =" << rawMessage;
         }
 
         const QString tagsSnippet = snippet3.left(snippet3.lastIndexOf(":")).mid(1).trimmed();
@@ -424,7 +424,7 @@ void Twitch::onIRCMessage(const QString &rawData)
 
             if (!tag.contains("="))
             {
-                qWarning() << Q_FUNC_INFO << ": tag" << tag << "not contains '=', raw message:" << rawMessage;
+                qWarning() << "tag" << tag << "not contains '=', raw message:" << rawMessage;
                 continue;
             }
 
@@ -486,7 +486,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                         const QVector<QStringRef> emoteIndexes = emoteIndexesPair.split('-', Qt::SplitBehaviorFlags::SkipEmptyParts);
                         if (emoteIndexes.size() != 2)
                         {
-                            qDebug() << Q_FUNC_INFO << "emoteIndexes.size() != 2, emotesPartInfo =" << emotesPartInfo;
+                            qDebug() << "emoteIndexes.size() != 2, emotesPartInfo =" << emotesPartInfo;
                             continue;
                         }
 
@@ -494,7 +494,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                         const int firstIndex = emoteIndexes[0].toInt(&ok);
                         if (!ok)
                         {
-                            qDebug() << Q_FUNC_INFO << "!ok for firstIndex, emoteIndexes[0] =" << emoteIndexes[0] << ", emotesPartInfo =" << emotesPartInfo;
+                            qDebug() << "!ok for firstIndex, emoteIndexes[0] =" << emoteIndexes[0] << ", emotesPartInfo =" << emotesPartInfo;
                             continue;
                         }
 
@@ -502,7 +502,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                         const int lastIndex = emoteIndexes[1].toInt(&ok);
                         if (!ok)
                         {
-                            qDebug() << Q_FUNC_INFO << "!ok for firstIndex, emoteIndexes[1] =" << emoteIndexes[1] << ", emotesPartInfo =" << emotesPartInfo;
+                            qDebug() << "!ok for firstIndex, emoteIndexes[1] =" << emoteIndexes[1] << ", emotesPartInfo =" << emotesPartInfo;
                             continue;
                         }
 
@@ -515,7 +515,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                     }
                     else
                     {
-                        qDebug() << Q_FUNC_INFO << "emoteInfo not valid, emotesPartInfo =" << emotesPartInfo;
+                        qDebug() << "emoteInfo not valid, emotesPartInfo =" << emotesPartInfo;
                     }
                 }
             }
@@ -531,7 +531,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                     }
                     else
                     {
-                        qWarning() << Q_FUNC_INFO << "unknown badge" << badgeInfoStr;
+                        qWarning() << "unknown badge" << badgeInfoStr;
                         badges.append("qrc:/resources/images/unknown-badge.png");
                     }
                 }
@@ -540,13 +540,13 @@ void Twitch::onIRCMessage(const QString &rawData)
 
         if (login.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "login is empty. Login will be taken from the display name" << displayName << ", message =" << rawMessage;
+            qWarning() << "login is empty. Login will be taken from the display name" << displayName << ", message =" << rawMessage;
             login = displayName.toLower();
         }
 
         if (login != displayName.toLower())
         {
-            //qWarning() << Q_FUNC_INFO << "login and display name not matching, login =" << login << ", display name =" << displayName << ", message =" << rawMessage;
+            //qWarning() << "login and display name not matching, login =" << login << ", display name =" << displayName << ", message =" << rawMessage;
         }
 
         std::set<Author::Flag> authorFlags;
@@ -648,7 +648,7 @@ void Twitch::onIRCMessage(const QString &rawData)
             requestUserInfo(login);
         }
 
-        //qDebug() << Q_FUNC_INFO << authorName << ":" << messageText;
+        //qDebug() << authorName << ":" << messageText;
     }
 
     if (!messages.isEmpty())
@@ -694,7 +694,7 @@ void Twitch::parseBadgesJson(const QByteArray &data)
 {
     if (data.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "data is empty";
+        qWarning() << "data is empty";
         return;
     }
 
@@ -719,7 +719,7 @@ void Twitch::onAuthStateChanged()
 {
     if (!authStateInfo)
     {
-        qCritical() << Q_FUNC_INFO << "!authStateInfo";
+        qCritical() << "!authStateInfo";
     }
 
     authorizedChannel = ChannelInfo();
@@ -878,7 +878,7 @@ void Twitch::requestStreamInfo(const QString &login)
     QNetworkReply* reply = network.get(request);
     if (!reply)
     {
-        qDebug() << Q_FUNC_INFO << ": !reply";
+        qDebug() << "!reply";
         return;
     }
 

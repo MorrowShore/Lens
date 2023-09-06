@@ -25,14 +25,14 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << "WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &VkPlayLive::onWebSocketReceived);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+        //qDebug() << "WebSocket connected";
 
         heartbeatAcknowledgementTimer.setInterval(HeartbeatAcknowledgementTimeout);
         heartbeatAcknowledgementTimer.start();
@@ -45,7 +45,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
 
         if (info.token.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "token is empty";
+            qWarning() << "token is empty";
             return;
         }
 
@@ -60,7 +60,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
+        //qDebug() << "WebSocket disconnected";
 
         if (state.connected)
         {
@@ -72,7 +72,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerRequestToken, &QTimer::timeout, this, [this]()
@@ -163,7 +163,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
             return;
         }
 
-        qDebug() << Q_FUNC_INFO << "heartbeat acknowledgement timeout, disconnect";
+        qDebug() << "heartbeat acknowledgement timeout, disconnect";
         socket.close();
     });
 
@@ -265,12 +265,12 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
 
         if (info.version != "3.2.3")
         {
-            qWarning() << Q_FUNC_INFO << "unsupported version" << version;
+            qWarning() << "unsupported version" << version;
         }
 
         if (info.wsChannel.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "ws channel is empty";
+            qWarning() << "ws channel is empty";
         }
         else
         {
@@ -307,7 +307,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "viewers not found in, result =" << result;
+                qWarning() << "viewers not found in, result =" << result;
             }
         }
         else if (type == "stream_like_counter")
@@ -316,7 +316,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "unknown receive type" << type << ", result =" << result;
+            qWarning() << "unknown receive type" << type << ", result =" << result;
         }
     }
 }
@@ -462,7 +462,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown color index" << colorIndex << ", author name =" << authorName;
+        qWarning() << "unknown color index" << colorIndex << ", author name =" << authorName;
     }
 
     QDateTime publishedAt;
@@ -498,21 +498,21 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             const QString rawContent = data.value("content").toString();
             if (rawContent.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "text content string is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "text content string is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
             const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
             if (rawContents.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "text content array is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "text content array is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
             const QString text = rawContents.at(0).toString();
             if (text.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "text text is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "text text is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
@@ -523,7 +523,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             const QString text = data.value("displayName").toString() + " ";
             if (text.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "display name is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "display name is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
@@ -540,7 +540,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "image url is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "image url is empty:" << QJsonDocument(data).toJson();
             }
         }
         else if (type == "link")
@@ -548,14 +548,14 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
             const QString rawContent = data.value("content").toString();
             if (rawContent.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link content is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "link content is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
             const QJsonArray rawContents = QJsonDocument::fromJson(rawContent.toUtf8()).array();
             if (rawContents.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link content string is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "link content string is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
@@ -564,13 +564,13 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 
             if (text.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link text is empty:" << QJsonDocument(data);
+                qWarning() << "link text is empty:" << QJsonDocument(data);
                 continue;
             }
 
             if (url.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "link url is empty:" << QJsonDocument(data).toJson();
+                qWarning() << "link url is empty:" << QJsonDocument(data).toJson();
                 continue;
             }
 
@@ -578,7 +578,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
         else
         {
-            qDebug() << Q_FUNC_INFO << "unknown content type" << type << ", message:" << QJsonDocument(data).toJson();
+            qDebug() << "unknown content type" << type << ", message:" << QJsonDocument(data).toJson();
         }
     }
 

@@ -29,7 +29,7 @@ QMLUtils::QMLUtils(QSettings& settings_, const QString& settingsGroup, QObject *
 {
     if (_instance)
     {
-        qWarning() << Q_FUNC_INFO << "instance already initialized";
+        qWarning() << "instance already initialized";
     }
 
     _instance = this;
@@ -141,7 +141,7 @@ QMLUtils *QMLUtils::instance()
 {
     if (!_instance)
     {
-        qWarning() << Q_FUNC_INFO << "instance not initialized";
+        qWarning() << "instance not initialized";
     }
 
     return _instance;

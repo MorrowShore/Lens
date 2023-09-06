@@ -46,7 +46,7 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     {
         if (!element)
         {
-            qCritical() << Q_FUNC_INFO << "!element";
+            qCritical() << "!element";
             return;
         }
 
@@ -66,14 +66,14 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
+        //qDebug() << "webSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &DonatePay::onReceiveWebSocket);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+        //qDebug() << "webSocket connected";
 
         checkPingTimer.setInterval(CheckPingSendTimeout);
         checkPingTimer.start();
@@ -85,7 +85,7 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+        //qDebug() << "webSocket disconnected";
 
         if (state.connected)
         {
@@ -96,7 +96,7 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
-        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
     /*QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -125,7 +125,7 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
             return;
         }
 
-        qDebug() << Q_FUNC_INFO << "check ping timeout, disconnect";
+        qDebug() << "check ping timeout, disconnect";
         socket.close();
     });
 
@@ -183,7 +183,7 @@ void DonatePay::requestUser()
     const QString key = apiKey.get();
     if (key.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "API key is empty";
+        qWarning() << "API key is empty";
         return;
     }
 
@@ -199,11 +199,11 @@ void DonatePay::requestUser()
 
             if (statusCode == 200)
             {
-                qWarning() << Q_FUNC_INFO << "status" << status << ", root =" << root;
+                qWarning() << "status" << status << ", root =" << root;
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "status" << status << ", status code =" << statusCode;
+                qWarning() << "status" << status << ", status code =" << statusCode;
             }
 
             return;
@@ -223,7 +223,7 @@ void DonatePay::requestSocketToken()
     const QString key = apiKey.get();
     if (key.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "API key is empty";
+        qWarning() << "API key is empty";
         return;
     }
 

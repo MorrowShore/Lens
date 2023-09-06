@@ -19,7 +19,7 @@ void UIBridgeElement::bindQuickItem(QQuickItem *item_)
 
     if (!item_)
     {
-        qCritical() << Q_FUNC_INFO << "item is null";
+        qCritical() << "item is null";
         return;
     }
 
@@ -60,7 +60,7 @@ void UIBridgeElement::bindAction(QAction *action_)
 
     if (!action)
     {
-        qCritical() << Q_FUNC_INFO << "action is null";
+        qCritical() << "action is null";
         return;
     }
 
@@ -89,12 +89,12 @@ void UIBridgeElement::bindAction(QAction *action_)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "setting of bool is null";
+            qWarning() << "setting of bool is null";
         }
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "incompatible with this type";
+        qWarning() << "incompatible with this type";
     }
 }
 
@@ -129,7 +129,7 @@ void UIBridgeElement::onInvoked()
     }
     else
     {
-        qCritical() << Q_FUNC_INFO << "invoke callback is null";
+        qCritical() << "invoke callback is null";
     }
 }
 
@@ -138,7 +138,7 @@ void UIBridgeElement::onTextChanged()
     QObject* sender_ = sender();
     if (!sender_)
     {
-        qCritical() << Q_FUNC_INFO << "sender is null";
+        qCritical() << "sender is null";
         return;
     }
 
@@ -164,7 +164,7 @@ void UIBridgeElement::onTextChanged()
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "setting is null";
+        qWarning() << "setting is null";
     }
 
     if (changed)
@@ -178,7 +178,7 @@ void UIBridgeElement::onCheckedChanged()
     QObject* sender_ = sender();
     if (!sender_)
     {
-        qCritical() << Q_FUNC_INFO << "sender is null";
+        qCritical() << "sender is null";
         return;
     }
 
@@ -197,7 +197,7 @@ void UIBridgeElement::onCheckedChanged()
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown sender" << sender_;
+        qWarning() << "unknown sender" << sender_;
         return;
     }
 
@@ -221,7 +221,7 @@ void UIBridgeElement::onCheckedChanged()
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "setting is null";
+        qWarning() << "setting is null";
     }
 
     if (itemSender)
@@ -250,7 +250,7 @@ void UIBridgeElement::onValueChanged()
     QObject* sender_ = sender();
     if (!sender_)
     {
-        qCritical() << Q_FUNC_INFO << "sender is null";
+        qCritical() << "sender is null";
         return;
     }
 
@@ -276,7 +276,7 @@ void UIBridgeElement::onValueChanged()
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "setting is null";
+        qWarning() << "setting is null";
     }
 
     if (changed)

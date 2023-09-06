@@ -50,14 +50,14 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
+        //qDebug() << "webSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Odysee::onReceiveWebSocket);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+        //qDebug() << "webSocket connected";
 
         if (!state.connected)
         {
@@ -74,7 +74,7 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+        //qDebug() << "webSocket disconnected";
 
         if (state.connected)
         {
@@ -85,7 +85,7 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
-        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -212,7 +212,7 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown type" << type << ", received =" << doc;
+        qWarning() << "unknown type" << type << ", received =" << doc;
     }
 }
 
@@ -249,7 +249,7 @@ void Odysee::requestClaimId()
         const QStringList keys = result.keys();
         if (keys.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "keys of result is empty, root =" << root;
+            qWarning() << "keys of result is empty, root =" << root;
             return;
         }
 
@@ -258,7 +258,7 @@ void Odysee::requestClaimId()
 
         if (info.claimId.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "failed to find claim id, root =" << root;
+            qWarning() << "failed to find claim id, root =" << root;
             return;
         }
 
@@ -294,7 +294,7 @@ void Odysee::requestLive()
 
         if (state.viewersCount < 0)
         {
-            qWarning() << Q_FUNC_INFO << "failed to get viewers count, root =" << root;
+            qWarning() << "failed to get viewers count, root =" << root;
         }
 
         emit stateChanged();
@@ -344,7 +344,7 @@ void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
         const QStringList keys = result.keys();
         if (keys.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "keys of result is empty, root =" << root;
+            qWarning() << "keys of result is empty, root =" << root;
             return;
         }
 
@@ -368,7 +368,7 @@ void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
 void Odysee::sendPing()
 {
     socket.sendTextMessage("{\"type\":\"ping\"}");
-    qWarning() << Q_FUNC_INFO << "not implemented";
+    qWarning() << "not implemented";
 }
 
 void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QString &video)
@@ -399,7 +399,7 @@ QString Odysee::extractChannelId(const QString &rawLink)
 
     if (!id.contains('#'))
     {
-        qWarning() << Q_FUNC_INFO << "not found '#' in" << rawLink;
+        qWarning() << "not found '#' in" << rawLink;
         return QString();
     }
 

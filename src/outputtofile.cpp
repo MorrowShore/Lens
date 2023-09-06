@@ -19,7 +19,6 @@
 namespace
 {
 
-static const QString DateTimeFileNameFormat = "yyyy-MM-ddThh-mm-ss.zzz";
 static const QString MessagesFileName = "messages.ini";
 static const QString MessagesCountFileName = "messages_count.txt";
 
@@ -150,7 +149,7 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
     {
         if (!service_)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 
@@ -172,7 +171,7 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
                 const std::shared_ptr<Message>& message = messages[i];
                 if (!message)
                 {
-                    qWarning() << Q_FUNC_INFO << "message is null";
+                    qWarning() << "message is null";
                     continue;
                 }
 
@@ -193,7 +192,7 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
         const std::shared_ptr<Message>& message_ = messages[i];
         if (!message_)
         {
-            qWarning() << Q_FUNC_INFO << "message is null";
+            qWarning() << "message is null";
             continue;
         }
 
@@ -227,7 +226,7 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
         {
             if (!content)
             {
-                qWarning() << Q_FUNC_INFO << "content is null";
+                qWarning() << "content is null";
                 continue;
             }
 
@@ -270,7 +269,7 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
         {
             if (!content)
             {
-                qWarning() << Q_FUNC_INFO << "content is null";
+                qWarning() << "content is null";
                 continue;
             }
 
@@ -373,7 +372,7 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
 
         if (reply->bytesAvailable() <= 0)
         {
-            qWarning() << Q_FUNC_INFO << ": failed download image, reply is empty, error =" << reply->errorString() << ", file name =" << fileName << ", url =" << url;
+            qWarning() << "failed download image, reply is empty, error =" << reply->errorString() << ", file name =" << fileName << ", url =" << url;
             return;
         }
 
@@ -400,12 +399,12 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << ": failed to save downloaded image" << url;
+                qWarning() << "failed to save downloaded image" << url;
             }
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << ": failed to read downloaded image" << url;
+            qWarning() << "failed to read downloaded image" << url;
         }
 
         reply->deleteLater();
@@ -469,13 +468,13 @@ void OutputToFile::writeMessage(const QList<QPair<QString, QString>> tags /*<tag
 {
     if (!_fileMessages)
     {
-        qDebug() << Q_FUNC_INFO << "!_fileMessages";
+        qDebug() << "!_fileMessages";
         return;
     }
 
     if (!_fileMessagesCount)
     {
-        qDebug() << Q_FUNC_INFO << "!_fileMessagesStatistics";
+        qDebug() << "!_fileMessagesStatistics";
         return;
     }
 
@@ -483,7 +482,7 @@ void OutputToFile::writeMessage(const QList<QPair<QString, QString>> tags /*<tag
     {
         if (!_fileMessages->open(QIODevice::OpenModeFlag::Text | QIODevice::OpenModeFlag::Append))
         {
-            qWarning() << Q_FUNC_INFO << "failed to open file" << _fileMessages->fileName() << ":" << _fileMessages->errorString();
+            qWarning() << "failed to open file" << _fileMessages->fileName() << ":" << _fileMessages->errorString();
             return;
         }
     }
@@ -492,7 +491,7 @@ void OutputToFile::writeMessage(const QList<QPair<QString, QString>> tags /*<tag
     {
         if (!_fileMessagesCount->open(QIODevice::OpenModeFlag::Text | QIODevice::OpenModeFlag::ReadWrite))
         {
-            qWarning() << Q_FUNC_INFO << "failed to open file" << _fileMessagesCount->fileName() << ":" << _fileMessagesCount->errorString();
+            qWarning() << "failed to open file" << _fileMessagesCount->fileName() << ":" << _fileMessagesCount->errorString();
             return;
         }
     }
@@ -559,7 +558,7 @@ QByteArray OutputToFile::prepare(const QString &text_)
         return AxelChat::convertANSIWithUtf8Numbers(text);
     }
 
-    qWarning() << Q_FUNC_INFO << "unknown codec";
+    qWarning() << "unknown codec";
 
     return text.toUtf8();
 }
@@ -585,7 +584,7 @@ void OutputToFile::writeAuthors(const QList<std::shared_ptr<Author>>& authors)
     {
         if (!author)
         {
-            qWarning() << Q_FUNC_INFO << "author is null";
+            qWarning() << "author is null";
             continue;
         }
 
@@ -747,7 +746,7 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
 
     if (forceUpdateOutputFolder || _relativeSessionFolder.isEmpty())
     {
-        _relativeSessionFolder = "sessions/" + _startupDateTime.toString(DateTimeFileNameFormat);
+        _relativeSessionFolder = "sessions/" + _startupDateTime.toString(AxelChat::DateTimeFileNameFormat);
     }
 
     const QString absoluteSessionFolder = outputDirectory.get() + "/" + _relativeSessionFolder;
@@ -783,14 +782,14 @@ void OutputToFile::writeApplicationState(const bool started, const int viewersTo
     {
         if (!dir.mkpath(pathDir))
         {
-            qCritical() << Q_FUNC_INFO << ": failed to make path" << pathDir;
+            qCritical() << "failed to make path" << pathDir;
         }
     }
 
     QFile file(pathDir + "/state.ini");
     if (!file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
     {
-        qCritical() << Q_FUNC_INFO << ": failed to save file" << file.fileName();
+        qCritical() << "failed to save file" << file.fileName();
         return;
     }
 
@@ -815,7 +814,7 @@ void OutputToFile::writeServiceState(const ChatService* service) const
 
     if (!service)
     {
-        qWarning() << Q_FUNC_INFO << "service is null";
+        qWarning() << "service is null";
         return;
     }
 
@@ -826,14 +825,14 @@ void OutputToFile::writeServiceState(const ChatService* service) const
     {
         if (!dir.mkpath(pathDir))
         {
-            qCritical() << Q_FUNC_INFO << ": failed to make path" << pathDir;
+            qCritical() << "failed to make path" << pathDir;
         }
     }
 
     QFile file(pathDir + "/state.ini");
     if (!file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
     {
-        qCritical() << Q_FUNC_INFO << ": failed to save file" << file.fileName();
+        qCritical() << "failed to save file" << file.fileName();
         return;
     }
 

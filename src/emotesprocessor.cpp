@@ -26,7 +26,7 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
         {
             if (!service)
             {
-                qWarning() << Q_FUNC_INFO << "service is null";
+                qWarning() << "service is null";
                 continue;
             }
 
@@ -54,7 +54,7 @@ void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
 {
     if (!message)
     {
-        qWarning() << Q_FUNC_INFO << "message is null";
+        qWarning() << "message is null";
         return;
     }
 
@@ -147,7 +147,7 @@ void EmotesProcessor::loadGlobal()
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 
@@ -161,7 +161,7 @@ void EmotesProcessor::loadChannel(const Twitch::ChannelInfo &channelInfo)
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 
@@ -175,7 +175,7 @@ QString EmotesProcessor::getEmoteUrl(const QString &name) const
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 

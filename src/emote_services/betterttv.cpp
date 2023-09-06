@@ -18,7 +18,7 @@ QString BetterTTV::findEmoteUrl(const QString &name) const
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name is empty for global emote" << name;
+            qWarning() << "name is empty for global emote" << name;
         }
         else
         {
@@ -31,7 +31,7 @@ QString BetterTTV::findEmoteUrl(const QString &name) const
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name is empty for global emote" << name;
+            qWarning() << "name is empty for global emote" << name;
         }
         else
         {
@@ -58,7 +58,7 @@ void BetterTTV::loadGlobal()
 
         if (array.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "array is empty";
+            qWarning() << "array is empty";
             return;
         }
 

@@ -442,12 +442,12 @@ void YouTubeUtils::parseActionsArray(const QJsonArray &array, const QByteArray &
         else if (actionObject.contains("replaceChatItemAction"))
         {
             //ToDo
-            //qDebug() << Q_FUNC_INFO << QString(": object \"replaceChatItemAction\" not supported yet");
+            //qDebug() << QString(": object \"replaceChatItemAction\" not supported yet");
         }
         else if (actionObject.contains("addLiveChatTickerItemAction"))
         {
             //ToDo
-            //qDebug() << Q_FUNC_INFO << QString(": object \"addLiveChatTickerItemAction\" not supported yet");
+            //qDebug() << QString(": object \"addLiveChatTickerItemAction\" not supported yet");
         }
         else if (actionObject.contains("addToPlaylistCommand") ||
                  actionObject.contains("clickTrackingParams") ||
@@ -536,7 +536,7 @@ QUrl YouTubeUtils::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int image
     const QVector<QStringRef>& parts = source.splitRef('/', Qt::KeepEmptyParts);
     if (parts.count() < 2)
     {
-        qDebug() << Q_FUNC_INFO << ": Failed to convert: parts.count() < 2, url:" << sourceAvatarUrl;
+        qDebug() << "Failed to convert: parts.count() < 2, url:" << sourceAvatarUrl;
         return sourceAvatarUrl;
     }
 
@@ -575,7 +575,7 @@ QUrl YouTubeUtils::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int image
         return newUrlStr;
     }
 
-    qDebug() << Q_FUNC_INFO << ": Failed to convert";
+    qDebug() << "Failed to convert";
     return sourceAvatarUrl;
 }
 
@@ -696,7 +696,7 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
     const int start = rawData.indexOf(Prefix);
     if (start == -1)
     {
-        qDebug() << Q_FUNC_INFO << ": failed to parse originalViewCount";
+        qDebug() << "failed to parse originalViewCount";
         AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_originalViewCount_from_html_youtube.html", rawData);
         return -1;
     }
@@ -714,7 +714,7 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
 
     if (lastPos == -1)
     {
-        qDebug() << Q_FUNC_INFO << ": not found ']'";
+        qDebug() << "not found ']'";
         return -1;
     }
 

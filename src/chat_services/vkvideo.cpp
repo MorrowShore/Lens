@@ -264,7 +264,7 @@ void VkVideo::requestChat()
             auto userIt = users.find(fromId);
             if (userIt == users.end())
             {
-                qWarning() << Q_FUNC_INFO << "not found user id " << fromId;
+                qWarning() << "not found user id " << fromId;
                 continue;
             }
 
@@ -291,7 +291,7 @@ void VkVideo::requestChat()
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "not found [, | or ]";
+                    qWarning() << "not found [, | or ]";
                 }
             }
 
@@ -340,7 +340,7 @@ void VkVideo::requestChat()
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "unknown attachment type" << type;
+                    qWarning() << "unknown attachment type" << type;
                     attachmentsString += tr("unknown(%1)").arg(type);
                 }
             }
@@ -386,7 +386,7 @@ void VkVideo::requestChat()
                 else
                 {
                     pageUrl = "https://vk.com/public";
-                    qWarning() << Q_FUNC_INFO << "unknown group type" << user.groupType;
+                    qWarning() << "unknown group type" << user.groupType;
                 }
 
                 pageUrl += id;
@@ -471,14 +471,14 @@ void VkVideo::requestVideo()
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "video is not live";
+                qWarning() << "video is not live";
             }
 
             state.viewersCount = video.value("spectators").toInt();
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "items not equal 1";
+            qWarning() << "items not equal 1";
         }
 
         emit stateChanged();
@@ -489,7 +489,7 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
 {
     if (ids.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "ids is empty";
+        qWarning() << "ids is empty";
         return;
     }
 
@@ -531,7 +531,7 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
             auto userIt = users.find(id);
             if (userIt == users.end())
             {
-                qWarning() << Q_FUNC_INFO << "not found user id " << id;
+                qWarning() << "not found user id " << id;
                 continue;
             }
 
@@ -558,7 +558,7 @@ void VkVideo::updateUI()
 {
     if (!authStateInfo)
     {
-        qCritical() << Q_FUNC_INFO << "!authStateInfo";
+        qCritical() << "!authStateInfo";
     }
 
     switch (auth.getState())

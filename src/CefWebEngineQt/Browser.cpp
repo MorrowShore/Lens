@@ -18,13 +18,13 @@ void Browser::setOpened(const int id_)
 {
     if (state == State::Opened)
     {
-        qWarning() << Q_FUNC_INFO << "browser" << id << "already opened";
+        qWarning() << "browser" << id << "already opened";
         return;
     }
 
     if (state == State::Closed)
     {
-        qWarning() << Q_FUNC_INFO << "browser" << id << "once closed and can't be opened again";
+        qWarning() << "browser" << id << "once closed and can't be opened again";
         return;
     }
 
@@ -53,7 +53,7 @@ void Browser::setWindowHandle(const uint64_t handle)
 
     if (!window && handle != 0)
     {
-        qWarning() << Q_FUNC_INFO << "failed to get window from handle" << handle;
+        qWarning() << "failed to get window from handle" << handle;
     }
 }
 
@@ -61,7 +61,7 @@ void Browser::registerResponse(const std::shared_ptr<Response>& response)
 {
     if (!response)
     {
-        qWarning() << Q_FUNC_INFO << "response is null";
+        qWarning() << "response is null";
         return;
     }
 
@@ -73,7 +73,7 @@ void Browser::addResponseData(const uint64_t responseId, const QByteArray &data,
     auto it = responses.find(responseId);
     if (it == responses.end() || !it->second)
     {
-        qWarning() << Q_FUNC_INFO << "response id" << responseId << "not found or null, browser id =" << id;
+        qWarning() << "response id" << responseId << "not found or null, browser id =" << id;
         return;
     }
 
@@ -91,7 +91,7 @@ void Browser::addResponseData(const uint64_t responseId, const QByteArray &data,
     {
         it->second->data.clear();
         it->second->validData = false;
-        qWarning() << Q_FUNC_INFO << "failed to parse base64 data, status =" << (int)result.decodingStatus << ", base64 data[" << data.length() << "] =" << data;
+        qWarning() << "failed to parse base64 data, status =" << (int)result.decodingStatus << ", base64 data[" << data.length() << "] =" << data;
     }
 }
 
@@ -100,7 +100,7 @@ void Browser::finalizeResponse(const uint64_t responseId)
     auto it = responses.find(responseId);
     if (it == responses.end() || !it->second)
     {
-        qWarning() << Q_FUNC_INFO << "response id" << responseId << "not found or null, browser id =" << id;
+        qWarning() << "response id" << responseId << "not found or null, browser id =" << id;
         return;
     }
 

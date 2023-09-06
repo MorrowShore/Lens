@@ -30,25 +30,25 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << "WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Wasd::onWebSocketReceived);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+        qDebug() << "WebSocket connected";
 
         if (info.jwtToken.isEmpty())
         {
-            qDebug() << Q_FUNC_INFO << "jwt token is empty, disconnect";
+            qDebug() << "jwt token is empty, disconnect";
             socket.close();
             return;
         }
 
         if (info.streamId.isEmpty() || info.channelId.isEmpty())
         {
-            qDebug() << Q_FUNC_INFO << "stream id or channel id is empty, disconnect";
+            qDebug() << "stream id or channel id is empty, disconnect";
             socket.close();
             return;
         }
@@ -61,7 +61,7 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
+        qDebug() << "WebSocket disconnected";
 
         if (state.connected)
         {
@@ -73,7 +73,7 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -191,7 +191,7 @@ void Wasd::onWebSocketReceived(const QString &rawData)
 
     if (rawData.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "received data is empty";
+        qWarning() << "received data is empty";
         return;
     }
 
@@ -199,7 +199,7 @@ void Wasd::onWebSocketReceived(const QString &rawData)
     const SocketIO2Type type = (SocketIO2Type)QString(rawData[0]).toInt(&ok);
     if (!ok)
     {
-        qWarning() << Q_FUNC_INFO << "failed to get type";
+        qWarning() << "failed to get type";
         return;
     }
 
@@ -218,7 +218,7 @@ void Wasd::onWebSocketReceived(const QString &rawData)
     const QJsonDocument doc = payload.isEmpty() ? QJsonDocument() : QJsonDocument::fromJson(payload, &jsonError);
     if (jsonError.error != QJsonParseError::ParseError::NoError)
     {
-        qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << ",raw data =" << rawData;
+        qWarning() << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << ",raw data =" << rawData;
     }
 
     parseSocketMessage(type, doc);
@@ -241,7 +241,7 @@ void Wasd::requestTokenJWT()
 
         if (info.jwtToken.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "failed to get jwt token";
+            qWarning() << "failed to get jwt token";
         }
     });
 }
@@ -265,7 +265,7 @@ void Wasd::requestChannel(const QString &channelName)
             const bool isLive = channel.value("channel_is_live").toBool();
             if (!isLive)
             {
-                qWarning() << Q_FUNC_INFO << "channel" << channelName << "is not live";
+                qWarning() << "channel" << channelName << "is not live";
 
                 if (state.connected)
                 {
@@ -289,13 +289,13 @@ void Wasd::requestChannel(const QString &channelName)
             const QJsonArray streams = mediaContainer.value("media_container_streams").toArray();
             if (streams.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "streams is empty";
+                qWarning() << "streams is empty";
             }
             else
             {
                 if (streams.count() != 1)
                 {
-                    qWarning() << Q_FUNC_INFO << "streams count is not 1";
+                    qWarning() << "streams count is not 1";
                 }
 
                 const QJsonObject stream = streams.first().toObject();
@@ -307,7 +307,7 @@ void Wasd::requestChannel(const QString &channelName)
 
             if (info.channelId.isEmpty() || info.streamId.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "channel id or stream id is empty";
+                qWarning() << "channel id or stream id is empty";
             }
 
             emit stateChanged();
@@ -404,7 +404,7 @@ void Wasd::parseSocketMessage(const SocketIO2Type type, const QJsonDocument &doc
         {
             if (array.count() != 2)
             {
-                qWarning() << Q_FUNC_INFO << "array size not 2";
+                qWarning() << "array size not 2";
             }
 
             parseEvent(eventType, array[1].toObject());
@@ -423,7 +423,7 @@ void Wasd::parseSocketMessage(const SocketIO2Type type, const QJsonDocument &doc
         break;
     }
 
-    qWarning() << Q_FUNC_INFO << "unknown message type" << (int)type;
+    qWarning() << "unknown message type" << (int)type;
 }
 
 void Wasd::parseEvent(const QString &type, const QJsonObject &data)
@@ -442,7 +442,7 @@ void Wasd::parseEvent(const QString &type, const QJsonObject &data)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown event type" << type;
+        qWarning() << "unknown event type" << type;
     }
 }
 
@@ -494,7 +494,7 @@ void Wasd::parseEventMessage(const QJsonObject &data)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown role" << role << "of author" << name;
+        qWarning() << "unknown role" << role << "of author" << name;
     }
 
     const QJsonObject jsonUserAvatar = data.value("user_avatar").toObject();
@@ -504,7 +504,7 @@ void Wasd::parseEventMessage(const QJsonObject &data)
         const QStringList keys = jsonUserAvatar.keys();
         if (keys.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "user avatar sizes is empty";
+            qWarning() << "user avatar sizes is empty";
         }
         else
         {
@@ -548,7 +548,7 @@ void Wasd::parseEventMessage(const QJsonObject &data)
             const QStringList keys = jsonStickerImage.keys();
             if (keys.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "sticker image sizes is empty";
+                qWarning() << "sticker image sizes is empty";
             }
             else
             {
@@ -561,7 +561,7 @@ void Wasd::parseEventMessage(const QJsonObject &data)
 
     if (contents.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "contents is empty, maybe message structure is unknown";
+        qWarning() << "contents is empty, maybe message structure is unknown";
         return;
     }
 
@@ -598,7 +598,7 @@ void Wasd::parseSmile(const QJsonObject &jsonSmile)
     if (id != token)
     {
         // TODO
-        qWarning() << Q_FUNC_INFO << "id not equal token, id =" << id << ", token =" << token << ", url =" << url;
+        qWarning() << "id not equal token, id =" << id << ", token =" << token << ", url =" << url;
     }
 
     smiles.insert(token, url);

@@ -146,7 +146,7 @@ void ChatBot::processMessage(const std::shared_ptr<Message>& message)
 {
     if (!message)
     {
-        qWarning() << Q_FUNC_INFO << "message is null";
+        qWarning() << "message is null";
         return;
     }
 

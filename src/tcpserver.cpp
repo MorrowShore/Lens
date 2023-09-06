@@ -9,12 +9,12 @@ TcpServer::TcpServer(QList<std::shared_ptr<ChatService>>& services_, QObject *pa
 {
     connect(&server, &QTcpServer::acceptError, this, [](QAbstractSocket::SocketError socketError)
     {
-        qWarning() << Q_FUNC_INFO << "server error:" << socketError;
+        qWarning() << "server error:" << socketError;
     });
 
     if (!server.listen(QHostAddress::Any, Port))
     {
-        qCritical() << Q_FUNC_INFO << "server: failed to listen port";
+        qCritical() << "server: failed to listen port";
     }
 
     connect(&server, &QTcpServer::newConnection, this, [this]()
@@ -22,7 +22,7 @@ TcpServer::TcpServer(QList<std::shared_ptr<ChatService>>& services_, QObject *pa
         QTcpSocket* socket = server.nextPendingConnection();
         if (!socket)
         {
-            qWarning() << Q_FUNC_INFO << "socket is null";
+            qWarning() << "socket is null";
             return;
         }
 
@@ -47,7 +47,7 @@ TcpServer::TcpServer(QList<std::shared_ptr<ChatService>>& services_, QObject *pa
                 else
                 {
                     socket->write(TcpReply::createTextHtmlError("Bad header").getData());
-                    qWarning() << Q_FUNC_INFO << "bad header";
+                    qWarning() << "bad header";
                     return;
                 }
             }
@@ -65,7 +65,7 @@ TcpServer::TcpServer(QList<std::shared_ptr<ChatService>>& services_, QObject *pa
                     {
                         if (!service)
                         {
-                            qWarning() << Q_FUNC_INFO << "servies is null";
+                            qWarning() << "servies is null";
                             continue;
                         }
 
@@ -78,13 +78,13 @@ TcpServer::TcpServer(QList<std::shared_ptr<ChatService>>& services_, QObject *pa
 
                     if (!found)
                     {
-                        qWarning() << Q_FUNC_INFO << "service id" << serviceId << "not found";
+                        qWarning() << "service id" << serviceId << "not found";
                         socket->write(TcpReply::createTextHtmlError(QString("Service id \"%1\" not found").arg(serviceId)).getData());
                     }
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "unknown chat_service url";
+                    qWarning() << "unknown chat_service url";
                     socket->write(TcpReply::createTextHtmlError("Unknown chat_service url").getData());
                 }
             }
@@ -94,7 +94,7 @@ TcpServer::TcpServer(QList<std::shared_ptr<ChatService>>& services_, QObject *pa
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "unknown root url";
+                qWarning() << "unknown root url";
                 socket->write(TcpReply::createTextHtmlError("Unknown root url").getData());
             }
         });

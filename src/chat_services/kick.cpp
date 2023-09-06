@@ -26,21 +26,21 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << "WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Kick::onWebSocketReceived);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+        //qDebug() << "WebSocket connected";
 
         heartbeatAcknowledgementTimer.setInterval(HeartbeatAcknowledgementTimeout);
         heartbeatAcknowledgementTimer.start();
 
         if (info.chatroomId.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "chatroom id is empty";
+            qWarning() << "chatroom id is empty";
             socket.close();
             return;
         }
@@ -52,7 +52,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
+        //qDebug() << "WebSocket disconnected";
 
         if (state.connected)
         {
@@ -64,7 +64,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     reconnect();
@@ -115,7 +115,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
             return;
         }
 
-        qDebug() << Q_FUNC_INFO << "heartbeat acknowledgement timeout, disconnect";
+        qDebug() << "heartbeat acknowledgement timeout, disconnect";
         socket.close();
     });
 
@@ -267,7 +267,7 @@ void Kick::onWebSocketReceived(const QString &rawData)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown event type" << type << ", data:";
+        qWarning() << "unknown event type" << type << ", data:";
         qDebug() << data; qDebug();
     }
 }
@@ -320,7 +320,7 @@ void Kick::requestChannelInfo(const QString &slug)
         const QJsonObject root = QJsonDocument::fromJson(response->data, &error).object();
         if (error.error != QJsonParseError::ParseError::NoError)
         {
-            qWarning() << Q_FUNC_INFO << "json parse error =" << error.errorString() << ", offset =" << error.offset << ", mimeType =" << response->mimeType;// << ", data =" << response->data;
+            qWarning() << "json parse error =" << error.errorString() << ", offset =" << error.offset << ", mimeType =" << response->mimeType;// << ", data =" << response->data;
             return;
         }
 
@@ -349,7 +349,7 @@ void Kick::requestChannelInfo(const QString &slug)
                 int64_t chatroomId = chatroom.value("id").toVariant().toLongLong(&ok);
                 if (!ok)
                 {
-                    qWarning() << Q_FUNC_INFO << "failed to convert chatroom id";
+                    qWarning() << "failed to convert chatroom id";
                     return;
                 }
 
@@ -401,7 +401,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unkown message type" << type;
+        qWarning() << "unkown message type" << type;
         qDebug() << data; qDebug();
     }
 
@@ -543,7 +543,7 @@ QString Kick::parseBadge(const QJsonObject &basgeJson, const QString &defaultVal
         }
     }
 
-    qWarning() << Q_FUNC_INFO << "unknown badge, data =" << basgeJson;
+    qWarning() << "unknown badge, data =" << basgeJson;
 
     return defaultValue;
 }

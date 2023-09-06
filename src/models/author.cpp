@@ -47,7 +47,7 @@ bool Author::setValue(const Role role, const QVariant &value)
 {
     if (UpdateableRoles.find(role) == UpdateableRoles.end())
     {
-        qCritical() << Q_FUNC_INFO << ": role" << role << "not updatable, author name =" << name;
+        qCritical() << "role" << role << "not updatable, author name =" << name;
         return false;
     }
 
@@ -154,11 +154,11 @@ bool Author::setValue(const Role role, const QVariant &value)
 
     if (validType)
     {
-        qCritical() << Q_FUNC_INFO << ": role" << role << "not implemented yet" << ", author name = " << name;
+        qCritical() << "role" << role << "not implemented yet" << ", author name = " << name;
     }
     else
     {
-        qCritical() << Q_FUNC_INFO << ": invalid type" << type << "for role" << role << ", author name = " << name;
+        qCritical() << "invalid type" << type << "for role" << role << ", author name = " << name;
     }
 
     return false;
@@ -185,7 +185,7 @@ QVariant Author::getValue(const Role role) const
     case Author::Role::Moderator: return flags.find(Flag::Moderator) != flags.end();
     }
 
-    qCritical() << Q_FUNC_INFO << ": role" << role << "not implemented yet" << ", author name = " << name;
+    qCritical() << "role" << role << "not implemented yet" << ", author name = " << name;
     return QVariant();
 }
 
@@ -213,7 +213,7 @@ QString Author::getJsonRoleName(const Role role)
         break;
     }
 
-    qWarning() << Q_FUNC_INFO << "unknown role" << (int)role;
+    qWarning() << "unknown role" << (int)role;
 
     return "<unknown>";
 }

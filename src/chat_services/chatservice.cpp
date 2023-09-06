@@ -120,7 +120,7 @@ QUrl ChatService::getStreamUrl() const
 
 TcpReply ChatService::processTcpRequest(const TcpRequest&)
 {
-    qCritical() << Q_FUNC_INFO << "not implemented for" << getServiceTypeId(getServiceType());
+    qCritical() << "not implemented for" << getServiceTypeId(getServiceType());
 
     return TcpReply::createTextHtmlOK(QString("Not implemented for %1 (%2)").arg(getName(), getServiceTypeId(getServiceType())));
 }
@@ -193,7 +193,7 @@ void ChatService::onUIElementChanged(const std::shared_ptr<UIBridgeElement> &ele
 {
     if (!element)
     {
-        qCritical() << Q_FUNC_INFO << "element is null";
+        qCritical() << "element is null";
         return;
     }
 

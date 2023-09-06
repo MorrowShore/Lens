@@ -160,11 +160,11 @@ void YouTubeBrowser::reconnectImpl()
 
     if (browser = web.createBrowser(state.chatUrl, settings); browser)
     {
-        //connect(browser.get(), &cweqt::Browser::opened, this, []() { qDebug() << Q_FUNC_INFO << "Browser opened"; });
+        //connect(browser.get(), &cweqt::Browser::opened, this, []() { qDebug() << "Browser opened"; });
 
         connect(browser.get(), &cweqt::Browser::closed, this, [this]()
         {
-            qDebug() << Q_FUNC_INFO << "Browser closed";
+            qDebug() << "Browser closed";
             browser.reset();
             reconnect();
         });
@@ -173,7 +173,7 @@ void YouTubeBrowser::reconnectImpl()
         {
             if (!response)
             {
-                qWarning() << Q_FUNC_INFO << "Response is null";
+                qWarning() << "Response is null";
                 return;
             }
 
@@ -185,7 +185,7 @@ void YouTubeBrowser::reconnectImpl()
 
             if (v.type() != QJsonValue::Type::Object)
             {
-                qWarning() << Q_FUNC_INFO << "liveChatContinuation not found, object =" << root;
+                qWarning() << "liveChatContinuation not found, object =" << root;
                 return;
             }
 
@@ -218,7 +218,7 @@ void YouTubeBrowser::reconnectImpl()
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "failed to create browser";
+        qWarning() << "failed to create browser";
     }
 }
 
@@ -241,7 +241,7 @@ void YouTubeBrowser::requestStreamPage()
 
         if (data.isEmpty())
         {
-            qDebug() << Q_FUNC_INFO << "data is empty";
+            qDebug() << "data is empty";
             return;
         }
 
@@ -254,7 +254,7 @@ void YouTubeBrowser::openWindow()
 {
     if (!browser)
     {
-        qWarning() << Q_FUNC_INFO << "browser is null";
+        qWarning() << "browser is null";
         return;
     }
 
@@ -264,6 +264,6 @@ void YouTubeBrowser::openWindow()
     }
     else
     {
-        qDebug() << Q_FUNC_INFO << "Window is null";
+        qDebug() << "Window is null";
     }
 }

@@ -38,7 +38,7 @@ void AppSponsorManager::requestSponsors()
         const QString version = root.value("version").toString();
         if (version != "1.0.0")
         {
-            qWarning() << Q_FUNC_INFO << "unsupported version" << version;
+            qWarning() << "unsupported version" << version;
         }
 
         const QJsonArray sponsorsJson = root.value("sponsors").toArray();
@@ -68,7 +68,7 @@ void AppSponsorManager::requestSponsors()
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "unknown type" << type;
+                qWarning() << "unknown type" << type;
                 continue;
             }
 
@@ -90,7 +90,7 @@ void AppSponsorManager::requestSupportMethods()
         const QString version = root.value("version").toString();
         if (version != "1.0.0")
         {
-            qWarning() << Q_FUNC_INFO << "unsupported version" << version;
+            qWarning() << "unsupported version" << version;
         }
 
         const QJsonArray supportMethodsJson = root.value("support_methods").toArray();
@@ -118,7 +118,7 @@ void AppSponsorManager::requestSupportMethods()
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "unknown possibility" << type;
+                    qWarning() << "unknown possibility" << type;
                 }
             }
 
@@ -128,7 +128,7 @@ void AppSponsorManager::requestSupportMethods()
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "possibilities is empty, data =" << methodJson;
+                qWarning() << "possibilities is empty, data =" << methodJson;
             }
 
             methods.append(method);
@@ -168,7 +168,7 @@ QVariant AppSponsorModel::data(const QModelIndex &index, int role) const
         return sponsor.tierName;
     }
 
-    qWarning() << Q_FUNC_INFO << "unknown role" << role;
+    qWarning() << "unknown role" << role;
 
     return QVariant();
 }

@@ -49,7 +49,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << "WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &GoodGame::onWebSocketReceived);
@@ -78,7 +78,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     timerUpdateMessages.setInterval(RequestChatInterval);
@@ -219,7 +219,7 @@ void GoodGame::requestUserPage(const QString &authorName, const QString &authorI
         const int startAvatarPos = data.indexOf(urlPrefix);
         if (startAvatarPos == -1)
         {
-            qCritical() << Q_FUNC_INFO << ": not found avatar url, author name" << authorName;
+            qCritical() << "not found avatar url, author name" << authorName;
             return;
         }
 
@@ -261,7 +261,7 @@ void GoodGame::requestSmiles()
 
             if (smileName.isEmpty() || smileUrl.isEmpty())
             {
-                qWarning() << Q_FUNC_INFO << "smile name or url is empty";
+                qWarning() << "smile name or url is empty";
                 continue;
             }
 
@@ -385,7 +385,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << ": unknown color type" << colorType << ", author name =" << authorName;
+                qWarning() << "unknown color type" << colorType << ", author name =" << authorName;
             }
 
             QString badge;
@@ -427,7 +427,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << ": not found badge" << badge << ", author name" << authorName;
+                    qWarning() << "not found badge" << badge << ", author name" << authorName;
                 }
             }
 
@@ -461,7 +461,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
                         }
                         else
                         {
-                            //qWarning() << Q_FUNC_INFO << ": smile" << rawSmileId << "not found";
+                            //qWarning() << "smile" << rawSmileId << "not found";
                             text += ":" + rawSmileId + ":";
                         }
 
@@ -537,12 +537,12 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
         const double protocolVersion = data.value("protocolVersion").toDouble();
         if (protocolVersion != 2)
         {
-            qWarning() << Q_FUNC_INFO << ": unsupported protocol version" << protocolVersion;
+            qWarning() << "unsupported protocol version" << protocolVersion;
         }
     }
     else if (type == "error")
     {
-        qWarning() << Q_FUNC_INFO << ": client received error, channel id =" << channelId_ << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
+        qWarning() << "client received error, channel id =" << channelId_ << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
     }
     else if (type == "success_auth")
     {
@@ -551,7 +551,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << ": unknown message type" << type << ", data = \n" << rawData;
+        qWarning() << "unknown message type" << type << ", data = \n" << rawData;
     }
 
     if (!state.connected)

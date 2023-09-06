@@ -27,7 +27,7 @@ void OAuth2::setConfig(const Config &config_)
 {
     if (configSetted)
     {
-        qWarning() << Q_FUNC_INFO << "don't set config more than once";
+        qWarning() << "don't set config more than once";
     }
 
     const_cast<Config&>(config) = config_;
@@ -84,7 +84,7 @@ void OAuth2::login()
 {
     if (!configSetted)
     {
-        qCritical() << Q_FUNC_INFO << "config not setted";
+        qCritical() << "config not setted";
         clear();
         setNewState(State::NotLoggedIn);
         return;
@@ -120,7 +120,7 @@ void OAuth2::login()
 
     if (!QDesktopServices::openUrl(config.authorizationPageUrl.toString() + "?" + resultQuery))
     {
-        qCritical() << Q_FUNC_INFO << "QDesktopServices: failed to open url";
+        qCritical() << "QDesktopServices: failed to open url";
     }
 
     setNewState(State::LoginInProgress);
@@ -151,7 +151,7 @@ void OAuth2::validate()
     if (accessToken.get().isEmpty())
     {
         setNewState(State::NotLoggedIn);
-        //qWarning() << Q_FUNC_INFO << "access token is empty";
+        //qWarning() << "access token is empty";
         return;
     }
 
@@ -177,7 +177,7 @@ void OAuth2::validate()
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "login not contains in reply";
+            qWarning() << "login not contains in reply";
             revoke();
             setNewState(State::NotLoggedIn);
         }
@@ -188,18 +188,18 @@ void OAuth2::refresh()
 {
     if (config.refreshTokenUrl.isEmpty())
     {
-        //qWarning() << Q_FUNC_INFO << "refresh url is empty";
+        //qWarning() << "refresh url is empty";
         return;
     }
 
     if (refreshToken.get().isEmpty())
     {
-        //qWarning() << Q_FUNC_INFO << "refresh token is empty";
+        //qWarning() << "refresh token is empty";
         revoke();
         return;
     }
 
-    //qDebug() << Q_FUNC_INFO << "refreshing token...";
+    //qDebug() << "refreshing token...";
 
     QNetworkRequest request(config.refreshTokenUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/x-www-form-urlencoded");
@@ -218,7 +218,7 @@ void OAuth2::refresh()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
-            qWarning() << Q_FUNC_INFO << "failed to refresh token, bad reply";
+            qWarning() << "failed to refresh token, bad reply";
             revoke();
             return;
         }
@@ -228,7 +228,7 @@ void OAuth2::refresh()
         const QString accessToken_ = root.value("access_token").toString();
         if (accessToken_.isEmpty())
         {
-            qCritical() << Q_FUNC_INFO << "failed to refresh token, access token is empty";
+            qCritical() << "failed to refresh token, access token is empty";
             revoke();
             return;
         }
@@ -236,7 +236,7 @@ void OAuth2::refresh()
         const QString refreshToken_ = root.value("refresh_token").toString();
         if (refreshToken_.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "failed to refresh token, refresh token is empty";
+            qWarning() << "failed to refresh token, refresh token is empty";
             revoke();
             return;
         }
@@ -244,7 +244,7 @@ void OAuth2::refresh()
         accessToken.set(accessToken_);
         refreshToken.set(refreshToken_);
 
-        //qDebug() << Q_FUNC_INFO << "token successful refreshed";
+        //qDebug() << "token successful refreshed";
 
         validate();
     });
@@ -281,7 +281,7 @@ void OAuth2::requestOAuthTokenByCode(const QString &code)
 {
     if (config.requestTokenUrl.isEmpty())
     {
-        qCritical() << Q_FUNC_INFO << "request token url is empty";
+        qCritical() << "request token url is empty";
         return;
     }
 
@@ -312,14 +312,14 @@ void OAuth2::requestOAuthTokenByCode(const QString &code)
         const QString accessToken_ = root.value("access_token").toString();
         if (accessToken_.isEmpty())
         {
-            qCritical() << Q_FUNC_INFO << "access token is empty";
+            qCritical() << "access token is empty";
             return;
         }
 
         const QString refreshToken_ = root.value("refresh_token").toString();
         if (refreshToken_.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "refresh token is empty";
+            qWarning() << "refresh token is empty";
         }
 
         setNewState(State::LoginInProgress);

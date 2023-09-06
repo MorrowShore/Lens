@@ -35,7 +35,7 @@ static std::vector<unsigned char> validateKey(const char* rawKey)
         length = 256 / 8;
         break;
     default:
-        qCritical() << Q_FUNC_INFO << "invalid key length type";
+        qCritical() << "invalid key length type";
         abort();
         return std::vector<unsigned char>();
     }
@@ -43,7 +43,7 @@ static std::vector<unsigned char> validateKey(const char* rawKey)
     const size_t rawKeySize = strlen(rawKey);
     if (rawKeySize != length)
     {
-        qWarning() << Q_FUNC_INFO << "key length =" << rawKeySize << ", expected =" << length << ", the key will be truncated or padded";
+        qWarning() << "key length =" << rawKeySize << ", expected =" << length << ", the key will be truncated or padded";
     }
 
     std::vector<unsigned char> result;
@@ -124,11 +124,11 @@ std::optional<QByteArray> Crypto::encrypt(const QByteArray &rawData)
     }
     catch (const std::length_error& error)
     {
-        qWarning() << Q_FUNC_INFO << "failed to encrypt, what =" << error.what();
+        qWarning() << "failed to encrypt, what =" << error.what();
     }
     catch (...)
     {
-        qWarning() << Q_FUNC_INFO << "failed to encrypt";
+        qWarning() << "failed to encrypt";
 
     }
 
@@ -151,7 +151,7 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
         const std::vector<unsigned char> rawResult = aes.DecryptECB(data, CryptoKey);
         if (rawResult.size() < 2)
         {
-            qWarning() << Q_FUNC_INFO << "failed to decrypt, encryption size less than 2";
+            qWarning() << "failed to decrypt, encryption size less than 2";
             return std::nullopt;
         }
 
@@ -160,7 +160,7 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
 
         if (checksum != calcChecksumWithoutLastByte(rawResult))
         {
-            qWarning() << Q_FUNC_INFO << "failed to decrypt, wrong checksum";
+            qWarning() << "failed to decrypt, wrong checksum";
             return std::nullopt;
         }
 
@@ -168,7 +168,7 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
 
         if (resultLength < 0)
         {
-            qWarning() << Q_FUNC_INFO << "failed to decrypt, added symbols less 0";
+            qWarning() << "failed to decrypt, added symbols less 0";
             return std::nullopt;
         }
 
@@ -184,7 +184,7 @@ std::optional<QByteArray> Crypto::decrypt(const QByteArray &rawData)
     }
     catch (...)
     {
-        qWarning() << Q_FUNC_INFO << "failed to decrypt";
+        qWarning() << "failed to decrypt";
     }
 
     return std::nullopt;
@@ -213,20 +213,20 @@ bool Crypto::test(const QByteArray &data)
     const std::optional<QByteArray> encrypted = encrypt(data);
     if (!encrypted)
     {
-        qCritical() << Q_FUNC_INFO << "failed to encrypt" << QString::fromUtf8(data);
+        qCritical() << "failed to encrypt" << QString::fromUtf8(data);
         return false;
     }
 
     const std::optional<QByteArray> decrypted = decrypt(*encrypted);
     if (!decrypted)
     {
-        qCritical() << Q_FUNC_INFO << "failed to decrypt" << *encrypted << ", source =" << QString::fromUtf8(data);
+        qCritical() << "failed to decrypt" << *encrypted << ", source =" << QString::fromUtf8(data);
         return false;
     }
 
     if (*decrypted != data)
     {
-        qCritical() << Q_FUNC_INFO << "decrypted data does not match, source =" << QString::fromUtf8(data) << ", decrypted =" << QString::fromUtf8(*decrypted);
+        qCritical() << "decrypted data does not match, source =" << QString::fromUtf8(data) << ", decrypted =" << QString::fromUtf8(*decrypted);
         return false;
     }
 

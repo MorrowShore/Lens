@@ -4,6 +4,7 @@
 #include "applicationinfo.h"
 #include "qmlutils.h"
 #include "chatwindow.h"
+#include "loghandler.h"
 #include "crypto/crypto.h"
 #include <QApplication>
 #include <QIcon>
@@ -14,6 +15,7 @@
 #include <QQmlApplicationEngine>
 #include <QSplashScreen>
 #include <QDebug>
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +23,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName  (APP_INFO_COMPANYNAME_STR);
     QCoreApplication::setOrganizationDomain(APP_INFO_COMPANYDOMAIN_STR);
     QCoreApplication::setApplicationVersion(APP_INFO_PRODUCTVERSION_STR);
+
+    LogHandler::initialize();
 
     QSettings settings;
 
@@ -35,7 +39,7 @@ int main(int argc, char *argv[])
 
     if (!Crypto::test())
     {
-        qCritical() << Q_FUNC_INFO << "crypto test failed";
+        qCritical() << "crypto test failed";
     }
 
     QSplashScreen* splashScreen = new QSplashScreen(QPixmap(":/icon.ico"));

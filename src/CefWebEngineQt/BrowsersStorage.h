@@ -22,7 +22,7 @@ public:
     {
         if (byBrowserId.find(browserId) != byBrowserId.end())
         {
-            qWarning() << Q_FUNC_INFO << "browser id" << browserId << "already exists";
+            qWarning() << "browser id" << browserId << "already exists";
         }
 
         byBrowserId[browserId] = browser;
@@ -32,7 +32,7 @@ public:
     {
         if (byMessageId.find(messageId) != byMessageId.end())
         {
-            qWarning() << Q_FUNC_INFO << "message id" << messageId << "already exists";
+            qWarning() << "message id" << messageId << "already exists";
         }
 
         byMessageId[messageId] = browser;
@@ -44,7 +44,7 @@ public:
 
         if (it == byMessageId.end())
         {
-            qWarning() << Q_FUNC_INFO << "message id" << messageId << "not found";
+            qWarning() << "message id" << messageId << "not found";
             return;
         }
 

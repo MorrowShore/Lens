@@ -58,13 +58,13 @@ void MessagesModel::addMessage(const std::shared_ptr<Message>& message)
 
     if (!message)
     {
-        qWarning() << Q_FUNC_INFO << "message is null";
+        qWarning() << "message is null";
         return;
     }
 
     if (message->getId().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "message id is empty";
+        qWarning() << "message id is empty";
         return;
     }
 
@@ -89,7 +89,7 @@ void MessagesModel::addMessage(const std::shared_ptr<Message>& message)
     {
         if (messagesById.contains(message->getId()))
         {
-            qCritical() << Q_FUNC_INFO << "ignore message because this id" << message->getId() << "already exists";
+            qCritical() << "ignore message because this id" << message->getId() << "already exists";
             return;
         }
 
@@ -109,7 +109,7 @@ void MessagesModel::addMessage(const std::shared_ptr<Message>& message)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "author is null";
+            qWarning() << "author is null";
         }
 
         messages.append(message);
@@ -227,7 +227,7 @@ void MessagesModel::addAuthor(const std::shared_ptr<Author>& author)
 {
     if (!author)
     {
-        qWarning() << Q_FUNC_INFO << "author is null";
+        qWarning() << "author is null";
         return;
     }
 

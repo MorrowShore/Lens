@@ -103,7 +103,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     {
         if (!element)
         {
-            qCritical() << Q_FUNC_INFO << "!element";
+            qCritical() << "!element";
             return;
         }
 
@@ -124,12 +124,12 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << "WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << ": WebSocket connected";
+        //qDebug() << "WebSocket connected";
 
         heartbeatAcknowledgementTimer.setInterval(60 * 1000);
         heartbeatAcknowledgementTimer.start();
@@ -137,13 +137,13 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << ": WebSocket disconnected";
+        //qDebug() << "WebSocket disconnected";
         processDisconnected();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&heartbeatTimer, &QTimer::timeout, this, &Discord::sendHeartbeat);
@@ -156,7 +156,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
             return;
         }
 
-        qDebug() << Q_FUNC_INFO << "heartbeat acknowledgement timeout, disconnect";
+        qDebug() << "heartbeat acknowledgement timeout, disconnect";
         socket.close();
     });
 
@@ -256,7 +256,7 @@ void Discord::reconnectImpl()
         QString url = root.value("url").toString();
         if (url.isEmpty())
         {
-            qCritical() << Q_FUNC_INFO << "url is empty";
+            qCritical() << "url is empty";
         }
         else
         {
@@ -317,7 +317,7 @@ void Discord::onWebSocketReceived(const QString &rawData)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown op code" << opCode;
+        qWarning() << "unknown op code" << opCode;
     }
 }
 
@@ -359,7 +359,7 @@ QNetworkRequest Discord::createRequestAsBot(const QUrl &url) const
 {
     if (!isCanConnect())
     {
-        qWarning() << Q_FUNC_INFO << "can not connect";
+        qWarning() << "can not connect";
         return QNetworkRequest();
     }
 
@@ -501,7 +501,7 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "GUILD_MEMBER_UPDATE for unknown user, data =" << data;
+            qWarning() << "GUILD_MEMBER_UPDATE for unknown user, data =" << data;
         }
     }
     else if (eventType == "MESSAGE_DELETE")
@@ -511,7 +511,7 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unkown event type" << eventType << ", data =" << data;
+        qWarning() << "unkown event type" << eventType << ", data =" << data;
     }
 }
 
@@ -525,7 +525,7 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
 {
     if (!info.guilds->isGuildsLoaded())
     {
-        qWarning() << Q_FUNC_INFO << "ignore message, guilds not loaded yet";
+        qWarning() << "ignore message, guilds not loaded yet";
         return;
     }
 
@@ -540,7 +540,7 @@ void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType << ", message =" << jsonMessage;
+        qWarning() << "unknown message type" << messageType << ", message =" << jsonMessage;
     }
 }
 
@@ -550,7 +550,7 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
     const std::shared_ptr<Guild> guild = info.guilds->getGuild(guildId);
     if (!guild)
     {
-        qWarning() << Q_FUNC_INFO << "guild not found, guild id =" << guildId;
+        qWarning() << "guild not found, guild id =" << guildId;
         return;
     }
 
@@ -632,7 +632,7 @@ void Discord::parseMessageCreateDefault(const QJsonObject &jsonMessage)
 
     if (contents.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "contents is empty";
+        qWarning() << "contents is empty";
         return;
     }
 
@@ -674,7 +674,7 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
     const std::shared_ptr<Guild> guild = info.guilds->getGuild(guildId);
     if (!guild)
     {
-        qWarning() << Q_FUNC_INFO << "guild not found, guild id =" << guildId;
+        qWarning() << "guild not found, guild id =" << guildId;
         return;
     }
 
@@ -755,7 +755,7 @@ QStringList Discord::getDestination(const Guild &guild, const Channel &channel) 
     {
         if (guild.getName().isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "guild with id" << guild.getId() << "has empty name";
+            qWarning() << "guild with id" << guild.getId() << "has empty name";
         }
 
         result.append(guild.getName());
@@ -765,7 +765,7 @@ QStringList Discord::getDestination(const Guild &guild, const Channel &channel) 
     {
         if (channel.getName().isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "channel with id" << channel.getId() << "has empty name";
+            qWarning() << "channel with id" << channel.getId() << "has empty name";
         }
 
         result.append(channel.getName());

@@ -43,7 +43,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&sse, &SseManager::started, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "SSE started";
+        //qDebug() << "SSE started";
 
         if (!state.connected && !state.streamId.isEmpty() && enabled.get())
         {
@@ -55,7 +55,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&sse, &SseManager::stopped, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "SSE stopped";
+        //qDebug() << "SSE stopped";
 
         state.connected = false;
         emit connectedChanged(false);
@@ -69,7 +69,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&sse, &SseManager::readyRead, this, [this](const QByteArray& data)
     {
-        //qDebug() << Q_FUNC_INFO << "SSE received some data";
+        //qDebug() << "SSE received some data";
 
         if (data == ":" || data == ": -1")
         {
@@ -80,7 +80,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
         const QJsonDocument doc = QJsonDocument::fromJson(data, &jsonError);
         if (jsonError.error != QJsonParseError::ParseError::NoError)
         {
-            qWarning() << Q_FUNC_INFO << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << "data:" << data;
+            qWarning() << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << "data:" << data;
         }
 
         if (doc.isObject())
@@ -89,7 +89,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "document is not object";
+            qWarning() << "document is not object";
         }
     });
 
@@ -244,7 +244,7 @@ void Rumble::requestVideoPage()
         const QString chatId = parseChatId(data);
         if (chatId.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "failed to parse chat id";
+            qWarning() << "failed to parse chat id";
         }
         else
         {
@@ -254,7 +254,7 @@ void Rumble::requestVideoPage()
         const QString videoId = parseVideoId(data);
         if (videoId.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "failed to parse video id";
+            qWarning() << "failed to parse video id";
         }
         else
         {
@@ -391,7 +391,7 @@ void Rumble::onSseReceived(const QJsonObject &root)
             const QString userId = message.value("user_id").toString();
             if (!users.contains(userId))
             {
-                qWarning() << Q_FUNC_INFO << "user id" << userId << "not found of message" << message;
+                qWarning() << "user id" << userId << "not found of message" << message;
                 continue;
             }
 
@@ -400,7 +400,7 @@ void Rumble::onSseReceived(const QJsonObject &root)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown SSE message type" << type;
+        qWarning() << "unknown SSE message type" << type;
     }
 }
 
@@ -427,7 +427,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "unknown badge" << badgeName;
+            qWarning() << "unknown badge" << badgeName;
             rightBadges.append("qrc:/resources/images/unknown-badge.png");
         }
     }
@@ -481,7 +481,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "failed to get price, message =" << jsonMessage;
+            qWarning() << "failed to get price, message =" << jsonMessage;
             forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, DefaultHighlightedMessageColor);
         }
     }
@@ -541,7 +541,7 @@ void Rumble::parseConfig(const QJsonObject &config)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "filed to find badge url for badge" << badgeName;
+            qWarning() << "filed to find badge url for badge" << badgeName;
         }
     }
 
@@ -566,7 +566,7 @@ QColor Rumble::getDonutColor(const int64_t priceDollars) const
 {
     if (donutColors.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "donut colors is empty";
+        qWarning() << "donut colors is empty";
         return DefaultHighlightedMessageColor;
     }
 
@@ -662,7 +662,7 @@ QList<std::shared_ptr<Message::Content>> Rumble::parseBlock(const QJsonObject &b
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown block type" << type;
+        qWarning() << "unknown block type" << type;
 
     }
 

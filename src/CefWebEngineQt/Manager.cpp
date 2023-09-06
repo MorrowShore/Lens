@@ -45,7 +45,7 @@ static bool getParamStr(const QMap<QString, QString>& parameters, const QString&
 {
     if (!parameters.contains(name))
     {
-        qWarning() << Q_FUNC_INFO << "not found parameter" << name;
+        qWarning() << "not found parameter" << name;
         return false;
     }
 
@@ -57,7 +57,7 @@ static bool getParamInt64(const QMap<QString, QString>& parameters, const QStrin
 {
     if (!parameters.contains(name))
     {
-        qWarning() << Q_FUNC_INFO << "not found parameter" << name;
+        qWarning() << "not found parameter" << name;
         return false;
     }
 
@@ -67,7 +67,7 @@ static bool getParamInt64(const QMap<QString, QString>& parameters, const QStrin
     const auto tmp = str.toLongLong(&ok);
     if (!ok)
     {
-        qWarning() << Q_FUNC_INFO << "failed to convert parameter" << name << "=" << str << "to integer";
+        qWarning() << "failed to convert parameter" << name << "=" << str << "to integer";
         return false;
     }
 
@@ -80,7 +80,7 @@ static bool getParamUInt64(const QMap<QString, QString>& parameters, const QStri
 {
     if (!parameters.contains(name))
     {
-        qWarning() << Q_FUNC_INFO << "not found parameter" << name;
+        qWarning() << "not found parameter" << name;
         return false;
     }
 
@@ -90,7 +90,7 @@ static bool getParamUInt64(const QMap<QString, QString>& parameters, const QStri
     const auto tmp = str.toULongLong(&ok);
     if (!ok)
     {
-        qWarning() << Q_FUNC_INFO << "failed to convert parameter" << name << "=" << str << "to integer";
+        qWarning() << "failed to convert parameter" << name << "=" << str << "to integer";
         return false;
     }
 
@@ -103,7 +103,7 @@ static bool getParamInt(const QMap<QString, QString>& parameters, const QString&
 {
     if (!parameters.contains(name))
     {
-        qWarning() << Q_FUNC_INFO << "not found parameter" << name;
+        qWarning() << "not found parameter" << name;
         return false;
     }
 
@@ -113,7 +113,7 @@ static bool getParamInt(const QMap<QString, QString>& parameters, const QString&
     const auto tmp = str.toInt(&ok);
     if (!ok)
     {
-        qWarning() << Q_FUNC_INFO << "failed to convert parameter" << name << "=" << str << "to integer";
+        qWarning() << "failed to convert parameter" << name << "=" << str << "to integer";
         return false;
     }
 
@@ -202,7 +202,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
+                    qWarning() << "browser id" << browserId << "not found, message type =" << type;
                 }
             }
             else if (type == "ress")
@@ -253,7 +253,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "browser id" << response->browserId << "not found, message type =" << type;
+                    qWarning() << "browser id" << response->browserId << "not found, message type =" << type;
                 }
             }
             else if (type == "rese")
@@ -276,7 +276,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "browser id" << browserId << "not found, message type =" << type;
+                    qWarning() << "browser id" << browserId << "not found, message type =" << type;
                 }
             }
             else if (type == "log")
@@ -345,7 +345,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
 
                 if (!SupportedVersions.contains(version))
                 {
-                    qWarning() << Q_FUNC_INFO << "Unsupported version" << version << ", supported versions =" << SupportedVersions;
+                    qWarning() << "Unsupported version" << version << ", supported versions =" << SupportedVersions;
                 }
 
                 _initialized = true;
@@ -366,16 +366,16 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
                 }
                 else
                 {
-                    qWarning() << Q_FUNC_INFO << "unknown browser id" << browserId;
+                    qWarning() << "unknown browser id" << browserId;
                 }
             }
             else if (type == "exited")
             {
-                qWarning() << Q_FUNC_INFO << type << "recevied";
+                qWarning() << type << "recevied";
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "unknown message type" << type;
+                qWarning() << "unknown message type" << type;
             }
         }
     );
@@ -406,7 +406,7 @@ std::shared_ptr<Browser> Manager::createBrowser(const QUrl &url, const Browser::
 {
     if (!process || !isInitialized())
     {
-        qWarning() << Q_FUNC_INFO << "not initialized";
+        qWarning() << "not initialized";
         return nullptr;
     }
 
@@ -436,7 +436,7 @@ void Manager::closeBrowser(const int id)
 {
     if (!process || !isInitialized())
     {
-        qWarning() << Q_FUNC_INFO << "not initialized";
+        qWarning() << "not initialized";
         return;
     }
 
@@ -464,7 +464,7 @@ void Manager::createBrowserOnce(const QUrl &url, const Browser::Settings::Filter
 {
     if (!process || !isInitialized())
     {
-        qWarning() << Q_FUNC_INFO << "not initialized";
+        qWarning() << "not initialized";
         return;
     }
 
@@ -478,7 +478,7 @@ void Manager::createBrowserOnce(const QUrl &url, const Browser::Settings::Filter
         {
             if (!onReceived)
             {
-                qWarning() << Q_FUNC_INFO << "callback is null, browser will be closed";
+                qWarning() << "callback is null, browser will be closed";
                 browser->close();
                 return;
             }
@@ -494,7 +494,7 @@ void Manager::createBrowserOnce(const QUrl &url, const Browser::Settings::Filter
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "browser is null";
+        qWarning() << "browser is null";
     }
 }
 
@@ -504,19 +504,19 @@ void Manager::startProcess()
 
     if (!isExecutableExists())
     {
-        qWarning() << Q_FUNC_INFO << "executable" << executablePath << "not exists";
+        qWarning() << "executable" << executablePath << "not exists";
         return;
     }
 
     process = new QProcess();
     
-    connect(process, &QProcess::started, this, []() { qDebug() << Q_FUNC_INFO << "started"; });
+    connect(process, &QProcess::started, this, []() { qDebug() << "started"; });
     connect(process, &QProcess::readyRead, this, &Manager::onReadyRead);
-    connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred), this, [](QProcess::ProcessError error) { qDebug() << Q_FUNC_INFO << "error =" << error; });
-    //connect(process, &QProcess::stateChanged, this, [](const QProcess::ProcessState state) { qDebug() << Q_FUNC_INFO << "state =" << state; });
+    connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred), this, [](QProcess::ProcessError error) { qDebug() << "error =" << error; });
+    //connect(process, &QProcess::stateChanged, this, [](const QProcess::ProcessState state) { qDebug() << "state =" << state; });
     connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [this](int exitCode, QProcess::ExitStatus exitStatus)
     {
-        qDebug() << Q_FUNC_INFO << "exit code =" << exitCode << ", exit status =" << exitStatus;
+        qDebug() << "exit code =" << exitCode << ", exit status =" << exitStatus;
         if (process)
         {
             process->deleteLater();

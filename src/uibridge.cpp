@@ -54,7 +54,7 @@ std::shared_ptr<UIBridgeElement> UIBridge::addLineEdit(Setting<QString> *setting
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "setting is null";
+        qWarning() << "setting is null";
     }
 
     element->updateItemProperties();
@@ -114,7 +114,7 @@ void UIBridge::addElement(const std::shared_ptr<UIBridgeElement> &element)
 {
     if (!element)
     {
-        qCritical() << Q_FUNC_INFO << "element is null";
+        qCritical() << "element is null";
         return;
     }
 
@@ -135,7 +135,7 @@ int UIBridge::getElementType(const int index) const
 {
     if (index < 0 || index >= elements.count())
     {
-        qCritical() << Q_FUNC_INFO << "invalid index" << index;
+        qCritical() << "invalid index" << index;
         return -1;
     }
 
@@ -146,7 +146,7 @@ void UIBridge::bindQuickItem(const int index, QQuickItem *item)
 {
     if (index < 0 || index >= elements.count())
     {
-        qCritical() << Q_FUNC_INFO << "invalid index" << index;
+        qCritical() << "invalid index" << index;
         return ;
     }
 

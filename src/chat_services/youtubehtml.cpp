@@ -133,7 +133,7 @@ void YouTubeHtml::onReplyChatPage()
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
     {
-        qDebug() << Q_FUNC_INFO << "!reply";
+        qDebug() << "!reply";
         return;
     }
 
@@ -143,7 +143,7 @@ void YouTubeHtml::onReplyChatPage()
     if (rawData.isEmpty())
     {
         processBadChatReply();
-        qDebug() << Q_FUNC_INFO << ":rawData is empty";
+        qDebug() << ":rawData is empty";
         return;
     }
 
@@ -161,7 +161,7 @@ void YouTubeHtml::onReplyChatPage()
     const int start = rawData.indexOf("\"actions\":[");
     if (start == -1)
     {
-        qDebug() << Q_FUNC_INFO << ": not found actions";
+        qDebug() << "not found actions";
         AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "not_found_actions_from_html_youtube.html", rawData);
         processBadChatReply();
         return;
@@ -227,7 +227,7 @@ void YouTubeHtml::onTimeoutRequestStreamPage()
     QNetworkReply* reply = network.get(request);
     if (!reply)
     {
-        qDebug() << Q_FUNC_INFO << ": !reply";
+        qDebug() << "!reply";
         return;
     }
     
@@ -248,7 +248,7 @@ void YouTubeHtml::onReplyStreamPage()
 
     if (rawData.isEmpty())
     {
-        qDebug() << Q_FUNC_INFO << ":rawData is empty";
+        qDebug() << ":rawData is empty";
         processBadLivePageReply();
         return;
     }
@@ -274,7 +274,7 @@ void YouTubeHtml::processBadChatReply()
     {
         if (state.connected && !state.streamId.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "too many bad chat replies! Disonnecting...";
+            qWarning() << "too many bad chat replies! Disonnecting...";
 
             state = State();
 
@@ -293,7 +293,7 @@ void YouTubeHtml::processBadLivePageReply()
 
     if (badLivePageReplies >= MaxBadLivePageReplies)
     {
-        qWarning() << Q_FUNC_INFO << "too many bad live page replies!";
+        qWarning() << "too many bad live page replies!";
         state.viewersCount = -1;
 
         emit stateChanged();

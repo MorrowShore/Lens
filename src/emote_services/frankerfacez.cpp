@@ -18,7 +18,7 @@ QString FrankerFaceZ::findEmoteUrl(const QString &name) const
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name is empty for global emote" << name;
+            qWarning() << "name is empty for global emote" << name;
         }
         else
         {
@@ -31,7 +31,7 @@ QString FrankerFaceZ::findEmoteUrl(const QString &name) const
         const QString& url = it.value();
         if (url.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name is empty for global emote" << name;
+            qWarning() << "name is empty for global emote" << name;
         }
         else
         {

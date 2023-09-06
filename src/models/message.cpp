@@ -148,7 +148,7 @@ QJsonObject Message::toJson(const Author& author) const
     {
         if (!content)
         {
-            qWarning() << Q_FUNC_INFO << "content is null";
+            qWarning() << "content is null";
         }
 
         QJsonObject jsonContent;
@@ -215,7 +215,7 @@ void Message::updateHtml()
     {
         if (!content)
         {
-            qWarning() << Q_FUNC_INFO << "content is null";
+            qWarning() << "content is null";
             continue;
         }
 

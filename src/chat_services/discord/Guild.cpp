@@ -8,7 +8,7 @@ Guild* Guild::fromJson(const QJsonObject &object, GuildsStorage& storage, Discor
 
     if (id.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "id is empty";
+        qWarning() << "id is empty";
         return nullptr;
     }
 
@@ -33,7 +33,7 @@ Channel &Guild::getChannel(const QString &id)
         return channels[id];
     }
 
-    qWarning() << Q_FUNC_INFO << "channel with id" << id << "not found";
+    qWarning() << "channel with id" << id << "not found";
 
     static Channel channel;
 
@@ -54,12 +54,12 @@ void Guild::addChannel(const Channel &channel)
 {
     if (channel.getId().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "channel has empty id, name =" << channel.getName();
+        qWarning() << "channel has empty id, name =" << channel.getName();
     }
 
     if (channel.getName().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "channel has empty name, id =" << channel.getId();
+        qWarning() << "channel has empty name, id =" << channel.getId();
     }
 
     channels.insert(channel.getId(), channel);
@@ -84,7 +84,7 @@ void Guild::requestChannels(std::function<void()> onLoaded)
         const QJsonDocument doc = QJsonDocument::fromJson(data);
         if (!doc.isArray())
         {
-            qWarning() << Q_FUNC_INFO << "document is not array, doc =" << doc;
+            qWarning() << "document is not array, doc =" << doc;
             return;
         }
 
@@ -99,7 +99,7 @@ void Guild::requestChannels(std::function<void()> onLoaded)
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "failed to parse channel, object =" << object;
+                qWarning() << "failed to parse channel, object =" << object;
             }
         }
 

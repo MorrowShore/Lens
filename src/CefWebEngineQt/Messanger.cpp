@@ -41,7 +41,7 @@ int64_t Messanger::send(const Message &rawMessage, QProcess *process)
 {
     if (!process)
     {
-        qWarning() << Q_FUNC_INFO << "process is null";
+        qWarning() << "process is null";
         return -1;
     }
 
@@ -76,14 +76,14 @@ void Messanger::parseLine(const QByteArray &line_)
         QList<QByteArray> titleParts = line.split(' ');
         if (titleParts.count() < 3)
         {
-            qWarning() << Q_FUNC_INFO << "Wrong message: not found message size or id";
+            qWarning() << "Wrong message: not found message size or id";
             return;
         }
 
         const QString type = titleParts[0].trimmed();
         if (type.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "Wrong message: name is empty";
+            qWarning() << "Wrong message: name is empty";
             return;
         }
 
@@ -91,14 +91,14 @@ void Messanger::parseLine(const QByteArray &line_)
         const int64_t size = titleParts[1].trimmed().toLongLong(&ok);
         if (!ok)
         {
-            qWarning() << Q_FUNC_INFO << "Wrong message: failed to convert size";
+            qWarning() << "Wrong message: failed to convert size";
             return;
         }
 
         const int64_t id = titleParts[2].trimmed().toLongLong(&ok);
         if (!ok)
         {
-            qWarning() << Q_FUNC_INFO << "Wrong message: failed to convert message id";
+            qWarning() << "Wrong message: failed to convert message id";
             return;
         }
 
@@ -120,7 +120,7 @@ void Messanger::parseLine(const QByteArray &line_)
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "Wrong message: failed to find parameter separator";
+                qWarning() << "Wrong message: failed to find parameter separator";
                 return;
             }
         }
@@ -128,7 +128,7 @@ void Messanger::parseLine(const QByteArray &line_)
         const QString name = line.left(separatorPos).trimmed();
         if (name.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "Wrong message: parameter name is empty";
+            qWarning() << "Wrong message: parameter name is empty";
             return;
         }
 

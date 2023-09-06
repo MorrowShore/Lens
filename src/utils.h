@@ -22,6 +22,7 @@ namespace AxelChat
 {
 
 static const QByteArray UserAgentNetworkHeaderName = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36";
+static const QString DateTimeFileNameFormat = "yyyy-MM-ddThh-mm-ss.zzz";
 
 static QString simplifyUrl(const QString& url)
 {
@@ -286,7 +287,7 @@ static QByteArray find(const QByteArray& data, const QByteArray& prefix, const Q
 
     if (resultLastPos == -1)
     {
-        //qDebug() << Q_FUNC_INFO << "not found '\"'";
+        //qDebug() << "not found '\"'";
         return QByteArray();
     }
 
@@ -297,7 +298,7 @@ static QColor generateColor(const QString& hash, const QList<QColor>& colors)
 {
     if (colors.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "colors is empty";
+        qWarning() << "colors is empty";
         return QColor();
     }
 

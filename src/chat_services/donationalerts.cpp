@@ -109,14 +109,14 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << "webSocket state changed:" << state;
+        //qDebug() << "webSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &DonationAlerts::onReceiveWebSocket);
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        //qDebug() << Q_FUNC_INFO << "webSocket connected";
+        //qDebug() << "webSocket connected";
 
         checkPingTimer.setInterval(CheckPingSendTimeout);
         checkPingTimer.start();
@@ -129,7 +129,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        qDebug() << Q_FUNC_INFO << "webSocket disconnected";
+        qDebug() << "webSocket disconnected";
 
         if (state.connected)
         {
@@ -140,7 +140,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
-        qDebug() << Q_FUNC_INFO << "webSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -169,7 +169,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
             return;
         }
 
-        qDebug() << Q_FUNC_INFO << "check ping timeout, disconnect";
+        qDebug() << "check ping timeout, disconnect";
         socket.close();
     });
 
@@ -223,7 +223,7 @@ void DonationAlerts::updateUI()
 {
     if (!authStateInfo)
     {
-        qCritical() << Q_FUNC_INFO << "!authStateInfo";
+        qCritical() << "!authStateInfo";
     }
 
     switch (auth.getState())
@@ -307,7 +307,7 @@ void DonationAlerts::requestUser()
 
         if (info.userName.isEmpty() || info.socketConnectionToken.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "name or socket token is empty, data =" << root;
+            qWarning() << "name or socket token is empty, data =" << root;
             return;
         }
 
@@ -419,7 +419,7 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
         return;
     }
 
-    qWarning() << Q_FUNC_INFO << "unknown message:" << rawData;
+    qWarning() << "unknown message:" << rawData;
 }
 
 void DonationAlerts::send(const QJsonObject &params, const int method)
@@ -446,7 +446,7 @@ void DonationAlerts::sendConnectToChannels(const QList<PrivateChannelInfo> &chan
 {
     if (channels.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "channels is empty";
+        qWarning() << "channels is empty";
         return;
     }
 
@@ -534,7 +534,7 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << "unknown message type" << messageType;
+        qWarning() << "unknown message type" << messageType;
     }
 
     if (!contents.isEmpty())

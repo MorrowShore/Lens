@@ -139,7 +139,7 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
         std::shared_ptr<Message> message = messages[i];
         if (!message)
         {
-            qWarning() << Q_FUNC_INFO << "message is null";
+            qWarning() << "message is null";
             continue;
         }
 
@@ -151,7 +151,7 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
         std::shared_ptr<Author> author = authors[i];
         if (!author)
         {
-            qWarning() << Q_FUNC_INFO << "author is null";
+            qWarning() << "author is null";
             continue;
         }
 
@@ -239,7 +239,7 @@ void ChatHandler::playNewMessageSound()
         qDebug() << "sound not exists";
     }
 #else
-    qWarning() << Q_FUNC_INFO << ": module multimedia not included";
+    qWarning() << "module multimedia not included";
 #endif
 }
 
@@ -296,7 +296,7 @@ void ChatHandler::onConnectedChanged(const bool connected)
     ChatService* service = qobject_cast<ChatService*>(sender());
     if (!service)
     {
-        qCritical() << Q_FUNC_INFO << "!service";
+        qCritical() << "!service";
         return;
     }
 
@@ -332,7 +332,7 @@ void ChatHandler::updateProxy()
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 
@@ -382,7 +382,7 @@ void ChatHandler::addService()
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << "Failed to cast to Twitch";
+            qWarning() << "Failed to cast to Twitch";
         }
     }
 }
@@ -721,7 +721,7 @@ int ChatHandler::connectedCount() const
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 
@@ -742,7 +742,7 @@ int ChatHandler::getViewersTotalCount() const
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 
@@ -850,7 +850,7 @@ ChatService *ChatHandler::getServiceByType(int type) const
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "service is null";
+            qWarning() << "service is null";
             continue;
         }
 

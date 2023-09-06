@@ -61,7 +61,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
         Q_UNUSED(state)
-        //qDebug() << Q_FUNC_INFO << ": WebSocket state changed:" << state;
+        //qDebug() << "WebSocket state changed:" << state;
     });
 
     QObject::connect(&socket, &QWebSocket::textMessageReceived, this, &Trovo::onWebSocketReceived);
@@ -104,7 +104,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << Q_FUNC_INFO << ": WebSocket error:" << error_ << ":" << socket.errorString();
+        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     timerPing.setInterval(PingPeriod);
@@ -225,7 +225,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
         }
         else
         {
-            qWarning() << Q_FUNC_INFO << ": unknown nonce" << nonce << ", raw data =" << rawData;
+            qWarning() << "unknown nonce" << nonce << ", raw data =" << rawData;
         }
     }
     else if (type == "CHAT")
@@ -254,13 +254,13 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             }
             else if (type != 0)
             {
-                qWarning() << Q_FUNC_INFO << ": unknown message type" << type << ", message =" << jsonMessage;
+                qWarning() << "unknown message type" << type << ", message =" << jsonMessage;
                 continue;
             }
 
             if (content.isEmpty() || authorName.isEmpty() || authorIdNum == 0 || !ok)
             {
-                qWarning() << Q_FUNC_INFO << ": ignore not valid message, message =" << jsonMessage;
+                qWarning() << "ignore not valid message, message =" << jsonMessage;
                 continue;
             }
 
@@ -405,12 +405,12 @@ void Trovo::onWebSocketReceived(const QString& rawData)
     }
     else
     {
-        qWarning() << Q_FUNC_INFO << ": unknown message type" << type << ", raw data =" << rawData;
+        qWarning() << "unknown message type" << type << ", raw data =" << rawData;
     }
 
     if (!error.isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << ": error" << error << ", raw data =" << rawData;
+        qWarning() << "error" << error << ", raw data =" << rawData;
     }
 }
 
@@ -479,7 +479,7 @@ void Trovo::requestChannelId()
         const QJsonArray users = QJsonDocument::fromJson(data).object().value("users").toArray();
         if (users.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "users is empty";
+            qWarning() << "users is empty";
             return;
         }
 
@@ -514,7 +514,7 @@ void Trovo::requestChatToken()
         const QString token = QJsonDocument::fromJson(data).object().value("token").toString().trimmed();
         if (token.isEmpty())
         {
-            qWarning() << Q_FUNC_INFO << "token is empty";
+            qWarning() << "token is empty";
             return;
         }
 

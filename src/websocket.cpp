@@ -27,13 +27,13 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
         QWebSocket* client = server.nextPendingConnection();
         if (!client)
         {
-            qCritical() << Q_FUNC_INFO << ": !client";
+            qCritical() << "!client";
             return;
         }
 
         connect(client, &QWebSocket::textMessageReceived, this, [](const QString &message)
         {
-            qInfo() << ": RECEIVED:" << message;
+            qInfo() << "RECEIVED:" << message;
         });
 
         connect(client, &QWebSocket::disconnected, this, [this]
@@ -45,7 +45,7 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
             const int removedCount = clients.removeAll(client);
             if (removedCount != 1)
             {
-                qWarning() << Q_FUNC_INFO << ": removed clients count != 1";
+                qWarning() << "removed clients count != 1";
             }
         });
 
@@ -127,7 +127,7 @@ void WebSocket::sendHelloToClient(QWebSocket *client)
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "servies is null";
+            qWarning() << "servies is null";
             continue;
         }
 
@@ -156,7 +156,7 @@ void WebSocket::sendMessagesToClient(const QList<std::shared_ptr<Message>> &mess
     {
         if (!message)
         {
-            qWarning() << Q_FUNC_INFO << "message is null";
+            qWarning() << "message is null";
             continue;
         }
 
@@ -169,7 +169,7 @@ void WebSocket::sendMessagesToClient(const QList<std::shared_ptr<Message>> &mess
         const std::shared_ptr<Author> author = chatHandler.getMessagesModel().getAuthor(authorId);
         if (!author)
         {
-            qCritical() << Q_FUNC_INFO << ": author id" << authorId << "not found, message id =" << message->getId();
+            qCritical() << "author id" << authorId << "not found, message id =" << message->getId();
             continue;
         }
 
@@ -195,7 +195,7 @@ void WebSocket::sendStateToClient(QWebSocket *client)
     {
         if (!service)
         {
-            qWarning() << Q_FUNC_INFO << "servies is null";
+            qWarning() << "servies is null";
             continue;
         }
 

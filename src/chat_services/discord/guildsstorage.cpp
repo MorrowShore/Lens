@@ -16,7 +16,7 @@ std::shared_ptr<Guild> GuildsStorage::getGuild(const QString &id) const
         return guilds[id];
     }
 
-    qWarning() << Q_FUNC_INFO << "guild with id" << id << "not found";
+    qWarning() << "guild with id" << id << "not found";
 
     return nullptr;
 }
@@ -45,7 +45,7 @@ void GuildsStorage::requestGuilds(std::function<void()> onLoaded)
         const QJsonDocument doc = QJsonDocument::fromJson(data);
         if (!doc.isArray())
         {
-            qWarning() << Q_FUNC_INFO << "document is not array, doc =" << doc;
+            qWarning() << "document is not array, doc =" << doc;
             return;
         }
 
@@ -72,7 +72,7 @@ void GuildsStorage::requestGuilds(std::function<void()> onLoaded)
             }
             else
             {
-                qWarning() << Q_FUNC_INFO << "failed to parse guild";
+                qWarning() << "failed to parse guild";
             }
         }
 
@@ -91,19 +91,19 @@ void GuildsStorage::addGuild(std::shared_ptr<Guild> guild)
 {
     if (!guild)
     {
-        qWarning() << Q_FUNC_INFO << "guild is null";
+        qWarning() << "guild is null";
         return;
     }
 
     if (guild->getId().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "guild has empty id, ignore, name =" << guild->getName();
+        qWarning() << "guild has empty id, ignore, name =" << guild->getName();
         return;
     }
 
     if (guild->getName().isEmpty())
     {
-        qWarning() << Q_FUNC_INFO << "guild has empty name, id =" << guild->getId();
+        qWarning() << "guild has empty name, id =" << guild->getId();
     }
 
     guilds.insert(guild->getId(), guild);
@@ -117,7 +117,7 @@ bool GuildsStorage::checkChannelsLoaded() const
     {
         if (!guild)
         {
-            qWarning() << Q_FUNC_INFO << "guild is null";
+            qWarning() << "guild is null";
             continue;
         }
 
