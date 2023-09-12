@@ -1,5 +1,6 @@
 #include "qmlutils.h"
 #include "utils.h"
+#include "loghandler.h"
 #include <QProcess>
 #include <QApplication>
 #include <QQmlEngine>
@@ -64,6 +65,11 @@ void QMLUtils::restartApplication()
 {
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     qApp->quit();
+}
+
+void QMLUtils::openLogDirectory()
+{
+    LogHandler::openDirectory();
 }
 
 bool QMLUtils::enabledHardwareGraphicsAccelerator() const

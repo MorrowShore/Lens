@@ -39,11 +39,6 @@
         <source>Built-in commands</source>
         <translation>Встроенные команды</translation>
     </message>
-    <message>
-        <location filename="chatbot.cpp" line="279"/>
-        <source>2nd Channel Edition</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>ChatHandler</name>
@@ -52,7 +47,7 @@
         <translation type="vanished">Пользователь %1</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="188"/>
+        <location filename="chathandler.cpp" line="210"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
@@ -106,7 +101,7 @@
         <translation type="vanished">%1 отключён: %2</translation>
     </message>
     <message>
-        <location filename="chathandler.cpp" line="293"/>
+        <location filename="chathandler.cpp" line="315"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <oldsource>%1: author &quot;%2&quot; changed name to &quot;%3&quot;</oldsource>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
@@ -569,22 +564,22 @@
         <translation type="vanished">Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="71"/>
+        <location filename="chat_services/discord/discord.cpp" line="72"/>
         <source>Application ID</source>
         <translation>ID приложения</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="72"/>
+        <location filename="chat_services/discord/discord.cpp" line="73"/>
         <source>Bot token</source>
         <translation>Токен бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="73"/>
+        <location filename="chat_services/discord/discord.cpp" line="74"/>
         <source>Create an app in the Discord Developer Portal</source>
         <translation>Создайте приложение в Discord Developer Portal</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="74"/>
+        <location filename="chat_services/discord/discord.cpp" line="75"/>
         <source>Open Discord Developer Portal</source>
         <translation>Открыть Discord Developer Portal</translation>
     </message>
@@ -594,17 +589,17 @@
         <translation type="vanished">Найдите и вставьте ID приложения (Application ID)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="79"/>
+        <location filename="chat_services/discord/discord.cpp" line="80"/>
         <source>Create a bot (in Bot section)</source>
         <translation>Создайте бота (в разделе Bot)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="80"/>
+        <location filename="chat_services/discord/discord.cpp" line="81"/>
         <source>Allow the bot to read the message content (Message Content Intent checkbox)</source>
         <translation>Разрешите боту чтение содержания сообщейний (галочка Message Content Intent)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="81"/>
+        <location filename="chat_services/discord/discord.cpp" line="82"/>
         <source>Reset the token (button Reset Token). The bot&apos;s previous token will become invalid</source>
         <translation>Сбросьте токен (кнопка Reset Token). Предыдущий токен бота станет недействительным</translation>
     </message>
@@ -614,36 +609,36 @@
         <translation type="vanished">Скопируйте и вставьте токен бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="78"/>
+        <location filename="chat_services/discord/discord.cpp" line="79"/>
         <source>Copy the Application ID and paste above</source>
         <oldsource>Copy Application ID and paste above</oldsource>
         <translation>Скопируйте ID приложения (Application ID) и вставьте выше</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="82"/>
+        <location filename="chat_services/discord/discord.cpp" line="83"/>
         <source>DON&apos;T DISCLOSE THE BOT&apos;S TOKEN!</source>
         <translation>НЕ РАЗГЛАШАЙТЕ ТОКЕН БОТА!</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="82"/>
+        <location filename="chat_services/discord/discord.cpp" line="83"/>
         <source>Copy the bot token and paste above</source>
         <oldsource>Copy bot token and paste above</oldsource>
         <translation>Скопируйте токен бота и вставьте выше</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="83"/>
+        <location filename="chat_services/discord/discord.cpp" line="84"/>
         <source>Add the bot to the servers you need</source>
         <oldsource>Add the bot to the servers you need, while allowing reading messages</oldsource>
         <translation>Добавьте бота к нужным вам серверам</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="85"/>
+        <location filename="chat_services/discord/discord.cpp" line="86"/>
         <source>Add bot to server</source>
         <oldsource>Connect bot to server</oldsource>
         <translation>Добавить бота на сервер</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="93"/>
+        <location filename="chat_services/discord/discord.cpp" line="94"/>
         <source>To display private chats/channels, add the bot
 to these chats/channels</source>
         <oldsource>To display private chats/channels, add the bot
@@ -652,83 +647,83 @@ to these chats/channels in access rights (at your own risk)</oldsource>
 в эти чаты/каналы (на свой страх и риск)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="96"/>
+        <location filename="chat_services/discord/discord.cpp" line="97"/>
         <source>Show joins to the server</source>
         <translation>Показывать присоединения к серверу</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="97"/>
+        <location filename="chat_services/discord/discord.cpp" line="98"/>
         <source>Show NSFW channels (at your own risk). Restart %1 if channel status is changed in Discord</source>
         <oldsource>Show NSFW channels (at your own risk)</oldsource>
         <translation>Показывать NSFW каналы (на свой страх и риск). Перезапустите %1, если статус канала изменён в Discord</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="98"/>
+        <location filename="chat_services/discord/discord.cpp" line="99"/>
         <source>Show server name</source>
         <translation>Показывать имя сервера</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="99"/>
+        <location filename="chat_services/discord/discord.cpp" line="100"/>
         <source>Show channel name</source>
         <translation>Показывать имя канала</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="214"/>
+        <location filename="chat_services/discord/discord.cpp" line="206"/>
         <source>Application ID not specified</source>
         <translation>ID приложения не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="219"/>
+        <location filename="chat_services/discord/discord.cpp" line="211"/>
         <source>Bot token not specified</source>
         <translation>Токен бота не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="225"/>
+        <location filename="chat_services/discord/discord.cpp" line="217"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="228"/>
+        <location filename="chat_services/discord/discord.cpp" line="220"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="231"/>
+        <location filename="chat_services/discord/discord.cpp" line="223"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="612"/>
+        <location filename="chat_services/discord/discord.cpp" line="629"/>
         <source>Sticker(s)</source>
         <translation>Стикер(ы)</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="697"/>
+        <location filename="chat_services/discord/discord.cpp" line="685"/>
         <source>joined the server</source>
         <translation>присоеденился(-ась) к серверу</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="708"/>
+        <location filename="chat_services/discord/discord.cpp" line="696"/>
         <source>Bot status</source>
         <translation>Статус бота</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="712"/>
+        <location filename="chat_services/discord/discord.cpp" line="700"/>
         <source>authorized as %1</source>
         <translation>авторизован как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="720"/>
+        <location filename="chat_services/discord/discord.cpp" line="710"/>
         <source>Not connected to any servers</source>
         <translation>Не подключён к каким-либо серверам</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="724"/>
+        <location filename="chat_services/discord/discord.cpp" line="714"/>
         <source>Connected to servers (%1):</source>
         <translation>Подключён к серверам (%1):</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="743"/>
+        <location filename="chat_services/discord/discord.cpp" line="738"/>
         <source>Servers loading...</source>
         <translation>Загрузка серверов...</translation>
     </message>
@@ -741,7 +736,7 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">Загрузка...</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="748"/>
+        <location filename="chat_services/discord/discord.cpp" line="743"/>
         <source>not authorized</source>
         <translation>не авторизован</translation>
     </message>
@@ -755,42 +750,42 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="965"/>
+        <location filename="chat_services/discord/discord.cpp" line="793"/>
         <source>generic</source>
         <translation>общий</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="966"/>
+        <location filename="chat_services/discord/discord.cpp" line="794"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="967"/>
+        <location filename="chat_services/discord/discord.cpp" line="795"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="968"/>
+        <location filename="chat_services/discord/discord.cpp" line="796"/>
         <source>gif-animation</source>
         <translation>gif-анимация</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="969"/>
+        <location filename="chat_services/discord/discord.cpp" line="797"/>
         <source>article</source>
         <translation>статья</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="970"/>
+        <location filename="chat_services/discord/discord.cpp" line="798"/>
         <source>link</source>
         <translation>ссылка</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="972"/>
+        <location filename="chat_services/discord/discord.cpp" line="800"/>
         <source>unknown &quot;%1&quot;</source>
         <translation>неизвестно &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="chat_services/discord.cpp" line="1026"/>
+        <location filename="chat_services/discord/discord.cpp" line="854"/>
         <source>File: %1</source>
         <translation>Файл: %1</translation>
     </message>
@@ -2141,7 +2136,7 @@ Latest version available: %2</oldsource>
 <context>
     <name>all_commands_window</name>
     <message>
-        <location filename="setting_pages/all_commands_window.qml" line="62"/>
+        <location filename="setting_pages/all_commands_window.qml" line="64"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
@@ -2448,6 +2443,11 @@ Latest version available: %2</oldsource>
         <location filename="setting_pages/common.qml" line="257"/>
         <source>Program folder</source>
         <translation>Папка программы</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/common.qml" line="265"/>
+        <source>Logs</source>
+        <translation>Логи</translation>
     </message>
     <message>
         <location filename="setting_pages/common.qml" line="24"/>

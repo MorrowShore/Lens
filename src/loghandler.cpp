@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QApplication>
 #include <QTimeZone>
+#include <QDesktopServices>
 #include <iostream>
 
 namespace
@@ -48,7 +49,7 @@ void LogHandler::initialize()
 {
     const QDateTime startTime = QDateTime::currentDateTime();
 
-    const QString dirPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/logs";
+    const QString dirPath = getDirectory();
     fileName = dirPath + "/" + startTime.toString(AxelChat::DateTimeFileNameFormat) + ".log";
 
     const QDir dir(dirPath);
@@ -65,6 +66,16 @@ void LogHandler::initialize()
     qInfo().nospace() << QApplication::applicationDisplayName() <<
         " started, version: " << QApplication::applicationVersion() <<
         ", local time: " << startTime.toString(Qt::DateFormat::ISODateWithMs);
+}
+
+QString LogHandler::getDirectory()
+{
+    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/logs";
+}
+
+void LogHandler::openDirectory()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + getDirectory()));
 }
 
 void LogHandler::handler(QtMsgType type, const QMessageLogContext &context, const QString &text)

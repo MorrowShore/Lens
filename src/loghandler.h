@@ -1,11 +1,16 @@
 #pragma once
 
+#include <QObject>
+#include <QQmlEngine>
 #include <QString>
 
-class LogHandler
+class LogHandler : public QObject
 {
+    Q_OBJECT
 public:
     static void initialize();
+    static QString getDirectory();
+    static void openDirectory();
 
 private:
     static void handler(QtMsgType type, const QMessageLogContext &context, const QString &text);

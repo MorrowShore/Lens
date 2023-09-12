@@ -260,6 +260,14 @@ ScrollView {
                 chatHandler.openProgramFolder();
             }
         }
+
+        Button {
+            text: qsTr("Logs")
+
+            onClicked: {
+                qmlUtils.openLogDirectory()
+            }
+        }
     }
 }
 

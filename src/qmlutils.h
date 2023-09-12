@@ -21,6 +21,7 @@ public:
     void setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine);
 
     Q_INVOKABLE static void restartApplication();
+    Q_INVOKABLE static void openLogDirectory();
 
     bool enabledHardwareGraphicsAccelerator() const;
     void setEnabledHardwareGraphicsAccelerator(bool enabled);
