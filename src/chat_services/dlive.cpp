@@ -7,6 +7,7 @@ namespace
 
 static const int UpdateStreamInfoPeriod = 10 * 1000;
 static const int EmoteHeight = 28;
+static const int StickerHeight = 80;
 static const QColor GiftColor = QColor(107, 214, 214);
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
@@ -589,69 +590,90 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
 
     bool contentAsPlainText = false;
     const QString content = json.value("content").toString();
-    const QJsonArray emotesPositions = json.value("emojis").toArray();
 
-    if (emotesPositions.count() > 0)
+    bool isSticker = false;
     {
-        if (emotesPositions.count() % 2 == 0)
+        static const QRegExp rx("^:emote/[a-zA-Z0-9_\\-]+/[a-zA-Z0-9_\\-]+/([a-zA-Z0-9_\\-]+):$");
+        if (rx.indexIn(content.trimmed()) != -1)
         {
-            for (int i = 0; i < emotesPositions.count(); i += 2)
+            const QString stickerId = rx.cap(1);
+            if (!stickerId.isEmpty())
             {
-                const int left = emotesPositions[i].toInt();
-                const int right = emotesPositions[i + 1].toInt();
+                const QString stickerUrl = "https://images.prd.dlivecdn.com/emote/" + stickerId;
 
-                if (i == 0)
+                messageBuilder.addImage(QUrl(stickerUrl), StickerHeight, false);
+
+                isSticker = true;
+            }
+        }
+    }
+
+    if (!isSticker)
+    {
+        const QJsonArray emotesPositions = json.value("emojis").toArray();
+
+        if (emotesPositions.count() > 0)
+        {
+            if (emotesPositions.count() % 2 == 0)
+            {
+                for (int i = 0; i < emotesPositions.count(); i += 2)
                 {
-                    if (left > 0)
+                    const int left = emotesPositions[i].toInt();
+                    const int right = emotesPositions[i + 1].toInt();
+
+                    if (i == 0)
                     {
-                        messageBuilder.addText(content.left(left));
+                        if (left > 0)
+                        {
+                            messageBuilder.addText(content.left(left));
+                        }
+                    }
+                    else
+                    {
+                        const int textLeftPos = emotesPositions[i - 1].toInt() + 1;
+                        const int textLength = left - textLeftPos;
+
+                        const QString text = content.mid(textLeftPos, textLength);
+                        messageBuilder.addText(text);
+                    }
+
+                    const QString emoteName = content.mid(left, right - left + 1);
+                    const QString emoteUrl = emotes.value(emoteName);
+
+                    if (!emoteUrl.isEmpty())
+                    {
+                        messageBuilder.addImage(emoteUrl, EmoteHeight, false);
+                    }
+                    else
+                    {
+                        messageBuilder.addText(emoteName);
+
+                        qWarning() << "unknown emote" << emoteName;
                     }
                 }
-                else
+
+                const int leftPosText = emotesPositions.last().toInt() + 1;
+                if (leftPosText < content.length() - 1)
                 {
-                    const int textLeftPos = emotesPositions[i - 1].toInt() + 1;
-                    const int textLength = left - textLeftPos;
-
-                    const QString text = content.mid(textLeftPos, textLength);
-                    messageBuilder.addText(text);
-                }
-
-                const QString emoteName = content.mid(left, right - left + 1);
-                const QString emoteUrl = emotes.value(emoteName);
-
-                if (!emoteUrl.isEmpty())
-                {
-                    messageBuilder.addImage(emoteUrl, EmoteHeight, false);
-                }
-                else
-                {
-                    messageBuilder.addText(emoteName);
-
-                    qWarning() << "unknown emote" << emoteName;
+                    messageBuilder.addText(content.mid(leftPosText));
                 }
             }
-
-            const int leftPosText = emotesPositions.last().toInt() + 1;
-            if (leftPosText < content.length() - 1)
+            else
             {
-                messageBuilder.addText(content.mid(leftPosText));
+                contentAsPlainText = true;
+
+                qWarning() << "emotes positions array size % 2 != 0";
             }
         }
         else
         {
             contentAsPlainText = true;
-
-            qWarning() << "emotes positions array size % 2 != 0";
         }
-    }
-    else
-    {
-        contentAsPlainText = true;
-    }
 
-    if (contentAsPlainText)
-    {
-        messageBuilder.addText(content);
+        if (contentAsPlainText)
+        {
+            messageBuilder.addText(content);
+        }
     }
 
     return { messageBuilder.build(), author };
