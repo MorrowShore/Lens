@@ -261,13 +261,13 @@ ScrollView {
             }
         }
 
-        Button {
+        /*Button {
             text: qsTr("Logs")
 
             onClicked: {
                 qmlUtils.openLogDirectory()
             }
-        }
+        }*/
     }
 }
 

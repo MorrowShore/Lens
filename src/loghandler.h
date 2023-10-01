@@ -8,7 +8,7 @@ class LogHandler : public QObject
 {
     Q_OBJECT
 public:
-    static void initialize();
+    static void initialize(const bool saveToFile);
     static QString getDirectory();
     static void openDirectory();
 

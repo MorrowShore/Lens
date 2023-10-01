@@ -15,6 +15,7 @@
 namespace
 {
 
+static bool saveToFile;
 static QString fileName;
 
 static QString typeToString(const QtMsgType& type)
@@ -45,8 +46,10 @@ static QJsonObject contextToJson(const QMessageLogContext& context)
 
 };
 
-void LogHandler::initialize()
+void LogHandler::initialize(const bool saveToFile_)
 {
+    saveToFile = saveToFile_;
+
     const QDateTime startTime = QDateTime::currentDateTime();
 
     const QString dirPath = getDirectory();
@@ -113,7 +116,10 @@ void LogHandler::handler(QtMsgType type, const QMessageLogContext &context, cons
 
     std::cout << line.toLocal8Bit().constData() << std::endl;
 
-    writeToFile(type, context, text);
+    if (saveToFile)
+    {
+        writeToFile(type, context, text);
+    }
 
     if (type == QtFatalMsg)
     {

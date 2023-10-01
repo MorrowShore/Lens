@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(APP_INFO_COMPANYDOMAIN_STR);
     QCoreApplication::setApplicationVersion(APP_INFO_PRODUCTVERSION_STR);
 
-    LogHandler::initialize();
+    LogHandler::initialize(false);
 
     QSettings settings;
 
