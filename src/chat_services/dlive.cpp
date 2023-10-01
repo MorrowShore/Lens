@@ -435,7 +435,7 @@ void DLive::requestLivestreamPage(const QString &displayName_)
             const QJsonObject jsonLivestream = jsonUser.value("livestream").toObject();
             if (jsonLivestream.isEmpty())
             {
-                qDebug() << "livestream not started";
+                qDebug() << "maybe livestream not started, root =" << root;
                 return;
             }
 
