@@ -5,7 +5,7 @@
 namespace
 {
 
-static const QString Hash256Sha = "950c61faccae0df49c8e19a3a0e741ccb39fd322c850bca52a7562bfa63f49c1"; // TODO
+static const QString Hash256Sha = "5f7d24cc4ec8e7fb23fdc3a16ee0db8694fb75937b45551498c82dbec7d1e2e7"; // TODO
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -151,7 +151,7 @@ void DLive::reconnectImpl()
         return;
     }
 
-    requestLivestreamPage(state.streamId);
+    requestChatRoom(state.streamId);
 }
 
 void DLive::send(const QString &type, const QJsonObject &payload, const int64_t id)
@@ -316,7 +316,7 @@ void DLive::sendStart()
         "  __typename\n"
         "}\n";
 
-    const QJsonObject payload = generateQuery("StreamMessageSubscription", {{"streamer", info.owner.displayName.toLower()}}, Query);
+    const QJsonObject payload = generateQuery("StreamMessageSubscription", {{ "streamer", info.userName }}, Query);
 
     send("start", payload, 1);
 }
@@ -324,6 +324,7 @@ void DLive::sendStart()
 void DLive::onWebSocketReceived(const QString &raw)
 {
     const QJsonObject root = QJsonDocument::fromJson(raw.toUtf8()).object();
+
     //qDebug() << "received:" << root;
 
     const QString type = root.value("type").toString();
@@ -374,9 +375,9 @@ void DLive::onWebSocketReceived(const QString &raw)
     }
 }
 
-void DLive::requestLivestreamPage(const QString &displayName_)
+void DLive::requestChatRoom(const QString &channelName_)
 {
-    QString displayName = displayName_.trimmed();
+    QString displayName = channelName_.trimmed();
     if (displayName.isEmpty())
     {
         qWarning() << "display name is empty";
@@ -388,14 +389,12 @@ void DLive::requestLivestreamPage(const QString &displayName_)
         return;
     }
 
-    const QByteArray body = QJsonDocument(generateQuery("LivestreamPage",
+    const QByteArray body = QJsonDocument(generateQuery("LivestreamChatroomInfo",
     {
         { "displayname", displayName },
-        { "add", false },
+        { "count", 40 },
         { "isLoggedIn", false },
-        { "isMe", false },
-        { "showUnpicked", false },
-        { "order", "PickTime" },
+        { "limit", 20 },
     })).toJson(QJsonDocument::JsonFormat::Compact);
 
     QNetworkRequest request(QUrl("https://graphigo.prd.dlive.tv/"));
@@ -410,50 +409,28 @@ void DLive::requestLivestreamPage(const QString &displayName_)
             return;
         }
 
-        UserInfo user;
-
         const QJsonObject root = QJsonDocument::fromJson(data).object();
 
         const QJsonObject jsonUser = root
             .value("data").toObject()
             .value("userByDisplayName").toObject();
 
-        user.userName = jsonUser.value("username").toString();
-        user.avatar = jsonUser.value("avatar").toString();
-        user.displayName = jsonUser.value("displayname").toString();
+        info.userName = jsonUser.value("username").toString();
 
-        if (user.userName.isEmpty())
+        if (info.userName.isEmpty())
         {
             qWarning() << "user name is empty, display name =" << displayName;
             return;
         }
 
-        users.insert(user.userName, user);
+        state.chatUrl = "https://dlive.tv/c/" + state.streamId + "/" + info.userName;
 
-        if (user.displayName.trimmed().toLower() == state.streamId.trimmed().toLower())
+        if (!state.connected)
         {
-            const QJsonObject jsonLivestream = jsonUser.value("livestream").toObject();
-            if (jsonLivestream.isEmpty())
-            {
-                qDebug() << "maybe livestream not started, root =" << root;
-                return;
-            }
-
-            info.owner = user;
-
-            info.permalink = jsonLivestream.value("permlink").toString();
-
-            state.viewersCount = jsonLivestream.value("watchingCount").toInt(-1);
-
-            state.chatUrl = "https://dlive.tv/c/" + user.displayName + "/" + info.permalink;
-
-            if (!state.connected)
-            {
-                socket.open(QUrl("wss://graphigostream.prd.dlive.tv/"));
-            }
-
-            emit stateChanged();
+            socket.open(QUrl("wss://graphigostream.prd.dlive.tv/"));
         }
+
+        emit stateChanged();
     });
 }
 

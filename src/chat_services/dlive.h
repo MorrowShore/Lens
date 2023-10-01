@@ -24,23 +24,15 @@ private slots:
 
     void onWebSocketReceived(const QString& text);
 
-    void requestLivestreamPage(const QString& displayName);
+    void requestChatRoom(const QString& channelName);
 
     void parseMessages(const QJsonArray& jsonMessages);
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseMessage(const QJsonObject& json);
 
 private:
-    struct UserInfo
-    {
-        QString userName;
-        QString displayName;
-        QString avatar;
-    };
-
     struct Info
     {
-        UserInfo owner;
-        QString permalink;
+        QString userName;
     };
 
     static QString extractChannelName(const QString& stream);
@@ -50,6 +42,4 @@ private:
     QWebSocket socket;
 
     Info info;
-
-    QHash<QString, UserInfo> users; // key - username
 };
