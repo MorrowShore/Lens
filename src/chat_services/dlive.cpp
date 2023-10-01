@@ -493,12 +493,9 @@ void DLive::requestLiveStream(const QString &displayName_)
         .value("data").toObject()
         .value("userByDisplayName").toObject();
 
+        state.viewersCount = -1;
+
         const QJsonObject jsonLivestream = jsonUser.value("livestream").toObject();
-        if (jsonLivestream.isEmpty())
-        {
-            qDebug() << "maybe livestream not started, root =" << root;
-            return;
-        }
 
         state.viewersCount = jsonLivestream.value("watchingCount").toInt(-1);
 
