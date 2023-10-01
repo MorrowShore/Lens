@@ -5,7 +5,7 @@
 namespace
 {
 
-static const QString Hash256Sha = "950c61faccae0df49c8e19a3a0e741ccb39fd322c850bca52a7562bfa63f49c1";
+static const QString Hash256Sha = "950c61faccae0df49c8e19a3a0e741ccb39fd322c850bca52a7562bfa63f49c1"; // TODO
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -64,14 +64,15 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        qDebug() << "WebSocket connected";
+        //qDebug() << "WebSocket connected";
 
         send("connection_init");
+        sendStart();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        qDebug() << "WebSocket disconnected";
+        //qDebug() << "WebSocket disconnected";
 
         if (state.connected)
         {
@@ -162,22 +163,205 @@ void DLive::send(const QString &type, const QJsonObject &payload, const int64_t 
 
     if (id != -1)
     {
-        object.insert("id", id);
+        object.insert("id", QString("%1").arg(id));
     }
 
-    socket.sendTextMessage(QString::fromUtf8(QJsonDocument(object).toJson()));
+    //qDebug() << "send:" << object;
+
+    socket.sendTextMessage(QString::fromUtf8(QJsonDocument(object).toJson(QJsonDocument::JsonFormat::Compact)));
+}
+
+void DLive::sendStart()
+{
+    static const QString Query =
+        "subscription StreamMessageSubscription($streamer: String!) {\n"
+        "  streamMessageReceived(streamer: $streamer) {\n"
+        "    type\n"
+        "    ... on ChatGift {\n"
+        "      id\n"
+        "      gift\n"
+        "      amount\n"
+        "      message\n"
+        "      recentCount\n"
+        "      expireDuration\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatHost {\n"
+        "      id\n"
+        "      viewer\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatSubscription {\n"
+        "      id\n"
+        "      month\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatExtendSub {\n"
+        "      id\n"
+        "      month\n"
+        "      length\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatChangeMode {\n"
+        "      mode\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatText {\n"
+        "      id\n"
+        "      emojis\n"
+        "      content\n"
+        "      createdAt\n"
+        "      subLength\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatSubStreak {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      length\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatClip {\n"
+        "      id\n"
+        "      url\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatFollow {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatDelete {\n"
+        "      ids\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatBan {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      bannedBy {\n"
+        "        id\n"
+        "        displayname\n"
+        "        __typename\n"
+        "      }\n"
+        "      bannedByRoomRole\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatModerator {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      add\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatEmoteAdd {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      emote\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatTimeout {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      minute\n"
+        "      bannedBy {\n"
+        "        id\n"
+        "        displayname\n"
+        "        __typename\n"
+        "      }\n"
+        "      bannedByRoomRole\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatTCValueAdd {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      amount\n"
+        "      totalAmount\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatGiftSub {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      count\n"
+        "      receiver\n"
+        "      __typename\n"
+        "    }\n"
+        "    ... on ChatGiftSubReceive {\n"
+        "      id\n"
+        "      ...VStreamChatSenderInfoFrag\n"
+        "      gifter\n"
+        "      __typename\n"
+        "    }\n"
+        "    __typename\n"
+        "  }\n"
+        "}\n"
+        "\n"
+        "fragment VStreamChatSenderInfoFrag on SenderInfo {\n"
+        "  subscribing\n"
+        "  role\n"
+        "  roomRole\n"
+        "  sender {\n"
+        "    id\n"
+        "    username\n"
+        "    displayname\n"
+        "    avatar\n"
+        "    partnerStatus\n"
+        "    badges\n"
+        "    effect\n"
+        "    __typename\n"
+        "  }\n"
+        "  __typename\n"
+        "}\n";
+
+    const QJsonObject payload = generateQuery("StreamMessageSubscription", {{"streamer", info.owner.displayName.toLower()}}, Query);
+
+    send("start", payload, 1);
 }
 
 void DLive::onWebSocketReceived(const QString &raw)
 {
     const QJsonObject root = QJsonDocument::fromJson(raw.toUtf8()).object();
-    qDebug() << "received:" << root;
+    //qDebug() << "received:" << root;
 
     const QString type = root.value("type").toString();
 
-    if (type == "connection_ack")
+    if (type == "data")
     {
-        //
+        const QJsonObject data = root.value("payload").toObject().value("data").toObject();
+        if (data.isEmpty())
+        {
+            qWarning() << "paload data is empty, root =" << root;
+            return;
+        }
+
+        if (data.contains("streamMessageReceived"))
+        {
+            const QJsonArray jsonMessages = data.value("streamMessageReceived").toArray();
+            if (jsonMessages.isEmpty())
+            {
+                qWarning() << "messages is empty, root =" << root;
+                return;
+            }
+
+            parseMessages(jsonMessages);
+        }
+        else
+        {
+            qWarning() << "unknown data format, root =" << root;
+            return;
+        }
+    }
+    else if (type == "connection_ack")
+    {
+        if (!state.connected)
+        {
+            state.connected = true;
+            emit connectedChanged(true);
+            emit stateChanged();
+        }
     }
     else if (type == "ka")
     {
@@ -186,6 +370,7 @@ void DLive::onWebSocketReceived(const QString &raw)
     else
     {
         qWarning() << "unknown message type" << type << ", root =" << root;
+        return;
     }
 }
 
@@ -203,31 +388,15 @@ void DLive::requestLivestreamPage(const QString &displayName_)
         return;
     }
 
-    const QByteArray body = QJsonDocument(QJsonObject(
-        {
-            { "operationName", "LivestreamPage" },
-            { "variables", QJsonObject(
-                {
-                    { "displayname", displayName },
-                    { "add", false },
-                    { "isLoggedIn", false },
-                    { "isMe", false },
-                    { "showUnpicked", false },
-                    { "order", "PickTime" },
-                })
-            },
-            { "extensions", QJsonObject(
-                {
-                    { "persistedQuery", QJsonObject(
-                        {
-                            { "version", 1 },
-                            { "sha256Hash", Hash256Sha },
-                        })
-                    }
-                })
-            }
-        }
-    )).toJson(QJsonDocument::JsonFormat::Compact);
+    const QByteArray body = QJsonDocument(generateQuery("LivestreamPage",
+    {
+        { "displayname", displayName },
+        { "add", false },
+        { "isLoggedIn", false },
+        { "isMe", false },
+        { "showUnpicked", false },
+        { "order", "PickTime" },
+    })).toJson(QJsonDocument::JsonFormat::Compact);
 
     QNetworkRequest request(QUrl("https://graphigo.prd.dlive.tv/"));
     request.setRawHeader("Content-Type", "application/json");
@@ -288,6 +457,75 @@ void DLive::requestLivestreamPage(const QString &displayName_)
     });
 }
 
+void DLive::parseMessages(const QJsonArray &jsonMessages)
+{
+    QList<std::shared_ptr<Message>> messages;
+    QList<std::shared_ptr<Author>> authors;
+
+    for (const QJsonValue& v : qAsConst(jsonMessages))
+    {
+        auto pair = parseMessage(v.toObject());
+
+        if (pair.first && pair.second)
+        {
+            messages.append(pair.first);
+            authors.append(pair.second);
+        }
+    }
+
+    emit readyRead(messages, authors);
+}
+
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseMessage(const QJsonObject &json)
+{
+    const QString typeName =  json.value("__typename").toString();
+    const QString type = json.value("type").toString();
+
+    if (typeName != "ChatText")
+    {
+        qWarning() << "unknown type name" << typeName << ", json =" << json;
+        return QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>();
+    }
+
+    if (type != "Message")
+    {
+        qWarning() << "unknown type" << type << ", json =" << json;
+        return QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>();
+    }
+
+    const QJsonObject sender = json.value("sender").toObject();
+    const QString userName = sender.value("username").toString();
+    const QString displayName = sender.value("displayname").toString();
+
+    Author::Builder authorBuilder(getServiceType(), generateAuthorId(userName), displayName);
+    authorBuilder.setAvatar(sender.value("avatar").toString());
+    authorBuilder.setPage("https://dlive.tv/" + displayName);
+    //TODO: badges
+
+    auto author = authorBuilder.build();
+
+    Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
+
+    {
+        QString raw = json.value("createdAt").toString();
+        raw = raw.left(raw.length() - 6); // nanoseconds to milliseconds
+
+        bool ok = false;
+        const qint64 sinceEpoch = raw.toLongLong(&ok);
+        if (ok)
+        {
+            const QDateTime dt = QDateTime::fromMSecsSinceEpoch(sinceEpoch);
+            messageBuilder.setPublishedTime(dt);
+        }
+    }
+
+    messageBuilder.addText(json.value("content").toString());
+
+    //TODO: emotes
+
+    return { messageBuilder.build(), author };
+}
+
 QString DLive::extractChannelName(const QString &stream)
 {
     QRegExp rx;
@@ -306,4 +544,41 @@ QString DLive::extractChannelName(const QString &stream)
     }
 
     return QString();
+}
+
+QJsonObject DLive::generateQuery(const QString &operationName, const QMap<QString, QJsonValue> &variables, const QString &query)
+{
+    QJsonObject result(
+    {
+        { "operationName", operationName },
+        { "extensions", QJsonObject(
+            {
+                { "persistedQuery", QJsonObject(
+                    {
+                        { "version", 1 },
+                        { "sha256Hash", Hash256Sha },
+                    })
+                }
+            })
+        }
+    });
+
+    QJsonObject jsonVariables;
+
+    const QStringList varNames = variables.keys();
+    for (const QString& varName : qAsConst(varNames))
+    {
+        const QJsonValue value = variables.value(varName);
+
+        jsonVariables.insert(varName, value);
+    }
+
+    result.insert("variables", jsonVariables);
+
+    if (!query.isEmpty())
+    {
+        result.insert("query", query);
+    }
+
+    return result;
 }
