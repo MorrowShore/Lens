@@ -50,6 +50,8 @@ private:
     Info info;
 
     QTimer timerUpdaetStreamInfo;
+    QTimer timerReconnect;
+    QTimer checkPingTimer;
 
     QHash<QString, QString> emotes; // key - name, value - url
 };

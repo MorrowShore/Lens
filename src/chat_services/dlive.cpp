@@ -8,6 +8,7 @@ namespace
 {
 
 static const int UpdateStreamInfoPeriod = 10 * 1000;
+static const int ReconncectPeriod = 6 * 1000;
 static const int EmoteHeight = 28;
 static const int StickerHeight = 80;
 static const QColor GiftColor = QColor(107, 214, 214);
@@ -120,6 +121,20 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
     });
     timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get())
+        {
+            return;
+        }
+
+        if (!state.connected)
+        {
+            reconnect();
+        }
+    });
+    timerReconnect.start(ReconncectPeriod);
+
     reconnect();
 }
 
@@ -181,6 +196,8 @@ void DLive::reconnectImpl()
     {
         return;
     }
+
+    timerReconnect.start();
 
     requestChatRoom(state.streamId);
     requestLiveStream(state.streamId);
