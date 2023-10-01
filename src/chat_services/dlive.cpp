@@ -8,6 +8,7 @@ namespace
 {
 
 static const int UpdateStreamInfoPeriod = 10 * 1000;
+static const int CheckPingTimeout = 30 * 1000;
 static const int ReconncectPeriod = 6 * 1000;
 static const int EmoteHeight = 28;
 static const int StickerHeight = 80;
@@ -134,6 +135,18 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
         }
     });
     timerReconnect.start(ReconncectPeriod);
+
+    QObject::connect(&checkPingTimer, &QTimer::timeout, this, [this]()
+    {
+        if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        {
+            checkPingTimer.stop();
+            return;
+        }
+
+        qDebug() << "check ping timeout, disconnect";
+        socket.close();
+    });
 
     reconnect();
 }
@@ -376,6 +389,9 @@ void DLive::onWebSocketReceived(const QString &raw)
 
     //qDebug() << "received:" << root;
 
+    checkPingTimer.setInterval(CheckPingTimeout);
+    checkPingTimer.start();
+
     const QString type = root.value("type").toString();
 
     if (type == "data")
@@ -411,6 +427,9 @@ void DLive::onWebSocketReceived(const QString &raw)
             state.connected = true;
             emit connectedChanged(true);
             emit stateChanged();
+
+            checkPingTimer.setInterval(CheckPingTimeout);
+            checkPingTimer.start();
         }
     }
     else if (type == "ka")
