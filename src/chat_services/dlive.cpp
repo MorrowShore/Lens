@@ -12,7 +12,7 @@ static const int CheckPingTimeout = 30 * 1000;
 static const int ReconncectPeriod = 6 * 1000;
 static const int EmoteHeight = 28;
 static const int StickerHeight = 80;
-static const QColor GiftColor = QColor(107, 214, 214);
+static const QColor HighlightColor = QColor(107, 214, 214);
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -576,6 +576,10 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
         {
             pair = parseChatGift(object);
         }
+        else if (typeName == "ChatFollow")
+        {
+            pair = parseChatFollow(object);
+        }
         else if (typeName == "ChatDelete")
         {
             const QString type = object.value("type").toString();
@@ -749,7 +753,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
 
     messageBuilder.setPublishedTime(convertTime(json.value("createdAt").toString()));
 
-    messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, GiftColor);
+    messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightColor);
 
     Message::TextStyle style;
     style.bold = true;
@@ -761,6 +765,31 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
         messageBuilder.addText("\n\n");
         messageBuilder.addText(message);
     }
+
+    return { messageBuilder.build(), author };
+}
+
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatFollow(const QJsonObject &json) const
+{
+    const QString type = json.value("type").toString();
+
+    if (type != "Follow")
+    {
+        qWarning() << "unknown type" << type << ", json =" << json;
+    }
+
+    auto author = parseSender(json.value("sender").toObject());
+
+    Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
+
+    messageBuilder.setPublishedTime(convertTime(json.value("createdAt").toString()));
+
+    messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightColor);
+
+    Message::TextStyle style;
+    style.bold = true;
+
+    messageBuilder.addText(tr("Just followed!"), style);
 
     return { messageBuilder.build(), author };
 }

@@ -32,6 +32,7 @@ private slots:
     std::shared_ptr<Author> parseSender(const QJsonObject& json) const;
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatText(const QJsonObject& json) const;
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatGift(const QJsonObject& json) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatFollow(const QJsonObject& json) const;
 
     void parseEmoji(const QJsonObject& json);
 
