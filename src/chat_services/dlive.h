@@ -30,6 +30,8 @@ private slots:
     void parseMessages(const QJsonArray& jsonMessages);
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseMessage(const QJsonObject& json);
 
+    void parseEmoji(const QJsonObject& json);
+
 private:
     struct Info
     {
@@ -45,4 +47,6 @@ private:
     Info info;
 
     QTimer timerUpdaetStreamInfo;
+
+    QHash<QString, QString> emotes; // key - name, value - url
 };

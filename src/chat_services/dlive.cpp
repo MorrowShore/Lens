@@ -440,10 +440,12 @@ void DLive::requestChatRoom(const QString &displayName_)
 
         state.chatUrl = "https://dlive.tv/c/" + state.streamId + "/" + info.userName;
 
-        if (!state.connected)
+        if (!state.connected || socket.state() != QAbstractSocket::SocketState::ConnectedState)
         {
             socket.open(QUrl("wss://graphigostream.prd.dlive.tv/"));
         }
+
+        parseEmoji(jsonUser.value("emoji").toObject());
 
         emit stateChanged();
     });
@@ -570,6 +572,43 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseMessage(con
     //TODO: emotes
 
     return { messageBuilder.build(), author };
+}
+
+void DLive::parseEmoji(const QJsonObject &json)
+{
+    emotes.clear();
+
+    {
+        const QJsonArray list = json.value("global")
+            .toObject().value("list")
+            .toArray();
+
+        for (const QJsonValue& v : qAsConst(list))
+        {
+            const QJsonObject emoji = v.toObject();
+
+            const QString name = emoji.value("name").toString();
+            const QString url = emoji.value("sourceURL").toString();
+
+            emotes.insert(name, url);
+        }
+    }
+
+    {
+        const QJsonArray list = json.value("vip")
+            .toObject().value("list")
+            .toArray();
+
+        for (const QJsonValue& v : qAsConst(list))
+        {
+            const QJsonObject emoji = v.toObject();
+
+            const QString name = emoji.value("name").toString();
+            const QString url = emoji.value("sourceURL").toString();
+
+            emotes.insert(name, url);
+        }
+    }
 }
 
 QString DLive::extractChannelName(const QString &stream)
