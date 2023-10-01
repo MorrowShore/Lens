@@ -544,6 +544,25 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
         {
             pair = parseChatGift(object);
         }
+        else if (typeName == "ChatDelete")
+        {
+            const QString type = object.value("type").toString();
+            if (type != "Delete")
+            {
+                qWarning() << "unknown type" << type;
+            }
+
+            const QJsonArray ids = object.value("ids").toArray();
+            for (const QJsonValue& v : qAsConst(ids))
+            {
+                const QString id = v.toString();
+
+                const auto pair = Message::Builder::createDeleter(getServiceType(), generateMessageId(id));
+
+                messages.append(pair.second);
+                authors.append(pair.first);
+            }
+        }
         else
         {
             qWarning() << "Unknown type name" << typeName << ", object =" << object;
