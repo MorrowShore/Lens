@@ -44,7 +44,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [ ] Bigo Live support
 - [x] Rumble support
 - [x] Odysee support
-- [ ] Dlive support
+- [ ] DLive support
 - [x] WASD support
 - [ ] Facebook Live support
 - [ ] Nimo TV (Huya Live) support
@@ -143,6 +143,8 @@ The AxelChat application collects chat from various streaming platforms and disp
 #define WASD_API_TOKEN "<Paste WASD API key here>"
 #define DONATIONALERTS_CLIENT_ID "<Paste DonationAlerts client id here>"
 #define DONATIONALERTS_API_KEY "<Paste DonationAlerts API key here>"
+#define DLIVE_HASH_LIVESTREAM "<Paste DLive hash here>"
+#define DLIVE_HASH_CHATROOM "<Paste DLive hash here>"
 ```
 3. Open file `<AxelChat_project_folder>/src/AxelChat.pro` with Qt Creator
 1. In Qt Creator select `Desktop Qt x.x.x MinGW 64-bit` kit
