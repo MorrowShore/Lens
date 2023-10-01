@@ -6,6 +6,7 @@ namespace
 {
 
 static const int UpdateStreamInfoPeriod = 10 * 1000;
+static const int EmoteHeight = 28;
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -567,9 +568,72 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseMessage(con
         }
     }
 
-    messageBuilder.addText(json.value("content").toString());
+    bool contentAsPlainText = false;
+    const QString content = json.value("content").toString();
+    const QJsonArray emotesPositions = json.value("emojis").toArray();
 
-    //TODO: emotes
+    if (emotesPositions.count() > 0)
+    {
+        if (emotesPositions.count() % 2 == 0)
+        {
+            for (int i = 0; i < emotesPositions.count(); i += 2)
+            {
+                const int left = emotesPositions[i].toInt();
+                const int right = emotesPositions[i + 1].toInt();
+
+                if (i == 0)
+                {
+                    if (left > 0)
+                    {
+                        messageBuilder.addText(content.left(left));
+                    }
+                }
+                else
+                {
+                    const int textLeftPos = emotesPositions[i - 1].toInt() + 1;
+                    const int textLength = left - textLeftPos;
+
+                    const QString text = content.mid(textLeftPos, textLength);
+                    messageBuilder.addText(text);
+                }
+
+                const QString emoteName = content.mid(left, right - left + 1);
+                const QString emoteUrl = emotes.value(emoteName);
+
+                if (!emoteUrl.isEmpty())
+                {
+                    messageBuilder.addImage(emoteUrl, EmoteHeight, false);
+                }
+                else
+                {
+                    messageBuilder.addText(emoteName);
+
+                    qWarning() << "unknown emote" << emoteName;
+                }
+            }
+
+            const int leftPosText = emotesPositions.last().toInt() + 1;
+            if (leftPosText < content.length() - 1)
+            {
+                messageBuilder.addText(content.mid(leftPosText));
+            }
+        }
+        else
+        {
+            contentAsPlainText = true;
+
+            qWarning() << "emotes positions array size % 2 != 0";
+        }
+    }
+    else
+    {
+        contentAsPlainText = true;
+    }
+
+    if (contentAsPlainText)
+    {
+        messageBuilder.addText(content);
+    }
 
     return { messageBuilder.build(), author };
 }
