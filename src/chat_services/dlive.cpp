@@ -7,6 +7,7 @@ namespace
 
 static const int UpdateStreamInfoPeriod = 10 * 1000;
 static const int EmoteHeight = 28;
+static const QColor GiftColor = QColor(107, 214, 214);
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -40,6 +41,22 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &result
     }
 
     return true;
+}
+
+static QDateTime convertTime(const QString& text)
+{
+    QString raw = text;
+
+    raw = raw.left(raw.length() - 6); // nanoseconds to milliseconds
+
+    bool ok = false;
+    const qint64 sinceEpoch = raw.toLongLong(&ok);
+    if (ok)
+    {
+        return QDateTime::fromMSecsSinceEpoch(sinceEpoch);
+    }
+
+    return QDateTime();
 }
 
 }
@@ -513,7 +530,24 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
 
     for (const QJsonValue& v : qAsConst(jsonMessages))
     {
-        auto pair = parseMessage(v.toObject());
+        QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> pair;
+
+        const QJsonObject object = v.toObject();
+        const QString typeName = object.value("__typename").toString();
+
+        if (typeName == "ChatText")
+        {
+            pair = parseChatText(object);
+        }
+        else if (typeName == "ChatGift")
+        {
+            pair = parseChatGift(object);
+        }
+        else
+        {
+            qWarning() << "Unknown type name" << typeName << ", object =" << object;
+            continue;
+        }
 
         if (pair.first && pair.second)
         {
@@ -525,48 +559,33 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
     emit readyRead(messages, authors);
 }
 
-QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseMessage(const QJsonObject &json)
+std::shared_ptr<Author> DLive::parseSender(const QJsonObject &json) const
 {
-    const QString typeName =  json.value("__typename").toString();
-    const QString type = json.value("type").toString();
+    const QString userName = json.value("username").toString();
+    const QString displayName = json.value("displayname").toString();
 
-    if (typeName != "ChatText")
-    {
-        qWarning() << "unknown type name" << typeName << ", json =" << json;
-        return QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>();
-    }
+    Author::Builder authorBuilder(getServiceType(), generateAuthorId(userName), displayName);
+    authorBuilder.setAvatar(json.value("avatar").toString());
+    authorBuilder.setPage("https://dlive.tv/" + displayName);
+    //TODO: badges
+
+    return authorBuilder.build();
+}
+
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(const QJsonObject &json) const
+{
+    const QString type = json.value("type").toString();
 
     if (type != "Message")
     {
         qWarning() << "unknown type" << type << ", json =" << json;
-        return QPair<std::shared_ptr<Message>, std::shared_ptr<Author>>();
     }
 
-    const QJsonObject sender = json.value("sender").toObject();
-    const QString userName = sender.value("username").toString();
-    const QString displayName = sender.value("displayname").toString();
-
-    Author::Builder authorBuilder(getServiceType(), generateAuthorId(userName), displayName);
-    authorBuilder.setAvatar(sender.value("avatar").toString());
-    authorBuilder.setPage("https://dlive.tv/" + displayName);
-    //TODO: badges
-
-    auto author = authorBuilder.build();
+    auto author = parseSender(json.value("sender").toObject());
 
     Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
 
-    {
-        QString raw = json.value("createdAt").toString();
-        raw = raw.left(raw.length() - 6); // nanoseconds to milliseconds
-
-        bool ok = false;
-        const qint64 sinceEpoch = raw.toLongLong(&ok);
-        if (ok)
-        {
-            const QDateTime dt = QDateTime::fromMSecsSinceEpoch(sinceEpoch);
-            messageBuilder.setPublishedTime(dt);
-        }
-    }
+    messageBuilder.setPublishedTime(convertTime(json.value("createdAt").toString()));
 
     bool contentAsPlainText = false;
     const QString content = json.value("content").toString();
@@ -633,6 +652,41 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseMessage(con
     if (contentAsPlainText)
     {
         messageBuilder.addText(content);
+    }
+
+    return { messageBuilder.build(), author };
+}
+
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(const QJsonObject &json) const
+{
+    const QString type = json.value("type").toString();
+
+    if (type != "Gift")
+    {
+        qWarning() << "unknown type" << type << ", json =" << json;
+    }
+
+    const int amout = json.value("amount").toString("-1").toInt();
+    const QString giftName = json.value("gift").toString();
+    const QString message = json.value("message").toString();
+
+    auto author = parseSender(json.value("sender").toObject());
+
+    Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
+
+    messageBuilder.setPublishedTime(convertTime(json.value("createdAt").toString()));
+
+    messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, GiftColor);
+
+    Message::TextStyle style;
+    style.bold = true;
+
+    messageBuilder.addText(tr("Gift: %1\nAmout: %2").arg(giftName).arg(amout), style);
+
+    if (!message.isEmpty())
+    {
+        messageBuilder.addText("\n\n");
+        messageBuilder.addText(message);
     }
 
     return { messageBuilder.build(), author };

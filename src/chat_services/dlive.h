@@ -28,7 +28,10 @@ private slots:
     void requestLiveStream(const QString& displayName);
 
     void parseMessages(const QJsonArray& jsonMessages);
-    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseMessage(const QJsonObject& json);
+
+    std::shared_ptr<Author> parseSender(const QJsonObject& json) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatText(const QJsonObject& json) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatGift(const QJsonObject& json) const;
 
     void parseEmoji(const QJsonObject& json);
 

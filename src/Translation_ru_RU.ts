@@ -490,7 +490,7 @@
 <context>
     <name>DLive</name>
     <message>
-        <location filename="chat_services/dlive.cpp" line="33"/>
+        <location filename="chat_services/dlive.cpp" line="144"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -499,29 +499,37 @@
         <translation type="vanished">Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="6"/>
+        <location filename="chat_services/dlive.cpp" line="69"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="7"/>
+        <location filename="chat_services/dlive.cpp" line="70"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="35"/>
+        <location filename="chat_services/dlive.cpp" line="146"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="38"/>
+        <location filename="chat_services/dlive.cpp" line="149"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="41"/>
+        <location filename="chat_services/dlive.cpp" line="152"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="684"/>
+        <source>Gift: %1
+Amout: %2</source>
+        <oldsource>Gift: %1. Amout: %2</oldsource>
+        <translation>Подарок: %1
+Количество: %2</translation>
     </message>
 </context>
 <context>
