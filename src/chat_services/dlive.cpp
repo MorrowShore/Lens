@@ -5,7 +5,7 @@
 namespace
 {
 
-static const QString Hash256Sha = "5f7d24cc4ec8e7fb23fdc3a16ee0db8694fb75937b45551498c82dbec7d1e2e7"; // TODO
+static const int UpdateStreamInfoPeriod = 10 * 1000;
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 {
@@ -20,7 +20,6 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &result
     int statusCode = 200;
     const QVariant rawStatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
     resultData = reply->readAll();
-    const QUrl requestUrl = reply->request().url();
     reply->deleteLater();
 
     if (rawStatusCode.isValid())
@@ -89,6 +88,17 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
         qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
+    QObject::connect(&timerUpdaetStreamInfo, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get() || info.userName.isEmpty())
+        {
+            return;
+        }
+
+        requestLiveStream(state.streamId);
+    });
+    timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
+
     reconnect();
 }
 
@@ -152,6 +162,7 @@ void DLive::reconnectImpl()
     }
 
     requestChatRoom(state.streamId);
+    requestLiveStream(state.streamId);
 }
 
 void DLive::send(const QString &type, const QJsonObject &payload, const int64_t id)
@@ -316,7 +327,9 @@ void DLive::sendStart()
         "  __typename\n"
         "}\n";
 
-    const QJsonObject payload = generateQuery("StreamMessageSubscription", {{ "streamer", info.userName }}, Query);
+    static const QString Hash = "5f7d24cc4ec8e7fb23fdc3a16ee0db8694fb75937b45551498c82dbec7d1e2e7"; // TODO
+
+    const QJsonObject payload = generateQuery("StreamMessageSubscription", Hash, {{ "streamer", info.userName }}, Query);
 
     send("start", payload, 1);
 }
@@ -375,21 +388,23 @@ void DLive::onWebSocketReceived(const QString &raw)
     }
 }
 
-void DLive::requestChatRoom(const QString &channelName_)
+void DLive::requestChatRoom(const QString &displayName_)
 {
-    QString displayName = channelName_.trimmed();
+    if (!enabled.get())
+    {
+        return;
+    }
+
+    QString displayName = displayName_.trimmed();
     if (displayName.isEmpty())
     {
         qWarning() << "display name is empty";
         return;
     }
 
-    if (!enabled.get())
-    {
-        return;
-    }
+    static const QString Hash = "5f7d24cc4ec8e7fb23fdc3a16ee0db8694fb75937b45551498c82dbec7d1e2e7"; // TODO
 
-    const QByteArray body = QJsonDocument(generateQuery("LivestreamChatroomInfo",
+    const QByteArray body = QJsonDocument(generateQuery("LivestreamChatroomInfo", Hash,
     {
         { "displayname", displayName },
         { "count", 40 },
@@ -429,6 +444,63 @@ void DLive::requestChatRoom(const QString &channelName_)
         {
             socket.open(QUrl("wss://graphigostream.prd.dlive.tv/"));
         }
+
+        emit stateChanged();
+    });
+}
+
+void DLive::requestLiveStream(const QString &displayName_)
+{
+    if (!enabled.get())
+    {
+        return;
+    }
+
+    QString displayName = displayName_.trimmed();
+    if (displayName.isEmpty())
+    {
+        qWarning() << "display name is empty";
+        return;
+    }
+
+    static const QString Hash = "950c61faccae0df49c8e19a3a0e741ccb39fd322c850bca52a7562bfa63f49c1"; // TODO
+
+    const QByteArray body = QJsonDocument(generateQuery("LivestreamPage", Hash,
+        {
+            { "displayname", displayName },
+            { "add", false },
+            { "isLoggedIn", false },
+            { "isMe", false },
+            { "showUnpicked", false },
+            { "order", "PickTime" },
+        })).toJson(QJsonDocument::JsonFormat::Compact);
+
+    QNetworkRequest request(QUrl("https://graphigo.prd.dlive.tv/"));
+    request.setRawHeader("Content-Type", "application/json");
+
+    QNetworkReply* reply = network.post(request, body);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, displayName]()
+    {
+        QByteArray data;
+        if (!checkReply(reply, Q_FUNC_INFO, data))
+        {
+            return;
+        }
+
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
+
+        const QJsonObject jsonUser = root
+        .value("data").toObject()
+        .value("userByDisplayName").toObject();
+
+        const QJsonObject jsonLivestream = jsonUser.value("livestream").toObject();
+        if (jsonLivestream.isEmpty())
+        {
+            qDebug() << "maybe livestream not started, root =" << root;
+            return;
+        }
+
+        state.viewersCount = jsonLivestream.value("watchingCount").toInt(-1);
 
         emit stateChanged();
     });
@@ -523,7 +595,7 @@ QString DLive::extractChannelName(const QString &stream)
     return QString();
 }
 
-QJsonObject DLive::generateQuery(const QString &operationName, const QMap<QString, QJsonValue> &variables, const QString &query)
+QJsonObject DLive::generateQuery(const QString &operationName, const QString& hash, const QMap<QString, QJsonValue> &variables, const QString &query)
 {
     QJsonObject result(
     {
@@ -533,7 +605,7 @@ QJsonObject DLive::generateQuery(const QString &operationName, const QMap<QStrin
                 { "persistedQuery", QJsonObject(
                     {
                         { "version", 1 },
-                        { "sha256Hash", Hash256Sha },
+                        { "sha256Hash", hash },
                     })
                 }
             })
