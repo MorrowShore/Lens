@@ -45,9 +45,16 @@ public:
 
     struct Tag
     {
+        Tag(){}
+        Tag(const QString& text_, const QColor& color_, const QColor& textColor_)
+            : text(text_)
+            , color(color_)
+            , textColor(textColor_)
+        {}
+
         QString text;
-        QColor color = QColor(255, 0, 0);
-        QColor textColor = QColor(255, 255, 255);
+        QColor color = QColor(255, 0, 255);
+        QColor textColor = QColor(0, 0, 0);
 
         QJsonObject toJson() const
         {

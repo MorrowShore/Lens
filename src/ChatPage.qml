@@ -13,6 +13,25 @@ import "."
 Item {
     property var listView: listMessages
 
+    function createImgHtmlTag(imgurl, size)
+    {
+        return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
+    }
+
+    function createTagHtmlTag(tag)
+    {
+        var style =
+            "background-color:" + tag.color + ";"
+            + "color:" + tag.textColor + ";"
+            + "display: inline-block;"
+            + "font-weight:100;"
+            + "padding-left: 4px;"
+            + "padding-right: 4px;"
+            + "border-radius:10%;"
+
+        return "<span style=\"" + style + "\"> " + tag.text + "</span>"
+    }
+
     ListView {
         id: listMessages
 
@@ -324,6 +343,12 @@ Item {
 
                         var i;
 
+
+                        for (i = 0; i < authorLeftTags.length; i++)
+                        {
+                            prefix += createTagHtmlTag(authorLeftTags[i]) + " "
+                        }
+
                         for (i = 0; i < authorLeftBadgesUrls.length; i++)
                         {
                             prefix += createImgHtmlTag(authorLeftBadgesUrls[i], badgePixelSize) + " "
@@ -332,6 +357,11 @@ Item {
                         for (i = 0; i < authorRightBadgesUrls.length; i++)
                         {
                             postfix += createImgHtmlTag(authorRightBadgesUrls[i], badgePixelSize) + " "
+                        }
+
+                        for (i = 0; i < authorRightTags.length; i++)
+                        {
+                            postfix += createTagHtmlTag(authorRightTags[i]) + " "
                         }
 
                         if (postfix.length > 0)

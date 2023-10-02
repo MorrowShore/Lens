@@ -101,7 +101,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     QTimer::singleShot(2000, [this]()
     {
         Q_UNUSED(this)
-        //addTestMessages();
+        addTestMessages();
     });
 }
 
@@ -402,6 +402,7 @@ void ChatHandler::addTestMessages()
                           QUuid::createUuid().toString(),
                           "Mario")
                           .setAvatar("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953")
+                          .addLeftTag(Author::Tag("youtuber", QColor(255, 0, 0), QColor(255, 255, 255)))
                           .build();
 
         messages.append(

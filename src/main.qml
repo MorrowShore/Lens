@@ -57,11 +57,6 @@ Item {
         qmlUtils.setValue("windowChatShowViewersCount",             Global.windowChatShowViewersCount)
     }
 
-    function createImgHtmlTag(imgurl, size)
-    {
-        return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
-    }
-
     Component.onDestruction: {
         saveGlobalSettings()
     }
