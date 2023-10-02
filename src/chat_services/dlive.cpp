@@ -798,6 +798,8 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         else
         {
             qWarning() << "unknown partner status" << status << ", message =" << jsonMessage;
+
+            authorBuilder.addLeftBadge(UnknownBadge);
         }
     }
 
