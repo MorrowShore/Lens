@@ -691,18 +691,18 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
     {
         // partner status
 
-        const QString partnerStatus = sender.value("partnerStatus").toString();
-        if (partnerStatus == "VERIFIED_PARTNER")
+        const QString status = sender.value("partnerStatus").toString();
+        if (status == "VERIFIED_PARTNER")
         {
             authorBuilder.addLeftBadge("https://dlive.tv/img/verified-badge.f5557500.svg");
         }
-        else if (partnerStatus == "NONE" || partnerStatus == "")
+        else if (status.isEmpty() || status == "NONE" || status == "AFFILIATE")
         {
             //
         }
         else
         {
-            qWarning() << "unknown partner status" << partnerStatus << ", message =" << jsonMessage;
+            qWarning() << "unknown partner status" << status << ", message =" << jsonMessage;
         }
     }
 
