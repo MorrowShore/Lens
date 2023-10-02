@@ -378,7 +378,7 @@ void DLive::sendStart()
         "  __typename\n"
         "}\n";
 
-    const QJsonObject payload = generateQuery("StreamMessageSubscription", OBFUSCATE(DLIVE_HASH_CHATROOM), {{ "streamer", info.userName }}, Query);
+    const QJsonObject payload = generateQuery("StreamMessageSubscription", OBFUSCATE(DLIVE_HASH_MESSAGE_SUBSCRIPTION), {{ "streamer", info.userName }}, Query);
 
     send("start", payload, 1);
 }
