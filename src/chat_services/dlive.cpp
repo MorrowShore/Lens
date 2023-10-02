@@ -632,7 +632,7 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
                 authors.append(pair.first);
             }
         }
-        else if (typeName == "ChatLive")
+        else if (typeName == "ChatLive" || typeName == "ChatOffline")
         {
             //
         }
