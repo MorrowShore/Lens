@@ -702,6 +702,13 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         }
     }
 
+    {
+        // subscribing tags
+
+        const bool subscribing =  jsonMessage.value("subscribing").toBool();
+        const int subLength = jsonMessage.value("subLength").toInt();
+    }
+
     return authorBuilder.build();
 }
 
