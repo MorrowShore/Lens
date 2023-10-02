@@ -28,9 +28,17 @@ private slots:
     void requestLiveStream(const QString& displayName);
 
 private:
+    struct SubSetting
+    {
+        QString text;
+        QColor color = QColor(255, 0, 0);
+        QColor textColor = QColor(255, 255, 255);
+    };
+
     struct Info
     {
         QString userName;
+        SubSetting subSetting;
     };
 
     static QString extractChannelName(const QString& stream);
@@ -41,6 +49,7 @@ private:
     void parseBadges(const QJsonArray& jsonBadges);
 
     std::shared_ptr<Author> parseAuthorFromMessage(const QJsonObject& json) const;
+
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatText(const QJsonObject& json) const;
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatGift(const QJsonObject& json) const;
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatFollow(const QJsonObject& json) const;

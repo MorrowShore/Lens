@@ -480,11 +480,21 @@ void DLive::requestChatRoom(const QString &displayName_)
         const QJsonObject root = QJsonDocument::fromJson(data).object();
         const QJsonObject jsonData = root.value("data").toObject();
 
+
         parseBadges(jsonData.value("listBadgeResource").toArray());
 
         const QJsonObject jsonUser = jsonData.value("userByDisplayName").toObject();
 
         info.userName = jsonUser.value("username").toString();
+
+        {
+            const QJsonObject json = jsonUser.value("subSetting").toObject();
+
+            info.subSetting = SubSetting();
+            info.subSetting.text = json.value("badgeText").toString();
+            info.subSetting.color = json.value("badgeColor").toString();
+            info.subSetting.textColor = json.value("textColor").toString();
+        }
 
         if (info.userName.isEmpty())
         {
@@ -632,6 +642,8 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
     authorBuilder.setAvatar(sender.value("avatar").toString());
     authorBuilder.setPage("https://dlive.tv/" + displayName);
 
+    // TODO: badges for Global Partner, Staff, GLive Guardian
+
     {
         // role
 
@@ -714,7 +726,17 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         // subscribing tags
 
         const bool subscribing =  jsonMessage.value("subscribing").toBool();
-        const int subLength = jsonMessage.value("subLength").toInt();
+        if (subscribing)
+        {
+            if (!info.subSetting.text.isEmpty())
+            {
+                //TODO: add tag
+            }
+            else
+            {
+                qWarning() << "sub setting text is empty";
+            }
+        }
     }
 
     return authorBuilder.build();
@@ -722,8 +744,6 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
 
 QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(const QJsonObject &json) const
 {
-    qDebug() << json;
-
     const QString type = json.value("type").toString();
 
     if (type != "Message")
