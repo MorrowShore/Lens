@@ -314,6 +314,10 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         {
             // TODO: result = QJsonObject({"channel":"public-stream:6639759","data":{"data":{"counter":331,"type":"stream_like_counter","userId":0},"offset":38493}}
         }
+        else if (type == "prediction")
+        {
+            // TODO: result = QJsonObject({"channel":"public-stream:12281640","data":{"data":{"data":{"createdAt":1696271132,"decisions":[{"biggestWinAmount":0,"id":32977,"isWinner":false,"name":"0-2000","order":0,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32978,"isWinner":false,"name":"2001-3000","order":1,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32979,"isWinner":false,"name":"3001-4000","order":2,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32980,"isWinner":false,"name":"4001-5000","order":3,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32981,"isWinner":false,"name":"5001+","order":4,"pointsBank":0,"proportion":0,"userAmount":0}],"duration":60,"id":8698,"pointsBank":0,"state":"active","title":"Сколько Джов настреляет в этом бою?"},"type":"prediction"},"offset":189133}})
+        }
         else
         {
             qWarning() << "unknown receive type" << type << ", result =" << result;
