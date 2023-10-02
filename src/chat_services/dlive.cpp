@@ -617,6 +617,10 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
                 authors.append(pair.first);
             }
         }
+        else if (typeName == "ChatLive")
+        {
+            //
+        }
         else
         {
             qWarning() << "Unknown type name" << typeName << ", object =" << object;
@@ -732,7 +736,7 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         {
             if (info.subscriberTag)
             {
-                authorBuilder.addRightTag(*info.subscriberTag);
+                authorBuilder.addLeftTag(*info.subscriberTag);
             }
             else
             {
