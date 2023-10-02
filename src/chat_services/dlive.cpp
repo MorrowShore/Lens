@@ -640,7 +640,7 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         {
             authorBuilder.addLeftBadge("https://dlive.tv/img/bot-icon.0df374e6.svg");
         }
-        else if (role == "None" || role == "")
+        else if (role.isEmpty() || role == "None")
         {
             //
         }
@@ -657,6 +657,10 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         if (roomRole == "Moderator")
         {
             authorBuilder.addLeftBadge("https://dlive.tv/img/moderator-icon.ad4d0ed2.svg");
+        }
+        else if (roomRole.isEmpty() || roomRole == "Member")
+        {
+            //
         }
         else
         {
