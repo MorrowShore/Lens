@@ -9,6 +9,7 @@ namespace
 static const QStringList SupportedVersions =
 {
     "1.1.0",
+    "1.1.1",
 };
 
 static const QStringList AvailableResourceTypes =

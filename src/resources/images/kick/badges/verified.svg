@@ -1,1 +1,10 @@
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" data-v-899c5d7d="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64"><polygon data-v-899c5d7d="" class="cls-2" points="2 17 7 22 17 22 22 17 22 7 17 2 7 2 2 7 2 17" fill="#3AE200"></polygon><polygon data-v-899c5d7d="" class="cls-1" points="10 18.12 5.38 13.5 7.5 11.38 10 13.88 16.94 6.94 19.06 9.06 10 18.12" fill="#114200"></polygon></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+<path d="m14.72 7v-0.98667h0.92v-1.8933h-0.9667v-0.96h-4.7v-1.8933h-1.0067v-0.98667h-1.9333v0.98667h-1v1.8933h-4.7067v0.96h-0.96666v1.8933h0.92666v0.98667h0.94667v2.0067h-0.94667v0.98666h-0.92666v1.8933h0.96666v0.96h4.7067v1.8933h1v0.9867h1.9333v-0.9867h1.0067v-1.8933h4.7v-0.96h0.9667v-1.8933h-0.92v-0.98666h-0.9467v-2.0067h0.9467zm-2.22-0.40667h-1.06v1.0667h-1.0667v1.06h-1.06v1.0667h-1.0667v1.06l-1.1533 0.0533v0.9h-1.0667v-0.9533h-0.96666v-1.06h-1.0667v-2.1267h2.1267v1.06h1.0667v-1.06h1.06v-1.0667h1.0667v-1.06h1.06v-1.0667h2.1267v2.1267z" fill="url(#a)"/>
+<defs>
+<linearGradient id="a" x1="25.333%" x2="73.541%" y1="99.375%" y2="2.917%">
+<stop stop-color="#1EFF00" offset="0"/>
+<stop stop-color="#00FF8C" offset=".99"/>
+</linearGradient>
+</defs>
+</svg>
