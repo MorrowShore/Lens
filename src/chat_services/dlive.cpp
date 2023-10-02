@@ -647,6 +647,16 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
 
             pair = parseGenericMessage(object, tr("With %1 viewers now is HOSTING!").arg(count), true);
         }
+        else if (typeName == "ChatGiftSub")
+        {
+            const QString receiver = object.value("receiver").toString();
+            pair = parseGenericMessage(object, tr("Gifted a one-month subscription to %1!").arg(receiver), true);
+        }
+        else if (typeName == "ChatGiftSubReceive")
+        {
+            const QString gifter = object.value("gifter").toString();
+            pair = parseGenericMessage(object, tr("Just received a one-month subscription from %1!").arg(gifter), true);
+        }
         else if (typeName == "ChatDelete")
         {
             const QString type = object.value("type").toString();

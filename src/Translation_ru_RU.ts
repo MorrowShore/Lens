@@ -544,7 +544,17 @@
         <translation>HOSTING с %1 зрителями!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="930"/>
+        <location filename="chat_services/dlive.cpp" line="653"/>
+        <source>Gifted a one-month subscription to %1!</source>
+        <translation>Подарил месячную подписку %1!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="658"/>
+        <source>Just received a one-month subscription from %1!</source>
+        <translation>Получил месячную подписку от %1!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="948"/>
         <source>Just donated %1 %2</source>
         <translation>Пожертвовал(а) %1 %2</translation>
     </message>
