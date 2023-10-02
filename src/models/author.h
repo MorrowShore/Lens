@@ -39,6 +39,13 @@ public:
     };
     Q_ENUM(Flag)
 
+    struct Tag
+    {
+        QString text;
+        QColor color = QColor(255, 0, 0);
+        QColor textColor = QColor(255, 255, 255);
+    };
+
     friend class Builder;
 
     class Builder
@@ -55,6 +62,8 @@ public:
         Builder& setFlag(const Flag flag) { result->flags.insert(flag); return *this; }
         Builder& setCustomNicknameColor(const QColor& color) { result->customNicknameColor = color; return *this; }
         Builder& setCustomNicknameBackgroundColor(const QColor& color) { result->customNicknameBackgroundColor = color; return *this; }
+        Builder& addLeftTag(const Tag& tag) { result->leftTags.append(tag); return *this; }
+        Builder& addRightTag(const Tag& tag) { result->rightTags.append(tag); return *this; }
 
         std::shared_ptr<Author> build() const { return result; }
 
@@ -123,6 +132,8 @@ private:
     QUrl pageUrl;
     QStringList leftBadgesUrls;
     QStringList rightBadgesUrls;
+    QList<Tag> leftTags;
+    QList<Tag> rightTags;
     std::set<Flag> flags;
     QColor customNicknameColor;
     QColor customNicknameBackgroundColor;

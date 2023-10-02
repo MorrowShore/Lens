@@ -28,17 +28,10 @@ private slots:
     void requestLiveStream(const QString& displayName);
 
 private:
-    struct SubSetting
-    {
-        QString text;
-        QColor color = QColor(255, 0, 0);
-        QColor textColor = QColor(255, 255, 255);
-    };
-
     struct Info
     {
         QString userName;
-        SubSetting subSetting;
+        std::optional<Author::Tag> subscriberTag;
     };
 
     static QString extractChannelName(const QString& stream);

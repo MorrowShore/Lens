@@ -490,10 +490,12 @@ void DLive::requestChatRoom(const QString &displayName_)
         {
             const QJsonObject json = jsonUser.value("subSetting").toObject();
 
-            info.subSetting = SubSetting();
-            info.subSetting.text = json.value("badgeText").toString();
-            info.subSetting.color = json.value("badgeColor").toString();
-            info.subSetting.textColor = json.value("textColor").toString();
+            Author::Tag tag;
+            tag.text = json.value("badgeText").toString();
+            tag.color = json.value("badgeColor").toString();
+            tag.textColor = json.value("textColor").toString();
+
+            info.subscriberTag = tag;
         }
 
         if (info.userName.isEmpty())
@@ -728,13 +730,13 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         const bool subscribing =  jsonMessage.value("subscribing").toBool();
         if (subscribing)
         {
-            if (!info.subSetting.text.isEmpty())
+            if (info.subscriberTag)
             {
-                //TODO: add tag
+                authorBuilder.addRightTag(*info.subscriberTag);
             }
             else
             {
-                qWarning() << "sub setting text is empty";
+                qWarning() << "subscriber tag is null";
             }
         }
     }
