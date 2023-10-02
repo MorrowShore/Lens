@@ -524,7 +524,17 @@
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="783"/>
+        <location filename="chat_services/dlive.cpp" line="600"/>
+        <source>Just subscribed monthly!</source>
+        <translation>Оформил(а) месячную подписку!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="606"/>
+        <source>Is celebrating %1-month sub streak!</source>
+        <translation>Отмечает 11-месячную подписку!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="892"/>
         <source>Gift: %1
 Amout: %2</source>
         <oldsource>Gift: %1. Amout: %2</oldsource>
@@ -532,12 +542,12 @@ Amout: %2</source>
 Количество: %2</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="814"/>
+        <location filename="chat_services/dlive.cpp" line="596"/>
         <source>Just followed!</source>
         <translation>Начал(а) отслеживать!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="839"/>
+        <location filename="chat_services/dlive.cpp" line="610"/>
         <source>Just added something to Chest!</source>
         <oldsource>just added something to Chest!</oldsource>
         <translation>Только что добавил(а) кое-что в сундук!</translation>
@@ -1031,7 +1041,7 @@ to these chats/channels in access rights (at your own risk)</oldsource>
 <context>
     <name>MessagesModel</name>
     <message>
-        <location filename="models/messagesmodel.cpp" line="83"/>
+        <location filename="models/messagesmodel.cpp" line="85"/>
         <source>Message deleted</source>
         <translation>Сообщение удалено</translation>
     </message>

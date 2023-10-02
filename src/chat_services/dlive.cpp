@@ -480,7 +480,6 @@ void DLive::requestChatRoom(const QString &displayName_)
         const QJsonObject root = QJsonDocument::fromJson(data).object();
         const QJsonObject jsonData = root.value("data").toObject();
 
-
         parseBadges(jsonData.value("listBadgeResource").toArray());
 
         const QJsonObject jsonUser = jsonData.value("userByDisplayName").toObject();
@@ -514,6 +513,8 @@ void DLive::requestChatRoom(const QString &displayName_)
         parseEmoji(jsonUser.value("emoji").toObject());
 
         emit stateChanged();
+
+        parseMessages(jsonUser.value("chats").toArray());
     });
 }
 
@@ -592,11 +593,21 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
         }
         else if (typeName == "ChatFollow")
         {
-            pair = parseChatFollow(object);
+            pair = parseHighlighted(object, tr("Just followed!"));
+        }
+        else if (typeName == "ChatSubscription")
+        {
+            pair = parseHighlighted(object, tr("Just subscribed monthly!"));
+        }
+        else if (typeName == "ChatSubStreak")
+        {
+            const int count = object.value("length").toInt();
+
+            pair = parseHighlighted(object, tr("Is celebrating %1-month sub streak!").arg(count));
         }
         else if (typeName == "ChatTCValueAdd")
         {
-            parseChatTCValueAdd(object);
+            pair = parseHighlighted(object, tr("Just added something to Chest!"));
         }
         else if (typeName == "ChatDelete")
         {
@@ -889,15 +900,8 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
     return { messageBuilder.build(), author };
 }
 
-QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatFollow(const QJsonObject &json) const
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseHighlighted(const QJsonObject &json, const QString &text) const
 {
-    const QString type = json.value("type").toString();
-
-    if (type != "Follow")
-    {
-        qWarning() << "unknown type" << type << ", json =" << json;
-    }
-
     auto author = parseAuthorFromMessage(json);
 
     Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
@@ -909,32 +913,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatFollow
     Message::TextStyle style;
     style.bold = true;
 
-    messageBuilder.addText(tr("Just followed!"), style);
-
-    return { messageBuilder.build(), author };
-}
-
-QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatTCValueAdd(const QJsonObject &json) const
-{
-    const QString type = json.value("type").toString();
-
-    if (type != "TCValue")
-    {
-        qWarning() << "unknown type" << type << ", json =" << json;
-    }
-
-    auto author = parseAuthorFromMessage(json);
-
-    Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
-
-    messageBuilder.setPublishedTime(convertTime(json.value("createdAt").toString()));
-
-    messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightColor);
-
-    Message::TextStyle style;
-    style.bold = true;
-
-    messageBuilder.addText(tr("Just added something to Chest!"), style);
+    messageBuilder.addText(text, style);
 
     return { messageBuilder.build(), author };
 }
