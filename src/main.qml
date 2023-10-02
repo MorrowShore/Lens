@@ -191,7 +191,7 @@ Row {
     property var chatService: chatHandler.getServiceAtIndex(" + String("%1").arg(i) + ")
 
     anchors.verticalCenter: parent.verticalCenter
-    spacing: 8
+    spacing: 4
 
     visible: chatService.enabled
 
@@ -212,16 +212,11 @@ Row {
             border.width: 2
             radius: width / 2
             border.color: \"black\"
+            visible: status !== Global._ConnectedConnectionStateType
 
             property var status: chatService.connectionStateType
 
-            color: {
-                if (status === Global._ConnectedConnectionStateType) {
-                    return \"lime\"
-                }
-
-                return \"red\"
-            }
+            color: \"red\"
         }
     }
 
