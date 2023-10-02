@@ -318,6 +318,10 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         {
             // TODO: result = QJsonObject({"channel":"public-stream:12281640","data":{"data":{"data":{"createdAt":1696271132,"decisions":[{"biggestWinAmount":0,"id":32977,"isWinner":false,"name":"0-2000","order":0,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32978,"isWinner":false,"name":"2001-3000","order":1,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32979,"isWinner":false,"name":"3001-4000","order":2,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32980,"isWinner":false,"name":"4001-5000","order":3,"pointsBank":0,"proportion":0,"userAmount":0},{"biggestWinAmount":0,"id":32981,"isWinner":false,"name":"5001+","order":4,"pointsBank":0,"proportion":0,"userAmount":0}],"duration":60,"id":8698,"pointsBank":0,"state":"active","title":"Сколько Джов настреляет в этом бою?"},"type":"prediction"},"offset":189133}})
         }
+        else if (type == "chat_pinned_message_reaction")
+        {
+            // TODO: {"channel":"public-chat:16569531","data":{"data":{"id":12200,"reactions":[{"count":119,"type":"like"},{"count":4,"type":"fire"},{"count":6,"type":"laught"},{"count":28,"type":"poo"},{"count":33,"type":"clown"}],"type":"chat_pinned_message_reaction"},"offset":263370}}
+        }
         else
         {
             qWarning() << "unknown receive type" << type << ", result =" << result;
