@@ -12,12 +12,12 @@ const int MaxSize  = 1000;
 
 const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
 {
-    {(int)Message::Role::Id ,                           "messageId"},
-    {(int)Message::Role::Html ,                         "messageHtml"},
-    {(int)Message::Role::PublishedAt ,                  "messagePublishedAt"},
-    {(int)Message::Role::ReceivedAt ,                   "messageReceivedAt"},
-    {(int)Message::Role::IsBotCommand ,                 "messageIsBotCommand"},
-    {(int)Message::Role::MarkedAsDeleted ,              "messageMarkedAsDeleted"},
+    {(int)Message::Role::Id,                            "messageId"},
+    {(int)Message::Role::Html,                          "messageHtml"},
+    {(int)Message::Role::PublishedAt,                   "messagePublishedAt"},
+    {(int)Message::Role::ReceivedAt,                    "messageReceivedAt"},
+    {(int)Message::Role::IsBotCommand,                  "messageIsBotCommand"},
+    {(int)Message::Role::MarkedAsDeleted,               "messageMarkedAsDeleted"},
     {(int)Message::Role::CustomAuthorAvatarUrl,         "messageCustomAuthorAvatarUrl"},
     {(int)Message::Role::CustomAuthorName,              "messageCustomAuthorName"},
     {(int)Message::Role::Destination,                   "messageDestination"},
@@ -32,17 +32,19 @@ const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
 
     {(int)Message::Role::BodyBackgroundForcedColor,     "messageBodyBackgroundForcedColor"},
 
-    {(int)Author::Role::ServiceType ,                       "authorServiceType"},
-    {(int)Author::Role::Id ,                                "authorId"},
-    {(int)Author::Role::PageUrl ,                           "authorPageUrl"},
-    {(int)Author::Role::Name ,                              "authorName"},
+    {(int)Author::Role::ServiceType,                        "authorServiceType"},
+    {(int)Author::Role::Id,                                 "authorId"},
+    {(int)Author::Role::PageUrl,                            "authorPageUrl"},
+    {(int)Author::Role::Name,                               "authorName"},
     {(int)Author::Role::HasCustomNicknameColor,             "authorHasCustomNicknameColor"},
     {(int)Author::Role::CustomNicknameColor,                "authorCustomNicknameColor"},
     {(int)Author::Role::HasCustomNicknameBackgroundColor,   "authorHasCustomNicknameBackgroundColor"},
     {(int)Author::Role::CustomNicknameBackgroundColor,      "authorCustomNicknameBackgroundColor"},
-    {(int)Author::Role::AvatarUrl ,                         "authorAvatarUrl"},
-    {(int)Author::Role::LeftBadgesUrls ,                    "authorLeftBadgesUrls"},
+    {(int)Author::Role::AvatarUrl,                          "authorAvatarUrl"},
+    {(int)Author::Role::LeftBadgesUrls,                     "authorLeftBadgesUrls"},
     {(int)Author::Role::RightBadgesUrls,                    "authorRightBadgesUrls"},
+    {(int)Author::Role::LeftTags,                           "authorLeftTags"},
+    {(int)Author::Role::RightTags,                          "authorRightTags"},
 };
 
 }

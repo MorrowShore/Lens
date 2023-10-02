@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QColor>
 #include <QJsonObject>
+#include <QJsonDocument>
 #include <set>
 
 class Author
@@ -23,6 +24,9 @@ public:
         AvatarUrl,
         LeftBadgesUrls,
         RightBadgesUrls,
+
+        LeftTags,
+        RightTags,
 
         IsVerified,
         IsChatOwner,
@@ -44,6 +48,16 @@ public:
         QString text;
         QColor color = QColor(255, 0, 0);
         QColor textColor = QColor(255, 255, 255);
+
+        QJsonObject toJson() const
+        {
+            return QJsonObject(
+            {
+                { "text", text },
+                { "color", color.name() },
+                { "textColor", textColor.name() },
+            });
+        }
     };
 
     friend class Builder;

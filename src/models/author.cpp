@@ -183,6 +183,30 @@ QVariant Author::getValue(const Role role) const
     case Author::Role::IsChatOwner: return flags.find(Flag::ChatOwner) != flags.end();
     case Author::Role::Sponsor: return flags.find(Flag::Sponsor) != flags.end();
     case Author::Role::Moderator: return flags.find(Flag::Moderator) != flags.end();
+
+    case Author::Role::LeftTags:
+    {
+        QJsonArray array;
+
+        for (const Tag& tag : qAsConst(leftTags))
+        {
+            array.append(tag.toJson());
+        }
+
+        return array;
+    }
+
+    case Author::Role::RightTags:
+    {
+        QJsonArray array;
+
+        for (const Tag& tag : qAsConst(rightTags))
+        {
+            array.append(tag.toJson());
+        }
+
+        return array;
+    }
     }
 
     qCritical() << "role" << role << "not implemented yet" << ", author name = " << name;
@@ -202,6 +226,8 @@ QString Author::getJsonRoleName(const Role role)
     case Author::Role::AvatarUrl: return "avatar";
     case Author::Role::LeftBadgesUrls: return "leftBadges";
     case Author::Role::RightBadgesUrls: return "rightBadges";
+    case Author::Role::LeftTags: return "leftTags";
+    case Author::Role::RightTags: return "rightTags";
 
     case Author::Role::IsVerified:
     case Author::Role::IsChatOwner:
@@ -230,19 +256,23 @@ QJsonObject Author::toJson() const
     root.insert(getJsonRoleName(Role::CustomNicknameBackgroundColor), customNicknameBackgroundColor.isValid() ? customNicknameBackgroundColor.name() : QString());
     root.insert(getJsonRoleName(Role::AvatarUrl), avatarUrl.toString());
 
-    QJsonArray jsonLeftBadges;
-    for (const QString& badgeUrl : leftBadgesUrls)
     {
-        jsonLeftBadges.append(badgeUrl);
+        QJsonArray json;
+        for (const QString& badgeUrl : leftBadgesUrls)
+        {
+            json.append(badgeUrl);
+        }
+        root.insert(getJsonRoleName(Role::LeftBadgesUrls), json);
     }
-    root.insert(getJsonRoleName(Role::LeftBadgesUrls), jsonLeftBadges);
 
-    QJsonArray rightBadgesJson;
-    for (const QString& badgeUrl : rightBadgesUrls)
     {
-        rightBadgesJson.append(badgeUrl);
+        QJsonArray json;
+        for (const QString& badgeUrl : rightBadgesUrls)
+        {
+            json.append(badgeUrl);
+        }
+        root.insert(getJsonRoleName(Role::RightBadgesUrls), json);
     }
-    root.insert(getJsonRoleName(Role::RightBadgesUrls), rightBadgesJson);
 
     return root;
 }
