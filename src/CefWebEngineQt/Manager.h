@@ -48,6 +48,12 @@ private slots:
 private:
     friend class Browser;
 
+    struct EngineInfo
+    {
+        QString version;
+        QString chromiumVersion;
+    };
+
     void startProcess();
     void stopProcess();
     void closeBrowser(const int id);
@@ -60,6 +66,8 @@ private:
     BrowsersStorage storage;
 
     Messanger messanger;
+
+    EngineInfo engineInfo;
 
     QTimer timerPing;
 };

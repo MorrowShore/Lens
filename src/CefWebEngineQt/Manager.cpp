@@ -8,7 +8,6 @@ namespace
 
 static const QStringList SupportedVersions =
 {
-    "1.1.0",
     "1.1.1",
 };
 
@@ -342,7 +341,15 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
             else if (type == "initialized")
             {
                 QString version;
+                QString chromiumVersion;
                 getParamStr(params, "version", version);
+                getParamStr(params, "chromium-version", chromiumVersion);
+
+                engineInfo = EngineInfo();
+                engineInfo.version = version;
+                engineInfo.chromiumVersion = chromiumVersion;
+
+                qDebug() << "initialized, version:" << engineInfo.version << ", chromium version:" << engineInfo.chromiumVersion;
 
                 if (!SupportedVersions.contains(version))
                 {
@@ -442,10 +449,10 @@ void Manager::closeBrowser(const int id)
     }
 
     messanger.send(Messanger::Message(
-                        "browser-close",
-                        {
-                            { "id", QString("%1").arg(id) },
-                        }), process);
+        "browser-close",
+        {
+            { "id", QString("%1").arg(id) },
+        }), process);
 }
 
 bool Manager::isInitialized() const
@@ -511,7 +518,7 @@ void Manager::startProcess()
 
     process = new QProcess();
     
-    connect(process, &QProcess::started, this, []() { qDebug() << "started"; });
+    //connect(process, &QProcess::started, this, [this]() { qDebug() << "started"; });
     connect(process, &QProcess::readyRead, this, &Manager::onReadyRead);
     connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred), this, [](QProcess::ProcessError error) { qDebug() << "error =" << error; });
     //connect(process, &QProcess::stateChanged, this, [](const QProcess::ProcessState state) { qDebug() << "state =" << state; });
