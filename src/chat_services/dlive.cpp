@@ -1,6 +1,4 @@
 #include "dlive.h"
-#include "secrets.h"
-#include "crypto/obfuscator.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -378,7 +376,8 @@ void DLive::sendStart()
         "  __typename\n"
         "}\n";
 
-    const QJsonObject payload = generateQuery("StreamMessageSubscription", OBFUSCATE(DLIVE_HASH_MESSAGE_SUBSCRIPTION), {{ "streamer", info.userName }}, Query);
+    static const QString Hash = "7e70c2e0ec55dd3594c55b6907bef1dbc32a67eb9b608caf0552c2026994f8a2";
+    const QJsonObject payload = generateQuery("StreamMessageSubscription", Hash, {{ "streamer", info.userName }}, Query);
 
     send("start", payload, 1);
 }
@@ -457,7 +456,8 @@ void DLive::requestChatRoom(const QString &displayName_)
         return;
     }
 
-    const QByteArray body = QJsonDocument(generateQuery("LivestreamChatroomInfo", OBFUSCATE(DLIVE_HASH_CHATROOM),
+    static const QString Hash = "5f7d24cc4ec8e7fb23fdc3a16ee0db8694fb75937b45551498c82dbec7d1e2e7";
+    const QByteArray body = QJsonDocument(generateQuery("LivestreamChatroomInfo", Hash,
     {
         { "displayname", displayName },
         { "count", 40 },
@@ -518,7 +518,8 @@ void DLive::requestLiveStream(const QString &displayName_)
         return;
     }
 
-    const QByteArray body = QJsonDocument(generateQuery("LivestreamPage", OBFUSCATE(DLIVE_HASH_LIVESTREAM),
+    static const QString Hash = "950c61faccae0df49c8e19a3a0e741ccb39fd322c850bca52a7562bfa63f49c1";
+    const QByteArray body = QJsonDocument(generateQuery("LivestreamPage", Hash,
         {
             { "displayname", displayName },
             { "add", false },
