@@ -478,10 +478,11 @@ void DLive::requestChatRoom(const QString &displayName_)
         }
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
+        const QJsonObject jsonData = root.value("data").toObject();
 
-        const QJsonObject jsonUser = root
-            .value("data").toObject()
-            .value("userByDisplayName").toObject();
+        parseBadges(jsonData.value("listBadgeResource").toArray());
+
+        const QJsonObject jsonUser = jsonData.value("userByDisplayName").toObject();
 
         info.userName = jsonUser.value("username").toString();
 
@@ -627,11 +628,13 @@ std::shared_ptr<Author> DLive::parseSender(const QJsonObject &json) const
     const QString userName = json.value("username").toString();
     const QString displayName = json.value("displayname").toString();
     const QString partnerStatus = json.value("partnerStatus").toString();
+    const QJsonArray jsonBadges = json.value("badges").toArray();
 
     Author::Builder authorBuilder(getServiceType(), generateAuthorId(userName), displayName);
     authorBuilder.setAvatar(json.value("avatar").toString());
     authorBuilder.setPage("https://dlive.tv/" + displayName);
 
+    //TODO: other badges
     if (partnerStatus == "VERIFIED_PARTNER")
     {
         authorBuilder.addLeftBadge("https://dlive.tv/img/verified-badge.f5557500.svg");
@@ -645,7 +648,19 @@ std::shared_ptr<Author> DLive::parseSender(const QJsonObject &json) const
         qWarning() << "unknown partner status" << partnerStatus << ", sender =" << json;
     }
 
-    //TODO: badges
+    for (const QJsonValue& v : qAsConst(jsonBadges))
+    {
+        const QString badgeName = v.toString();
+
+        if (badges.contains(badgeName))
+        {
+            authorBuilder.addLeftBadge(badges.value(badgeName));
+        }
+        else
+        {
+            qWarning() << "unknown bagde" << badgeName;
+        }
+    }
 
     return authorBuilder.build();
 }
@@ -875,6 +890,20 @@ void DLive::parseEmoji(const QJsonObject &json)
 
             emotes.insert(name, url);
         }
+    }
+}
+
+void DLive::parseBadges(const QJsonArray &jsonBadges)
+{
+    badges.clear();
+
+    for (const QJsonValue& v : qAsConst(jsonBadges))
+    {
+        const QJsonObject o = v.toObject();
+        const QString name = o.value("name").toString();
+        const QString url = o.value("url").toString();
+
+        badges.insert(name, url);
     }
 }
 

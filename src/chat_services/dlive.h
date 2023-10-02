@@ -27,10 +27,6 @@ private slots:
     void requestChatRoom(const QString& displayName);
     void requestLiveStream(const QString& displayName);
 
-    void parseMessages(const QJsonArray& jsonMessages);
-
-    void parseEmoji(const QJsonObject& json);
-
 private:
     struct Info
     {
@@ -39,6 +35,10 @@ private:
 
     static QString extractChannelName(const QString& stream);
     static QJsonObject generateQuery(const QString& operationName, const QString& hash, const QMap<QString, QJsonValue>& variables, const QString& query = QString());
+
+    void parseMessages(const QJsonArray& jsonMessages);
+    void parseEmoji(const QJsonObject& json);
+    void parseBadges(const QJsonArray& jsonBadges);
 
     std::shared_ptr<Author> parseSender(const QJsonObject& json) const;
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatText(const QJsonObject& json) const;
@@ -56,4 +56,5 @@ private:
     QTimer checkPingTimer;
 
     QHash<QString, QString> emotes; // key - name, value - url
+    QHash<QString, QString> badges; // key - name, value - url
 };
