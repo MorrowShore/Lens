@@ -918,7 +918,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
 
     const int amout = json.value("amount").toString("-1").toInt();
     const QString giftType = json.value("gift").toString();
-    const QString message = json.value("message").toString();
+    const QString message = json.value("message").toString().trimmed();
 
     auto author = parseAuthorFromMessage(json);
 
