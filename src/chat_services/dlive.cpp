@@ -621,44 +621,84 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
     emit readyRead(messages, authors);
 }
 
-std::shared_ptr<Author> DLive::parseSender(const QJsonObject &json) const
+std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMessage) const
 {
-    qDebug() << json;
+    const QJsonObject sender = jsonMessage.value("sender").toObject();
 
-    const QString userName = json.value("username").toString();
-    const QString displayName = json.value("displayname").toString();
-    const QString partnerStatus = json.value("partnerStatus").toString();
-    const QJsonArray jsonBadges = json.value("badges").toArray();
+    const QString userName = sender.value("username").toString();
+    const QString displayName = sender.value("displayname").toString();
 
     Author::Builder authorBuilder(getServiceType(), generateAuthorId(userName), displayName);
-    authorBuilder.setAvatar(json.value("avatar").toString());
+    authorBuilder.setAvatar(sender.value("avatar").toString());
     authorBuilder.setPage("https://dlive.tv/" + displayName);
 
-    //TODO: other badges
-    if (partnerStatus == "VERIFIED_PARTNER")
     {
-        authorBuilder.addLeftBadge("https://dlive.tv/img/verified-badge.f5557500.svg");
-    }
-    else if (partnerStatus == "NONE" || partnerStatus == "")
-    {
-        //
-    }
-    else
-    {
-        qWarning() << "unknown partner status" << partnerStatus << ", sender =" << json;
-    }
+        // role
 
-    for (const QJsonValue& v : qAsConst(jsonBadges))
-    {
-        const QString badgeName = v.toString();
-
-        if (badges.contains(badgeName))
+        const QString role = jsonMessage.value("role").toString();
+        if (role == "Bot")
         {
-            authorBuilder.addLeftBadge(badges.value(badgeName));
+            authorBuilder.addLeftBadge("https://dlive.tv/img/bot-icon.0df374e6.svg");
+        }
+        else if (role == "None" || role == "")
+        {
+            //
         }
         else
         {
-            qWarning() << "unknown bagde" << badgeName;
+            qWarning() << "unknown role" << role << ", message =" << jsonMessage;
+        }
+    }
+
+    {
+        // room role
+
+        const QString roomRole = jsonMessage.value("roomRole").toString();
+        if (roomRole == "Moderator")
+        {
+            authorBuilder.addLeftBadge("https://dlive.tv/img/moderator-icon.ad4d0ed2.svg");
+        }
+        else
+        {
+            qWarning() << "unknown room role" << roomRole << ", message =" << jsonMessage;
+        }
+    }
+
+    {
+        // named badges
+
+        const QJsonArray jsonBadges = sender.value("badges").toArray();
+
+        for (const QJsonValue& v : qAsConst(jsonBadges))
+        {
+            const QString badgeName = v.toString();
+
+            if (badges.contains(badgeName))
+            {
+                authorBuilder.addLeftBadge(badges.value(badgeName));
+            }
+            else
+            {
+                qWarning() << "unknown bagde" << badgeName;
+            }
+        }
+    }
+
+    {
+        // partner status
+
+        const QString partnerStatus = sender.value("partnerStatus").toString();
+        if (partnerStatus == "VERIFIED_PARTNER")
+        {
+            authorBuilder.addLeftBadge("https://dlive.tv/img/verified-badge.f5557500.svg");
+        }
+        else if (partnerStatus == "NONE" || partnerStatus == "")
+        {
+            //
+        }
+        else
+        {
+            qWarning() << "unknown partner status" << partnerStatus << ", message =" << jsonMessage;
         }
     }
 
@@ -667,6 +707,8 @@ std::shared_ptr<Author> DLive::parseSender(const QJsonObject &json) const
 
 QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(const QJsonObject &json) const
 {
+    qDebug() << json;
+
     const QString type = json.value("type").toString();
 
     if (type != "Message")
@@ -674,7 +716,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
         qWarning() << "unknown type" << type << ", json =" << json;
     }
 
-    auto author = parseSender(json.value("sender").toObject());
+    auto author = parseAuthorFromMessage(json);
 
     Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
 
@@ -784,7 +826,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
     const QString giftName = json.value("gift").toString();
     const QString message = json.value("message").toString();
 
-    auto author = parseSender(json.value("sender").toObject());
+    auto author = parseAuthorFromMessage(json);
 
     Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
 
@@ -815,7 +857,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatFollow
         qWarning() << "unknown type" << type << ", json =" << json;
     }
 
-    auto author = parseSender(json.value("sender").toObject());
+    auto author = parseAuthorFromMessage(json);
 
     Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
 
@@ -840,7 +882,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatTCValu
         qWarning() << "unknown type" << type << ", json =" << json;
     }
 
-    auto author = parseSender(json.value("sender").toObject());
+    auto author = parseAuthorFromMessage(json);
 
     Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
 
