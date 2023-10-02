@@ -585,6 +585,7 @@ void DLive::requestLiveStream(const QString &displayName_)
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
 
+
         const QJsonObject jsonUser = root
         .value("data").toObject()
         .value("userByDisplayName").toObject();
@@ -896,9 +897,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
                     }
                     else
                     {
-                        messageBuilder.addText(emoteName);
-
-                        qWarning() << "unknown emote" << emoteName;
+                        messageBuilder.addImage("https://images.prd.dlivecdn.com/emoji/" + emoteName, EmoteHeight, false);
                     }
                 }
 
