@@ -711,7 +711,7 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
     authorBuilder.setAvatar(sender.value("avatar").toString());
     authorBuilder.setPage("https://dlive.tv/" + displayName);
 
-    // TODO: badges for Global Partner, Staff, GLive Guardian
+    // TODO: badges for Staff, GLive Guardian
 
     {
         // role
@@ -728,6 +728,8 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         else
         {
             qWarning() << "unknown role" << role << ", message =" << jsonMessage;
+
+            authorBuilder.addLeftBadge(UnknownBadge);
         }
     }
 
@@ -750,6 +752,8 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         else
         {
             qWarning() << "unknown room role" << roomRole << ", message =" << jsonMessage;
+
+            authorBuilder.addLeftBadge(UnknownBadge);
         }
     }
 
@@ -769,6 +773,8 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
             else
             {
                 qWarning() << "unknown bagde" << badgeName;
+
+                authorBuilder.addLeftBadge(UnknownBadge);
             }
         }
     }

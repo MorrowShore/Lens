@@ -1,5 +1,7 @@
 #include "chatservice.h"
 
+const QString ChatService::UnknownBadge = "qrc:/resources/images/unknown-badge.png";
+
 ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
     : QObject(parent)
 

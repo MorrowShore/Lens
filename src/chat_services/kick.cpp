@@ -425,7 +425,7 @@ void Kick::parseChatMessageEvent(const QJsonObject &data)
 
     for (const QJsonValue& value : qAsConst(badgesJson))
     {
-        leftBadges.append(parseBadge(value.toObject(), "qrc:/resources/images/unknown-badge.png"));
+        leftBadges.append(parseBadge(value.toObject(), UnknownBadge));
     }
 
     QList<std::shared_ptr<Message>> messages;

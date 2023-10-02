@@ -124,6 +124,8 @@ protected:
 
     virtual void reconnectImpl() = 0;
 
+    static const QString UnknownBadge;
+
     QString generateAuthorId(const QString& rawId) const;
     QString generateMessageId(const QString& rawId) const;
 

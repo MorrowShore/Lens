@@ -532,7 +532,7 @@ void Twitch::onIRCMessage(const QString &rawData)
                     else
                     {
                         qWarning() << "unknown badge" << badgeInfoStr;
-                        badges.append("qrc:/resources/images/unknown-badge.png");
+                        badges.append(UnknownBadge);
                     }
                 }
             }
