@@ -581,6 +581,10 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
         {
             pair = parseChatFollow(object);
         }
+        else if (typeName == "ChatTCValueAdd")
+        {
+            parseChatTCValueAdd(object);
+        }
         else if (typeName == "ChatDelete")
         {
             const QString type = object.value("type").toString();
@@ -618,12 +622,29 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
 
 std::shared_ptr<Author> DLive::parseSender(const QJsonObject &json) const
 {
+    qDebug() << json;
+
     const QString userName = json.value("username").toString();
     const QString displayName = json.value("displayname").toString();
+    const QString partnerStatus = json.value("partnerStatus").toString();
 
     Author::Builder authorBuilder(getServiceType(), generateAuthorId(userName), displayName);
     authorBuilder.setAvatar(json.value("avatar").toString());
     authorBuilder.setPage("https://dlive.tv/" + displayName);
+
+    if (partnerStatus == "VERIFIED_PARTNER")
+    {
+        authorBuilder.addLeftBadge("https://dlive.tv/img/verified-badge.f5557500.svg");
+    }
+    else if (partnerStatus == "NONE" || partnerStatus == "")
+    {
+        //
+    }
+    else
+    {
+        qWarning() << "unknown partner status" << partnerStatus << ", sender =" << json;
+    }
+
     //TODO: badges
 
     return authorBuilder.build();
@@ -791,6 +812,31 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatFollow
     style.bold = true;
 
     messageBuilder.addText(tr("Just followed!"), style);
+
+    return { messageBuilder.build(), author };
+}
+
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatTCValueAdd(const QJsonObject &json) const
+{
+    const QString type = json.value("type").toString();
+
+    if (type != "TCValue")
+    {
+        qWarning() << "unknown type" << type << ", json =" << json;
+    }
+
+    auto author = parseSender(json.value("sender").toObject());
+
+    Message::Builder messageBuilder(author, generateMessageId(json.value("id").toString()));
+
+    messageBuilder.setPublishedTime(convertTime(json.value("createdAt").toString()));
+
+    messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightColor);
+
+    Message::TextStyle style;
+    style.bold = true;
+
+    messageBuilder.addText(tr("Just added something to Chest!"), style);
 
     return { messageBuilder.build(), author };
 }

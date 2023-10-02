@@ -490,7 +490,7 @@
 <context>
     <name>DLive</name>
     <message>
-        <location filename="chat_services/dlive.cpp" line="175"/>
+        <location filename="chat_services/dlive.cpp" line="173"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -499,32 +499,32 @@
         <translation type="vanished">Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="74"/>
+        <location filename="chat_services/dlive.cpp" line="72"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="75"/>
+        <location filename="chat_services/dlive.cpp" line="73"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="177"/>
+        <location filename="chat_services/dlive.cpp" line="175"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="180"/>
+        <location filename="chat_services/dlive.cpp" line="178"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="183"/>
+        <location filename="chat_services/dlive.cpp" line="181"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="761"/>
+        <location filename="chat_services/dlive.cpp" line="783"/>
         <source>Gift: %1
 Amout: %2</source>
         <oldsource>Gift: %1. Amout: %2</oldsource>
@@ -532,9 +532,15 @@ Amout: %2</source>
 Количество: %2</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="792"/>
+        <location filename="chat_services/dlive.cpp" line="814"/>
         <source>Just followed!</source>
         <translation>Начал(а) отслеживать!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="839"/>
+        <source>Just added something to Chest!</source>
+        <oldsource>just added something to Chest!</oldsource>
+        <translation>Только что добавил(а) кое-что в сундук!</translation>
     </message>
     <message>
         <source>Subscribed</source>

@@ -29,11 +29,6 @@ private slots:
 
     void parseMessages(const QJsonArray& jsonMessages);
 
-    std::shared_ptr<Author> parseSender(const QJsonObject& json) const;
-    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatText(const QJsonObject& json) const;
-    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatGift(const QJsonObject& json) const;
-    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatFollow(const QJsonObject& json) const;
-
     void parseEmoji(const QJsonObject& json);
 
 private:
@@ -44,6 +39,12 @@ private:
 
     static QString extractChannelName(const QString& stream);
     static QJsonObject generateQuery(const QString& operationName, const QString& hash, const QMap<QString, QJsonValue>& variables, const QString& query = QString());
+
+    std::shared_ptr<Author> parseSender(const QJsonObject& json) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatText(const QJsonObject& json) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatGift(const QJsonObject& json) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatFollow(const QJsonObject& json) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatTCValueAdd(const QJsonObject& json) const;
 
     QNetworkAccessManager& network;
     QWebSocket socket;
