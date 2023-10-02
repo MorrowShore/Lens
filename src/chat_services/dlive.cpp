@@ -897,8 +897,6 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
                     }
                     else
                     {
-                        qDebug() << emoteName << json;
-
                         messageBuilder.addImage("https://images.prd.dlivecdn.com/emoji/" + emoteName, EmoteHeight, false);
                     }
                 }
