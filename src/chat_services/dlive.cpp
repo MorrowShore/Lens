@@ -658,6 +658,10 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         {
             authorBuilder.addLeftBadge("https://dlive.tv/img/moderator-icon.ad4d0ed2.svg");
         }
+        else if (roomRole == "Owner")
+        {
+            authorBuilder.addLeftBadge("https://dlive.tv/img/streamer-icon.6a664131.svg");
+        }
         else if (roomRole.isEmpty() || roomRole == "Member")
         {
             //
