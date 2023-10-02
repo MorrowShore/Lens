@@ -531,7 +531,7 @@
     <message>
         <location filename="chat_services/dlive.cpp" line="606"/>
         <source>Is celebrating %1-month sub streak!</source>
-        <translation>Отмечает 11-месячную подписку!</translation>
+        <translation>Отмечает %1-месячную подписку!</translation>
     </message>
     <message>
         <location filename="chat_services/dlive.cpp" line="892"/>
