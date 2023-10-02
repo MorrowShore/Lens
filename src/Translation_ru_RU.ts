@@ -110,83 +110,83 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="54"/>
-        <location filename="chat_services/chatservice.cpp" line="75"/>
+        <location filename="chat_services/chatservice.cpp" line="56"/>
+        <location filename="chat_services/chatservice.cpp" line="77"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="57"/>
+        <location filename="chat_services/chatservice.cpp" line="59"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="58"/>
+        <location filename="chat_services/chatservice.cpp" line="60"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="59"/>
+        <location filename="chat_services/chatservice.cpp" line="61"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="62"/>
+        <location filename="chat_services/chatservice.cpp" line="64"/>
         <source>Rumble</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="60"/>
+        <location filename="chat_services/chatservice.cpp" line="62"/>
         <source>Kick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="61"/>
+        <location filename="chat_services/chatservice.cpp" line="63"/>
         <source>Odysee</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="63"/>
+        <location filename="chat_services/chatservice.cpp" line="65"/>
         <source>DLive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="64"/>
+        <location filename="chat_services/chatservice.cpp" line="66"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="65"/>
+        <location filename="chat_services/chatservice.cpp" line="67"/>
         <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="66"/>
+        <location filename="chat_services/chatservice.cpp" line="68"/>
         <source>VK Video</source>
         <translation>VK Видео</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="67"/>
+        <location filename="chat_services/chatservice.cpp" line="69"/>
         <source>WASD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="68"/>
+        <location filename="chat_services/chatservice.cpp" line="70"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="69"/>
+        <location filename="chat_services/chatservice.cpp" line="71"/>
         <source>Discord</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="71"/>
+        <location filename="chat_services/chatservice.cpp" line="73"/>
         <source>DonationAlerts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="72"/>
+        <location filename="chat_services/chatservice.cpp" line="74"/>
         <source>DonatePay.ru</source>
         <oldsource>DonatePay</oldsource>
         <translation></translation>
@@ -196,7 +196,7 @@
         <translation type="vanished">Включено</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="17"/>
+        <location filename="chat_services/chatservice.cpp" line="19"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
@@ -524,37 +524,37 @@
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="628"/>
+        <location filename="chat_services/dlive.cpp" line="629"/>
         <source>Just subscribed monthly!</source>
         <translation>Оформил(а) месячную подписку!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="634"/>
+        <location filename="chat_services/dlive.cpp" line="635"/>
         <source>Is celebrating %1-month sub streak!</source>
         <translation>Отмечает %1-месячную подписку!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="642"/>
+        <location filename="chat_services/dlive.cpp" line="643"/>
         <source>Just made a clip</source>
         <translation>Создал(а) клип</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="648"/>
+        <location filename="chat_services/dlive.cpp" line="649"/>
         <source>With %1 viewers now is HOSTING!</source>
         <translation>HOSTING с %1 зрителями!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="653"/>
+        <location filename="chat_services/dlive.cpp" line="654"/>
         <source>Gifted a one-month subscription to %1!</source>
         <translation>Подарил месячную подписку %1!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="658"/>
+        <location filename="chat_services/dlive.cpp" line="659"/>
         <source>Just received a one-month subscription from %1!</source>
         <translation>Получил месячную подписку от %1!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="948"/>
+        <location filename="chat_services/dlive.cpp" line="955"/>
         <source>Just donated %1 %2</source>
         <translation>Пожертвовал(а) %1 %2</translation>
     </message>
@@ -566,12 +566,12 @@ Amout: %2</source>
 Количество: %2</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="624"/>
+        <location filename="chat_services/dlive.cpp" line="625"/>
         <source>Just followed!</source>
         <translation>Начал(а) отслеживать!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="638"/>
+        <location filename="chat_services/dlive.cpp" line="639"/>
         <source>Just added something to Chest!</source>
         <oldsource>just added something to Chest!</oldsource>
         <translation>Добавил(а) кое-что в сундук!</translation>
@@ -1799,6 +1799,11 @@ It is not recommended to use more than one %1 with the same bot</source>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
+    <message>
+        <location filename="chat_services/vkplaylive.cpp" line="498"/>
+        <source>New chat member</source>
+        <translation>Новый участник чата</translation>
+    </message>
 </context>
 <context>
     <name>VkVideo</name>
@@ -1809,14 +1814,14 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="chat_services/vkvideo.cpp" line="41"/>
-        <location filename="chat_services/vkvideo.cpp" line="568"/>
-        <location filename="chat_services/vkvideo.cpp" line="573"/>
+        <location filename="chat_services/vkvideo.cpp" line="433"/>
+        <location filename="chat_services/vkvideo.cpp" line="438"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
         <location filename="chat_services/vkvideo.cpp" line="82"/>
-        <location filename="chat_services/vkvideo.cpp" line="567"/>
+        <location filename="chat_services/vkvideo.cpp" line="432"/>
         <source>Not logged in</source>
         <translation>Вы не вошли</translation>
     </message>
@@ -1846,32 +1851,32 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="315"/>
+        <location filename="chat_services/vkvideo.cpp" line="635"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="319"/>
+        <location filename="chat_services/vkvideo.cpp" line="639"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="323"/>
+        <location filename="chat_services/vkvideo.cpp" line="643"/>
         <source>audio</source>
         <translation>аудио</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="327"/>
+        <location filename="chat_services/vkvideo.cpp" line="647"/>
         <source>document</source>
         <translation>документ</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="334"/>
+        <location filename="chat_services/vkvideo.cpp" line="654"/>
         <source>sticker</source>
         <translation>стикер</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="344"/>
+        <location filename="chat_services/vkvideo.cpp" line="664"/>
         <source>unknown(%1)</source>
         <translation>неизвестно(%1)</translation>
     </message>
@@ -1880,18 +1885,18 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Вы не вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="572"/>
+        <location filename="chat_services/vkvideo.cpp" line="437"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="577"/>
+        <location filename="chat_services/vkvideo.cpp" line="442"/>
         <source>Logged in</source>
         <oldsource>Logged in as %1</oldsource>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="578"/>
+        <location filename="chat_services/vkvideo.cpp" line="443"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>

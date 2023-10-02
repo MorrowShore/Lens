@@ -424,6 +424,8 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 
     authorBuilder.setPage(rawAuthor.value("vkplayProfileLink").toString());
 
+    const bool isFirstMessage = data.value("flags").toObject().value("isFirstMessage").toBool();
+
     const QJsonArray roles = rawAuthor.value("roles").toArray();
     for (const QJsonValue& v : qAsConst(roles))
     {
@@ -484,7 +486,19 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 
     const QString messageId = generateMessageId(QString("%1").arg(data.value("id").toVariant().toLongLong()));
 
-    QList<std::shared_ptr<Message::Content>> contents;
+    const auto author = authorBuilder.build();
+
+    Message::Builder messageBuilder(author, messageId);
+    messageBuilder.setPublishedTime(publishedAt);
+
+    if (isFirstMessage)
+    {
+        Message::TextStyle style;
+        style.bold = true;
+        messageBuilder.addText(tr("New chat member") + "\n\n", style);
+
+        messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, QColor(22, 167, 255));
+    }
 
     const QJsonArray messageData = data.value("data").toArray();
     for (const QJsonValue& value : qAsConst(messageData))
@@ -520,7 +534,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
                 continue;
             }
 
-            contents.append(std::make_shared<Message::Text>(text));
+            messageBuilder.addText(text);
         }
         else if (type == "mention")
         {
@@ -533,14 +547,14 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
 
             Message::TextStyle style;
             style.bold = true;
-            contents.append(std::make_shared<Message::Text>(text, style));
+            messageBuilder.addText(text, style);
         }
         else if (type == "smile")
         {
             const QString url = data.value("smallUrl").toString();
             if (!url.isEmpty())
             {
-                contents.append(std::make_shared<Message::Image>(url));
+                messageBuilder.addImage(url);
             }
             else
             {
@@ -578,7 +592,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
                 continue;
             }
 
-            contents.append(std::make_shared<Message::Hyperlink>(text, url));
+            messageBuilder.addHyperlink(text, url);
         }
         else
         {
@@ -586,14 +600,5 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
     }
 
-    auto author = authorBuilder.build();
-
-    std::shared_ptr<Message> message = std::make_shared<Message>(
-        contents,
-        author,
-        publishedAt,
-        QDateTime::currentDateTime(),
-        messageId);
-
-    emit readyRead({ message }, { author });
+    emit readyRead({ messageBuilder.build() }, { author });
 }
