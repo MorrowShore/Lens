@@ -8,7 +8,8 @@
 namespace
 {
 
-static int Port = 8355;
+static const int Port = 8355;
+static const int LastMessagesCount = 30;
 
 }
 
@@ -56,7 +57,7 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
         sendHelloToClient(client);
         sendStateToClient(client);
 
-        const QList<std::shared_ptr<Message>> lastMessages = chatHandler.getMessagesModel().getLastMessages(30);
+        const QList<std::shared_ptr<Message>> lastMessages = chatHandler.getMessagesModel().getLastMessages(LastMessagesCount);
         sendMessagesToClient(lastMessages, client);
     });
 
