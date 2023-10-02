@@ -72,6 +72,18 @@ static QString getGiftName(const QString& type)
     {
         return QTranslator::tr("ice cream");
     }
+    else if (type == "DIAMOND")
+    {
+        return QTranslator::tr("diamond");
+    }
+    else if (type == "NINJAGHINI")
+    {
+        return QTranslator::tr("Ninjaghini");
+    }
+    else if (type == "NINJET")
+    {
+        return QTranslator::tr("Ninjet");
+    }
 
     qWarning() << "unknown gift type" << type;
 
