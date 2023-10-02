@@ -844,7 +844,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
 
     bool isSticker = false;
     {
-        static const QRegExp rx("^:emote/[a-zA-Z0-9_\\-]+/[a-zA-Z0-9_\\-]+/([a-zA-Z0-9_\\-]+):$");
+        static const QRegExp rx("^:emote/[a-zA-Z0-9_\\-\\.]+/[a-zA-Z0-9_\\-\\.]+/([a-zA-Z0-9_\\-\\.]+):$");
         if (rx.indexIn(content.trimmed()) != -1)
         {
             const QString stickerId = rx.cap(1);
@@ -897,6 +897,8 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
                     }
                     else
                     {
+                        qDebug() << emoteName << json;
+
                         messageBuilder.addImage("https://images.prd.dlivecdn.com/emoji/" + emoteName, EmoteHeight, false);
                     }
                 }
@@ -1040,16 +1042,31 @@ QString DLive::extractChannelName(const QString &stream)
     QRegExp rx;
 
     const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(stream);
-    rx = QRegExp("^dlive.tv/([^/]*)$", Qt::CaseInsensitive);
+
+    QString result = stream;
+
+    rx = QRegExp("^dlive.tv/(.*)$", Qt::CaseInsensitive);
     if (rx.indexIn(simpleUserSpecifiedUserChannel) != -1)
     {
-        return rx.cap(1);
+        result = rx.cap(1);
+
+        if (result.startsWith("c/", Qt::CaseSensitivity::CaseInsensitive))
+        {
+            result = result.mid(2);
+        }
     }
 
-    rx = QRegExp("^[a-zA-Z0-9_]+$", Qt::CaseInsensitive);
-    if (rx.indexIn(stream) != -1)
+    if (result.contains('/'))
     {
-        return stream;
+        result = result.left(result.indexOf('/'));
+    }
+
+    qDebug() << result;
+
+    rx = QRegExp("^[a-zA-Z0-9_\\-\\.]+$", Qt::CaseInsensitive);
+    if (rx.indexIn(result) != -1)
+    {
+        return result;
     }
 
     return QString();
