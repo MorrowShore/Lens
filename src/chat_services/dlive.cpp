@@ -62,6 +62,22 @@ static QDateTime convertTime(const QString& text)
     return QDateTime();
 }
 
+static QString getGiftName(const QString& type)
+{
+    if (type == "LEMON")
+    {
+        return QTranslator::tr("lemon");
+    }
+    else if (type == "ICE_CREAM")
+    {
+        return QTranslator::tr("ice cream");
+    }
+
+    qWarning() << "unknown gift type" << type;
+
+    return type;
+}
+
 }
 
 DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
@@ -613,6 +629,12 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
         {
             pair = parseGenericMessage(object, tr("Just made a clip"), true);
         }
+        else if (typeName == "ChatHost")
+        {
+            const int count = object.value("viewer").toInt();
+
+            pair = parseGenericMessage(object, tr("With %1 viewers now is HOSTING!").arg(count), true);
+        }
         else if (typeName == "ChatDelete")
         {
             const QString type = object.value("type").toString();
@@ -632,7 +654,7 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
                 authors.append(pair.first);
             }
         }
-        else if (typeName == "ChatLive" || typeName == "ChatOffline")
+        else if (typeName == "ChatLive" || typeName == "ChatOffline" || typeName == "ChatModerator")
         {
             //
         }
@@ -879,7 +901,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
     }
 
     const int amout = json.value("amount").toString("-1").toInt();
-    const QString giftName = json.value("gift").toString();
+    const QString giftType = json.value("gift").toString();
     const QString message = json.value("message").toString();
 
     auto author = parseAuthorFromMessage(json);
@@ -893,7 +915,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
     Message::TextStyle style;
     style.bold = true;
 
-    messageBuilder.addText(tr("Gift: %1\nAmout: %2").arg(giftName).arg(amout), style);
+    messageBuilder.addText(tr("Just donated %1 %2").arg(amout).arg(getGiftName(giftType)), style);
 
     if (!message.isEmpty())
     {

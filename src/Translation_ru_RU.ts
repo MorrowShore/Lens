@@ -490,7 +490,7 @@
 <context>
     <name>DLive</name>
     <message>
-        <location filename="chat_services/dlive.cpp" line="173"/>
+        <location filename="chat_services/dlive.cpp" line="189"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -499,63 +499,72 @@
         <translation type="vanished">Канал некорректен</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="72"/>
+        <location filename="chat_services/dlive.cpp" line="88"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="73"/>
+        <location filename="chat_services/dlive.cpp" line="89"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="175"/>
+        <location filename="chat_services/dlive.cpp" line="191"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="178"/>
+        <location filename="chat_services/dlive.cpp" line="194"/>
         <source>Connecting...</source>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="181"/>
+        <location filename="chat_services/dlive.cpp" line="197"/>
         <source>Successfully connected!</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="600"/>
+        <location filename="chat_services/dlive.cpp" line="616"/>
         <source>Just subscribed monthly!</source>
         <translation>Оформил(а) месячную подписку!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="606"/>
+        <location filename="chat_services/dlive.cpp" line="622"/>
         <source>Is celebrating %1-month sub streak!</source>
         <translation>Отмечает %1-месячную подписку!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="614"/>
+        <location filename="chat_services/dlive.cpp" line="630"/>
         <source>Just made a clip</source>
-        <translation>Только что создал(а) клип</translation>
+        <translation>Создал(а) клип</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="896"/>
+        <location filename="chat_services/dlive.cpp" line="636"/>
+        <source>With %1 viewers now is HOSTING!</source>
+        <translation>HOSTING с %1 зрителями!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="918"/>
+        <source>Just donated %1 %2</source>
+        <translation>Пожертвовал(а) %1 %2</translation>
+    </message>
+    <message>
         <source>Gift: %1
 Amout: %2</source>
         <oldsource>Gift: %1. Amout: %2</oldsource>
-        <translation>Подарок: %1
+        <translation type="vanished">Подарок: %1
 Количество: %2</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="596"/>
+        <location filename="chat_services/dlive.cpp" line="612"/>
         <source>Just followed!</source>
         <translation>Начал(а) отслеживать!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="610"/>
+        <location filename="chat_services/dlive.cpp" line="626"/>
         <source>Just added something to Chest!</source>
         <oldsource>just added something to Chest!</oldsource>
-        <translation>Только что добавил(а) кое-что в сундук!</translation>
+        <translation>Добавил(а) кое-что в сундук!</translation>
     </message>
     <message>
         <source>Subscribed</source>
@@ -1229,6 +1238,16 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <location filename="tcpreply.h" line="17"/>
         <source>Error</source>
         <translation>Ошибка</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="69"/>
+        <source>lemon</source>
+        <translation>лимон</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="73"/>
+        <source>ice cream</source>
+        <translation>мороженое</translation>
     </message>
 </context>
 <context>
