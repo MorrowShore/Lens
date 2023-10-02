@@ -1061,8 +1061,6 @@ QString DLive::extractChannelName(const QString &stream)
         result = result.left(result.indexOf('/'));
     }
 
-    qDebug() << result;
-
     rx = QRegExp("^[a-zA-Z0-9_\\-\\.]+$", Qt::CaseInsensitive);
     if (rx.indexIn(result) != -1)
     {
