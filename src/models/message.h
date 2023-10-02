@@ -277,6 +277,12 @@ public:
                 id))
         {}
 
+        Builder& setContents(const QList<std::shared_ptr<Content>>& contents)
+        {
+            result->contents = contents;
+            return *this;
+        }
+
         Builder& addText(const QString& text, const TextStyle& style = TextStyle())
         {
             result->contents.append(std::make_shared<Text>(text, style));

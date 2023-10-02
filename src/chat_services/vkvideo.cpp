@@ -251,169 +251,13 @@ void VkVideo::requestChat()
 
         for (const QJsonValue& v : qAsConst(items))
         {
-            const QJsonObject jsonMessage = v.toObject();
+            const auto pair = parseMessage(v.toObject());
 
-            const int64_t date = jsonMessage.value("date").toVariant().toLongLong();
-            const int64_t fromId = jsonMessage.value("from_id").toVariant().toLongLong();
-            const int64_t rawMessageId = jsonMessage.value("id").toVariant().toLongLong();
-            QString text = jsonMessage.value("text").toString();
-            const QJsonArray jsonAttachments = jsonMessage.value("attachments").toArray();
-
-            info.startCommentId = rawMessageId;
-
-            auto userIt = users.find(fromId);
-            if (userIt == users.end())
+            if (pair.first && pair.second)
             {
-                qWarning() << "not found user id " << fromId;
-                continue;
+                messages.append(pair.first);
+                authors.append(pair.second);
             }
-
-            const User& user = userIt->second;
-
-            const QDateTime publishedAt =  QDateTime::fromSecsSinceEpoch(date);
-
-            QList<std::shared_ptr<Message::Content>> contents;
-
-            if (jsonMessage.contains("reply_to_user"))
-            {
-                const int64_t replyToUserId = jsonMessage.value("reply_to_user").toVariant().toLongLong();
-                if (text.contains("[") && text.contains("|") && text.contains("]"))
-                {
-                    const int pipePos = text.indexOf("|");
-                    const QString name = text.mid(pipePos + 1, text.indexOf("]") - pipePos - 1);
-
-                    text = text.mid(text.indexOf("]") + 1);
-
-                    Message::TextStyle style;
-                    style.bold = true;
-
-                    contents.append(std::make_shared<Message::Hyperlink>(name, QUrl(QString("https://vk.com/id%1").arg(replyToUserId)), false, style));
-                }
-                else
-                {
-                    qWarning() << "not found [, | or ]";
-                }
-            }
-
-            if (!text.isEmpty())
-            {
-                contents.append(std::make_shared<Message::Text>(text));
-            }
-
-            QString attachmentsString;
-            for (const QJsonValue& v : qAsConst(jsonAttachments))
-            {
-                if (!attachmentsString.isEmpty())
-                {
-                    attachmentsString += ", ";
-                }
-
-                const QJsonObject jsonAttachment = v.toObject();
-                const QString type = jsonAttachment.value("type").toString();
-                if (type == "photo")
-                {
-                    attachmentsString += tr("image");
-                }
-                else if (type == "video")
-                {
-                    attachmentsString += tr("video");
-                }
-                else if (type == "audio")
-                {
-                    attachmentsString += tr("audio");
-                }
-                else if (type == "doc")
-                {
-                    attachmentsString += tr("document");
-                }
-                else if (type == "sticker")
-                {
-                    const QUrl url = parseSticker(jsonAttachment.value("sticker").toObject());
-                    if (url.isEmpty())
-                    {
-                        attachmentsString += tr("sticker");
-                    }
-                    else
-                    {
-                        contents.append(std::make_shared<Message::Image>(url, StickerImageHeight));
-                    }
-                }
-                else
-                {
-                    qWarning() << "unknown attachment type" << type;
-                    attachmentsString += tr("unknown(%1)").arg(type);
-                }
-            }
-
-            if (!attachmentsString.isEmpty())
-            {
-                if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
-
-                Message::TextStyle style;
-                style.italic = true;
-
-                contents.append(std::make_shared<Message::Text>("[" + attachmentsString + "]", style));
-            }
-
-            QStringList rightBadges;
-            if (user.verified)
-            {
-                rightBadges.append("qrc:/resources/images/verified-icon.svg");
-            }
-
-            QString pageUrl;
-
-            if (user.isGroup)
-            {
-                QString id = user.id;
-                if (id.startsWith('-'))
-                {
-                    id = id.mid(1);
-                }
-
-                if (user.groupType == "page")
-                {
-                    pageUrl = "https://vk.com/public";
-                }
-                else if (user.groupType == "event")
-                {
-                    pageUrl = "https://vk.com/event";
-                }
-                else if (user.groupType == "group")
-                {
-                    pageUrl = "https://vk.com/club";
-                }
-                else
-                {
-                    pageUrl = "https://vk.com/public";
-                    qWarning() << "unknown group type" << user.groupType;
-                }
-
-                pageUrl += id;
-            }
-            else
-            {
-                pageUrl = QString("https://vk.com/id%1").arg(user.id);
-            }
-
-            std::shared_ptr<Author> author = std::make_shared<Author>(
-                getServiceType(),
-                user.name,
-                user.id,
-                user.avatar,
-                QUrl(pageUrl),
-                QStringList(),
-                rightBadges);
-
-            std::shared_ptr<Message> message = std::make_shared<Message>(
-                contents,
-                author,
-                publishedAt,
-                QDateTime::currentDateTime(),
-                QString("%1_%2").arg(date).arg(rawMessageId));
-
-            messages.append(message);
-            authors.append(author);
         }
 
         if (!messages.isEmpty())
@@ -545,11 +389,12 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
                 rightBadges.append("qrc:/resources/images/verified-icon.svg");
             }
 
-            emit authorDataUpdated(user.id,
-                                   {
-                                       {Author::Role::AvatarUrl, QUrl(user.avatar)},
-                                       {Author::Role::RightBadgesUrls, rightBadges},
-                                   });
+            emit authorDataUpdated(
+                generateAuthorId(user.id),
+                    {
+                        {Author::Role::AvatarUrl, QUrl(user.avatar)},
+                        {Author::Role::RightBadgesUrls, rightBadges},
+                    });
         }
     });
 }
@@ -704,4 +549,164 @@ bool VkVideo::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resu
     }
 
     return true;
+}
+
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> VkVideo::parseMessage(const QJsonObject &json)
+{
+    const int64_t date = json.value("date").toVariant().toLongLong();
+    const int64_t fromId = json.value("from_id").toVariant().toLongLong();
+    const int64_t rawMessageId = json.value("id").toVariant().toLongLong();
+    QString text = json.value("text").toString();
+    const QJsonArray jsonAttachments = json.value("attachments").toArray();
+
+    info.startCommentId = rawMessageId;
+
+    auto userIt = users.find(fromId);
+    if (userIt == users.end())
+    {
+        qWarning() << "not found user id " << fromId;
+        return { nullptr, nullptr };
+    }
+
+    const User& user = userIt->second;
+
+    const QDateTime publishedAt =  QDateTime::fromSecsSinceEpoch(date);
+
+    QList<std::shared_ptr<Message::Content>> contents;
+
+    if (json.contains("reply_to_user"))
+    {
+        const int64_t replyToUserId = json.value("reply_to_user").toVariant().toLongLong();
+        if (text.contains("[") && text.contains("|") && text.contains("]"))
+        {
+            const int pipePos = text.indexOf("|");
+            const QString name = text.mid(pipePos + 1, text.indexOf("]") - pipePos - 1);
+
+            text = text.mid(text.indexOf("]") + 1);
+
+            Message::TextStyle style;
+            style.bold = true;
+
+            contents.append(std::make_shared<Message::Hyperlink>(name, QUrl(QString("https://vk.com/id%1").arg(replyToUserId)), false, style));
+        }
+        else
+        {
+            qWarning() << "not found [, | or ]";
+        }
+    }
+
+    if (!text.isEmpty())
+    {
+        contents.append(std::make_shared<Message::Text>(text));
+    }
+
+    QString attachmentsString;
+    for (const QJsonValue& v : qAsConst(jsonAttachments))
+    {
+        if (!attachmentsString.isEmpty())
+        {
+            attachmentsString += ", ";
+        }
+
+        const QJsonObject jsonAttachment = v.toObject();
+        const QString type = jsonAttachment.value("type").toString();
+        if (type == "photo")
+        {
+            attachmentsString += tr("image");
+        }
+        else if (type == "video")
+        {
+            attachmentsString += tr("video");
+        }
+        else if (type == "audio")
+        {
+            attachmentsString += tr("audio");
+        }
+        else if (type == "doc")
+        {
+            attachmentsString += tr("document");
+        }
+        else if (type == "sticker")
+        {
+            const QUrl url = parseSticker(jsonAttachment.value("sticker").toObject());
+            if (url.isEmpty())
+            {
+                attachmentsString += tr("sticker");
+            }
+            else
+            {
+                contents.append(std::make_shared<Message::Image>(url, StickerImageHeight));
+            }
+        }
+        else
+        {
+            qWarning() << "unknown attachment type" << type;
+            attachmentsString += tr("unknown(%1)").arg(type);
+        }
+    }
+
+    if (!attachmentsString.isEmpty())
+    {
+        if (!contents.isEmpty()) { contents.append(std::make_shared<Message::Text>("\n")); }
+
+        Message::TextStyle style;
+        style.italic = true;
+
+        contents.append(std::make_shared<Message::Text>("[" + attachmentsString + "]", style));
+    }
+
+    QString pageUrl;
+
+    if (user.isGroup)
+    {
+        QString id = user.id;
+        if (id.startsWith('-'))
+        {
+            id = id.mid(1);
+        }
+
+        if (user.groupType == "page")
+        {
+            pageUrl = "https://vk.com/public";
+        }
+        else if (user.groupType == "event")
+        {
+            pageUrl = "https://vk.com/event";
+        }
+        else if (user.groupType == "group")
+        {
+            pageUrl = "https://vk.com/club";
+        }
+        else
+        {
+            pageUrl = "https://vk.com/public";
+            qWarning() << "unknown group type" << user.groupType;
+        }
+
+        pageUrl += id;
+    }
+    else
+    {
+        pageUrl = QString("https://vk.com/id%1").arg(user.id);
+    }
+
+    Author::Builder authorBuilder(getServiceType(), generateAuthorId(user.id),user.name);
+    authorBuilder.setAvatar(user.avatar);
+    authorBuilder.setPage(pageUrl);
+
+    if (user.verified)
+    {
+        authorBuilder.addRightBadge("qrc:/resources/images/verified-icon.svg");
+    }
+
+    const auto author = authorBuilder.build();
+
+    const auto message = Message::Builder(
+        author,
+        generateMessageId(QString("%1_%2").arg(date).arg(rawMessageId)))
+        .setPublishedTime(publishedAt)
+        .setContents(contents)
+        .build();
+
+    return { message, author };
 }

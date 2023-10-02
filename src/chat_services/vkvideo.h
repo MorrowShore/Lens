@@ -28,6 +28,7 @@ private:
     bool isCanConnect() const;
     static QUrl parseSticker(const QJsonObject& jsonSticker);
     bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData);
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseMessage(const QJsonObject& json);
 
     struct Info
     {
