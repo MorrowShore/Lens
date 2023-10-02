@@ -767,6 +767,10 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         {
             authorBuilder.addLeftBadge("https://dlive.tv/img/verified-badge.f5557500.svg");
         }
+        else if (status == "GLOBAL_PARTNER")
+        {
+            authorBuilder.addLeftBadge("https://dlive.tv/img/global-badge.d2fca949.svg");
+        }
         else if (status.isEmpty() || status == "NONE" || status == "AFFILIATE")
         {
             //
