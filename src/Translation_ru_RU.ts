@@ -534,7 +534,12 @@
         <translation>Отмечает %1-месячную подписку!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="892"/>
+        <location filename="chat_services/dlive.cpp" line="614"/>
+        <source>Just made a clip</source>
+        <translation>Только что создал(а) клип</translation>
+    </message>
+    <message>
+        <location filename="chat_services/dlive.cpp" line="896"/>
         <source>Gift: %1
 Amout: %2</source>
         <oldsource>Gift: %1. Amout: %2</oldsource>

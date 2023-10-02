@@ -593,21 +593,25 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
         }
         else if (typeName == "ChatFollow")
         {
-            pair = parseHighlighted(object, tr("Just followed!"));
+            pair = parseGenericMessage(object, tr("Just followed!"), true);
         }
         else if (typeName == "ChatSubscription")
         {
-            pair = parseHighlighted(object, tr("Just subscribed monthly!"));
+            pair = parseGenericMessage(object, tr("Just subscribed monthly!"), true);
         }
         else if (typeName == "ChatSubStreak")
         {
             const int count = object.value("length").toInt();
 
-            pair = parseHighlighted(object, tr("Is celebrating %1-month sub streak!").arg(count));
+            pair = parseGenericMessage(object, tr("Is celebrating %1-month sub streak!").arg(count), true);
         }
         else if (typeName == "ChatTCValueAdd")
         {
-            pair = parseHighlighted(object, tr("Just added something to Chest!"));
+            pair = parseGenericMessage(object, tr("Just added something to Chest!"), true);
+        }
+        else if (typeName == "ChatClip")
+        {
+            pair = parseGenericMessage(object, tr("Just made a clip"), true);
         }
         else if (typeName == "ChatDelete")
         {
@@ -900,7 +904,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseChatGift(c
     return { messageBuilder.build(), author };
 }
 
-QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseHighlighted(const QJsonObject &json, const QString &text) const
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseGenericMessage(const QJsonObject &json, const QString &text, bool highlight) const
 {
     auto author = parseAuthorFromMessage(json);
 
@@ -908,10 +912,13 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author> > DLive::parseHighlighte
 
     messageBuilder.setPublishedTime(convertTime(json.value("createdAt").toString()));
 
-    messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightColor);
-
     Message::TextStyle style;
-    style.bold = true;
+
+    if (highlight)
+    {
+        style.bold = true;
+        messageBuilder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightColor);
+    }
 
     messageBuilder.addText(text, style);
 

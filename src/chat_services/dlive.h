@@ -37,16 +37,17 @@ private:
     static QString extractChannelName(const QString& stream);
     static QJsonObject generateQuery(const QString& operationName, const QString& hash, const QMap<QString, QJsonValue>& variables, const QString& query = QString());
 
-    void parseMessages(const QJsonArray& jsonMessages);
     void parseEmoji(const QJsonObject& json);
     void parseBadges(const QJsonArray& jsonBadges);
+
+    void parseMessages(const QJsonArray& jsonMessages);
 
     std::shared_ptr<Author> parseAuthorFromMessage(const QJsonObject& json) const;
 
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatText(const QJsonObject& json) const;
     QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseChatGift(const QJsonObject& json) const;
 
-    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseHighlighted(const QJsonObject& json, const QString& text) const;
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseGenericMessage(const QJsonObject& json, const QString& text, bool highlight) const;
 
     QNetworkAccessManager& network;
     QWebSocket socket;
