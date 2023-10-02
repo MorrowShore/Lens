@@ -148,13 +148,20 @@ void VkVideo::requestChat()
     QString rawUrl = QString("https://api.vk.com/method/video.getComments?extended=1&access_token=%1&v=%2&owner_id=%3&video_id=%4")
                                     .arg(auth.getAccessToken(), ApiVersion, info.ownerId, info.videoId);
 
-    if (info.startCommentId == -1)
+    if (info.startOffset == -1)
     {
         rawUrl += "&count=1&sort=desc";
     }
     else
     {
-        rawUrl += QString("&count=30&start_comment_id=%1").arg(info.startCommentId);
+        if (info.lastMessageId == -1)
+        {
+            rawUrl += QString("&count=30&offset=%1").arg(info.startOffset);
+        }
+        else
+        {
+            rawUrl += QString("&count=30&offset=1&start_comment_id=%1").arg(info.lastMessageId);
+        }
     }
 
     const QUrl url(rawUrl);
@@ -181,6 +188,19 @@ void VkVideo::requestChat()
         state.connected = root.contains("response");
 
         const QJsonObject response = root.value("response").toObject();
+
+        if (info.startOffset == -1)
+        {
+            info.startOffset = response.value("count").toVariant().toLongLong();
+
+            info.startOffset -= 10;
+
+            if (info.startOffset < 0)
+            {
+                info.startOffset = 0;
+            }
+            return;
+        }
 
         QList<int64_t> idsNeedUpdate;
 
@@ -559,7 +579,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> VkVideo::parseMessage(c
     QString text = json.value("text").toString();
     const QJsonArray jsonAttachments = json.value("attachments").toArray();
 
-    info.startCommentId = rawMessageId;
+    info.lastMessageId = rawMessageId;
 
     auto userIt = users.find(fromId);
     if (userIt == users.end())

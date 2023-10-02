@@ -34,7 +34,8 @@ private:
     {
         QString ownerId;
         QString videoId;
-        int64_t startCommentId = -1;
+        int64_t startOffset = -1;
+        int64_t lastMessageId = -1;
     };
 
     struct User
