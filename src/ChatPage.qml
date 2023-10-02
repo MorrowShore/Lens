@@ -13,25 +13,6 @@ import "."
 Item {
     property var listView: listMessages
 
-    function createImgHtmlTag(imgurl, size)
-    {
-        return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
-    }
-
-    function createTagHtmlTag(tag)
-    {
-        var style =
-            "background-color:" + tag.color + ";"
-            + "color:" + tag.textColor + ";"
-            + "display: inline-block;"
-            + "font-weight:100;"
-            + "padding-left: 4px;"
-            + "padding-right: 4px;"
-            + "border-radius:10%;"
-
-        return "<span style=\"" + style + "\"> " + tag.text + "</span>"
-    }
-
     ListView {
         id: listMessages
 
@@ -330,6 +311,25 @@ Item {
                     }
 
                     textFormat: Text.RichText
+
+                    function createImgHtmlTag(imgurl, size)
+                    {
+                        return "<img align=\"top\" src=\"" + imgurl + "\" height=\"" + size.toString() + "\" width=\"" + size.toString() + "\"/>"
+                    }
+
+                    function createTagHtmlTag(tag)
+                    {
+                        var style =
+                            "background-color:" + tag.color + ";"
+                            + "color:" + tag.textColor + ";"
+                            + "display: inline-block;"
+                            + "font-weight:100;"
+                            + "padding-left: 4px;"
+                            + "padding-right: 4px;"
+                            + "border-radius:10%;"
+
+                        return "<span style=\"" + style + "\">" + tag.text + "</span>"
+                    }
 
                     property int badgePixelSize: font.pixelSize * 1.25
                     text: {
