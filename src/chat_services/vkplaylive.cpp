@@ -263,9 +263,11 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
             emit stateChanged();
         }
 
-        if (info.version != "3.2.3")
+        static const QString SupportedVersion = "3.2.3";
+
+        if (info.version != SupportedVersion)
         {
-            qWarning() << "unsupported version" << version;
+            qWarning() << "unsupported version" << version << ", supported version =" << SupportedVersion;
         }
 
         if (info.wsChannel.isEmpty())
