@@ -1070,6 +1070,16 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <oldsource>Log</oldsource>
         <translation>Логи</translation>
     </message>
+    <message>
+        <location filename="logdialog.cpp" line="31"/>
+        <source>Remove selected</source>
+        <translation>Удалить выбранное</translation>
+    </message>
+    <message>
+        <location filename="logdialog.cpp" line="52"/>
+        <source>Clear all</source>
+        <translation>Очистить всё</translation>
+    </message>
 </context>
 <context>
     <name>LogModel</name>

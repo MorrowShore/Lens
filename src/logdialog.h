@@ -1,5 +1,6 @@
 #pragma once
 
+#include "models/logmodel.h"
 #include <QDialog>
 #include <QQmlEngine>
 
@@ -22,4 +23,5 @@ public:
 
 private:
     Ui::LogDialog *ui;
+    LogModel* model = nullptr;
 };

@@ -28,6 +28,9 @@
    </property>
    <item>
     <widget class="QTableView" name="messages">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>

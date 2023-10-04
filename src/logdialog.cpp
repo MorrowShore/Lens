@@ -2,6 +2,7 @@
 #include "ui_logdialog.h"
 #include "loghandler.h"
 #include "utils.h"
+#include <QMenu>
 
 LogDialog::LogDialog(QWidget *parent) :
     QDialog(parent),
@@ -15,11 +16,48 @@ LogDialog::LogDialog(QWidget *parent) :
 
     setWindowFlags(Qt::Window);
 
-    ui->messages->setModel(LogHandler::getModel());
+    model = LogHandler::getModel();
+    ui->messages->setModel(model);
 
     ui->messages->setColumnWidth(0, 1200);
     ui->messages->setColumnWidth(1, 300);
     ui->messages->setColumnWidth(2, 400);
+
+    connect(ui->messages, QOverload<const QPoint &>::of(&QWidget::customContextMenuRequested), this, [this](const QPoint & pos)
+    {
+        QMenu *menu = new QMenu(this);
+        QAction* action;
+
+        action = new QAction(tr("Remove selected"), menu);
+        action->setEnabled(!ui->messages->selectionModel()->selectedRows().isEmpty());
+        connect(action, &QAction::triggered, this, [this]()
+        {
+            QItemSelectionModel *selection = ui->messages->selectionModel();
+            if (!selection)
+            {
+                qWarning() << "selection model is null";
+                return;
+            }
+
+            const QModelIndexList rows = selection->selectedRows();
+            for (int i = rows.count() - 1; i >= 0; --i)
+            {
+                model->removeRow(rows.at(i).row());
+            }
+        });
+        menu->addAction(action);
+
+        menu->addSeparator();
+
+        action = new QAction(tr("Clear all"), menu);
+        connect(action, &QAction::triggered, this, [this]()
+        {
+            model->clear();
+        });
+        menu->addAction(action);
+
+        menu->popup(ui->messages->viewport()->mapToGlobal(pos));
+    });
 }
 
 LogDialog::~LogDialog()
