@@ -76,7 +76,6 @@ HEADERS += \
     qmlutils.h \
     setting.h \
     tcpserver.h \
-    tray.h \
     uibridge.h \
     uibridgeelement.h \
     utils.h \
@@ -132,7 +131,6 @@ SOURCES += \
     qmlutils.cpp \
     ssemanager.cpp \
     tcpserver.cpp \
-    tray.cpp \
     uibridge.cpp \
     uibridgeelement.cpp \
     websocket.cpp
