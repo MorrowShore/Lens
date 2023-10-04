@@ -19,6 +19,7 @@ void ChatWindow::declareQml()
     GitHubApi::declareQml();
     ClipboardQml::declareQml();
     CommandsEditor::declareQml();
+    LogDialog::declareQml();
 }
 
 ChatWindow::ChatWindow(QWindow *parent)
@@ -167,6 +168,7 @@ ChatWindow::ChatWindow(QWindow *parent)
         qml->rootContext()->setContextProperty("messagesModel",      &chatHandler.getMessagesModel());
         qml->rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
         qml->rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
+        qml->rootContext()->setContextProperty("logWindow",          &logWindow);
 
         qml->rootContext()->setContextProperty("APP_INFO_LEGALCOPYRIGHT_STR_U", APP_INFO_LEGALCOPYRIGHT_STR_U);
         qml->rootContext()->setContextProperty("APP_INFO_EMAIL_STR", APP_INFO_EMAIL_STR);

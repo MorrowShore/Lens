@@ -208,63 +208,63 @@
         <translation type="vanished">Спрятать в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="55"/>
+        <location filename="chatwindow.cpp" line="56"/>
         <source>Background opacity</source>
         <translation>Непрозрачность фона</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="56"/>
+        <location filename="chatwindow.cpp" line="57"/>
         <source>Window opacity</source>
         <translation>Непрозрачность окна</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="88"/>
+        <location filename="chatwindow.cpp" line="89"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="119"/>
+        <location filename="chatwindow.cpp" line="120"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="97"/>
+        <location filename="chatwindow.cpp" line="98"/>
         <source>Stay on top</source>
         <translation>Поверх всех окон</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="50"/>
+        <location filename="chatwindow.cpp" line="51"/>
         <source>Hide to tray when minimized</source>
         <oldsource>Hide to tray on minimize</oldsource>
         <translation>Скрыть в трей при сворачивании</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="51"/>
+        <location filename="chatwindow.cpp" line="52"/>
         <source>Hide to tray on close</source>
         <translation>Скрыть в трей при закрытии</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="53"/>
+        <location filename="chatwindow.cpp" line="54"/>
         <source>Run minimized to tray</source>
         <translation>Запускать свёрнутым в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="108"/>
+        <location filename="chatwindow.cpp" line="109"/>
         <source>Window frame</source>
         <translation>Оконная рамка</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="141"/>
+        <location filename="chatwindow.cpp" line="142"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="199"/>
+        <location filename="chatwindow.cpp" line="201"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="203"/>
+        <location filename="chatwindow.cpp" line="205"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -1063,6 +1063,15 @@ to these chats/channels in access rights (at your own risk)</oldsource>
     </message>
 </context>
 <context>
+    <name>LogDialog</name>
+    <message>
+        <location filename="logdialog.ui" line="14"/>
+        <source>Logs</source>
+        <oldsource>Log</oldsource>
+        <translation>Логи</translation>
+    </message>
+</context>
+<context>
     <name>MessagesModel</name>
     <message>
         <location filename="models/messagesmodel.cpp" line="85"/>
@@ -1229,7 +1238,7 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="130"/>
+        <location filename="chatwindow.cpp" line="131"/>
         <location filename="tray.cpp" line="40"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>
@@ -1800,7 +1809,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/vkplaylive.cpp" line="498"/>
+        <location filename="chat_services/vkplaylive.cpp" line="504"/>
         <source>New chat member</source>
         <translation>Новый участник чата</translation>
     </message>
@@ -2532,6 +2541,12 @@ Latest version available: %2</oldsource>
         <location filename="setting_pages/common.qml" line="257"/>
         <source>Program folder</source>
         <translation>Папка программы</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/common.qml" line="265"/>
+        <source>Logs window</source>
+        <oldsource>Log window</oldsource>
+        <translation>Окно логов</translation>
     </message>
     <message>
         <source>Logs</source>

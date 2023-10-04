@@ -17,7 +17,8 @@ namespace
 
 static bool saveToFile;
 static QString fileName;
-
+static LogModel model;
+\
 static QString typeToString(const QtMsgType& type)
 {
     switch(type)
@@ -81,8 +82,20 @@ void LogHandler::openDirectory()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + getDirectory()));
 }
 
+LogModel *LogHandler::getModel()
+{
+    return &model;
+}
+
 void LogHandler::handler(QtMsgType type, const QMessageLogContext &context, const QString &text)
 {
+    model.addMessage(LogMessage(
+        text,
+        LogMessage::fromQtType(type),
+        context.file,
+        context.function,
+        context.line));
+
     QString line = "[" + typeToString(type) + "] ";
 
     if (context.file != nullptr)

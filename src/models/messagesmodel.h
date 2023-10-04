@@ -9,7 +9,7 @@ class MessagesModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    MessagesModel(QObject *parent = 0) : QAbstractListModel(parent) {}
+    explicit MessagesModel(QObject *parent = nullptr) : QAbstractListModel(parent) {}
 
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent) const override;

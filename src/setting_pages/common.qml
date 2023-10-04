@@ -261,8 +261,15 @@ ScrollView {
             }
         }
 
+        Button {
+            text: qsTr("Logs window")
+            onClicked: {
+                logWindow.open();
+            }
+        }
+
         /*Button {
-            text: qsTr("Logs")
+            text: qsTr("Logs folder")
 
             onClicked: {
                 qmlUtils.openLogDirectory()

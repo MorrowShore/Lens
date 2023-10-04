@@ -6,6 +6,7 @@
 #include "githubapi.h"
 #include "appsponsormanager.h"
 #include "commandseditor.h"
+#include "logdialog.h"
 #include "setting.h"
 #include "uibridge.h"
 #include <QQuickView>
@@ -46,6 +47,7 @@ private:
     GitHubApi github;
     ChatHandler chatHandler;
     CommandsEditor commandsEditor;
+    LogDialog logWindow;
 
     QSystemTrayIcon tray;
 

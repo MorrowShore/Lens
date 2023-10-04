@@ -42,7 +42,10 @@ HEADERS += \
     emote_services/frankerfacez.h \
     emote_services/seventv.h \
     emotesprocessor.h \
+    logdialog.h \
     loghandler.h \
+    models/logmessage.h \
+    models/logmodel.h \
     oauth2.h \
     ssemanager.h \
     tcpreply.h \
@@ -108,8 +111,10 @@ SOURCES += \
     emote_services/frankerfacez.cpp \
     emote_services/seventv.cpp \
     emotesprocessor.cpp \
+    logdialog.cpp \
     loghandler.cpp \
     models/author.cpp \
+    models/logmodel.cpp \
     models/message.cpp \
     models/messagesmodel.cpp \
     authorqmlprovider.cpp \
@@ -149,7 +154,8 @@ RC_FILE = rc.rc
 
 FORMS += \
     commandseditor.ui \
-    commandsingleeditor.ui
+    commandsingleeditor.ui \
+    logdialog.ui
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

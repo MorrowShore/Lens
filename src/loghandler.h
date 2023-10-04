@@ -1,5 +1,6 @@
 #pragma once
 
+#include "models/logmodel.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QString>
@@ -11,6 +12,7 @@ public:
     static void initialize(const bool saveToFile);
     static QString getDirectory();
     static void openDirectory();
+    static LogModel* getModel();
 
 private:
     static void handler(QtMsgType type, const QMessageLogContext &context, const QString &text);

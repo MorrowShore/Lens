@@ -12,6 +12,11 @@ CommandSingleEditor::CommandSingleEditor(ChatBot& chatBot_, QWidget *parent) :
     chatBot(chatBot_)
 {
     ui->setupUi(this);
+
+#ifdef Q_OS_WINDOWS
+    AxelChat::setDarkWindowFrame(winId());
+#endif
+
     setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
     ui->splitter->setSizes({100, 200});
     setModal(true);

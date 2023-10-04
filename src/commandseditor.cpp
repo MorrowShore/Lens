@@ -10,6 +10,11 @@ CommandsEditor::CommandsEditor(ChatBot& chatBot_, QWidget *parent) :
     chatBot(chatBot_)
 {
     ui->setupUi(this);
+
+#ifdef Q_OS_WINDOWS
+    AxelChat::setDarkWindowFrame(winId());
+#endif
+
     setWindowFlags(Qt::Window);
     ui->pushButtonEnableDisable->setVisible(false); // ToDo:
     ui->pushButtonExecute->setVisible(false); // ToDo:
