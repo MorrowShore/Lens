@@ -19,16 +19,6 @@ public:
     };
     Q_ENUM(Type)
 
-    enum class Role {
-        Text = Qt::UserRole + 1 + 1024,
-        Type,
-        File,
-        Function,
-        Line,
-        Time,
-    };
-    Q_ENUM(Role)
-
     static Type fromQtType(const QtMsgType type)
     {
         switch(type)
@@ -52,21 +42,6 @@ public:
         , line(line_)
     {
 
-    }
-
-    QVariant getData(const Role role) const
-    {
-        switch (role)
-        {
-        case Role::Text:        return text;
-        case Role::Type:        return (int)type;
-        case Role::File:        return file;
-        case Role::Function:    return function;
-        case Role::Line:        return line;
-        case Role::Time:        return time;
-        }
-
-        return QVariant();
     }
 
     QString text;

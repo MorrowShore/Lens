@@ -349,7 +349,7 @@ Manager::Manager(const QString& executablePath_, QObject *parent)
                 engineInfo.version = version;
                 engineInfo.chromiumVersion = chromiumVersion;
 
-                qDebug() << "initialized, version:" << engineInfo.version << ", chromium version:" << engineInfo.chromiumVersion;
+                qDebug() << "CefWebEngine initialized, version:" << engineInfo.version << ", chromium version:" << engineInfo.chromiumVersion;
 
                 if (!SupportedVersions.contains(version))
                 {

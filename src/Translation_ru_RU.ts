@@ -277,7 +277,7 @@
     <name>CommandSingleEditor</name>
     <message>
         <location filename="commandsingleeditor.ui" line="14"/>
-        <location filename="commandsingleeditor.cpp" line="25"/>
+        <location filename="commandsingleeditor.cpp" line="30"/>
         <source>Command Creating</source>
         <translation>Создание команды</translation>
     </message>
@@ -358,51 +358,51 @@
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="40"/>
+        <location filename="commandsingleeditor.cpp" line="45"/>
         <source>Command Editing</source>
         <translation>Изменение команды</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="126"/>
-        <location filename="commandsingleeditor.cpp" line="133"/>
-        <location filename="commandsingleeditor.cpp" line="205"/>
+        <location filename="commandsingleeditor.cpp" line="131"/>
+        <location filename="commandsingleeditor.cpp" line="138"/>
+        <location filename="commandsingleeditor.cpp" line="210"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="126"/>
+        <location filename="commandsingleeditor.cpp" line="131"/>
         <source>No keywords specified</source>
         <translation>Не указаны ключевые слова</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="133"/>
-        <location filename="commandsingleeditor.cpp" line="206"/>
+        <location filename="commandsingleeditor.cpp" line="138"/>
+        <location filename="commandsingleeditor.cpp" line="211"/>
         <source>Sound file not specified</source>
         <translation>Звуковой файл не указан</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="141"/>
-        <location filename="commandsingleeditor.cpp" line="214"/>
+        <location filename="commandsingleeditor.cpp" line="146"/>
+        <location filename="commandsingleeditor.cpp" line="219"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="142"/>
+        <location filename="commandsingleeditor.cpp" line="147"/>
         <source>File &quot;%1&quot; not found. Save command anyway?</source>
         <translation>Файл &quot;%1&quot; не найен. Всё равно сохранить команду?</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="187"/>
+        <location filename="commandsingleeditor.cpp" line="192"/>
         <source>Sound File Openning...</source>
         <translation>Открытие звукового файла...</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="189"/>
+        <location filename="commandsingleeditor.cpp" line="194"/>
         <source>WAV File</source>
         <translation>WAV-файл</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="189"/>
+        <location filename="commandsingleeditor.cpp" line="194"/>
         <source>All Files</source>
         <translation>Все файлы</translation>
     </message>
@@ -415,7 +415,7 @@
         <translation type="vanished">ВСе файлы (*)</translation>
     </message>
     <message>
-        <location filename="commandsingleeditor.cpp" line="215"/>
+        <location filename="commandsingleeditor.cpp" line="220"/>
         <source>File &quot;%1&quot; not found</source>
         <translation>Файл &quot;%1&quot; не найден</translation>
     </message>
@@ -457,32 +457,32 @@
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="46"/>
+        <location filename="commandseditor.cpp" line="51"/>
         <source>Keywords</source>
         <translation>Ключ. слова</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="47"/>
+        <location filename="commandseditor.cpp" line="52"/>
         <source>Action</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="74"/>
+        <location filename="commandseditor.cpp" line="79"/>
         <source>Sound: %1</source>
         <translation>Звук: %1</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="77"/>
+        <location filename="commandseditor.cpp" line="82"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="132"/>
+        <location filename="commandseditor.cpp" line="137"/>
         <source>Deletion</source>
         <translation>Удаление</translation>
     </message>
     <message>
-        <location filename="commandseditor.cpp" line="133"/>
+        <location filename="commandseditor.cpp" line="138"/>
         <source>Are you sure you want to delete the command?</source>
         <translation>Вы уверены, что хотите удалить команду?</translation>
     </message>
@@ -1069,6 +1069,24 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <source>Logs</source>
         <oldsource>Log</oldsource>
         <translation>Логи</translation>
+    </message>
+</context>
+<context>
+    <name>LogModel</name>
+    <message>
+        <location filename="models/logmodel.cpp" line="101"/>
+        <source>Message</source>
+        <translation>Сообщение</translation>
+    </message>
+    <message>
+        <location filename="models/logmodel.cpp" line="103"/>
+        <source>File</source>
+        <translation>Файл</translation>
+    </message>
+    <message>
+        <location filename="models/logmodel.cpp" line="105"/>
+        <source>Function</source>
+        <translation>Функция</translation>
     </message>
 </context>
 <context>

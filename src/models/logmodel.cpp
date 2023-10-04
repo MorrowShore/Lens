@@ -1,24 +1,19 @@
 #include "logmodel.h"
 #include "logmessage.h"
+#include <QColor>
+#include <QBrush>
 
 namespace
 {
 
 static const int MaxSize  = 1000;
-static const QHash<int, QByteArray> RoleNames = QHash<int, QByteArray>
-{
-    {(int)LogMessage::Role::Text,       "text"},
-    {(int)LogMessage::Role::Type,       "type"},
-    {(int)LogMessage::Role::File,       "file"},
-    {(int)LogMessage::Role::Function,   "func"},
-    {(int)LogMessage::Role::Line,       "line"},
-    {(int)LogMessage::Role::Time,       "time"},
-};
-}
 
-QHash<int, QByteArray> LogModel::roleNames() const
-{
-    return RoleNames;
+static const QBrush DebugBrush      = QBrush(QColor(68, 186, 255));
+static const QBrush WarningBrush    = QBrush(QColor(255, 255, 0));
+static const QBrush CriticalBrush   = QBrush(QColor(255, 66, 66));
+static const QBrush FatalBrush      = QBrush(QColor(225, 0, 0));
+static const QBrush InfoBrush       = QBrush(QColor(76, 255, 120));
+
 }
 
 int LogModel::rowCount(const QModelIndex &parent) const
@@ -49,8 +44,6 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-
-
     const LogMessage& message = messages.at(row);
 
     if (role == Qt::DisplayRole)
@@ -62,8 +55,21 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         case 2: return message.function;
         }
     }
+    else if (role == Qt::BackgroundRole)
+    {
+        switch (message.type)
+        {
+        case LogMessage::Type::Other:       return QVariant();
+        case LogMessage::Type::Debug:       return DebugBrush;
+        case LogMessage::Type::Warning:     return WarningBrush;
+        case LogMessage::Type::Critical:    return CriticalBrush;
+        case LogMessage::Type::Fatal:       return FatalBrush;
+        case LogMessage::Type::Info:        return InfoBrush;
+            break;
+        }
+    }
 
-    return messages.at(row).getData((LogMessage::Role)role);
+    return QVariant();
 }
 
 bool LogModel::removeRows(int firstRow, int count, const QModelIndex &)
@@ -83,6 +89,23 @@ bool LogModel::removeRows(int firstRow, int count, const QModelIndex &)
     endRemoveRows();
 
     return true;
+}
+
+QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
+    {
+        switch (section)
+        {
+        case 0:
+            return tr("Message");
+        case 1:
+            return tr("File");
+        case 2:
+            return tr("Function");
+        }
+    }
+    return QVariant();
 }
 
 void LogModel::addMessage(LogMessage &&message)
