@@ -1071,12 +1071,17 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation>Логи</translation>
     </message>
     <message>
-        <location filename="logdialog.cpp" line="31"/>
+        <location filename="logdialog.cpp" line="33"/>
+        <source>Copy</source>
+        <translation>Копировать</translation>
+    </message>
+    <message>
+        <location filename="logdialog.cpp" line="48"/>
         <source>Remove selected</source>
         <translation>Удалить выбранное</translation>
     </message>
     <message>
-        <location filename="logdialog.cpp" line="52"/>
+        <location filename="logdialog.cpp" line="71"/>
         <source>Clear all</source>
         <translation>Очистить всё</translation>
     </message>
@@ -1255,31 +1260,25 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">Тестовое сообщение</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="28"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation type="vanished">Настройки</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="34"/>
-        <location filename="tray.cpp" line="70"/>
         <source>Ignore Mouse</source>
-        <translation>Игнорировать мышь</translation>
+        <translation type="vanished">Игнорировать мышь</translation>
     </message>
     <message>
         <location filename="chatwindow.cpp" line="131"/>
-        <location filename="tray.cpp" line="40"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="46"/>
         <source>Close</source>
-        <translation>Закрыть</translation>
+        <translation type="vanished">Закрыть</translation>
     </message>
     <message>
-        <location filename="tray.cpp" line="65"/>
         <source>Don&apos;t Ignore Mouse</source>
-        <translation>Не игнорировать мышь</translation>
+        <translation type="vanished">Не игнорировать мышь</translation>
     </message>
     <message>
         <location filename="tcpreply.h" line="17"/>

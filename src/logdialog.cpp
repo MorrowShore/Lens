@@ -3,6 +3,7 @@
 #include "loghandler.h"
 #include "utils.h"
 #include <QMenu>
+#include <QClipboard>
 
 LogDialog::LogDialog(QWidget *parent) :
     QDialog(parent),
@@ -28,33 +29,53 @@ LogDialog::LogDialog(QWidget *parent) :
         QMenu *menu = new QMenu(this);
         QAction* action;
 
-        action = new QAction(tr("Remove selected"), menu);
-        action->setEnabled(!ui->messages->selectionModel()->selectedRows().isEmpty());
-        connect(action, &QAction::triggered, this, [this]()
         {
-            QItemSelectionModel *selection = ui->messages->selectionModel();
-            if (!selection)
+            action = new QAction(tr("Copy"), menu);
+            action->setShortcuts(QKeySequence::StandardKey::Copy);
+            action->setEnabled(ui->messages->currentIndex().isValid());
+            connect(action, &QAction::triggered, this, [this]()
             {
-                qWarning() << "selection model is null";
-                return;
-            }
+                if (const QModelIndex index = ui->messages->currentIndex(); index.isValid())
+                {
+                    const QString text = model->data(index, Qt::DisplayRole).toString();
+                    QGuiApplication::clipboard()->setText(text);
+                }
+            });
+            menu->addAction(action);
+        }
 
-            const QModelIndexList rows = selection->selectedRows();
-            for (int i = rows.count() - 1; i >= 0; --i)
+        {
+            action = new QAction(tr("Remove selected"), menu);
+            //action->setShortcuts(QKeySequence::StandardKey::Delete);
+            action->setEnabled(!ui->messages->selectionModel()->selectedRows().isEmpty());
+            connect(action, &QAction::triggered, this, [this]()
             {
-                model->removeRow(rows.at(i).row());
-            }
-        });
-        menu->addAction(action);
+                QItemSelectionModel *selection = ui->messages->selectionModel();
+                if (!selection)
+                {
+                    qWarning() << "selection model is null";
+                    return;
+                }
+
+                const QModelIndexList rows = selection->selectedRows();
+                for (int i = rows.count() - 1; i >= 0; --i)
+                {
+                    model->removeRow(rows.at(i).row());
+                }
+            });
+            menu->addAction(action);
+        }
 
         menu->addSeparator();
 
-        action = new QAction(tr("Clear all"), menu);
-        connect(action, &QAction::triggered, this, [this]()
         {
-            model->clear();
-        });
-        menu->addAction(action);
+            action = new QAction(tr("Clear all"), menu);
+            connect(action, &QAction::triggered, this, [this]()
+            {
+                model->clear();
+            });
+            menu->addAction(action);
+        }
 
         menu->popup(ui->messages->viewport()->mapToGlobal(pos));
     });
