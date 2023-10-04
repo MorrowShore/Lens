@@ -31,6 +31,11 @@ int LogModel::rowCount(const QModelIndex &parent) const
     return messages.count();
 }
 
+int LogModel::columnCount(const QModelIndex &) const
+{
+    return 3;
+}
+
 QVariant LogModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -44,13 +49,25 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
+
+
+    const LogMessage& message = messages.at(row);
+
+    if (role == Qt::DisplayRole)
+    {
+        switch (index.column())
+        {
+        case 0: return message.text;
+        case 1: return message.file + QString(":%1").arg(message.line);
+        case 2: return message.function;
+        }
+    }
+
     return messages.at(row).getData((LogMessage::Role)role);
 }
 
-bool LogModel::removeRows(int firstRow, int count, const QModelIndex &parent)
+bool LogModel::removeRows(int firstRow, int count, const QModelIndex &)
 {
-    Q_UNUSED(parent)
-
     if (count > messages.count())
     {
         count = messages.count();
