@@ -25,7 +25,7 @@ static const int MaxBadLivePageReplies = 3;
 }
 
 YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
-    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, true, parent)
+    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, false, parent)
     , network(network_)
 {
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
