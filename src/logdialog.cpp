@@ -13,9 +13,13 @@ LogDialog::LogDialog(QWidget *parent) :
     AxelChat::setDarkWindowFrame(winId());
 #endif
 
-    setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
+    setWindowFlags(Qt::Window);
 
     ui->messages->setModel(LogHandler::getModel());
+
+    ui->messages->setColumnWidth(0, 1200);
+    ui->messages->setColumnWidth(1, 300);
+    ui->messages->setColumnWidth(2, 400);
 }
 
 LogDialog::~LogDialog()
