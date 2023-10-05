@@ -64,11 +64,6 @@ void SseManager::stop()
         return;
     }
 
-    if (reply->isOpen())
-    {
-        reply->close();
-    }
-
     reply->deleteLater();
     reply = nullptr;
 
