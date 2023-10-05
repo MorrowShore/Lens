@@ -220,11 +220,7 @@ void GitHubApi::onReplyReleases()
                     {
                         _latestRelease = release;
 
-                        qDebug(QString("Latest available release \"%1\", current version \"%2\"")
-                               .arg(_latestRelease.version.toString())
-                               .arg(QApplication::applicationVersion())
-                               .toUtf8());
-
+                        qInfo() << "Latest available release" << _latestRelease.version.toString() << ", current version" << QApplication::applicationVersion();
                         break;
                     }
                 }
