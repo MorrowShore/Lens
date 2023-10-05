@@ -550,8 +550,8 @@ void Trovo::requestChannelInfo()
         {
             return;
         }
-
-        state.viewersCount = viewersCount;
+        
+        state.viewers = viewersCount;
 
         emit stateChanged();
     });

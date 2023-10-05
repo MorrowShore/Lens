@@ -94,8 +94,8 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             state.connected = false;
             emit stateChanged();
         }
-
-        state.viewersCount = -1;
+        
+        state.viewers = -1;
 
         sendIRCMessage("CAP REQ :twitch.tv/tags twitch.tv/commands");
         sendIRCMessage("PASS SCHMOOPIIE");
@@ -118,8 +118,8 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             emit connectedChanged(false);
             emit stateChanged();
         }
-
-        state.viewersCount = -1;
+        
+        state.viewers = -1;
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
@@ -911,7 +911,7 @@ void Twitch::onReplyStreamInfo()
 
         if (channelLogin == state.streamId)
         {
-            state.viewersCount = viewers;
+            state.viewers = viewers;
             found = true;
             emit stateChanged();
         }
@@ -919,7 +919,7 @@ void Twitch::onReplyStreamInfo()
 
     if (!found)
     {
-        state.viewersCount = -1;
+        state.viewers = -1;
         emit stateChanged();
     }
 }

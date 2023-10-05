@@ -163,7 +163,7 @@ void ChatService::setEnabledThirdPartyEmotes(const bool enabled)
 
 int ChatService::getViewersCount() const
 {
-    return state.viewersCount;
+    return state.viewers;
 }
 
 const Setting<QString>& ChatService::getLastSavedMessageId() const

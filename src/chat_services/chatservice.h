@@ -53,7 +53,7 @@ public:
         QUrl streamUrl;
         QUrl chatUrl;
         QUrl controlPanelUrl;
-        int viewersCount = -1;
+        int viewers = -1;
     };
 
     explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);

@@ -244,8 +244,8 @@ void YouTubeBrowser::requestStreamPage()
             qDebug() << "data is empty";
             return;
         }
-
-        state.viewersCount = YouTubeUtils::parseViews(data);
+        
+        state.viewers = YouTubeUtils::parseViews(data);
         emit stateChanged();
     });
 }

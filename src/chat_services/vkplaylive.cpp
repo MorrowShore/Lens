@@ -304,7 +304,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         {
             if (data.contains("viewers"))
             {
-                state.viewersCount = data.value("viewers").toInt(-1);
+                state.viewers = data.value("viewers").toInt(-1);
                 emit stateChanged();
             }
             else

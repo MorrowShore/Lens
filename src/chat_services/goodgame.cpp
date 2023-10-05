@@ -193,7 +193,7 @@ void GoodGame::requestChannelStatus()
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
-        state.viewersCount = root.value("viewers").toInt(-1);
+        state.viewers = root.value("viewers").toInt(-1);
 
         channelId = root.value("id").toInt(-1);
 

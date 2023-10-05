@@ -133,7 +133,6 @@ void VkVideo::reconnectImpl()
 
     state.streamUrl = QUrl(QString("https://vk.com/video/lives?z=video%1_%2").arg(info.ownerId, info.videoId));
 
-    requestVideo();
     requestChat();
     updateUI();
 }
@@ -185,7 +184,14 @@ void VkVideo::requestChat()
         }
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
-        state.connected = root.contains("response");
+
+        const bool connected = root.contains("response");
+
+        if (connected != state.connected)
+        {
+            state.connected = connected;
+            requestVideo();
+        }
 
         const QJsonObject response = root.value("response").toObject();
 
@@ -296,7 +302,7 @@ void VkVideo::requestChat()
 
 void VkVideo::requestVideo()
 {
-    if (!isCanConnect())
+    if (!state.connected)
     {
         return;
     }
@@ -308,8 +314,7 @@ void VkVideo::requestVideo()
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        state.viewersCount = -1;
-        state.connected = false;
+        state.viewers = -1;
 
         if (!isCanConnect())
         {
@@ -331,18 +336,17 @@ void VkVideo::requestVideo()
             const QJsonObject video = items.first().toObject();
             if (video.value("live").toInt() == 1)
             {
-                state.connected = true;
+                state.viewers = video.value("spectators").toInt();
             }
             else
             {
-                qWarning() << "video is not live";
+                qCritical() << "video is not live";
+                state.viewers = -1;
             }
-
-            state.viewersCount = video.value("spectators").toInt();
         }
         else
         {
-            qWarning() << "items not equal 1";
+            qCritical() << "items not equal 1";
         }
 
         emit stateChanged();
@@ -353,7 +357,7 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
 {
     if (ids.isEmpty())
     {
-        qWarning() << "ids is empty";
+        qCritical() << "ids is empty";
         return;
     }
 
@@ -395,7 +399,7 @@ void VkVideo::requsetUsers(const QList<int64_t>& ids)
             auto userIt = users.find(id);
             if (userIt == users.end())
             {
-                qWarning() << "not found user id " << id;
+                qCritical() << "not found user id " << id;
                 continue;
             }
 
@@ -541,7 +545,7 @@ bool VkVideo::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resu
 
     if (!reply)
     {
-        qWarning() << tag << ": !reply";
+        qCritical() << tag << ": !reply";
         return false;
     }
 
@@ -549,14 +553,14 @@ bool VkVideo::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resu
     reply->deleteLater();
     if (resultData.isEmpty())
     {
-        qWarning() << tag << ": data is empty";
+        qCritical() << tag << ": data is empty";
         return false;
     }
 
     const QJsonObject root = QJsonDocument::fromJson(resultData).object();
     if (root.contains("error"))
     {
-        qWarning() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
+        qCritical() << tag << "Error:" << resultData << ", request =" << reply->request().url().toString();
 
         const int errorCode = root.value("error").toObject().value("error_code").toInt();
         if (errorCode == 2 || errorCode == 5 || errorCode == 27 || errorCode == 28 || errorCode == 101) // https://dev.vk.com/reference/errors
@@ -584,7 +588,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> VkVideo::parseMessage(c
     auto userIt = users.find(fromId);
     if (userIt == users.end())
     {
-        qWarning() << "not found user id " << fromId;
+        qCritical() << "not found user id " << fromId;
         return { nullptr, nullptr };
     }
 
@@ -611,7 +615,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> VkVideo::parseMessage(c
         }
         else
         {
-            qWarning() << "not found [, | or ]";
+            qCritical() << "not found [, | or ]";
         }
     }
 
@@ -660,7 +664,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> VkVideo::parseMessage(c
         }
         else
         {
-            qWarning() << "unknown attachment type" << type;
+            qCritical() << "unknown attachment type" << type;
             attachmentsString += tr("unknown(%1)").arg(type);
         }
     }
@@ -700,7 +704,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> VkVideo::parseMessage(c
         else
         {
             pageUrl = "https://vk.com/public";
-            qWarning() << "unknown group type" << user.groupType;
+            qCritical() << "unknown group type" << user.groupType;
         }
 
         pageUrl += id;

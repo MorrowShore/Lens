@@ -252,11 +252,11 @@ void YouTubeHtml::onReplyStreamPage()
         processBadLivePageReply();
         return;
     }
-
-    state.viewersCount = YouTubeUtils::parseViews(rawData);
+    
+    state.viewers = YouTubeUtils::parseViews(rawData);
     emit stateChanged();
-
-    if (state.viewersCount != -1)
+    
+    if (state.viewers != -1)
     {
         badLivePageReplies = 0;
     }
@@ -294,7 +294,7 @@ void YouTubeHtml::processBadLivePageReply()
     if (badLivePageReplies >= MaxBadLivePageReplies)
     {
         qWarning() << "too many bad live page replies!";
-        state.viewersCount = -1;
+        state.viewers = -1;
 
         emit stateChanged();
     }

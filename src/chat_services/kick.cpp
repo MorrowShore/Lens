@@ -339,7 +339,7 @@ void Kick::requestChannelInfo(const QString &slug)
 
         if (slug == state.streamId)
         {
-            state.viewersCount = -1;
+            state.viewers = -1;
 
             if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
             {
@@ -366,8 +366,8 @@ void Kick::requestChannelInfo(const QString &slug)
                 const QString url = badgeJson.value("badge_image").toObject().value("src").toString().replace("\\/", "/");
                 info.subscriberBadges.insert(months, url);
             }
-
-            state.viewersCount = root.value("livestream").toObject().value("viewer_count").toInt(-1);
+            
+            state.viewers = root.value("livestream").toObject().value("viewer_count").toInt(-1);
 
             emit stateChanged();
         }

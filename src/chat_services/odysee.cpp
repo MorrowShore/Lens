@@ -207,7 +207,7 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
     }
     else if (type == "viewers")
     {
-        state.viewersCount = data.value("connected").toInt();
+        state.viewers = data.value("connected").toInt();
         emit stateChanged();
     }
     else
@@ -289,10 +289,10 @@ void Odysee::requestLive()
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
         const QJsonObject dataJson = root.value("data").toObject();
-
-        state.viewersCount = dataJson.value("ViewerCount").toInt(-1);
-
-        if (state.viewersCount < 0)
+        
+        state.viewers = dataJson.value("ViewerCount").toInt(-1);
+        
+        if (state.viewers < 0)
         {
             qWarning() << "failed to get viewers count, root =" << root;
         }

@@ -767,8 +767,8 @@ bool ChatHandler::isKnownViewesServicesMoreOne() const
         {
             continue;
         }
-
-        if (service->getState().viewersCount >= 0)
+        
+        if (service->getState().viewers >= 0)
         {
             count++;
 

@@ -128,8 +128,8 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
             emit connectedChanged(false);
             emit stateChanged();
         }
-
-        state.viewersCount = -1;
+        
+        state.viewers = -1;
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -589,12 +589,12 @@ void DLive::requestLiveStream(const QString &displayName_)
         const QJsonObject jsonUser = root
         .value("data").toObject()
         .value("userByDisplayName").toObject();
-
-        state.viewersCount = -1;
+        
+        state.viewers = -1;
 
         const QJsonObject jsonLivestream = jsonUser.value("livestream").toObject();
-
-        state.viewersCount = jsonLivestream.value("watchingCount").toInt(-1);
+        
+        state.viewers = jsonLivestream.value("watchingCount").toInt(-1);
 
         emit stateChanged();
     });
