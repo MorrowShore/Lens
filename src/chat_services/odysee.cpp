@@ -12,7 +12,7 @@ namespace
 
 static const int ReconncectPeriod = 5000;
 static const int PingSendTimeout = 10 * 1000;
-static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
+static const int PingAcknowledgeTimeout = PingSendTimeout * 1.5;
 
 static const QUrl DefaultAvatar = QUrl("https://thumbnails.odycdn.com/optimize/s:160:160/quality:85/plain/https://spee.ch/spaceman-png:2.png");
 static const QColor BackgroundDonationColor = QColor(255, 209, 147);
@@ -48,7 +48,8 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     ui.findBySetting(stream)->setItemProperty("name", tr("Stream"));
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Stream link..."));
 
-    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
+    {
         Q_UNUSED(state)
         //qDebug() << "webSocket state changed:" << state;
     });
@@ -60,9 +61,6 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
         //qDebug() << "webSocket connected";
         setConnected(true);
         sendPing();
-
-        checkPingTimer.setInterval(CheckPingSendTimeout);
-        checkPingTimer.start();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
@@ -71,7 +69,8 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
         setConnected(false);
     });
 
-    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
+    QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
+    {
         qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
@@ -85,6 +84,38 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
         reconnect();
     });
     timerReconnect.start(ReconncectPeriod);
+
+    QObject::connect(&timerAcknowledgePingTimer, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get() || !isConnected())
+        {
+            return;
+        }
+
+        qWarning() << "Pong timeout! Reconnection...";
+        setConnected(false);
+    });
+
+    QObject::connect(&timerSendPing, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get() || !isConnected())
+        {
+            return;
+        }
+
+        sendPing();
+    });
+    timerSendPing.start(PingSendTimeout);
+
+    QObject::connect(&socket, QOverload<quint64, const QByteArray&>::of(&QWebSocket::pong), this, [this](quint64, const QByteArray&)
+    {
+        //qDebug() << "webSocket pong";
+
+        if (timerAcknowledgePingTimer.isActive())
+        {
+            timerAcknowledgePingTimer.stop();
+        }
+    });
 
     reconnect();
 }
@@ -164,8 +195,10 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
         return;
     }
 
-    checkPingTimer.setInterval(CheckPingSendTimeout);
-    checkPingTimer.start();
+    if (timerAcknowledgePingTimer.isActive())
+    {
+        timerAcknowledgePingTimer.stop();
+    }
 
     const QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
     const QJsonObject root = doc.object();
@@ -350,8 +383,8 @@ void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
 
 void Odysee::sendPing()
 {
-    socket.sendTextMessage("{\"type\":\"ping\"}");
-    qWarning() << "not implemented";
+    socket.ping();
+    timerAcknowledgePingTimer.start(PingAcknowledgeTimeout);
 }
 
 void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QString &video)

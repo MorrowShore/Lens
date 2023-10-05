@@ -44,8 +44,8 @@ private:
     QWebSocket socket;
 
     QTimer timerReconnect;
-    QTimer pingTimer;
-    QTimer checkPingTimer;
+    QTimer timerSendPing;
+    QTimer timerAcknowledgePingTimer;
 
     Info info;
 
