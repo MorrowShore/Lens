@@ -73,25 +73,25 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
     openChatButton->setItemProperty("enabled", false);
 }
 
-ChatService::ConnectionStateType YouTubeBrowser::getConnectionState() const
+ChatService::ConnectionState YouTubeBrowser::getConnectionState() const
 {
     if (isConnected())
     {
-        return ChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionState::Connected;
     }
     else if (enabled.get() && !state.streamId.isEmpty())
     {
-        return ChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionState::Connecting;
     }
-
-    return ChatService::ConnectionStateType::NotConnected;
+    
+    return ChatService::ConnectionState::NotConnected;
 }
 
 QString YouTubeBrowser::getStateDescription() const
 {
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
+    case ConnectionState::NotConnected:
         if (stream.get().isEmpty())
         {
             return tr("Broadcast not specified");
@@ -103,11 +103,11 @@ QString YouTubeBrowser::getStateDescription() const
         }
 
         return tr("Not connected");
-
-    case ConnectionStateType::Connecting:
+        
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-
-    case ConnectionStateType::Connected:
+        
+    case ConnectionState::Connected:
         return tr("Successfully connected!");
 
     }

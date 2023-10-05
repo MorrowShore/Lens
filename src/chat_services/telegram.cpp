@@ -84,36 +84,36 @@ void Telegram::reconnectImpl()
     requestUpdates();
 }
 
-ChatService::ConnectionStateType Telegram::getConnectionState() const
+ChatService::ConnectionState Telegram::getConnectionState() const
 {
     if (state.connected)
     {
-        return ChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionState::Connected;
     }
     else if (enabled.get() && !botToken.get().isEmpty())
     {
-        return ChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionState::Connecting;
     }
-
-    return ChatService::ConnectionStateType::NotConnected;
+    
+    return ChatService::ConnectionState::NotConnected;
 }
 
 QString Telegram::getStateDescription() const
 {
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
+    case ConnectionState::NotConnected:
         if (botToken.get().isEmpty())
         {
             return tr("Bot token not specified");
         }
 
         return tr("Not connected");
-
-    case ConnectionStateType::Connecting:
+        
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-
-    case ConnectionStateType::Connected:
+        
+    case ConnectionState::Connected:
         return tr("Successfully connected!");
 
     }

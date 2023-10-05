@@ -268,22 +268,22 @@ QJsonObject ChatService::getStateJson() const
     root.insert("enabled", enabled.get());
     root.insert("viewers", getViewersCount());
 
-    QString connectionStateType;
+    QString connectionState;
 
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
-        connectionStateType = "not_connected";
+    case ConnectionState::NotConnected:
+        connectionState = "not_connected";
         break;
-    case ConnectionStateType::Connecting:
-        connectionStateType = "connecting";
+    case ConnectionState::Connecting:
+        connectionState = "connecting";
         break;
-    case ConnectionStateType::Connected:
-        connectionStateType = "connected";
+    case ConnectionState::Connected:
+        connectionState = "connected";
         break;
     }
 
-    root.insert("connection_state", connectionStateType);
+    root.insert("connection_state", connectionState);
 
     return root;
 }

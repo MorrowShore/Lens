@@ -176,35 +176,35 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
     reconnect();
 }
 
-ChatService::ConnectionStateType DLive::getConnectionState() const
+ChatService::ConnectionState DLive::getConnectionState() const
 {
     if (state.connected)
     {
-        return ChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionState::Connected;
     }
     else if (enabled.get() && !state.streamId.isEmpty())
     {
-        return ChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionState::Connecting;
     }
-
-    return ChatService::ConnectionStateType::NotConnected;
+    
+    return ChatService::ConnectionState::NotConnected;
 }
 
 QString DLive::getStateDescription() const
 {
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
+    case ConnectionState::NotConnected:
         if (state.streamId.isEmpty())
         {
             return tr("Channel not specified");
         }
         return tr("Not connected");
-
-    case ConnectionStateType::Connecting:
+        
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-
-    case ConnectionStateType::Connected:
+        
+    case ConnectionState::Connected:
         return tr("Successfully connected!");
 
     }

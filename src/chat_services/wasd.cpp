@@ -108,25 +108,25 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     reconnect();
 }
 
-ChatService::ConnectionStateType Wasd::getConnectionState() const
+ChatService::ConnectionState Wasd::getConnectionState() const
 {
     if (state.connected)
     {
-        return ChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionState::Connected;
     }
     else if (enabled.get() && !state.streamId.isEmpty())
     {
-        return ChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionState::Connecting;
     }
-
-    return ChatService::ConnectionStateType::NotConnected;
+    
+    return ChatService::ConnectionState::NotConnected;
 }
 
 QString Wasd::getStateDescription() const
 {
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
+    case ConnectionState::NotConnected:
         if (stream.get().isEmpty())
         {
             return tr("Channel not specified");
@@ -138,11 +138,11 @@ QString Wasd::getStateDescription() const
         }
 
         return tr("Not connected");
-
-    case ConnectionStateType::Connecting:
+        
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-
-    case ConnectionStateType::Connected:
+        
+    case ConnectionState::Connected:
         return tr("Successfully connected!");
 
     }

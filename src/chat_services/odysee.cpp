@@ -103,25 +103,25 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     reconnect();
 }
 
-ChatService::ConnectionStateType Odysee::getConnectionState() const
+ChatService::ConnectionState Odysee::getConnectionState() const
 {
     if (state.connected)
     {
-        return ChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionState::Connected;
     }
     else if (enabled.get() && !state.streamId.isEmpty())
     {
-        return ChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionState::Connecting;
     }
-
-    return ChatService::ConnectionStateType::NotConnected;
+    
+    return ChatService::ConnectionState::NotConnected;
 }
 
 QString Odysee::getStateDescription() const
 {
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
+    case ConnectionState::NotConnected:
         if (stream.get().isEmpty())
         {
             return tr("Broadcast not specified");
@@ -133,11 +133,11 @@ QString Odysee::getStateDescription() const
         }
 
         return tr("Not connected");
-
-    case ConnectionStateType::Connecting:
+        
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-
-    case ConnectionStateType::Connected:
+        
+    case ConnectionState::Connected:
         return tr("Successfully connected!");
 
     }

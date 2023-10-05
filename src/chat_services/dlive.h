@@ -11,8 +11,8 @@ class DLive : public ChatService
     Q_OBJECT
 public:
     explicit DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
-
-    ConnectionStateType getConnectionState() const override;
+    
+    ConnectionState getConnectionState() const override;
     QString getStateDescription() const override;
 
 protected:

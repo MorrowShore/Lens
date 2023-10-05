@@ -87,7 +87,7 @@ ScrollView {
                         visible: chatService !== null && chatService.enabled
 
                         color: {
-                            if (chatService !== null && chatService.connectionStateType === Global._ConnectedConnectionStateType) {
+                            if (chatService !== null && chatService.connectionState === Global._ConnectedConnectionState) {
                                 return "lime"
                             }
 

@@ -116,25 +116,25 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
     reconnect();
 }
 
-ChatService::ConnectionStateType Rumble::getConnectionState() const
+ChatService::ConnectionState Rumble::getConnectionState() const
 {
     if (state.connected)
     {
-        return ChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionState::Connected;
     }
     else if (enabled.get() && !state.streamId.isEmpty())
     {
-        return ChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionState::Connecting;
     }
-
-    return ChatService::ConnectionStateType::NotConnected;
+    
+    return ChatService::ConnectionState::NotConnected;
 }
 
 QString Rumble::getStateDescription() const
 {
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
+    case ConnectionState::NotConnected:
         if (stream.get().isEmpty())
         {
             return tr("Channel not specified");
@@ -146,11 +146,11 @@ QString Rumble::getStateDescription() const
         }
 
         return tr("Not connected");
-
-    case ConnectionStateType::Connecting:
+        
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-
-    case ConnectionStateType::Connected:
+        
+    case ConnectionState::Connected:
         return tr("Successfully connected!");
 
     }

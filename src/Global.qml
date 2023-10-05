@@ -7,9 +7,9 @@ QtObject {
     readonly property int _UnknownServiceType: 0
     readonly property int _SoftwareServiceType: 1
 
-    readonly property int _NotConnectedConnectionStateType: 10
-    readonly property int _ConnectingConnectionStateType: 20
-    readonly property int _ConnectedConnectionStateType: 30
+    readonly property int _NotConnectedConnectionState: 10
+    readonly property int _ConnectingConnectionState: 20
+    readonly property int _ConnectedConnectionState: 30
 
     property var windowChat
     property var windowSettings

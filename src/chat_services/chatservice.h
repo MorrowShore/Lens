@@ -31,20 +31,20 @@ public:
     Q_PROPERTY(QUrl                 chatUrl                      READ getChatUrl                         NOTIFY stateChanged)
     Q_PROPERTY(QUrl                 controlPanelUrl              READ getControlPanelUrl                 NOTIFY stateChanged)
 
-    Q_PROPERTY(ConnectionStateType  connectionStateType          READ getConnectionState                 NOTIFY stateChanged)
+    Q_PROPERTY(ConnectionState      connectionState              READ getConnectionState                 NOTIFY stateChanged)
     Q_PROPERTY(QString              stateDescription             READ getStateDescription                NOTIFY stateChanged)
 
     Q_PROPERTY(int                  viewersCount                 READ getViewersCount                    NOTIFY stateChanged)
 
     Q_PROPERTY(bool  enabledThirdPartyEmotes      READ isEnabledThirdPartyEmotes   WRITE setEnabledThirdPartyEmotes     NOTIFY stateChanged)
 
-    enum class ConnectionStateType
+    enum class ConnectionState
     {
         NotConnected = 10,
         Connecting = 20,
         Connected = 30
     };
-    Q_ENUM(ConnectionStateType)
+    Q_ENUM(ConnectionState)
 
     struct State
     {
@@ -74,7 +74,7 @@ public:
     QUrl getControlPanelUrl() const;
     Q_INVOKABLE QUrl getStreamUrl() const;
 
-    virtual ConnectionStateType getConnectionState() const = 0;
+    virtual ConnectionState getConnectionState() const = 0;
     virtual QString getStateDescription() const  = 0;
     virtual TcpReply processTcpRequest(const TcpRequest& request);
     AxelChat::ServiceType getServiceType() const;

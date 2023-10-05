@@ -240,7 +240,7 @@ DLLEXPORT double axelchat_youtube_get_connection_status()
 {
     if (chatHandler && chatHandler->youTube())
     {
-        switch (chatHandler->youTube()->connectionStateType()) {
+        switch (chatHandler->youTube()->connectionState()) {
         case AbstractChatService::NotConnected:
             return 1.0;
         case AbstractChatService::Connecting:

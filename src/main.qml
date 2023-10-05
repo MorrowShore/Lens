@@ -207,9 +207,9 @@ Row {
             border.width: 2
             radius: width / 2
             border.color: \"black\"
-            visible: status !== Global._ConnectedConnectionStateType
+            visible: status !== Global._ConnectedConnectionState
 
-            property var status: chatService.connectionStateType
+            property var status: chatService.connectionState
 
             color: \"red\"
         }

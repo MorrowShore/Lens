@@ -66,7 +66,7 @@ ScrollView {
 
             BusyIndicator {
                 id: busyIndicator
-                visible:  chatService.connectionStateType === Global._ConnectingConnectionStateType
+                visible:  chatService.connectionState === Global._ConnectingConnectionState
                 height: 40
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
@@ -85,10 +85,10 @@ ScrollView {
                         return "qrc:/resources/images/close.svg"
                     }
 
-                    if (chatService.connectionStateType === Global._NotConnectedConnectionStateType) {
+                    if (chatService.connectionState === Global._NotConnectedConnectionState) {
                         return "qrc:/resources/images/error-alt-svgrepo-com.svg"
                     }
-                    else if (chatService.connectionStateType === Global._ConnectedConnectionStateType) {
+                    else if (chatService.connectionState === Global._ConnectedConnectionState) {
                         return "qrc:/resources/images/tick.svg"
                     }
 

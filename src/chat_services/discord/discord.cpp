@@ -185,18 +185,18 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     updateUI();
 }
 
-ChatService::ConnectionStateType Discord::getConnectionState() const
+ChatService::ConnectionState Discord::getConnectionState() const
 {
     if (state.connected)
     {
-        return ChatService::ConnectionStateType::Connected;
+        return ChatService::ConnectionState::Connected;
     }
     else if (isCanConnect() && enabled.get())
     {
-        return ChatService::ConnectionStateType::Connecting;
+        return ChatService::ConnectionState::Connecting;
     }
-
-    return ChatService::ConnectionStateType::NotConnected;
+    
+    return ChatService::ConnectionState::NotConnected;
 }
 
 QString Discord::getStateDescription() const
@@ -213,13 +213,13 @@ QString Discord::getStateDescription() const
 
     switch (getConnectionState())
     {
-    case ConnectionStateType::NotConnected:
+    case ConnectionState::NotConnected:
         return tr("Not connected");
-
-    case ConnectionStateType::Connecting:
+        
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-
-    case ConnectionStateType::Connected:
+        
+    case ConnectionState::Connected:
         return tr("Successfully connected!");
 
     }

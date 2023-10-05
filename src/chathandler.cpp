@@ -693,8 +693,8 @@ int ChatHandler::connectedCount() const
             qWarning() << "service is null";
             continue;
         }
-
-        if (service->getConnectionState()  == ChatService::ConnectionStateType::Connected)
+        
+        if (service->getConnectionState()  == ChatService::ConnectionState::Connected)
         {
             result++;
         }
