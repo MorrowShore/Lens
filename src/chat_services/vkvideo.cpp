@@ -63,7 +63,7 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
 
 ChatService::ConnectionState VkVideo::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -126,7 +126,6 @@ void VkVideo::reconnectImpl()
 
     if (!extractOwnerVideoId(stream.get().trimmed(), info.ownerId, info.videoId))
     {
-        emit stateChanged();
         return;
     }
 
@@ -187,7 +186,7 @@ void VkVideo::requestChat()
 
         if (info.hasChat)
         {
-            if (!state.connected)
+            if (!isConnected())
             {
                 requestVideo();
             }
@@ -295,8 +294,6 @@ void VkVideo::requestChat()
         {
             requsetUsers(idsNeedUpdate);
         }
-
-        emit stateChanged();
     });
 }
 
@@ -314,8 +311,7 @@ void VkVideo::requestVideo()
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        state.connected = false;
-        state.viewers = -1;
+        bool connected = false;
 
         if (!isCanConnect())
         {
@@ -326,6 +322,10 @@ void VkVideo::requestVideo()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
+            if (isConnected())
+            {
+                setConnected(false);
+            }
             return;
         }
 
@@ -347,15 +347,19 @@ void VkVideo::requestVideo()
                 qWarning() << "video is not live";
             }
 
-            state.connected = true;
+            connected = true;
             state.viewers = video.value("spectators").toInt(-1);
+            emit stateChanged();
         }
         else
         {
             qCritical() << "items not equal 1";
         }
 
-        emit stateChanged();
+        if (connected != isConnected())
+        {
+            setConnected(connected);
+        }
     });
 }
 
