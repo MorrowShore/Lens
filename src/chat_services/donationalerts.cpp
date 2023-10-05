@@ -164,23 +164,6 @@ ChatService::ConnectionState DonationAlerts::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString DonationAlerts::getStateDescription() const
-{
-    switch (getConnectionState())
-    {
-    case ConnectionState::NotConnected:
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-    }
-
-    return "<unknown_state>";
-}
-
 TcpReply DonationAlerts::processTcpRequest(const TcpRequest &request)
 {
     const QString path = request.getUrl().path().toLower();

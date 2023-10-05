@@ -113,32 +113,19 @@ ChatService::ConnectionState Wasd::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString Wasd::getStateDescription() const
+QString Wasd::getMainError() const
 {
-    switch (getConnectionState())
+    if (stream.get().isEmpty())
     {
-    case ConnectionState::NotConnected:
-        if (stream.get().isEmpty())
-        {
-            return tr("Channel not specified");
-        }
-
-        if (state.streamId.isEmpty())
-        {
-            return tr("The channel is not correct");
-        }
-
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-
+        return tr("Channel not specified");
     }
 
-    return "<unknown_state>";
+    if (state.streamId.isEmpty())
+    {
+        return tr("The channel is not correct");
+    }
+
+    return tr("Not connected");
 }
 
 void Wasd::reconnectImpl()

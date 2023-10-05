@@ -12,7 +12,6 @@ public:
     explicit DonatePay(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
-    QString getStateDescription() const override;
 
 signals:
 

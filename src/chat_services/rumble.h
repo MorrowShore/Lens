@@ -13,7 +13,7 @@ public:
     explicit Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
-    QString getStateDescription() const override;
+    QString getMainError() const override;
 
 protected:
     void reconnectImpl() override;

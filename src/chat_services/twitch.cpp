@@ -171,26 +171,14 @@ ChatService::ConnectionState Twitch::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString Twitch::getStateDescription() const
+QString Twitch::getMainError() const
 {
-    switch (getConnectionState())
+    if (state.streamId.isEmpty())
     {
-    case ConnectionState::NotConnected:
-        if (state.streamId.isEmpty())
-        {
-            return tr("Channel not specified");
-        }
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-
+        return tr("Channel not specified");
     }
 
-    return "<unknown_state>";
+    return tr("Not connected");
 }
 
 TcpReply Twitch::processTcpRequest(const TcpRequest &request)

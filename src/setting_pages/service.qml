@@ -105,7 +105,19 @@ ScrollView {
                         return qsTr("Disabled")
                     }
 
-                    return chatService.stateDescription
+                    if (chatService.connectionState === _NotConnectedConnectionState) {
+                        return chatService.mainError
+                    }
+
+                    if (chatService.connectionState === _ConnectingConnectionState) {
+                        return qsTr("Connecting...")
+                    }
+
+                    if (chatService.connectionState === _ConnectedConnectionState) {
+                        return qsTr("Connected")
+                    }
+
+                    return "<unknown_state>"
                 }
             }
         }

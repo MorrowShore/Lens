@@ -74,37 +74,24 @@ ChatService::ConnectionState VkVideo::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString VkVideo::getStateDescription() const
+QString VkVideo::getMainError() const
 {
     if (!auth.isLoggedIn())
     {
         return tr("Not logged in");
     }
 
-    switch (getConnectionState())
+    if (stream.get().isEmpty())
     {
-    case ConnectionState::NotConnected:
-        if (stream.get().isEmpty())
-        {
-            return tr("Broadcast not specified");
-        }
-
-        if (info.ownerId.isEmpty() || info.videoId.isEmpty())
-        {
-            return tr("The broadcast is not correct");
-        }
-
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-
+        return tr("Broadcast not specified");
     }
 
-    return "<unknown_state>";
+    if (info.ownerId.isEmpty() || info.videoId.isEmpty())
+    {
+        return tr("The broadcast is not correct");
+    }
+
+    return tr("Not connected");
 }
 
 TcpReply VkVideo::processTcpRequest(const TcpRequest &request)

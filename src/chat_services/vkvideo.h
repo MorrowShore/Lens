@@ -11,7 +11,7 @@ public:
     explicit VkVideo(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
-    QString getStateDescription() const override;
+    QString getMainError() const override;
     TcpReply processTcpRequest(const TcpRequest &request) override;
 
 protected:

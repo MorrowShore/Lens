@@ -32,7 +32,7 @@ public:
     Q_PROPERTY(QUrl                 controlPanelUrl              READ getControlPanelUrl                 NOTIFY stateChanged)
 
     Q_PROPERTY(ConnectionState      connectionState              READ getConnectionState                 NOTIFY stateChanged)
-    Q_PROPERTY(QString              stateDescription             READ getStateDescription                NOTIFY stateChanged)
+    Q_PROPERTY(QString              mainError                    READ getMainError                       NOTIFY stateChanged)
 
     Q_PROPERTY(int                  viewersCount                 READ getViewers                         NOTIFY stateChanged)
 
@@ -75,7 +75,7 @@ public:
     Q_INVOKABLE QUrl getStreamUrl() const;
 
     virtual ConnectionState getConnectionState() const = 0;
-    virtual QString getStateDescription() const  = 0;
+    virtual QString getMainError() const;
     virtual TcpReply processTcpRequest(const TcpRequest& request);
     AxelChat::ServiceType getServiceType() const;
 

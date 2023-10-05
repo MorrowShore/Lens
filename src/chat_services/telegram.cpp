@@ -93,27 +93,14 @@ ChatService::ConnectionState Telegram::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString Telegram::getStateDescription() const
+QString Telegram::getMainError() const
 {
-    switch (getConnectionState())
+    if (botToken.get().isEmpty())
     {
-    case ConnectionState::NotConnected:
-        if (botToken.get().isEmpty())
-        {
-            return tr("Bot token not specified");
-        }
-
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-
+        return tr("Bot token not specified");
     }
 
-    return "<unknown_state>";
+    return tr("Not connected");
 }
 
 void Telegram::processBadChatReply()

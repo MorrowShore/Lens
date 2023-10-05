@@ -146,23 +146,6 @@ ChatService::ConnectionState DonatePay::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString DonatePay::getStateDescription() const
-{
-    switch (getConnectionState())
-    {
-    case ConnectionState::NotConnected:
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-    }
-
-    return "<unknown_state>";
-}
-
 void DonatePay::updateUI()
 {
     if (info.userId.isEmpty())

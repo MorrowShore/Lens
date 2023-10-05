@@ -76,32 +76,19 @@ ChatService::ConnectionState YouTubeHtml::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString YouTubeHtml::getStateDescription() const
+QString YouTubeHtml::getMainError() const
 {
-    switch (getConnectionState())
+    if (stream.get().isEmpty())
     {
-    case ConnectionState::NotConnected:
-        if (stream.get().isEmpty())
-        {
-            return tr("Broadcast not specified");
-        }
-
-        if (state.streamId.isEmpty())
-        {
-            return tr("The broadcast is not correct");
-        }
-
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-
+        return tr("Broadcast not specified");
     }
 
-    return "<unknown_state>";
+    if (state.streamId.isEmpty())
+    {
+        return tr("The broadcast is not correct");
+    }
+
+    return tr("Not connected");
 }
 
 void YouTubeHtml::onTimeoutRequestChat()

@@ -175,7 +175,7 @@ ChatService::ConnectionState Discord::getConnectionState() const
     return ChatService::ConnectionState::NotConnected;
 }
 
-QString Discord::getStateDescription() const
+QString Discord::getMainError() const
 {
     if (applicationId.get().isEmpty())
     {
@@ -187,20 +187,7 @@ QString Discord::getStateDescription() const
         return tr("Bot token not specified");
     }
 
-    switch (getConnectionState())
-    {
-    case ConnectionState::NotConnected:
-        return tr("Not connected");
-        
-    case ConnectionState::Connecting:
-        return tr("Connecting...");
-        
-    case ConnectionState::Connected:
-        return tr("Successfully connected!");
-
-    }
-
-    return "<unknown_state>";
+    return tr("Not connected");
 }
 
 void Discord::reconnectImpl()

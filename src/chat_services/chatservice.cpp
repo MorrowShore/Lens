@@ -147,6 +147,11 @@ QUrl ChatService::getStreamUrl() const
     return state.streamUrl;
 }
 
+QString ChatService::getMainError() const
+{
+    return tr("Not connected");
+}
+
 TcpReply ChatService::processTcpRequest(const TcpRequest&)
 {
     qCritical() << "not implemented for" << getServiceTypeId(getServiceType());
