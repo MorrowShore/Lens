@@ -117,16 +117,11 @@ QString YouTubeBrowser::getStateDescription() const
 
 void YouTubeBrowser::reconnectImpl()
 {
-    const bool preConnected = state.connected;
-
     state = State();
 
     timerCheckConnection.stop();
 
-    if (preConnected)
-    {
-        emit connectedChanged(false);
-    }
+    emit stateChanged();
 
     openChatButton->setItemProperty("enabled", false);
 
@@ -199,7 +194,6 @@ void YouTubeBrowser::reconnectImpl()
 
                 requestStreamPage();
 
-                emit connectedChanged(true);
                 emit stateChanged();
             }
 

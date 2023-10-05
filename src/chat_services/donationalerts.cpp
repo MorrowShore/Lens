@@ -134,7 +134,6 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
             emit stateChanged();
         }
     });
@@ -389,7 +388,6 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
         if (!state.connected)
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
 
             sendPing();

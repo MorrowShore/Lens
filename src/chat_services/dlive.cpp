@@ -125,7 +125,6 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
             emit stateChanged();
         }
         
@@ -452,7 +451,6 @@ void DLive::onWebSocketReceived(const QString &raw)
         if (!state.connected)
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
 
             checkPingTimer.setInterval(CheckPingTimeout);

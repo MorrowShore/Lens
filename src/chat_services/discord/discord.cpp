@@ -421,7 +421,6 @@ void Discord::processDisconnected()
     {
         state.connected = false;
         emit stateChanged();
-        emit connectedChanged(false);
     }
 
     updateUI();
@@ -438,7 +437,6 @@ void Discord::tryProcessConnected()
     {
         state.connected = true;
         emit stateChanged();
-        emit connectedChanged(true);
     }
 
     updateUI();

@@ -62,7 +62,6 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
         if (!state.connected)
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
 
             sendPing();
@@ -79,7 +78,6 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
             emit stateChanged();
         }
     });

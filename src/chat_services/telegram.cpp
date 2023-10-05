@@ -69,18 +69,12 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
 
 void Telegram::reconnectImpl()
 {
-    const bool preConnected = state.connected;
-
     state = State();
     info = Info();
 
     updateUI();
 
-    if (preConnected)
-    {
-        emit connectedChanged(false);
-        emit stateChanged();
-    }
+    emit stateChanged();
 
     if (!enabled.get())
     {
@@ -141,7 +135,6 @@ void Telegram::processBadChatReply()
 
             state.connected = false;
 
-            emit connectedChanged(false);
             emit stateChanged();
 
             reconnect();
@@ -211,7 +204,6 @@ void Telegram::requestUpdates()
                 if (!state.connected || !botToken.get().trimmed().isEmpty())
                 {
                     state.connected = true;
-                    emit connectedChanged(true);
                     emit stateChanged();
                 }
 

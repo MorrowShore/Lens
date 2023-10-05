@@ -193,10 +193,6 @@ void VkVideo::requestChat()
                 requestVideo();
             }
         }
-        else
-        {
-            state.connected = false;
-        }
 
         const QJsonObject response = root.value("response").toObject();
 

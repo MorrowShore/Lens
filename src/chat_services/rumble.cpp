@@ -48,7 +48,6 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
         if (!state.connected && !state.streamId.isEmpty() && enabled.get())
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
         }
     });
@@ -58,7 +57,6 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
         //qDebug() << "SSE stopped";
 
         state.connected = false;
-        emit connectedChanged(false);
         emit stateChanged();
 
         if (enabled.get())
@@ -292,7 +290,6 @@ void Rumble::requestViewers()
             if (state.connected)
             {
                 state.connected = false;
-                emit connectedChanged(false);
                 emit stateChanged();
             }
 

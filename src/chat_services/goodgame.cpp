@@ -59,7 +59,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
+            emit stateChanged();
         }
 
         requestChannelStatus();
@@ -72,7 +72,6 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false);
         }
     });
 
@@ -351,7 +350,6 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
         if (!state.connected)
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
         }
 

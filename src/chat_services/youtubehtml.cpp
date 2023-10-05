@@ -41,18 +41,12 @@ YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathPa
 
 void YouTubeHtml::reconnectImpl()
 {
-    const bool preConnected = state.connected;
-
     state = State();
 
     badChatReplies = 0;
     badLivePageReplies = 0;
 
-    if (preConnected)
-    {
-        emit connectedChanged(false);
-    }
-
+    emit stateChanged();
     state.streamId = YouTubeUtils::extractBroadcastId(stream.get().trimmed());
 
     if (!state.streamId.isEmpty())
@@ -183,7 +177,6 @@ void YouTubeHtml::onReplyChatPage()
     {
         state.connected = true;
 
-        emit connectedChanged(true);
         emit stateChanged();
     }
 
@@ -280,7 +273,7 @@ void YouTubeHtml::processBadChatReply()
 
             state.connected = false;
 
-            emit connectedChanged(false);
+            emit stateChanged();
 
             reconnect();
         }

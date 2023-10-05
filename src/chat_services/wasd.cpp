@@ -67,7 +67,6 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false);
         }
     });
 
@@ -270,7 +269,6 @@ void Wasd::requestChannel(const QString &channelName)
                 if (state.connected)
                 {
                     state.connected = false;
-                    emit connectedChanged(false);
                 }
 
                 socket.close();
@@ -583,8 +581,6 @@ void Wasd::parseEventJoined(const QJsonObject &)
     if (!state.connected && !state.streamId.isEmpty())
     {
         state.connected = true;
-
-        emit connectedChanged(true);
         emit stateChanged();
     }
 }

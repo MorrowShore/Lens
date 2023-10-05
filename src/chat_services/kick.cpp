@@ -58,7 +58,6 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false);
         }
     });
 
@@ -259,7 +258,6 @@ void Kick::onWebSocketReceived(const QString &rawData)
         if (!state.connected)
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
         }
 

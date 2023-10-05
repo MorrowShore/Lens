@@ -115,7 +115,6 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
             emit stateChanged();
         }
         
@@ -169,7 +168,6 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
             state.connected = false;
 
-            emit connectedChanged(false);
             emit stateChanged();
             reconnect();
         }
@@ -347,7 +345,6 @@ void Twitch::onIRCMessage(const QString &rawData)
         if (!state.connected && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
         }
 

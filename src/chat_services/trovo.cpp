@@ -71,7 +71,6 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
         }
 
         QJsonObject root;
@@ -98,7 +97,6 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
             state.connected = false;
 
             emit stateChanged();
-            emit connectedChanged(false);
         }
     });
 
@@ -218,7 +216,6 @@ void Trovo::onWebSocketReceived(const QString& rawData)
         if (nonce == NonceAuth)
         {
             state.connected = true;
-            emit connectedChanged(true);
             emit stateChanged();
 
             requestChannelInfo();

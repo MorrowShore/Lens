@@ -90,7 +90,6 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
             emit stateChanged();
         }
     });
@@ -299,18 +298,12 @@ void DonatePay::onReceiveWebSocket(const QString &rawData)
 
 void DonatePay::reconnectImpl()
 {
-    const bool preConnected = state.connected;
-
     state = State();
     info = Info();
 
     updateUI();
 
-    if (preConnected)
-    {
-        emit connectedChanged(false);
-        emit stateChanged();
-    }
+    emit stateChanged();
 
     if (!enabled.get())
     {

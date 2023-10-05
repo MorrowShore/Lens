@@ -281,6 +281,7 @@ void ChatHandler::onStateChanged()
     outputToFile.writeApplicationState(true, getViewersTotalCount());
     webSocket.sendState();
 
+    emit connectedCountChanged();
     emit viewersTotalCountChanged();
 }
 
@@ -290,23 +291,6 @@ void ChatHandler::openProgramFolder()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + QCoreApplication::applicationDirPath()));
 }
 #endif
-
-void ChatHandler::onConnectedChanged(const bool connected)
-{
-    ChatService* service = qobject_cast<ChatService*>(sender());
-    if (!service)
-    {
-        qCritical() << "!service";
-        return;
-    }
-
-    if (!connected && _enabledClearMessagesOnLinkChange)
-    {
-        clearMessages();
-    }
-
-    emit connectedCountChanged();
-}
 
 void ChatHandler::onAuthorNameChanged(const Author& author, const QString &prevName, const QString &newName)
 {
@@ -369,7 +353,6 @@ void ChatHandler::addService()
 
     QObject::connect(service.get(), &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
     QObject::connect(service.get(), &ChatService::readyRead, this, &ChatHandler::onReadyRead);
-    QObject::connect(service.get(), &ChatService::connectedChanged, this, &ChatHandler::onConnectedChanged);
     QObject::connect(service.get(), &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
 
     services.append(service);

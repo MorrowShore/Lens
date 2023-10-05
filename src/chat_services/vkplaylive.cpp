@@ -40,7 +40,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
         if (state.connected)
         {
             state.connected = false;
-            emit connectedChanged(false);
         }
 
         if (info.token.isEmpty())
@@ -66,7 +65,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
         {
             state.connected = false;
             emit stateChanged();
-            emit connectedChanged(false);
         }
     });
 
@@ -259,7 +257,6 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
         {
             state.connected = true;
 
-            emit connectedChanged(true);
             emit stateChanged();
         }
 
