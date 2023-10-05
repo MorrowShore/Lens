@@ -51,7 +51,15 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case 0: return message.text;
-        case 1: return message.file + QString(":%1").arg(message.line);
+        case 1:
+        {
+            if (message.file.isEmpty())
+            {
+                return QString();
+            }
+
+            return message.file + QString(":%1").arg(message.line);
+        }
         case 2: return message.function;
         }
     }
