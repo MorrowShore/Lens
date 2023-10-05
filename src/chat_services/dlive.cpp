@@ -7,7 +7,6 @@ namespace
 
 static const int UpdateStreamInfoPeriod = 10 * 1000;
 static const int CheckPingTimeout = 30 * 1000;
-static const int ReconncectPeriod = 6 * 1000;
 static const int EmoteHeight = 28;
 static const int StickerHeight = 80;
 static const QColor HighlightColor = QColor(107, 214, 214);
@@ -140,17 +139,6 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
     });
     timerUpdaetStreamInfo.start(UpdateStreamInfoPeriod);
 
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get() || isConnected())
-        {
-            return;
-        }
-
-        reconnect();
-    });
-    timerReconnect.start(ReconncectPeriod);
-
     QObject::connect(&checkPingTimer, &QTimer::timeout, this, [this]()
     {
         if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
@@ -162,8 +150,6 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
         qWarning() << "check ping timeout, disconnect";
         socket.close();
     });
-
-    reconnect();
 }
 
 ChatService::ConnectionState DLive::getConnectionState() const
@@ -223,8 +209,6 @@ void DLive::reconnectImpl()
     {
         return;
     }
-
-    timerReconnect.start();
 
     requestChatRoom(state.streamId);
     requestLiveStream(state.streamId);

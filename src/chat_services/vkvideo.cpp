@@ -58,7 +58,6 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
     timerRequestVideo.start(RequestVideoInterval);
 
     updateUI();
-    reconnect();
 }
 
 ChatService::ConnectionState VkVideo::getConnectionState() const

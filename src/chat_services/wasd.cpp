@@ -11,7 +11,7 @@ namespace
 {
 
 static const QString ApiToken = OBFUSCATE(WASD_API_TOKEN);
-static const int ReconncectPeriod = 3 * 1000;
+static const int ReconnectPeriod = 3 * 1000;
 static const int PingPeriod = 3 * 1000;
 static const int StickerImageHeight = 128;
 static const int SmileImageHeight = 32;
@@ -76,7 +76,7 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
             socket.open(QUrl("wss://chat.wasd.tv/socket.io/?EIO=3&transport=websocket"));
         }
     });
-    timerReconnect.start(ReconncectPeriod);
+    timerReconnect.start(ReconnectPeriod);
 
     QObject::connect(&timerPing, &QTimer::timeout, this, [this]()
     {
@@ -97,8 +97,6 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         requestChannel(state.streamId);
     });
     timerRequestChannel.start(RequestChannelInterval);
-
-    reconnect();
 }
 
 ChatService::ConnectionState Wasd::getConnectionState() const

@@ -56,6 +56,5 @@ private:
     QHash<QString, QString> emotesUrls;
 
     QTimer timerRequestViewers;
-    QTimer timerReconnect;
 };
 

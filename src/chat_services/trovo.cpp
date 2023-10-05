@@ -41,7 +41,6 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 
 static const int RequestChannelInfoPariod = 10000;
 static const int PingPeriod = 30 * 1000;
-static const int ReconncectPeriod = 3 * 1000;
 
 static const QString NonceAuth = "AUTH";
 
@@ -97,15 +96,6 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
     QObject::connect(&timerPing, &QTimer::timeout, this, &Trovo::ping);
     timerPing.start();
 
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState)
-        {
-            reconnect();
-        }
-    });
-    timerReconnect.start(ReconncectPeriod);
-
     timerUpdateChannelInfo.setInterval(RequestChannelInfoPariod);
     connect(&timerUpdateChannelInfo, &QTimer::timeout, this, [this]()
     {
@@ -117,8 +107,6 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
         requestChannelInfo();
     });
     timerUpdateChannelInfo.start();
-
-    reconnect();
 }
 
 ChatService::ConnectionState Trovo::getConnectionState() const

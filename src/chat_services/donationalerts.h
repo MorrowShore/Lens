@@ -52,7 +52,6 @@ private:
     OAuth2 auth;
     QWebSocket socket;
 
-    QTimer timerReconnect;
     QTimer pingTimer;
     QTimer checkPingTimer;
 

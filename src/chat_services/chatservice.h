@@ -122,7 +122,6 @@ private:
     const QString settingsGroupPath;
 
 protected:
-
     virtual void reconnectImpl() = 0;
 
     QString generateAuthorId(const QString& rawId) const;
@@ -142,4 +141,7 @@ protected:
     Setting<bool> enabledThirdPartyEmotes;
 
     UIBridge ui;
+
+private:
+    QTimer timerReconnect;
 };

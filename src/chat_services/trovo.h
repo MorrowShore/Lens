@@ -38,7 +38,6 @@ private:
     QString channelId;
 
     QTimer timerPing;
-    QTimer timerReconnect;
     QTimer timerUpdateChannelInfo;
 
     inline static const QString SmilesValidSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";

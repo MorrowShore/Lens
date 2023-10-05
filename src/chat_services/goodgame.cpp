@@ -13,7 +13,6 @@ namespace
 
 static const int RequestChatInterval = 2000;
 static const int RequestChannelStatus = 10000;
-static const int ReconncectPeriod = 3 * 1000;
 
 static const QMap<QString, QColor> ColorTypes =
 {
@@ -92,17 +91,6 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
         requestChannelStatus();
     });
     timerUpdateChannelStatus.start();
-
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (socket.state() == QAbstractSocket::SocketState::UnconnectedState)
-        {
-            reconnect();
-        }
-    });
-    timerReconnect.start(ReconncectPeriod);
-
-    reconnect();
 }
 
 ChatService::ConnectionState GoodGame::getConnectionState() const

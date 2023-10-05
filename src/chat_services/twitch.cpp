@@ -21,7 +21,6 @@ static const QString TwitchIRCHost = "tmi.twitch.tv";
 static const QString FolderLogs = "logs_twitch";
 static const QString ClientID = OBFUSCATE(TWITCH_CLIENT_ID);
 
-static const int ReconncectPeriod = 5 * 1000;
 static const int PingPeriod = 60 * 1000;
 static const int PongTimeout = 5 * 1000;
 static const int UpdateStreamInfoPeriod = 10 * 1000;
@@ -111,22 +110,6 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
         qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
-
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get())
-        {
-            return;
-        }
-
-        if (!isConnected())
-        {
-            reconnect();
-        }
-    });
-    timerReconnect.start(ReconncectPeriod);
-
-    reconnect();
 
     QObject::connect(&timerCheckPong, &QTimer::timeout, this, [this]()
     {

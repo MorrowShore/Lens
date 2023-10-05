@@ -13,7 +13,6 @@ namespace
 {
 
 static const QString ClientID = OBFUSCATE(DONATIONALERTS_CLIENT_ID);
-static const int ReconncectPeriod = 6 * 1000;
 static const int PingSendTimeout = 10 * 1000;
 static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
 static const QColor BackgroundColor = QColor(255, 209, 147);
@@ -136,15 +135,6 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
         qCritical() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
-
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get() || isConnected())
-        {
-            return;
-        }
-    });
-    timerReconnect.start(ReconncectPeriod);
 
     QObject::connect(&pingTimer, &QTimer::timeout, this, &DonationAlerts::sendPing);
     pingTimer.setInterval(PingSendTimeout);
@@ -555,7 +545,6 @@ void DonationAlerts::reconnectImpl()
         return;
     }
 
-    timerReconnect.start();
     requestUser();
     //requestDonations();
 }

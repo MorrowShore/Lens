@@ -41,7 +41,7 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
     {
         if (!element)
         {
-            qCritical() << "!element";
+            qCritical() << "element is null";
             return;
         }
 
@@ -61,8 +61,6 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
 
     QObject::connect(&timerRequestUpdates, &QTimer::timeout, this, &Telegram::requestUpdates);
     timerRequestUpdates.start(RequestChatInterval);
-
-    reconnect();
 
     updateUI();
 }

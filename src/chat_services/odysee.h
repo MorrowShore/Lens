@@ -43,7 +43,6 @@ private:
     QNetworkAccessManager& network;
     QWebSocket socket;
 
-    QTimer timerReconnect;
     QTimer timerSendPing;
     QTimer timerAcknowledgePingTimer;
 

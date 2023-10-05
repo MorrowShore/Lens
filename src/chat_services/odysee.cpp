@@ -10,7 +10,6 @@
 namespace
 {
 
-static const int ReconncectPeriod = 5000;
 static const int PingSendTimeout = 10 * 1000;
 static const int PingAcknowledgeTimeout = PingSendTimeout * 1.5;
 
@@ -74,17 +73,6 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
         qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get() || isConnected())
-        {
-            return;
-        }
-
-        reconnect();
-    });
-    timerReconnect.start(ReconncectPeriod);
-
     QObject::connect(&timerAcknowledgePingTimer, &QTimer::timeout, this, [this]()
     {
         if (!enabled.get() || !isConnected())
@@ -116,8 +104,6 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
             timerAcknowledgePingTimer.stop();
         }
     });
-
-    reconnect();
 }
 
 ChatService::ConnectionState Odysee::getConnectionState() const

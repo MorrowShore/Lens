@@ -5,7 +5,6 @@
 namespace
 {
 
-static const int ReconncectPeriod = 5 * 1000;
 static const int RequestChannelInfoInterval = 10000;
 static const int HeartbeatAcknowledgementTimeout = 20 * 1000;
 static const int HeartbeatSendTimeout = 10 * 1000;
@@ -59,22 +58,6 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     {
         qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
-
-    reconnect();
-
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get())
-        {
-            return;
-        }
-
-        if (!isConnected())
-        {
-            reconnect();
-        }
-    });
-    timerReconnect.start(ReconncectPeriod);
 
     QObject::connect(&web, &cweqt::Manager::initialized, this, [this]()
     {

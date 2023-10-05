@@ -152,8 +152,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
     QObject::connect(&heartbeatTimer, &QTimer::timeout, this, &VkPlayLive::sendHeartbeat);
     heartbeatTimer.setInterval(HeartbeatSendTimeout);
     heartbeatTimer.start();
-
-    reconnect();
 }
 
 ChatService::ConnectionState VkPlayLive::getConnectionState() const

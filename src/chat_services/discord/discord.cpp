@@ -9,8 +9,6 @@
 namespace
 {
 
-static const int ReconncectPeriod = 3 * 1000;
-
 static const int DispatchOpCode = 0;
 static const int HeartbeatOpCode = 1;
 static const int IdentifyOpCode = 2;
@@ -159,25 +157,6 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
         qWarning() << "heartbeat acknowledgement timeout, disconnect";
         socket.close();
     });
-
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get() || isConnected())
-        {
-            return;
-        }
-
-        if (socket.state() == QAbstractSocket::SocketState::ConnectedState ||
-            socket.state() == QAbstractSocket::SocketState::ConnectingState)
-        {
-            return;
-        }
-
-        reconnect();
-    });
-    timerReconnect.start(ReconncectPeriod);
-
-    reconnect();
 
     updateUI();
 }

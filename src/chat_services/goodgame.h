@@ -40,7 +40,6 @@ private:
 
     int64_t channelId = -1;
 
-    QTimer timerReconnect;
     QTimer timerUpdateMessages;
     QTimer timerUpdateChannelStatus;
 

@@ -53,7 +53,6 @@ private:
 
     Info info;
 
-    QTimer timerReconnect;
     QTimer timerPing;
     QTimer timerRequestChannelInfo;
     QTimer heartbeatAcknowledgementTimer;

@@ -85,7 +85,6 @@ private:
 
     QWebSocket socket;
 
-    QTimer timerReconnect;
     QTimer heartbeatTimer;
     QTimer heartbeatAcknowledgementTimer;
 };

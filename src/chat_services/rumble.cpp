@@ -25,7 +25,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 
     if (resultData.isEmpty())
     {
-        qCritical() << tag << "data is null";
+        qCritical() << tag << "data is empty";
         return false;
     }
 
@@ -100,19 +100,6 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
         requestViewers();
     });
     timerRequestViewers.start(RequestViewersInterval);
-
-    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
-    {
-        if (!enabled.get() || isConnected())
-        {
-            return;
-        }
-
-        reconnect();
-    });
-    timerReconnect.start(5000);
-
-    reconnect();
 }
 
 ChatService::ConnectionState Rumble::getConnectionState() const

@@ -35,8 +35,6 @@ YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathPa
     
     QObject::connect(&timerRequestStreamPage,&QTimer::timeout, this, &YouTubeHtml::onTimeoutRequestStreamPage);
     timerRequestStreamPage.start(RequestStreamInterval);
-
-    reconnect();
 }
 
 void YouTubeHtml::reconnectImpl()

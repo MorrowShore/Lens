@@ -1,5 +1,13 @@
 #include "chatservice.h"
 
+namespace
+{
+
+static const int ReconnectPeriod = 5 * 1000;
+static const int FirstReconnectPeriod = 100;
+
+}
+
 const QString ChatService::UnknownBadge = "qrc:/resources/images/unknown-badge.png";
 
 ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
@@ -19,6 +27,27 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
     ui.addLineEdit(&stream, tr("Stream"));
     
     connect(&ui, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
+
+    QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
+    {
+        if (!enabled.get() || isConnected())
+        {
+            return;
+        }
+
+        reconnect();
+    });
+    timerReconnect.start(ReconnectPeriod);
+
+    QTimer::singleShot(FirstReconnectPeriod, this, [this]()
+    {
+        if (!enabled.get() || isConnected())
+        {
+            return;
+        }
+
+        reconnect();
+    });
 }
 
 QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
@@ -135,7 +164,12 @@ AxelChat::ServiceType ChatService::getServiceType() const
 void ChatService::reconnect()
 {
     state = State();
+
+    timerReconnect.stop();
+    timerReconnect.start();
+
     reconnectImpl();
+
     emit stateChanged();
 }
 
