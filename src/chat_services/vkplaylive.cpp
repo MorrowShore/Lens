@@ -63,7 +63,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
 
     QObject::connect(&timerRequestToken, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -160,7 +160,7 @@ ChatService::ConnectionState VkPlayLive::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -218,7 +218,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
 {
     //qDebug("\nreceived: " + rawData.toUtf8() + "\n");
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

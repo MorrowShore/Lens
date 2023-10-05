@@ -61,7 +61,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     QObject::connect(&web, &cweqt::Manager::initialized, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -74,7 +74,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     QObject::connect(&timerRequestChannelInfo, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || state.streamId.isEmpty())
+        if (!isEnabled() || state.streamId.isEmpty())
         {
             return;
         }
@@ -106,7 +106,7 @@ ChatService::ConnectionState Kick::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -159,7 +159,7 @@ void Kick::reconnectImpl()
     state.chatUrl = QUrl(QString("https://kick.com/%1/chatroom").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://kick.com/%1").arg(state.streamId));
 
-    if (enabled.get())
+    if (isEnabled())
     {
         requestChannelInfo(state.streamId);
     }
@@ -167,7 +167,7 @@ void Kick::reconnectImpl()
 
 void Kick::onWebSocketReceived(const QString &rawData)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

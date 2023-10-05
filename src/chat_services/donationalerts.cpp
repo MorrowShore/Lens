@@ -156,7 +156,7 @@ ChatService::ConnectionState DonationAlerts::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && auth.isLoggedIn())
+    else if (isEnabled() && auth.isLoggedIn())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -336,7 +336,7 @@ void DonationAlerts::requestSubscribeCentrifuge(const QString &clientId, const Q
 
 void DonationAlerts::onReceiveWebSocket(const QString &rawData)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -533,7 +533,7 @@ void DonationAlerts::reconnectImpl()
 
     updateUI();
 
-    if (auth.getState() != OAuth2::State::LoggedIn || !enabled.get())
+    if (auth.getState() != OAuth2::State::LoggedIn || !isEnabled())
     {
         return;
     }

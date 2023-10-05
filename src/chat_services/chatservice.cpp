@@ -15,11 +15,9 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
 
     , serviceType(serviceType_)
     , settingsGroupPath(settingsGroupPathParent + "/" + getServiceTypeId(serviceType_))
-
-    , enabled(settings, getSettingsGroupPath() + "/enabled", false)
     , stream(settings, getSettingsGroupPath() + "/stream")
+    , enabled(settings, getSettingsGroupPath() + "/enabled", false)
     , lastSavedMessageId(settings, getSettingsGroupPath() + "/lastSavedMessageId")
-
     , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", enabledThirdPartyEmotesDefault)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
@@ -30,7 +28,7 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || isConnected())
+        if (!isEnabled() || isConnected())
         {
             return;
         }
@@ -41,7 +39,7 @@ ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathPa
 
     QTimer::singleShot(FirstReconnectPeriod, this, [this]()
     {
-        if (!enabled.get() || isConnected())
+        if (!isEnabled() || isConnected())
         {
             return;
         }
@@ -306,7 +304,7 @@ QJsonObject ChatService::getStateJson() const
     QJsonObject root;
 
     root.insert("type_id", getServiceTypeId(serviceType));
-    root.insert("enabled", enabled.get());
+    root.insert("enabled", isEnabled());
     root.insert("viewers", getViewers());
 
     QString connectionState;

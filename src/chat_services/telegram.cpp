@@ -71,7 +71,7 @@ void Telegram::reconnectImpl()
 
     updateUI();
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -85,7 +85,7 @@ ChatService::ConnectionState Telegram::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !botToken.get().isEmpty())
+    else if (isEnabled() && !botToken.get().isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -132,7 +132,7 @@ void Telegram::processBadChatReply()
 
 void Telegram::requestUpdates()
 {
-    if (!enabled.get() || botToken.get().isEmpty())
+    if (!isEnabled() || botToken.get().isEmpty())
     {
         return;
     }
@@ -146,7 +146,7 @@ void Telegram::requestUpdates()
             const QByteArray rawData = reply->readAll();
             reply->deleteLater();
 
-            if (!enabled.get())
+            if (!isEnabled())
             {
                 return;
             }
@@ -202,7 +202,7 @@ void Telegram::requestUpdates()
             const QByteArray rawData = reply->readAll();
             reply->deleteLater();
 
-            if (!enabled.get())
+            if (!isEnabled())
             {
                 return;
             }

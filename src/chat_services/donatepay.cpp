@@ -100,7 +100,7 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
 
     /*QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -138,7 +138,7 @@ ChatService::ConnectionState DonatePay::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get())
+    else if (isEnabled())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -274,7 +274,7 @@ void DonatePay::requestSubscribeCentrifuge(const QString &clientId, const QStrin
 
 void DonatePay::onReceiveWebSocket(const QString &rawData)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -304,7 +304,7 @@ void DonatePay::reconnectImpl()
 
     emit stateChanged();
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

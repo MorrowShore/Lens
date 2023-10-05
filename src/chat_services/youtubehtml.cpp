@@ -53,7 +53,7 @@ void YouTubeHtml::reconnectImpl()
         state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
     }
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -68,7 +68,7 @@ ChatService::ConnectionState YouTubeHtml::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -106,7 +106,7 @@ QString YouTubeHtml::getStateDescription() const
 
 void YouTubeHtml::onTimeoutRequestChat()
 {
-    if (!enabled.get() || state.chatUrl.isEmpty())
+    if (!isEnabled() || state.chatUrl.isEmpty())
     {
         return;
     }
@@ -168,7 +168,7 @@ void YouTubeHtml::onReplyChatPage()
     const QJsonDocument jsonDocument = QJsonDocument::fromJson(data);
     if (jsonDocument.isArray())
     {
-        if (!isConnected() && !state.streamId.isEmpty() && enabled.get())
+        if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
         {
             setConnected(true);
         }
@@ -201,7 +201,7 @@ void YouTubeHtml::onReplyChatPage()
 
 void YouTubeHtml::onTimeoutRequestStreamPage()
 {
-    if (!enabled.get() || state.streamUrl.isEmpty())
+    if (!isEnabled() || state.streamUrl.isEmpty())
     {
         return;
     }

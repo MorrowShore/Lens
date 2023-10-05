@@ -99,7 +99,7 @@ ChatService::ConnectionState GoodGame::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -297,7 +297,7 @@ void GoodGame::reconnectImpl()
         return;
     }
 
-    if (enabled.get())
+    if (isEnabled())
     {
         socket.setProxy(network.proxy());
         socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
@@ -308,7 +308,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 {
     //qDebug("\n" + rawData.toUtf8());
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

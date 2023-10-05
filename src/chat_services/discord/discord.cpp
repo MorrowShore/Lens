@@ -167,7 +167,7 @@ ChatService::ConnectionState Discord::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (isCanConnect() && enabled.get())
+    else if (isCanConnect() && isEnabled())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -211,7 +211,7 @@ void Discord::reconnectImpl()
 
     processDisconnected();
 
-    if (!isCanConnect() || !enabled.get())
+    if (!isCanConnect() || !isEnabled())
     {
         return;
     }
@@ -251,7 +251,7 @@ void Discord::onWebSocketReceived(const QString &rawData)
 {
     //qDebug("received:\n" + rawData.toUtf8() + "\n");
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

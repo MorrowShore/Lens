@@ -130,7 +130,7 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
 
     QObject::connect(&timerUpdaetStreamInfo, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || info.userName.isEmpty())
+        if (!isEnabled() || info.userName.isEmpty())
         {
             return;
         }
@@ -158,7 +158,7 @@ ChatService::ConnectionState DLive::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -205,7 +205,7 @@ void DLive::reconnectImpl()
 
     state.streamUrl = "https://dlive.tv/" + state.streamId;
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -439,7 +439,7 @@ void DLive::onWebSocketReceived(const QString &raw)
 
 void DLive::requestChatRoom(const QString &displayName_)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -515,7 +515,7 @@ void DLive::requestChatRoom(const QString &displayName_)
 
 void DLive::requestLiveStream(const QString &displayName_)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

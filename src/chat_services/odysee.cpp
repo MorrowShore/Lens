@@ -75,7 +75,7 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
 
     QObject::connect(&timerAcknowledgePingTimer, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || !isConnected())
+        if (!isEnabled() || !isConnected())
         {
             return;
         }
@@ -86,7 +86,7 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
 
     QObject::connect(&timerSendPing, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || !isConnected())
+        if (!isEnabled() || !isConnected())
         {
             return;
         }
@@ -112,7 +112,7 @@ ChatService::ConnectionState Odysee::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -166,7 +166,7 @@ void Odysee::reconnectImpl()
 
     state.controlPanelUrl = "https://odysee.com/$/livestream";
 
-    if (!enabled.get() || state.streamId.isEmpty())
+    if (!isEnabled() || state.streamId.isEmpty())
     {
         return;
     }
@@ -176,7 +176,7 @@ void Odysee::reconnectImpl()
 
 void Odysee::onReceiveWebSocket(const QString &rawData)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -219,7 +219,7 @@ void Odysee::onReceiveWebSocket(const QString &rawData)
 
 void Odysee::requestClaimId()
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -269,7 +269,7 @@ void Odysee::requestClaimId()
 
 void Odysee::requestLive()
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -312,7 +312,7 @@ void Odysee::requestLive()
 
 void Odysee::requestChannelInfo(const QString &lbryUrl, const QString& authorId)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

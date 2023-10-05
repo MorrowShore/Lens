@@ -89,7 +89,7 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
     QObject::connect(&timerRequestChannel, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || state.streamId.isEmpty())
+        if (!isEnabled() || state.streamId.isEmpty())
         {
             return;
         }
@@ -105,7 +105,7 @@ ChatService::ConnectionState Wasd::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -161,7 +161,7 @@ void Wasd::reconnectImpl()
     state.chatUrl = QUrl(QString("https://wasd.tv/chat?channel_name=%1").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://wasd.tv/%1").arg(state.streamId));
 
-    if (enabled.get())
+    if (isEnabled())
     {
         requestTokenJWT();
         requestChannel(state.streamId);
@@ -172,7 +172,7 @@ void Wasd::onWebSocketReceived(const QString &rawData)
 {
     //qDebug() << "received:" << rawData;
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

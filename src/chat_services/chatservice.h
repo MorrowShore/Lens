@@ -137,12 +137,11 @@ protected:
     const QString& getSettingsGroupPath() const { return settingsGroupPath; }
 
     State state;
-    Setting<bool> enabled;
     Setting<QString> stream;
-
     UIBridge ui;
 
 private:
+    Setting<bool> enabled;
     QTimer timerReconnect;
     Setting<bool> enabledThirdPartyEmotes;
     Setting<QString> lastSavedMessageId;

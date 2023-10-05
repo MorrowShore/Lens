@@ -46,7 +46,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
     {
         //qDebug() << "SSE started";
 
-        if (!isConnected() && !state.streamId.isEmpty() && enabled.get())
+        if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
         {
             setConnected(true);
         }
@@ -58,7 +58,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
         setConnected(false);
 
-        if (enabled.get())
+        if (isEnabled())
         {
             startReadChat();
         }
@@ -92,7 +92,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&timerRequestViewers, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -108,7 +108,7 @@ ChatService::ConnectionState Rumble::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -158,7 +158,7 @@ void Rumble::reconnectImpl()
 
     state.streamUrl = QUrl("https://rumble.com/" + state.streamId + ".html");
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
@@ -208,7 +208,7 @@ QString Rumble::extractLinkId(const QString &rawLink)
 
 void Rumble::requestVideoPage()
 {
-    if (!enabled.get() || state.streamUrl.isEmpty())
+    if (!isEnabled() || state.streamUrl.isEmpty())
     {
         return;
     }
@@ -254,7 +254,7 @@ void Rumble::requestVideoPage()
 
 void Rumble::requestViewers()
 {
-    if (!enabled.get() || info.videoId.isEmpty())
+    if (!isEnabled() || info.videoId.isEmpty())
     {
         return;
     }
@@ -286,7 +286,7 @@ void Rumble::requestViewers()
 
 void Rumble::requestEmotes()
 {
-    if (!enabled.get() || info.chatId.isEmpty())
+    if (!isEnabled() || info.chatId.isEmpty())
     {
         return;
     }
@@ -328,7 +328,7 @@ QString Rumble::parseVideoId(const QByteArray &html)
 
 void Rumble::startReadChat()
 {
-    if (!enabled.get() || info.chatId.isEmpty())
+    if (!isEnabled() || info.chatId.isEmpty())
     {
         return;
     }

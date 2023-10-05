@@ -23,7 +23,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -37,7 +37,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
 
     QObject::connect(&web, &cweqt::Manager::initialized, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -50,7 +50,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
 
     QObject::connect(&timerCheckConnection, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -79,7 +79,7 @@ ChatService::ConnectionState YouTubeBrowser::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -132,7 +132,7 @@ void YouTubeBrowser::reconnectImpl()
         state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
     }
 
-    if (!enabled.get() || !web.isInitialized())
+    if (!isEnabled() || !web.isInitialized())
     {
         return;
     }
@@ -182,7 +182,7 @@ void YouTubeBrowser::reconnectImpl()
 
             timerCheckConnection.start();
 
-            if (!isConnected() && !state.streamId.isEmpty() && enabled.get())
+            if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
             {
                 setConnected(true);
 
@@ -212,7 +212,7 @@ void YouTubeBrowser::reconnectImpl()
 
 void YouTubeBrowser::requestStreamPage()
 {
-    if (!enabled.get() || state.streamUrl.isEmpty())
+    if (!isEnabled() || state.streamUrl.isEmpty())
     {
         return;
     }

@@ -99,7 +99,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
     timerUpdateChannelInfo.setInterval(RequestChannelInfoPariod);
     connect(&timerUpdateChannelInfo, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || !isConnected())
+        if (!isEnabled() || !isConnected())
         {
             return;
         }
@@ -115,7 +115,7 @@ ChatService::ConnectionState Trovo::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -163,7 +163,7 @@ void Trovo::reconnectImpl()
         state.chatUrl = QUrl("https://trovo.live/chat/" + state.streamId);
     }
 
-    if (enabled.get())
+    if (isEnabled())
     {
         requestChannelId();
     }
@@ -173,7 +173,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
 {
     //qDebug("RECIEVE: " + rawData.toUtf8() + "\n");
 
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }

@@ -66,7 +66,7 @@ ChatService::ConnectionState VkVideo::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (isCanConnect() && enabled.get())
+    else if (isCanConnect() && isEnabled())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -523,7 +523,7 @@ bool VkVideo::extractOwnerVideoId(const QString &videoiLink_, QString &ownerId, 
 
 bool VkVideo::isCanConnect() const
 {
-    return enabled.get() && auth.isLoggedIn() && !info.ownerId.isEmpty() && !info.videoId.isEmpty();
+    return isEnabled() && auth.isLoggedIn() && !info.ownerId.isEmpty() && !info.videoId.isEmpty();
 }
 
 QUrl VkVideo::parseSticker(const QJsonObject &jsonSticker)

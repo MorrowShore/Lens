@@ -113,7 +113,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&timerCheckPong, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -127,7 +127,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&timerPing, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -142,7 +142,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&timerUpdaetStreamInfo, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!isEnabled())
         {
             return;
         }
@@ -163,7 +163,7 @@ ChatService::ConnectionState Twitch::getConnectionState() const
     {
         return ChatService::ConnectionState::Connected;
     }
-    else if (enabled.get() && !state.streamId.isEmpty())
+    else if (isEnabled() && !state.streamId.isEmpty())
     {
         return ChatService::ConnectionState::Connecting;
     }
@@ -251,7 +251,7 @@ void Twitch::reconnectImpl()
         state.chatUrl = QUrl(QString("https://www.twitch.tv/popout/%1/chat").arg(state.streamId));
         state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
 
-        if (enabled.get())
+        if (isEnabled())
         {
             socket.setProxy(network.proxy());
             socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
@@ -261,7 +261,7 @@ void Twitch::reconnectImpl()
 
 void Twitch::onIRCMessage(const QString &rawData)
 {
-    if (!enabled.get())
+    if (!isEnabled())
     {
         return;
     }
