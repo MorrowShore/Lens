@@ -58,14 +58,8 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         //qDebug() << "webSocket connected";
-
-        if (!state.connected)
-        {
-            state.connected = true;
-            emit stateChanged();
-
-            sendPing();
-        }
+        setConnected(true);
+        sendPing();
 
         checkPingTimer.setInterval(CheckPingSendTimeout);
         checkPingTimer.start();
@@ -74,12 +68,7 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "webSocket disconnected";
-
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
@@ -88,15 +77,12 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!enabled.get() || isConnected())
         {
             return;
         }
 
-        if (!state.connected)
-        {
-            reconnect();
-        }
+        reconnect();
     });
     timerReconnect.start(ReconncectPeriod);
 
@@ -105,7 +91,7 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
 
 ChatService::ConnectionState Odysee::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
