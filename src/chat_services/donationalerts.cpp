@@ -25,7 +25,7 @@ bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 
     if (!reply)
     {
-        qWarning() << tag << tag << ": !reply";
+        qCritical() << tag << tag << "reply is null";
         return false;
     }
 
@@ -41,13 +41,13 @@ bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 
         if (statusCode != 200)
         {
-            qWarning() << tag << ": status code:" << statusCode;
+            qWarning() << tag << "status code:" << statusCode;
         }
     }
 
     if (resultData.isEmpty() && statusCode != 200)
     {
-        qWarning() << tag << ": data is empty";
+        qCritical() << tag << "data is empty";
         return false;
     }
 
@@ -129,12 +129,12 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        qDebug() << "webSocket disconnected";
+        //qDebug() << "webSocket disconnected";
         setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
-        qDebug() << "webSocket error:" << error_ << ":" << socket.errorString();
+        qCritical() << "webSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
@@ -158,7 +158,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
             return;
         }
 
-        qDebug() << "check ping timeout, disconnect";
+        qWarning() << "check ping timeout, disconnect";
         socket.close();
     });
 
@@ -296,7 +296,7 @@ void DonationAlerts::requestUser()
 
         if (info.userName.isEmpty() || info.socketConnectionToken.isEmpty())
         {
-            qWarning() << "name or socket token is empty, data =" << root;
+            qCritical() << "name or socket token is empty, data =" << root;
             return;
         }
 
@@ -427,7 +427,7 @@ void DonationAlerts::sendConnectToChannels(const QList<PrivateChannelInfo> &chan
 {
     if (channels.isEmpty())
     {
-        qWarning() << "channels is empty";
+        qCritical() << "channels is empty";
         return;
     }
 

@@ -143,7 +143,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
+        qCritical() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&heartbeatTimer, &QTimer::timeout, this, &Discord::sendHeartbeat);
@@ -156,7 +156,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
             return;
         }
 
-        qDebug() << "heartbeat acknowledgement timeout, disconnect";
+        qWarning() << "heartbeat acknowledgement timeout, disconnect";
         socket.close();
     });
 
@@ -354,7 +354,7 @@ QNetworkRequest Discord::createRequestAsBot(const QUrl &url) const
 {
     if (!isCanConnect())
     {
-        qWarning() << "can not connect";
+        qCritical() << "can not connect";
         return QNetworkRequest();
     }
 
@@ -372,7 +372,7 @@ bool Discord::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resu
 
     if (!reply)
     {
-        qWarning() << tag << ": !reply";
+        qCritical() << tag << "reply is null";
         return false;
     }
 
@@ -383,7 +383,7 @@ bool Discord::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resu
         statusCode = rawStatusCode.toInt();
         if (statusCode != 200)
         {
-            qWarning() << tag << ": status code:" << statusCode;
+            qWarning() << tag << "status code:" << statusCode;
         }
     }
 
@@ -392,13 +392,13 @@ bool Discord::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resu
 
     if (resultData.isEmpty() && statusCode != 200)
     {
-        qWarning() << tag << ": data is empty";
+        qCritical() << tag << "data is empty";
         return false;
     }
 
     if (resultData.startsWith("error code:"))
     {
-        qWarning() << tag << ":" << resultData;
+        qCritical() << tag << ":" << resultData;
         return false;
     }
 

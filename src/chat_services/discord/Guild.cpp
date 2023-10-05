@@ -84,7 +84,7 @@ void Guild::requestChannels(std::function<void()> onLoaded)
         const QJsonDocument doc = QJsonDocument::fromJson(data);
         if (!doc.isArray())
         {
-            qWarning() << "document is not array, doc =" << doc;
+            qCritical() << "document is not array, doc =" << doc;
             return;
         }
 
@@ -99,7 +99,7 @@ void Guild::requestChannels(std::function<void()> onLoaded)
             }
             else
             {
-                qWarning() << "failed to parse channel, object =" << object;
+                qCritical() << "failed to parse channel, object =" << object;
             }
         }
 
