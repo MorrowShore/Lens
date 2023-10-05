@@ -257,10 +257,7 @@ void Wasd::requestChannel(const QString &channelName)
             {
                 qWarning() << "channel" << channelName << "is not live";
 
-                if (isConnected())
-                {
-                    setConnected(false);
-                }
+                setConnected(false);
 
                 socket.close();
                 info.channelId = QString();

@@ -162,7 +162,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!enabled.get() || isConnected())
         {
             return;
         }
@@ -173,10 +173,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
             return;
         }
 
-        if (!state.connected)
-        {
-            reconnect();
-        }
+        reconnect();
     });
     timerReconnect.start(ReconncectPeriod);
 
@@ -187,7 +184,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
 
 ChatService::ConnectionState Discord::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -415,12 +412,7 @@ bool Discord::isCanConnect() const
 
 void Discord::processDisconnected()
 {
-    if (state.connected)
-    {
-        state.connected = false;
-        emit stateChanged();
-    }
-
+    setConnected(false);
     updateUI();
 }
 
@@ -431,11 +423,7 @@ void Discord::tryProcessConnected()
         return;
     }
 
-    if (!state.connected)
-    {
-        state.connected = true;
-        emit stateChanged();
-    }
+    setConnected(true);
 
     updateUI();
 }
@@ -691,7 +679,7 @@ void Discord::updateUI()
 
     QString text = tr("Bot status") + ": ";
 
-    if (state.connected)
+    if (isConnected())
     {
         text += tr("authorized as %1").arg("<b>" + info.botUser.getDisplayName(true) + "</b>");
         text = "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + text;

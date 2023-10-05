@@ -322,10 +322,7 @@ void VkVideo::requestVideo()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
-            if (isConnected())
-            {
-                setConnected(false);
-            }
+            setConnected(false);
             return;
         }
 

@@ -437,13 +437,10 @@ void DLive::onWebSocketReceived(const QString &raw)
     }
     else if (type == "connection_ack")
     {
-        if (!isConnected())
-        {
-            setConnected(true);
+        setConnected(true);
 
-            checkPingTimer.setInterval(CheckPingTimeout);
-            checkPingTimer.start();
-        }
+        checkPingTimer.setInterval(CheckPingTimeout);
+        checkPingTimer.start();
     }
     else if (type == "ka")
     {

@@ -241,7 +241,6 @@ void ChatService::setConnected(const bool connected)
     else
     {
         state = State();
-        reconnect();
     }
 
     emit stateChanged();
