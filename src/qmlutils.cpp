@@ -1,6 +1,6 @@
 #include "qmlutils.h"
 #include "utils.h"
-#include "loghandler.h"
+#include "log/loghandler.h"
 #include <QProcess>
 #include <QApplication>
 #include <QQmlEngine>

@@ -6,7 +6,7 @@
 #include "githubapi.h"
 #include "appsponsormanager.h"
 #include "commandseditor.h"
-#include "logdialog.h"
+#include "log/logdialog.h"
 #include "setting.h"
 #include "uibridge.h"
 #include <QQuickView>

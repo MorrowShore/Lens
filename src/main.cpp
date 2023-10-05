@@ -4,7 +4,7 @@
 #include "applicationinfo.h"
 #include "qmlutils.h"
 #include "chatwindow.h"
-#include "loghandler.h"
+#include "log/loghandler.h"
 #include "crypto/crypto.h"
 #include <QApplication>
 #include <QIcon>

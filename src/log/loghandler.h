@@ -1,6 +1,6 @@
 #pragma once
 
-#include "models/logmodel.h"
+#include "log/logmodel.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QString>
