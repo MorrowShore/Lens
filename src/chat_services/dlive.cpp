@@ -18,7 +18,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &result
 
     if (!reply)
     {
-        qWarning() << tag << ": !reply";
+        qCritical() << tag << ": reply is null";
         return false;
     }
 
@@ -39,7 +39,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &result
 
     if (resultData.isEmpty() && statusCode != 200)
     {
-        qWarning() << tag << ": data is empty";
+        qCritical() << tag << ": data is empty";
         return false;
     }
 
@@ -85,7 +85,7 @@ static QString getGiftName(const QString& type)
         return QTranslator::tr("Ninjet");
     }
 
-    qWarning() << "unknown gift type" << type;
+    qCritical() << "unknown gift type" << type;
 
     return type;
 }
@@ -121,19 +121,12 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
-
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
-        
-        state.viewers = -1;
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
+        qCritical() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerUpdaetStreamInfo, &QTimer::timeout, this, [this]()
@@ -149,15 +142,12 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!enabled.get() || isConnected())
         {
             return;
         }
 
-        if (!state.connected)
-        {
-            reconnect();
-        }
+        reconnect();
     });
     timerReconnect.start(ReconncectPeriod);
 
@@ -169,7 +159,7 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
             return;
         }
 
-        qDebug() << "check ping timeout, disconnect";
+        qWarning() << "check ping timeout, disconnect";
         socket.close();
     });
 
@@ -178,7 +168,7 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
 
 ChatService::ConnectionState DLive::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -424,7 +414,7 @@ void DLive::onWebSocketReceived(const QString &raw)
         const QJsonObject data = root.value("payload").toObject().value("data").toObject();
         if (data.isEmpty())
         {
-            qWarning() << "paload data is empty, root =" << root;
+            qCritical() << "payload data is empty, root =" << root;
             return;
         }
 
@@ -433,7 +423,7 @@ void DLive::onWebSocketReceived(const QString &raw)
             const QJsonArray jsonMessages = data.value("streamMessageReceived").toArray();
             if (jsonMessages.isEmpty())
             {
-                qWarning() << "messages is empty, root =" << root;
+                qCritical() << "messages is empty, root =" << root;
                 return;
             }
 
@@ -441,16 +431,15 @@ void DLive::onWebSocketReceived(const QString &raw)
         }
         else
         {
-            qWarning() << "unknown data format, root =" << root;
+            qCritical() << "unknown data format, root =" << root;
             return;
         }
     }
     else if (type == "connection_ack")
     {
-        if (!state.connected)
+        if (!isConnected())
         {
-            state.connected = true;
-            emit stateChanged();
+            setConnected(true);
 
             checkPingTimer.setInterval(CheckPingTimeout);
             checkPingTimer.start();
@@ -462,7 +451,7 @@ void DLive::onWebSocketReceived(const QString &raw)
     }
     else
     {
-        qWarning() << "unknown message type" << type << ", root =" << root;
+        qCritical() << "unknown message type" << type << ", root =" << root;
         return;
     }
 }
@@ -477,7 +466,7 @@ void DLive::requestChatRoom(const QString &displayName_)
     QString displayName = displayName_.trimmed();
     if (displayName.isEmpty())
     {
-        qWarning() << "display name is empty";
+        qCritical() << "display name is empty";
         return;
     }
 
@@ -524,13 +513,13 @@ void DLive::requestChatRoom(const QString &displayName_)
 
         if (info.userName.isEmpty())
         {
-            qWarning() << "user name is empty, display name =" << displayName;
+            qCritical() << "user name is empty, display name =" << displayName;
             return;
         }
 
         state.chatUrl = "https://dlive.tv/c/" + state.streamId + "/" + info.userName;
 
-        if (!state.connected || socket.state() != QAbstractSocket::SocketState::ConnectedState)
+        if (!isConnected() || socket.state() != QAbstractSocket::SocketState::ConnectedState)
         {
             socket.open(QUrl("wss://graphigostream.prd.dlive.tv/"));
         }
@@ -553,7 +542,7 @@ void DLive::requestLiveStream(const QString &displayName_)
     QString displayName = displayName_.trimmed();
     if (displayName.isEmpty())
     {
-        qWarning() << "display name is empty";
+        qCritical() << "display name is empty";
         return;
     }
 
@@ -660,7 +649,7 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
             const QString type = object.value("type").toString();
             if (type != "Delete")
             {
-                qWarning() << "unknown type" << type;
+                qCritical() << "unknown type" << type;
             }
 
             const QJsonArray ids = object.value("ids").toArray();
@@ -684,7 +673,7 @@ void DLive::parseMessages(const QJsonArray &jsonMessages)
         }
         else
         {
-            qWarning() << "Unknown type name" << typeName << ", object =" << object;
+            qCritical() << "Unknown type name" << typeName << ", object =" << object;
             continue;
         }
 
@@ -725,7 +714,7 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         }
         else
         {
-            qWarning() << "unknown role" << role << ", message =" << jsonMessage;
+            qCritical() << "unknown role" << role << ", message =" << jsonMessage;
 
             authorBuilder.addLeftBadge(UnknownBadge);
         }
@@ -749,7 +738,7 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         }
         else
         {
-            qWarning() << "unknown room role" << roomRole << ", message =" << jsonMessage;
+            qCritical() << "unknown room role" << roomRole << ", message =" << jsonMessage;
 
             authorBuilder.addLeftBadge(UnknownBadge);
         }
@@ -795,7 +784,7 @@ std::shared_ptr<Author> DLive::parseAuthorFromMessage(const QJsonObject &jsonMes
         }
         else
         {
-            qWarning() << "unknown partner status" << status << ", message =" << jsonMessage;
+            qCritical() << "unknown partner status" << status << ", message =" << jsonMessage;
 
             authorBuilder.addLeftBadge(UnknownBadge);
         }
@@ -827,7 +816,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
 
     if (type != "Message")
     {
-        qWarning() << "unknown type" << type << ", json =" << json;
+        qCritical() << "unknown type" << type << ", json =" << json;
     }
 
     auto author = parseAuthorFromMessage(json);
@@ -908,7 +897,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> DLive::parseChatText(co
             {
                 contentAsPlainText = true;
 
-                qWarning() << "emotes positions array size % 2 != 0";
+                qCritical() << "emotes positions array size % 2 != 0";
             }
         }
         else
