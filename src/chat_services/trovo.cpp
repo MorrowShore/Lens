@@ -68,11 +68,6 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        if (state.connected)
-        {
-            state.connected = false;
-        }
-
         QJsonObject root;
         root.insert("type", "AUTH");
         root.insert("nonce", NonceAuth);
@@ -86,18 +81,11 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
         sendToWebSocket(QJsonDocument(root));
 
         ping();
-
-        emit stateChanged();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        if (state.connected)
-        {
-            state.connected = false;
-
-            emit stateChanged();
-        }
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -121,7 +109,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
     timerUpdateChannelInfo.setInterval(RequestChannelInfoPariod);
     connect(&timerUpdateChannelInfo, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || !state.connected)
+        if (!enabled.get() || !isConnected())
         {
             return;
         }
@@ -135,7 +123,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
 
 ChatService::ConnectionState Trovo::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -215,9 +203,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
     {
         if (nonce == NonceAuth)
         {
-            state.connected = true;
-            emit stateChanged();
-
+            setConnected(true);
             requestChannelInfo();
         }
         else

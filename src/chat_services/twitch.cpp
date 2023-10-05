@@ -78,7 +78,8 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
         }
     });
 
-    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
+    QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
+    {
         Q_UNUSED(state)
         //qDebug() << "webSocket state changed:" << state;
     });
@@ -89,11 +90,6 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     {
         //qDebug() << "webSocket connected";
 
-        if (isConnected())
-        {
-            setConnected(false);
-        }
-        
         sendIRCMessage("CAP REQ :twitch.tv/tags twitch.tv/commands");
         sendIRCMessage("PASS SCHMOOPIIE");
         sendIRCMessage("NICK justinfan12348");
