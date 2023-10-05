@@ -100,11 +100,6 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     {
         QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/r/" + info.userName));
     });
-    
-    donateAlternativePageButton = ui.addButton(tr("Alternative donation page"), [this]()
-    {
-        QDesktopServices::openUrl(QUrl("https://www.donationalerts.com/c/" + info.userName));
-    });
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state){
         Q_UNUSED(state)
@@ -236,12 +231,10 @@ void DonationAlerts::updateUI()
     if (info.userId.isEmpty())
     {
         donateMainPageButton->setItemProperty("enabled", false);
-        donateAlternativePageButton->setItemProperty("enabled", false);
     }
     else
     {
         donateMainPageButton->setItemProperty("enabled", true);
-        donateAlternativePageButton->setItemProperty("enabled", true);
     }
 }
 

@@ -60,5 +60,4 @@ private:
     std::shared_ptr<UIBridgeElement> authStateInfo;
     std::shared_ptr<UIBridgeElement> loginButton;
     std::shared_ptr<UIBridgeElement> donateMainPageButton;
-    std::shared_ptr<UIBridgeElement> donateAlternativePageButton;
 };
