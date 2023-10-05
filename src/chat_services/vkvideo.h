@@ -36,6 +36,8 @@ private:
         QString videoId;
         int64_t startOffset = -1;
         int64_t lastMessageId = -1;
+
+        bool hasChat = false;
     };
 
     struct User

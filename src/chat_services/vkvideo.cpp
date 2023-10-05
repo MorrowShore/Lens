@@ -133,6 +133,7 @@ void VkVideo::reconnectImpl()
 
     state.streamUrl = QUrl(QString("https://vk.com/video/lives?z=video%1_%2").arg(info.ownerId, info.videoId));
 
+    requestVideo();
     requestChat();
     updateUI();
 }
@@ -169,8 +170,6 @@ void VkVideo::requestChat()
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        state.connected = false;
-
         if (!isCanConnect())
         {
             reply->deleteLater();
@@ -185,12 +184,18 @@ void VkVideo::requestChat()
 
         const QJsonObject root = QJsonDocument::fromJson(data).object();
 
-        const bool connected = root.contains("response");
+        info.hasChat = root.contains("response");
 
-        if (connected != state.connected)
+        if (info.hasChat)
         {
-            state.connected = connected;
-            requestVideo();
+            if (!state.connected)
+            {
+                requestVideo();
+            }
+        }
+        else
+        {
+            state.connected = false;
         }
 
         const QJsonObject response = root.value("response").toObject();
@@ -302,7 +307,7 @@ void VkVideo::requestChat()
 
 void VkVideo::requestVideo()
 {
-    if (!state.connected)
+    if (!isCanConnect())
     {
         return;
     }
@@ -314,6 +319,7 @@ void VkVideo::requestVideo()
     QNetworkReply* reply = network.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
+        state.connected = false;
         state.viewers = -1;
 
         if (!isCanConnect())
@@ -336,13 +342,18 @@ void VkVideo::requestVideo()
             const QJsonObject video = items.first().toObject();
             if (video.value("live").toInt() == 1)
             {
-                state.viewers = video.value("spectators").toInt();
+                if (!info.hasChat)
+                {
+                    qWarning() << "no chat";
+                }
             }
             else
             {
-                qCritical() << "video is not live";
-                state.viewers = -1;
+                qWarning() << "video is not live";
             }
+
+            state.connected = true;
+            state.viewers = video.value("spectators").toInt(-1);
         }
         else
         {
