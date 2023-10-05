@@ -730,7 +730,7 @@ bool Twitch::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resul
 
     if (!reply)
     {
-        qWarning() << tag << tag << ": !reply";
+        qCritical() << tag << "reply is null";
         return false;
     }
 
@@ -751,20 +751,20 @@ bool Twitch::checkReply(QNetworkReply *reply, const char *tag, QByteArray &resul
         }
         else if (statusCode != 200)
         {
-            qWarning() << tag << ": status code:" << statusCode;
+            qWarning() << tag << "status code:" << statusCode;
         }
     }
 
     if (resultData.isEmpty() && statusCode != 200)
     {
-        qWarning() << tag << ": data is empty";
+        qCritical() << tag << "data is empty";
         return false;
     }
 
     const QJsonObject root = QJsonDocument::fromJson(resultData).object();
     if (root.contains("error"))
     {
-        qWarning() << tag << "Error:" << resultData << ", request url =" << requestUrl.toString();
+        qCritical() << tag << "Error:" << resultData << ", request url =" << requestUrl.toString();
 
         return false;
     }
