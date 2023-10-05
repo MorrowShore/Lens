@@ -130,12 +130,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         qDebug() << "webSocket disconnected";
-
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
@@ -144,14 +139,9 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get())
+        if (!enabled.get() || isConnected())
         {
             return;
-        }
-
-        if (!state.connected)
-        {
-            reconnect();
         }
     });
     timerReconnect.start(ReconncectPeriod);
@@ -177,7 +167,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
 
 ChatService::ConnectionState DonationAlerts::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -385,14 +375,7 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
 
     if (result.value("type").toInt() == 1 && result.value("channel").toString().startsWith("$"))
     {
-        if (!state.connected)
-        {
-            state.connected = true;
-            emit stateChanged();
-
-            sendPing();
-        }
-
+        setConnected(true);
         return;
     }
 
