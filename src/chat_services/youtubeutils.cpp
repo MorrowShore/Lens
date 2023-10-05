@@ -1,5 +1,6 @@
 #include "youtubeutils.h"
 #include "utils.h"
+#include "chat_services/chatservice.h"
 #include <QUrlQuery>
 
 namespace
@@ -350,7 +351,9 @@ void YouTubeUtils::parseActionsArray(const QJsonArray &array, const QByteArray &
 
                         if (!foundIconType && !iconType.isEmpty())
                         {
-                            qDebug() << "Unknown iconType" << iconType;
+                            rightBadges.append(ChatService::UnknownBadge);
+
+                            qCritical() << "Unknown iconType" << iconType;
                         }
                     }
                     else if (liveChatAuthorBadgeRenderer.contains("customThumbnail"))
@@ -536,7 +539,7 @@ QUrl YouTubeUtils::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int image
     const QVector<QStringRef>& parts = source.splitRef('/', Qt::KeepEmptyParts);
     if (parts.count() < 2)
     {
-        qDebug() << "Failed to convert: parts.count() < 2, url:" << sourceAvatarUrl;
+        qCritical() << "Failed to convert: parts.count() < 2, url:" << sourceAvatarUrl;
         return sourceAvatarUrl;
     }
 
@@ -575,7 +578,7 @@ QUrl YouTubeUtils::createResizedAvatarUrl(const QUrl &sourceAvatarUrl, int image
         return newUrlStr;
     }
 
-    qDebug() << "Failed to convert";
+    qCritical() << "Failed to convert";
     return sourceAvatarUrl;
 }
 
@@ -696,7 +699,7 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
     const int start = rawData.indexOf(Prefix);
     if (start == -1)
     {
-        qDebug() << "failed to parse originalViewCount";
+        qCritical() << "failed to parse originalViewCount";
         AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_originalViewCount_from_html_youtube.html", rawData);
         return -1;
     }
@@ -714,7 +717,7 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
 
     if (lastPos == -1)
     {
-        qDebug() << "not found ']'";
+        qCritical() << "not found ']'";
         return -1;
     }
 

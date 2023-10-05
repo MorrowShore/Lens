@@ -134,6 +134,7 @@ AxelChat::ServiceType ChatService::getServiceType() const
 
 void ChatService::reconnect()
 {
+    state = State();
     reconnectImpl();
     emit stateChanged();
 }
@@ -229,6 +230,24 @@ QString ChatService::generateMessageId(const QString &rawId_) const
     }
 
     return getServiceTypeId(getServiceType()) + "_" + rawId;
+}
+
+void ChatService::setConnected(const bool connected)
+{
+    if (!connected)
+    {
+        state = State();
+        reconnect();
+    }
+
+    state.connected = connected;
+
+    emit stateChanged();
+}
+
+bool ChatService::isConnected() const
+{
+    return state.connected;
 }
 
 std::shared_ptr<Author> ChatService::getServiceAuthor() const

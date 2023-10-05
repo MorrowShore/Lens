@@ -41,12 +41,9 @@ YouTubeHtml::YouTubeHtml(QSettings& settings, const QString& settingsGroupPathPa
 
 void YouTubeHtml::reconnectImpl()
 {
-    state = State();
-
     badChatReplies = 0;
     badLivePageReplies = 0;
 
-    emit stateChanged();
     state.streamId = YouTubeUtils::extractBroadcastId(stream.get().trimmed());
 
     if (!state.streamId.isEmpty())
@@ -69,7 +66,7 @@ void YouTubeHtml::reconnectImpl()
 
 ChatService::ConnectionStateType YouTubeHtml::getConnectionStateType() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionStateType::Connected;
     }
@@ -127,7 +124,7 @@ void YouTubeHtml::onReplyChatPage()
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
     {
-        qDebug() << "!reply";
+        qCritical() << "reply is null";
         return;
     }
 
@@ -137,7 +134,7 @@ void YouTubeHtml::onReplyChatPage()
     if (rawData.isEmpty())
     {
         processBadChatReply();
-        qDebug() << ":rawData is empty";
+        qCritical() << "raw data is empty";
         return;
     }
 
@@ -155,7 +152,7 @@ void YouTubeHtml::onReplyChatPage()
     const int start = rawData.indexOf("\"actions\":[");
     if (start == -1)
     {
-        qDebug() << "not found actions";
+        qCritical() << "not found actions";
         AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "not_found_actions_from_html_youtube.html", rawData);
         processBadChatReply();
         return;
@@ -173,12 +170,10 @@ void YouTubeHtml::onReplyChatPage()
     const QJsonDocument jsonDocument = QJsonDocument::fromJson(data);
     if (jsonDocument.isArray())
     {
-    if (!state.connected && !state.streamId.isEmpty() && enabled.get())
-    {
-        state.connected = true;
-
-        emit stateChanged();
-    }
+        if (!isConnected() && !state.streamId.isEmpty() && enabled.get())
+        {
+            setConnected(true);
+        }
 
         const QJsonArray actionsArray = jsonDocument.array();
         //qDebug() << "array size = " << actionsArray.size();
@@ -220,7 +215,7 @@ void YouTubeHtml::onTimeoutRequestStreamPage()
     QNetworkReply* reply = network.get(request);
     if (!reply)
     {
-        qDebug() << "!reply";
+        qCritical() << "!reply";
         return;
     }
     
@@ -232,7 +227,7 @@ void YouTubeHtml::onReplyStreamPage()
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (!reply)
     {
-        qDebug() << "!reply";
+        qCritical() << "!reply";
         return;
     }
 
@@ -241,7 +236,7 @@ void YouTubeHtml::onReplyStreamPage()
 
     if (rawData.isEmpty())
     {
-        qDebug() << ":rawData is empty";
+        qCritical() << "raw data is empty";
         processBadLivePageReply();
         return;
     }
@@ -265,17 +260,10 @@ void YouTubeHtml::processBadChatReply()
 
     if (badChatReplies >= MaxBadChatReplies)
     {
-        if (state.connected && !state.streamId.isEmpty())
+        if (isConnected() && !state.streamId.isEmpty())
         {
             qWarning() << "too many bad chat replies! Disonnecting...";
-
-            state = State();
-
-            state.connected = false;
-
-            emit stateChanged();
-
-            reconnect();
+            setConnected(false);
         }
     }
 }
@@ -295,6 +283,6 @@ void YouTubeHtml::processBadLivePageReply()
 
 QColor YouTubeHtml::intToColor(quint64 rawColor) const
 {
-    qDebug() << "rawColor" << rawColor;
+    qDebug() << "raw color" << rawColor;
     return QColor::fromRgba64(QRgba64::fromRgba64(rawColor));
 }

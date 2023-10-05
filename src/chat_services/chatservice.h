@@ -56,6 +56,8 @@ public:
         int viewers = -1;
     };
 
+    static const QString UnknownBadge;
+
     explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
     virtual ~ChatService(){}
 
@@ -123,10 +125,11 @@ protected:
 
     virtual void reconnectImpl() = 0;
 
-    static const QString UnknownBadge;
-
     QString generateAuthorId(const QString& rawId) const;
     QString generateMessageId(const QString& rawId) const;
+
+    void setConnected(const bool connected);
+    bool isConnected() const;
 
     std::shared_ptr<Author> getServiceAuthor() const;
 
