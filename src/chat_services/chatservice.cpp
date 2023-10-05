@@ -234,15 +234,22 @@ QString ChatService::generateMessageId(const QString &rawId_) const
 
 void ChatService::setConnected(const bool connected)
 {
-    if (!connected)
+    if (connected)
+    {
+        state.connected = true;
+        emit stateChanged();
+    }
+    else
     {
         state = State();
         reconnect();
     }
 
-    state.connected = connected;
-
-    emit stateChanged();
+    if (!connected)
+    {
+        state = State();
+        reconnect();
+    }
 }
 
 bool ChatService::isConnected() const
