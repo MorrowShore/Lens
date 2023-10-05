@@ -73,8 +73,6 @@ void Telegram::reconnectImpl()
 
     updateUI();
 
-    emit stateChanged();
-
     if (!enabled.get())
     {
         return;
@@ -85,7 +83,7 @@ void Telegram::reconnectImpl()
 
 ChatService::ConnectionState Telegram::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -126,7 +124,7 @@ void Telegram::processBadChatReply()
 
     if (info.badChatReplies >= MaxBadChatReplies)
     {
-        if (state.connected && !botToken.get().isEmpty())
+        if (isConnected() && !botToken.get().isEmpty())
         {
             qWarning() << "too many bad chat replies! Disonnecting...";
             setConnected(false);
@@ -145,21 +143,8 @@ void Telegram::requestUpdates()
     {
         QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getMe").arg(botToken.get())));
         QNetworkReply* reply = network.get(request);
-        if (!reply)
+        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
         {
-            qDebug() << "!reply";
-            return;
-        }
-
-        QObject::connect(reply, &QNetworkReply::finished, this, [this]()
-        {
-            QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-            if (!reply)
-            {
-                qDebug() << "!reply";
-                return;
-            }
-
             const QByteArray rawData = reply->readAll();
             reply->deleteLater();
 
@@ -171,14 +156,14 @@ void Telegram::requestUpdates()
             if (rawData.isEmpty())
             {
                 processBadChatReply();
-                qDebug() << ":rawData is empty";
+                qCritical() << "raw data is empty";
                 return;
             }
 
             const QJsonObject root = QJsonDocument::fromJson(rawData).object();
             if (!root.value("ok").toBool())
             {
-                qDebug() << "error:" << root;;
+                qCritical() << "error:" << root;;
                 return;
             }
 
@@ -193,10 +178,9 @@ void Telegram::requestUpdates()
                 info.botUserId = botUserId;
                 info.botDisplayName = userName;
 
-                if (!state.connected || !botToken.get().trimmed().isEmpty())
+                if (!isConnected() || !botToken.get().trimmed().isEmpty())
                 {
-                    state.connected = true;
-                    emit stateChanged();
+                    setConnected(true);
                 }
 
                 updateUI();
@@ -215,21 +199,8 @@ void Telegram::requestUpdates()
         }
 
         QNetworkReply* reply = network.get(QNetworkRequest(QUrl(url)));
-        if (!reply)
+        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
         {
-            qDebug() << "!reply";
-            return;
-        }
-
-        QObject::connect(reply, &QNetworkReply::finished, this, [this]()
-        {
-            QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-            if (!reply)
-            {
-                qDebug() << "!reply";
-                return;
-            }
-
             const QByteArray rawData = reply->readAll();
             reply->deleteLater();
 
@@ -241,14 +212,14 @@ void Telegram::requestUpdates()
             if (rawData.isEmpty())
             {
                 processBadChatReply();
-                qDebug() << ":rawData is empty";
+                qCritical() << "raw data is empty";
                 return;
             }
 
             const QJsonObject root = QJsonDocument::fromJson(rawData).object();
             if (!root.value("ok").toBool())
             {
-                qDebug() << "error:" << root;;
+                qCritical() << "error:" << root;;
                 return;
             }
 
@@ -411,35 +382,22 @@ void Telegram::requestUserPhoto(const QString& authorId, const int64_t& userId)
                     ));
 
     QNetworkReply* reply = network.get(request);
-    if (!reply)
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, authorId, userId, reply]()
     {
-        qDebug() << "!reply";
-        return;
-    }
-
-    QObject::connect(reply, &QNetworkReply::finished, this, [this, authorId, userId]()
-    {
-        QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-        if (!reply)
-        {
-            qDebug() << "!reply";
-            return;
-        }
-
         const QByteArray rawData = reply->readAll();
         reply->deleteLater();
 
         if (rawData.isEmpty())
         {
             processBadChatReply();
-            qDebug() << ":rawData is empty";
+            qCritical() << "raw data is empty";
             return;
         }
 
         const QJsonObject root = QJsonDocument::fromJson(rawData).object();
         if (!root.value("ok").toBool())
         {
-            qDebug() << "error:" << root;;
+            qCritical() << "error:" << root;;
             return;
         }
 
@@ -486,42 +444,29 @@ void Telegram::requestPhotoFileInfo(const QString& authorId, const QString &file
     const QNetworkRequest request(QUrl(QString("https://api.telegram.org/bot%1/getFile?file_id=%2").arg(botToken.get(), fileId)));
 
     QNetworkReply* reply = network.get(request);
-    if (!reply)
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, authorId, reply]()
     {
-        qDebug() << "!reply";
-        return;
-    }
-
-    QObject::connect(reply, &QNetworkReply::finished, this, [this, authorId]()
-    {
-        QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-        if (!reply)
-        {
-            qDebug() << "!reply";
-            return;
-        }
-
         const QByteArray rawData = reply->readAll();
         reply->deleteLater();
 
         if (rawData.isEmpty())
         {
             processBadChatReply();
-            qDebug() << ":rawData is empty";
+            qCritical() << "raw data is empty";
             return;
         }
 
         const QJsonObject root = QJsonDocument::fromJson(rawData).object();
         if (!root.value("ok").toBool())
         {
-            qDebug() << "error:" << root;;
+            qCritical() << "error:" << root;;
             return;
         }
 
         const QString filePath = root.value("result").toObject().value("file_path").toString();
         if (filePath.isEmpty())
         {
-            qDebug() << "file path os empty";
+            qCritical() << "file path os empty";
             return;
         }
 
@@ -551,7 +496,7 @@ void Telegram::updateUI()
 {
     QString botStatus = tr("Bot status") + ": ";
 
-    if (state.connected)
+    if (isConnected())
     {
         botStatus += tr("authorized as %1").arg("<b>" + info.botDisplayName + "</b>");
 
