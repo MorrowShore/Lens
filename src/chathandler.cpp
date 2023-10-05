@@ -29,7 +29,6 @@ namespace
 static const QString SettingsGroupPath = "chat_handler";
 
 static const QString SettingsEnabledSoundNewMessage             = SettingsGroupPath + "/enabledSoundNewMessage";
-static const QString SettingsEnabledClearMessagesOnLinkChange   = SettingsGroupPath + "/enabledClearMessagesOnLinkChange";
 static const QString SettingsEnabledShowAuthorNameChanged       = SettingsGroupPath + "/enabledShowAuthorNameChanged";
 static const QString SettingsProxyEnabled                       = SettingsGroupPath + "/proxyEnabled";
 static const QString SettingsProxyAddress                       = SettingsGroupPath + "/proxyServerAddress";
@@ -72,8 +71,6 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     connect(&outputToFile, &OutputToFile::authorNameChanged, this, &ChatHandler::onAuthorNameChanged);
 
     setEnabledSoundNewMessage(settings.value(SettingsEnabledSoundNewMessage, _enabledSoundNewMessage).toBool());
-
-    setEnabledClearMessagesOnLinkChange(settings.value(SettingsEnabledClearMessagesOnLinkChange, _enabledClearMessagesOnLinkChange).toBool());
 
     setEnabledShowAuthorNameChanged(settings.value(SettingsEnabledShowAuthorNameChanged, _enableShowAuthorNameChanged).toBool());
 
@@ -682,18 +679,6 @@ void ChatHandler::setEnabledShowAuthorNameChanged(bool enabled)
         settings.setValue(SettingsEnabledShowAuthorNameChanged, enabled);
 
         emit enabledShowAuthorNameChangedChanged();
-    }
-}
-
-void ChatHandler::setEnabledClearMessagesOnLinkChange(bool enabled)
-{
-    if (_enabledClearMessagesOnLinkChange != enabled)
-    {
-        _enabledClearMessagesOnLinkChange = enabled;
-
-        settings.setValue(SettingsEnabledClearMessagesOnLinkChange, enabled);
-
-        emit enabledClearMessagesOnLinkChangeChanged();
     }
 }
 

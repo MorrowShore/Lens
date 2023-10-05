@@ -129,18 +129,6 @@ ScrollView {
         }
 
         Switch {
-            text: qsTr("Clear Messages on Link Change")
-
-            Component.onCompleted: {
-                checked = chatHandler.enabledClearMessagesOnLinkChange;
-            }
-
-            onCheckedChanged: {
-                chatHandler.enabledClearMessagesOnLinkChange = checked;
-            }
-        }
-
-        Switch {
             text: qsTr("Enable Sound when New Message Received")
 
             Component.onCompleted: {

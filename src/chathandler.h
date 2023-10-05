@@ -28,7 +28,6 @@ class ChatHandler : public QObject
     Q_PROPERTY(int  viewersTotalCount                READ getViewersTotalCount                                                       NOTIFY viewersTotalCountChanged)
     Q_PROPERTY(bool knownViewesServicesMoreOne       READ isKnownViewesServicesMoreOne                                               NOTIFY viewersTotalCountChanged)
     Q_PROPERTY(bool enabledSoundNewMessage           READ enabledSoundNewMessage           WRITE setEnabledSoundNewMessage           NOTIFY enabledSoundNewMessageChanged)
-    Q_PROPERTY(bool enabledClearMessagesOnLinkChange READ enabledClearMessagesOnLinkChange WRITE setEnabledClearMessagesOnLinkChange NOTIFY enabledClearMessagesOnLinkChangeChanged)
     Q_PROPERTY(bool enabledShowAuthorNameChanged     READ enabledShowAuthorNameChanged     WRITE setEnabledShowAuthorNameChanged     NOTIFY enabledShowAuthorNameChangedChanged)
 
     Q_PROPERTY(bool    proxyEnabled       READ proxyEnabled       WRITE setProxyEnabled       NOTIFY proxyChanged)
@@ -70,9 +69,6 @@ public:
     inline bool enabledShowAuthorNameChanged() const { return _enableShowAuthorNameChanged; }
     void setEnabledShowAuthorNameChanged(bool enabled);
 
-    inline bool enabledClearMessagesOnLinkChange() const { return _enabledClearMessagesOnLinkChange; }
-    void setEnabledClearMessagesOnLinkChange(bool enabled);
-
     int connectedCount() const;
     int getViewersTotalCount() const;
 
@@ -99,7 +95,6 @@ signals:
     void connectedCountChanged();
     void viewersTotalCountChanged();
     void enabledSoundNewMessageChanged();
-    void enabledClearMessagesOnLinkChangeChanged();
     void enabledShowAuthorNameChangedChanged();
     void proxyChanged();
     void messagesDataChanged();
@@ -144,7 +139,6 @@ private:
 #endif
 
     bool _enabledSoundNewMessage = false;
-    bool _enabledClearMessagesOnLinkChange = false;
     bool _enableShowAuthorNameChanged = true;
 
 #ifdef QT_MULTIMEDIA_LIB
