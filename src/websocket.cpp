@@ -205,7 +205,7 @@ void WebSocket::sendStateToClient(QWebSocket *client)
 
     QJsonObject data;
     data.insert("services", jsonServices);
-    data.insert("viewers", chatHandler.getViewersTotalCount());
+    data.insert("viewers", chatHandler.getTotalViewers());
 
     root.insert("data", data);
 

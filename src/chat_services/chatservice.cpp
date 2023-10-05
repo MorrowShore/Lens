@@ -196,7 +196,7 @@ void ChatService::setEnabledThirdPartyEmotes(const bool enabled)
     emit stateChanged();
 }
 
-int ChatService::getViewersCount() const
+int ChatService::getViewers() const
 {
     return state.viewers;
 }
@@ -285,6 +285,12 @@ bool ChatService::isConnected() const
     return state.connected;
 }
 
+void ChatService::setViewers(const int count)
+{
+    state.viewers = count;
+    emit stateChanged();
+}
+
 std::shared_ptr<Author> ChatService::getServiceAuthor() const
 {
     return Author::Builder(
@@ -301,7 +307,7 @@ QJsonObject ChatService::getStateJson() const
 
     root.insert("type_id", getServiceTypeId(serviceType));
     root.insert("enabled", enabled.get());
-    root.insert("viewers", getViewersCount());
+    root.insert("viewers", getViewers());
 
     QString connectionState;
 

@@ -34,7 +34,7 @@ public:
     Q_PROPERTY(ConnectionState      connectionState              READ getConnectionState                 NOTIFY stateChanged)
     Q_PROPERTY(QString              stateDescription             READ getStateDescription                NOTIFY stateChanged)
 
-    Q_PROPERTY(int                  viewersCount                 READ getViewersCount                    NOTIFY stateChanged)
+    Q_PROPERTY(int                  viewersCount                 READ getViewers                         NOTIFY stateChanged)
 
     Q_PROPERTY(bool  enabledThirdPartyEmotes      READ isEnabledThirdPartyEmotes   WRITE setEnabledThirdPartyEmotes     NOTIFY stateChanged)
 
@@ -81,7 +81,7 @@ public:
 
     void reconnect();
 
-    int getViewersCount() const;
+    int getViewers() const;
 
     bool isEnabled() const;
     void setEnabled(const bool enabled);
@@ -129,6 +129,8 @@ protected:
 
     void setConnected(const bool connected);
     bool isConnected() const;
+
+    void setViewers(const int count);
 
     std::shared_ptr<Author> getServiceAuthor() const;
 

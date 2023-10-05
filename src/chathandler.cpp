@@ -275,7 +275,7 @@ void ChatHandler::onStateChanged()
         outputToFile.writeServiceState(service);
     }
 
-    outputToFile.writeApplicationState(true, getViewersTotalCount());
+    outputToFile.writeApplicationState(true, getTotalViewers());
     webSocket.sendState();
 
     emit connectedCountChanged();
@@ -703,7 +703,7 @@ int ChatHandler::connectedCount() const
     return result;
 }
 
-int ChatHandler::getViewersTotalCount() const
+int ChatHandler::getTotalViewers() const
 {
     int result = 0;
 
@@ -715,7 +715,7 @@ int ChatHandler::getViewersTotalCount() const
             continue;
         }
 
-        const int count = service->getViewersCount();
+        const int count = service->getViewers();
         if (count >= 0)
         {
             result += count;

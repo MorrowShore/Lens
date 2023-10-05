@@ -25,7 +25,7 @@ class ChatHandler : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int  connectedCount                   READ connectedCount                                                             NOTIFY connectedCountChanged)
-    Q_PROPERTY(int  viewersTotalCount                READ getViewersTotalCount                                                       NOTIFY viewersTotalCountChanged)
+    Q_PROPERTY(int  viewersTotalCount                READ getTotalViewers                                                            NOTIFY viewersTotalCountChanged)
     Q_PROPERTY(bool knownViewesServicesMoreOne       READ isKnownViewesServicesMoreOne                                               NOTIFY viewersTotalCountChanged)
     Q_PROPERTY(bool enabledSoundNewMessage           READ enabledSoundNewMessage           WRITE setEnabledSoundNewMessage           NOTIFY enabledSoundNewMessageChanged)
     Q_PROPERTY(bool enabledShowAuthorNameChanged     READ enabledShowAuthorNameChanged     WRITE setEnabledShowAuthorNameChanged     NOTIFY enabledShowAuthorNameChangedChanged)
@@ -70,7 +70,7 @@ public:
     void setEnabledShowAuthorNameChanged(bool enabled);
 
     int connectedCount() const;
-    int getViewersTotalCount() const;
+    int getTotalViewers() const;
 
     bool isKnownViewesServicesMoreOne() const;
 
