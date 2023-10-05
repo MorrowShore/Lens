@@ -857,15 +857,13 @@ void Twitch::onReplyStreamInfo()
 
         if (channelLogin == state.streamId)
         {
-            state.viewers = viewers;
+            setViewers(viewers);
             found = true;
-            emit stateChanged();
         }
     }
 
     if (!found)
     {
-        state.viewers = -1;
-        emit stateChanged();
+        setViewers(-1);
     }
 }

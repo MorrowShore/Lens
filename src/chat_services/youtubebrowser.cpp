@@ -233,7 +233,7 @@ void YouTubeBrowser::requestStreamPage()
             return;
         }
         
-        state.viewers = YouTubeUtils::parseViews(data);
+        setViewers(YouTubeUtils::parseViews(data));
         emit stateChanged();
     });
 }

@@ -279,8 +279,7 @@ void Rumble::requestViewers()
         const int64_t viewers = QJsonDocument::fromJson(data).object().value("data").toObject().value("viewer_count").toVariant().toLongLong(&ok);
         if (ok)
         {
-            state.viewers = viewers;
-            emit stateChanged();
+            setViewers(viewers);
         }
     });
 }

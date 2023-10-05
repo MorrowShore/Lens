@@ -308,8 +308,6 @@ void Kick::requestChannelInfo(const QString &slug)
 
         if (slug == state.streamId)
         {
-            state.viewers = -1;
-
             if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
             {
                 const QJsonObject chatroom = root.value("chatroom").toObject();
@@ -319,6 +317,7 @@ void Kick::requestChannelInfo(const QString &slug)
                 if (!ok)
                 {
                     qWarning() << "failed to convert chatroom id";
+                    setViewers(-1);
                     return;
                 }
 
@@ -336,9 +335,7 @@ void Kick::requestChannelInfo(const QString &slug)
                 info.subscriberBadges.insert(months, url);
             }
             
-            state.viewers = root.value("livestream").toObject().value("viewer_count").toInt(-1);
-
-            emit stateChanged();
+            setViewers(root.value("livestream").toObject().value("viewer_count").toInt(-1));
         }
     });
 }

@@ -282,7 +282,7 @@ void Wasd::requestChannel(const QString &channelName)
 
                 const QJsonObject stream = streams.first().toObject();
                 
-                state.viewers = stream.value("stream_current_viewers").toInt();
+                setViewers(stream.value("stream_current_viewers").toInt(-1));
                 emit stateChanged();
 
                 info.streamId = QString("%1").arg(stream.value("stream_id").toVariant().toLongLong());

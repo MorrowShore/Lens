@@ -344,8 +344,7 @@ void VkVideo::requestVideo()
             }
 
             connected = true;
-            state.viewers = video.value("spectators").toInt(-1);
-            emit stateChanged();
+            setViewers(video.value("spectators").toInt(-1));
         }
         else
         {

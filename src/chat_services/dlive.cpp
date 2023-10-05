@@ -557,13 +557,9 @@ void DLive::requestLiveStream(const QString &displayName_)
         .value("data").toObject()
         .value("userByDisplayName").toObject();
         
-        state.viewers = -1;
-
         const QJsonObject jsonLivestream = jsonUser.value("livestream").toObject();
         
-        state.viewers = jsonLivestream.value("watchingCount").toInt(-1);
-
-        emit stateChanged();
+        setViewers(jsonLivestream.value("watchingCount").toInt(-1));
     });
 }
 
