@@ -89,14 +89,11 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     {
         //qDebug() << "webSocket connected";
 
-        if (state.connected)
+        if (isConnected())
         {
-            state.connected = false;
-            emit stateChanged();
+            setConnected(false);
         }
         
-        state.viewers = -1;
-
         sendIRCMessage("CAP REQ :twitch.tv/tags twitch.tv/commands");
         sendIRCMessage("PASS SCHMOOPIIE");
         sendIRCMessage("NICK justinfan12348");
@@ -112,13 +109,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     {
         //qDebug() << "webSocket disconnected";
 
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
-        
-        state.viewers = -1;
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
@@ -132,7 +123,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             return;
         }
 
-        if (!state.connected)
+        if (!isConnected())
         {
             reconnect();
         }
@@ -148,28 +139,10 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             return;
         }
 
-        if (state.connected)
+        if (isConnected())
         {
             qWarning() << "Pong timeout! Reconnection...";
-
-            auto author = Author::getSoftwareAuthor();
-
-            QList<std::shared_ptr<Message::Content>> contents = { std::make_shared<Message::Text>(tr("Ping timeout! Reconnection...")) };
-
-            std::shared_ptr<Message> message = std::make_shared<Message>(contents, author);
-
-            QList<std::shared_ptr<Message>> messages;
-            messages.append(message);
-
-            QList<std::shared_ptr<Author>> authors;
-            authors.append(author);
-
-            emit readyRead(messages, authors);
-
-            state.connected = false;
-
-            emit stateChanged();
-            reconnect();
+            setConnected(false);
         }
     });
 
@@ -180,7 +153,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             return;
         }
 
-        if (state.connected)
+        if (isConnected())
         {
             sendIRCMessage(QString("PING :") + TwitchIRCHost);
             timerCheckPong.start(PongTimeout);
@@ -195,7 +168,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
             return;
         }
 
-        if (state.connected)
+        if (isConnected())
         {
             requestStreamInfo(state.streamId);
         }
@@ -207,7 +180,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
 ChatService::ConnectionState Twitch::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -263,7 +236,6 @@ void Twitch::reconnectImpl()
 {
     socket.close();
 
-    state = State();
     info = Info();
 
     stream.set(stream.get().toLower().trimmed());
@@ -272,7 +244,6 @@ void Twitch::reconnectImpl()
 
     if (stream.get().isEmpty())
     {
-        emit stateChanged();
         return;
     }
 
@@ -342,10 +313,9 @@ void Twitch::onIRCMessage(const QString &rawData)
             sendIRCMessage(QString("PONG :") + TwitchIRCHost);
         }
 
-        if (!state.connected && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
+        if (!isConnected() && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
         {
-            state.connected = true;
-            emit stateChanged();
+            setConnected(true);
         }
 
         if (rawMessage.startsWith(":" + TwitchIRCHost))
