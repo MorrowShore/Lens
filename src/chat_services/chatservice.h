@@ -139,11 +139,11 @@ protected:
     State state;
     Setting<bool> enabled;
     Setting<QString> stream;
-    Setting<QString> lastSavedMessageId;
-    Setting<bool> enabledThirdPartyEmotes;
 
     UIBridge ui;
 
 private:
     QTimer timerReconnect;
+    Setting<bool> enabledThirdPartyEmotes;
+    Setting<QString> lastSavedMessageId;
 };
