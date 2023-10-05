@@ -298,7 +298,6 @@ void DonatePay::onReceiveWebSocket(const QString &rawData)
 
 void DonatePay::reconnectImpl()
 {
-    state = State();
     info = Info();
 
     updateUI();

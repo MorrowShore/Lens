@@ -214,7 +214,6 @@ QString DLive::getStateDescription() const
 
 void DLive::reconnectImpl()
 {
-    state = State();
     info = Info();
 
     socket.close();

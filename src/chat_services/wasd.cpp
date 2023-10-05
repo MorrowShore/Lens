@@ -154,7 +154,6 @@ void Wasd::reconnectImpl()
 {
     socket.close();
 
-    state = State();
     info = Info();
 
     state.controlPanelUrl = QUrl(QString("https://wasd.tv/stream-settings"));

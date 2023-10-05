@@ -218,7 +218,6 @@ void VkPlayLive::reconnectImpl()
 {
     socket.close();
 
-    state = State();
     info = Info();
 
     state.streamId = extractChannelName(stream.get().trimmed());

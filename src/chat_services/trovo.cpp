@@ -165,8 +165,6 @@ void Trovo::reconnectImpl()
 
     socket.close();
 
-    state = State();
-
     state.streamId = getChannelName(stream.get());
 
     state.controlPanelUrl = QUrl("https://studio.trovo.live/stream");

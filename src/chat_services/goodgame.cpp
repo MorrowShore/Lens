@@ -303,8 +303,6 @@ void GoodGame::reconnectImpl()
 {
     socket.close();
 
-    state = State();
-
     state.streamId = getStreamId(stream.get());
 
     if (state.streamId.isEmpty())

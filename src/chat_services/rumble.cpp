@@ -160,7 +160,6 @@ QString Rumble::getStateDescription() const
 
 void Rumble::reconnectImpl()
 {
-    state = State();
     info = Info();
     sse.stop();
 

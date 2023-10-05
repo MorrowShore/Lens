@@ -231,8 +231,6 @@ void Discord::reconnectImpl()
 {
     socket.close();
 
-    state = State();
-
     info = Info(*this, network);
 
     processDisconnected();

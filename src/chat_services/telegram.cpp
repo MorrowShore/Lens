@@ -69,7 +69,6 @@ Telegram::Telegram(QSettings& settings, const QString& settingsGroupPathParent, 
 
 void Telegram::reconnectImpl()
 {
-    state = State();
     info = Info();
 
     updateUI();
@@ -130,14 +129,7 @@ void Telegram::processBadChatReply()
         if (state.connected && !botToken.get().isEmpty())
         {
             qWarning() << "too many bad chat replies! Disonnecting...";
-
-            state = State();
-
-            state.connected = false;
-
-            emit stateChanged();
-
-            reconnect();
+            setConnected(false);
         }
     }
 }

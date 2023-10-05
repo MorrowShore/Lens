@@ -46,19 +46,13 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
         }
 
         sendSubscribe(info.chatroomId);
-
-        emit stateChanged();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
 
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -75,7 +69,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
             return;
         }
 
-        if (!state.connected)
+        if (!isConnected())
         {
             reconnect();
         }
@@ -89,7 +83,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
             return;
         }
 
-        if (!state.connected)
+        if (!isConnected())
         {
             reconnect();
         }
@@ -125,7 +119,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
 
 ChatService::ConnectionState Kick::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -168,7 +162,6 @@ void Kick::reconnectImpl()
 {
     socket.close();
 
-    state = State();
     info = Info();
 
     state.controlPanelUrl = QUrl(QString("https://kick.com/dashboard/stream"));
@@ -177,7 +170,6 @@ void Kick::reconnectImpl()
 
     if (state.streamId.isEmpty())
     {
-        emit stateChanged();
         return;
     }
 
@@ -255,11 +247,7 @@ void Kick::onWebSocketReceived(const QString &rawData)
     }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
-        if (!state.connected)
-        {
-            state.connected = true;
-            emit stateChanged();
-        }
+        setConnected(true);
 
         sendPing();
     }

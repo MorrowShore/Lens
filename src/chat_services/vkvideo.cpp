@@ -122,7 +122,6 @@ TcpReply VkVideo::processTcpRequest(const TcpRequest &request)
 
 void VkVideo::reconnectImpl()
 {
-    state = State();
     info = Info();
 
     if (!extractOwnerVideoId(stream.get().trimmed(), info.ownerId, info.videoId))

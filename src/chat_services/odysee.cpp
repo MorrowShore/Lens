@@ -149,7 +149,6 @@ void Odysee::reconnectImpl()
 {
     socket.close();
 
-    state = State();
     info = Info();
 
     extractChannelAndVideo(stream.get(), info.channel, info.video);
