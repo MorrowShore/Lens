@@ -123,7 +123,7 @@ Kick::Kick(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     timerPing.start();
 }
 
-ChatService::ConnectionStateType Kick::getConnectionStateType() const
+ChatService::ConnectionStateType Kick::getConnectionState() const
 {
     if (state.connected)
     {
@@ -139,7 +139,7 @@ ChatService::ConnectionStateType Kick::getConnectionStateType() const
 
 QString Kick::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())

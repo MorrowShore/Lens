@@ -21,7 +21,7 @@ public:
 
     explicit Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
 
-    ConnectionStateType getConnectionStateType() const override;
+    ConnectionStateType getConnectionState() const override;
     QString getStateDescription() const override;
     TcpReply processTcpRequest(const TcpRequest &request) override;
 

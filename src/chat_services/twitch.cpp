@@ -205,7 +205,7 @@ Twitch::Twitch(QSettings& settings, const QString& settingsGroupPathParent, QNet
     onAuthStateChanged();
 }
 
-ChatService::ConnectionStateType Twitch::getConnectionStateType() const
+ChatService::ConnectionStateType Twitch::getConnectionState() const
 {
     if (state.connected)
     {
@@ -221,7 +221,7 @@ ChatService::ConnectionStateType Twitch::getConnectionStateType() const
 
 QString Twitch::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (state.streamId.isEmpty())

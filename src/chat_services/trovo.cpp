@@ -133,7 +133,7 @@ Trovo::Trovo(QSettings &settings, const QString &settingsGroupPathParent, QNetwo
     reconnect();
 }
 
-ChatService::ConnectionStateType Trovo::getConnectionStateType() const
+ChatService::ConnectionStateType Trovo::getConnectionState() const
 {
     if (state.connected)
     {
@@ -149,7 +149,7 @@ ChatService::ConnectionStateType Trovo::getConnectionStateType() const
 
 QString Trovo::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (state.streamId.isEmpty())

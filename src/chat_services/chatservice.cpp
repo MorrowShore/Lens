@@ -270,7 +270,7 @@ QJsonObject ChatService::getStateJson() const
 
     QString connectionStateType;
 
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         connectionStateType = "not_connected";

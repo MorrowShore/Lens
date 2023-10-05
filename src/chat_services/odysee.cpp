@@ -103,7 +103,7 @@ Odysee::Odysee(QSettings &settings, const QString &settingsGroupPathParent, QNet
     reconnect();
 }
 
-ChatService::ConnectionStateType Odysee::getConnectionStateType() const
+ChatService::ConnectionStateType Odysee::getConnectionState() const
 {
     if (state.connected)
     {
@@ -119,7 +119,7 @@ ChatService::ConnectionStateType Odysee::getConnectionStateType() const
 
 QString Odysee::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())

@@ -185,7 +185,7 @@ Discord::Discord(QSettings &settings, const QString &settingsGroupPathParent, QN
     updateUI();
 }
 
-ChatService::ConnectionStateType Discord::getConnectionStateType() const
+ChatService::ConnectionStateType Discord::getConnectionState() const
 {
     if (state.connected)
     {
@@ -211,7 +211,7 @@ QString Discord::getStateDescription() const
         return tr("Bot token not specified");
     }
 
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         return tr("Not connected");

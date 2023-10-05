@@ -61,7 +61,7 @@ VkVideo::VkVideo(QSettings &settings, const QString &settingsGroupPathParent, QN
     reconnect();
 }
 
-ChatService::ConnectionStateType VkVideo::getConnectionStateType() const
+ChatService::ConnectionStateType VkVideo::getConnectionState() const
 {
     if (state.connected)
     {
@@ -82,7 +82,7 @@ QString VkVideo::getStateDescription() const
         return tr("Not logged in");
     }
 
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())

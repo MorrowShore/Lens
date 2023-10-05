@@ -28,7 +28,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
             return;
         }
 
-        if (!state.connected)
+        if (!isConnected())
         {
             reconnect();
         }
@@ -42,7 +42,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
             return;
         }
 
-        if (!state.connected)
+        if (!isConnected())
         {
             reconnect();
         }
@@ -55,7 +55,7 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
             return;
         }
 
-        if (state.connected)
+        if (isConnected())
         {
             reconnect();
         }
@@ -73,9 +73,9 @@ YouTubeBrowser::YouTubeBrowser(QSettings& settings, const QString& settingsGroup
     openChatButton->setItemProperty("enabled", false);
 }
 
-ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const
+ChatService::ConnectionStateType YouTubeBrowser::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionStateType::Connected;
     }
@@ -89,7 +89,7 @@ ChatService::ConnectionStateType YouTubeBrowser::getConnectionStateType() const
 
 QString YouTubeBrowser::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())
@@ -117,11 +117,7 @@ QString YouTubeBrowser::getStateDescription() const
 
 void YouTubeBrowser::reconnectImpl()
 {
-    state = State();
-
     timerCheckConnection.stop();
-
-    emit stateChanged();
 
     openChatButton->setItemProperty("enabled", false);
 
@@ -186,15 +182,13 @@ void YouTubeBrowser::reconnectImpl()
 
             timerCheckConnection.start();
 
-            if (!state.connected && !state.streamId.isEmpty() && enabled.get())
+            if (!isConnected() && !state.streamId.isEmpty() && enabled.get())
             {
-                state.connected = true;
+                setConnected(true);
 
                 openChatButton->setItemProperty("enabled", true);
 
                 requestStreamPage();
-
-                emit stateChanged();
             }
 
             const QJsonArray actions = v.toObject().value("actions").toArray();

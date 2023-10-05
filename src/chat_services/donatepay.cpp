@@ -132,7 +132,7 @@ DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent
     reconnect();
 }
 
-ChatService::ConnectionStateType DonatePay::getConnectionStateType() const
+ChatService::ConnectionStateType DonatePay::getConnectionState() const
 {
     if (state.connected)
     {
@@ -148,7 +148,7 @@ ChatService::ConnectionStateType DonatePay::getConnectionStateType() const
 
 QString DonatePay::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         return tr("Not connected");

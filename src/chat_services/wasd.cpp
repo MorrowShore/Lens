@@ -108,7 +108,7 @@ Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetwork
     reconnect();
 }
 
-ChatService::ConnectionStateType Wasd::getConnectionStateType() const
+ChatService::ConnectionStateType Wasd::getConnectionState() const
 {
     if (state.connected)
     {
@@ -124,7 +124,7 @@ ChatService::ConnectionStateType Wasd::getConnectionStateType() const
 
 QString Wasd::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())

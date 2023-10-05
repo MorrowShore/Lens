@@ -64,7 +64,7 @@ void YouTubeHtml::reconnectImpl()
     onTimeoutRequestStreamPage();
 }
 
-ChatService::ConnectionStateType YouTubeHtml::getConnectionStateType() const
+ChatService::ConnectionStateType YouTubeHtml::getConnectionState() const
 {
     if (isConnected())
     {
@@ -80,7 +80,7 @@ ChatService::ConnectionStateType YouTubeHtml::getConnectionStateType() const
 
 QString YouTubeHtml::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())

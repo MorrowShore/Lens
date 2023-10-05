@@ -116,7 +116,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
     reconnect();
 }
 
-ChatService::ConnectionStateType Rumble::getConnectionStateType() const
+ChatService::ConnectionStateType Rumble::getConnectionState() const
 {
     if (state.connected)
     {
@@ -132,7 +132,7 @@ ChatService::ConnectionStateType Rumble::getConnectionStateType() const
 
 QString Rumble::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())

@@ -694,7 +694,7 @@ int ChatHandler::connectedCount() const
             continue;
         }
 
-        if (service->getConnectionStateType()  == ChatService::ConnectionStateType::Connected)
+        if (service->getConnectionState()  == ChatService::ConnectionStateType::Connected)
         {
             result++;
         }

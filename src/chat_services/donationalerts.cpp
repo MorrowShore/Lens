@@ -175,7 +175,7 @@ DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroup
     updateUI();
 }
 
-ChatService::ConnectionStateType DonationAlerts::getConnectionStateType() const
+ChatService::ConnectionStateType DonationAlerts::getConnectionState() const
 {
     if (state.connected)
     {
@@ -191,7 +191,7 @@ ChatService::ConnectionStateType DonationAlerts::getConnectionStateType() const
 
 QString DonationAlerts::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         return tr("Not connected");

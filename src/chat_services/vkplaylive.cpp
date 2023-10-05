@@ -172,7 +172,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
     reconnect();
 }
 
-ChatService::ConnectionStateType VkPlayLive::getConnectionStateType() const
+ChatService::ConnectionStateType VkPlayLive::getConnectionState() const
 {
     if (state.connected)
     {
@@ -188,7 +188,7 @@ ChatService::ConnectionStateType VkPlayLive::getConnectionStateType() const
 
 QString VkPlayLive::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (stream.get().isEmpty())

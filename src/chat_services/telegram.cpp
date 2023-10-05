@@ -84,7 +84,7 @@ void Telegram::reconnectImpl()
     requestUpdates();
 }
 
-ChatService::ConnectionStateType Telegram::getConnectionStateType() const
+ChatService::ConnectionStateType Telegram::getConnectionState() const
 {
     if (state.connected)
     {
@@ -100,7 +100,7 @@ ChatService::ConnectionStateType Telegram::getConnectionStateType() const
 
 QString Telegram::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (botToken.get().isEmpty())

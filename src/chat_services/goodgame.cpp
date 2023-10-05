@@ -116,7 +116,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
     reconnect();
 }
 
-ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
+ChatService::ConnectionStateType GoodGame::getConnectionState() const
 {
     if (state.connected)
     {
@@ -132,7 +132,7 @@ ChatService::ConnectionStateType GoodGame::getConnectionStateType() const
 
 QString GoodGame::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (state.streamId.isEmpty())

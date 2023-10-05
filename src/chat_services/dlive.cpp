@@ -176,7 +176,7 @@ DLive::DLive(QSettings& settings, const QString& settingsGroupPathParent, QNetwo
     reconnect();
 }
 
-ChatService::ConnectionStateType DLive::getConnectionStateType() const
+ChatService::ConnectionStateType DLive::getConnectionState() const
 {
     if (state.connected)
     {
@@ -192,7 +192,7 @@ ChatService::ConnectionStateType DLive::getConnectionStateType() const
 
 QString DLive::getStateDescription() const
 {
-    switch (getConnectionStateType())
+    switch (getConnectionState())
     {
     case ConnectionStateType::NotConnected:
         if (state.streamId.isEmpty())
