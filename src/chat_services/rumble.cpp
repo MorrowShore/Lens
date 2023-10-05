@@ -16,15 +16,16 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 
     if (!reply)
     {
-        qWarning() << tag << ": !reply";
+        qCritical() << tag << "reply is null";
         return false;
     }
 
     resultData = reply->readAll();
     reply->deleteLater();
+
     if (resultData.isEmpty())
     {
-        qWarning() << tag << ": data is empty";
+        qCritical() << tag << "data is null";
         return false;
     }
 
@@ -45,10 +46,9 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
     {
         //qDebug() << "SSE started";
 
-        if (!state.connected && !state.streamId.isEmpty() && enabled.get())
+        if (!isConnected() && !state.streamId.isEmpty() && enabled.get())
         {
-            state.connected = true;
-            emit stateChanged();
+            setConnected(true);
         }
     });
 
@@ -56,8 +56,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
     {
         //qDebug() << "SSE stopped";
 
-        state.connected = false;
-        emit stateChanged();
+        setConnected(false);
 
         if (enabled.get())
         {
@@ -78,7 +77,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
         const QJsonDocument doc = QJsonDocument::fromJson(data, &jsonError);
         if (jsonError.error != QJsonParseError::ParseError::NoError)
         {
-            qWarning() << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << "data:" << data;
+            qCritical() << "json parse error =" << jsonError.errorString() << ", offset =" << jsonError.offset << "data:" << data;
         }
 
         if (doc.isObject())
@@ -87,7 +86,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
         }
         else
         {
-            qWarning() << "document is not object";
+            qCritical() << "document is not object";
         }
     });
 
@@ -104,7 +103,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
-        if (!enabled.get() || state.connected)
+        if (!enabled.get() || isConnected())
         {
             return;
         }
@@ -118,7 +117,7 @@ Rumble::Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNet
 
 ChatService::ConnectionState Rumble::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -167,7 +166,6 @@ void Rumble::reconnectImpl()
 
     if (state.streamId.isEmpty())
     {
-        emit stateChanged();
         return;
     }
 
@@ -241,7 +239,7 @@ void Rumble::requestVideoPage()
         const QString chatId = parseChatId(data);
         if (chatId.isEmpty())
         {
-            qWarning() << "failed to parse chat id";
+            qCritical() << "failed to parse chat id";
         }
         else
         {
@@ -251,7 +249,7 @@ void Rumble::requestVideoPage()
         const QString videoId = parseVideoId(data);
         if (videoId.isEmpty())
         {
-            qWarning() << "failed to parse video id";
+            qCritical() << "failed to parse video id";
         }
         else
         {
@@ -286,12 +284,7 @@ void Rumble::requestViewers()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
-            if (state.connected)
-            {
-                state.connected = false;
-                emit stateChanged();
-            }
-
+            setConnected(false);
             return;
         }
 
@@ -477,7 +470,7 @@ void Rumble::parseMessage(const QJsonObject &user, const QJsonObject &jsonMessag
         }
         else
         {
-            qWarning() << "failed to get price, message =" << jsonMessage;
+            qCritical() << "failed to get price, message =" << jsonMessage;
             forcedColors.insert(Message::ColorRole::BodyBackgroundColorRole, DefaultHighlightedMessageColor);
         }
     }
