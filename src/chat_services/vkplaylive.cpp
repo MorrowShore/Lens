@@ -37,14 +37,9 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
         heartbeatAcknowledgementTimer.setInterval(HeartbeatAcknowledgementTimeout);
         heartbeatAcknowledgementTimer.start();
 
-        if (state.connected)
-        {
-            state.connected = false;
-        }
-
         if (info.token.isEmpty())
         {
-            qWarning() << "token is empty";
+            qCritical() << "token is empty";
             return;
         }
 
@@ -53,24 +48,17 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
                            {"token", info.token},
                            {"name", "js"}
                        }));
-
-        emit stateChanged();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
-
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
+        qCritical() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     QObject::connect(&timerRequestToken, &QTimer::timeout, this, [this]()
@@ -126,8 +114,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
                         }
                         while(json);
                     }
-
-                    emit stateChanged();
                 });
             }
         }
@@ -144,8 +130,6 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
 
                     const QString raw = QJsonDocument::fromJson(data).object().value("publicWebSocketChannel").toString();
                     info.wsChannel = raw.mid(raw.indexOf(':') + 1);
-
-                    emit stateChanged();
                 });
             }
         }
@@ -161,7 +145,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
             return;
         }
 
-        qDebug() << "heartbeat acknowledgement timeout, disconnect";
+        qWarning() << "heartbeat acknowledgement timeout, disconnect";
         socket.close();
     });
 
@@ -174,7 +158,7 @@ VkPlayLive::VkPlayLive(QSettings& settings, const QString& settingsGroupPathPare
 
 ChatService::ConnectionState VkPlayLive::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -224,7 +208,6 @@ void VkPlayLive::reconnectImpl()
 
     if (state.streamId.isEmpty())
     {
-        emit stateChanged();
         return;
     }
 
@@ -252,11 +235,9 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
     {
         info.version = version;
 
-        if (!state.connected && !state.streamId.isEmpty() && !info.wsChannel.isEmpty() && !info.token.isEmpty())
+        if (!isConnected() && !state.streamId.isEmpty() && !info.wsChannel.isEmpty() && !info.token.isEmpty())
         {
-            state.connected = true;
-
-            emit stateChanged();
+            setConnected(true);
         }
 
         static const QString SupportedVersion = "3.2.3";
@@ -268,7 +249,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
 
         if (info.wsChannel.isEmpty())
         {
-            qWarning() << "ws channel is empty";
+            qCritical() << "ws channel is empty";
         }
         else
         {
@@ -305,7 +286,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
             }
             else
             {
-                qWarning() << "viewers not found in, result =" << result;
+                qCritical() << "viewers not found, result =" << result;
             }
         }
         else if (type == "stream_like_counter")
@@ -598,7 +579,7 @@ void VkPlayLive::parseMessage(const QJsonObject &data)
         }
         else
         {
-            qDebug() << "unknown content type" << type << ", message:" << QJsonDocument(data).toJson();
+            qWarning() << "unknown content type" << type << ", message:" << QJsonDocument(data).toJson();
         }
     }
 
