@@ -237,7 +237,6 @@ void ChatService::setConnected(const bool connected)
     if (connected)
     {
         state.connected = true;
-        emit stateChanged();
     }
     else
     {
@@ -245,11 +244,7 @@ void ChatService::setConnected(const bool connected)
         reconnect();
     }
 
-    if (!connected)
-    {
-        state = State();
-        reconnect();
-    }
+    emit stateChanged();
 }
 
 bool ChatService::isConnected() const
