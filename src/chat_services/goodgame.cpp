@@ -56,34 +56,23 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
 
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
-
         requestChannelStatus();
-        emit stateChanged();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        if (state.connected)
-        {
-            state.connected = false;
-            emit stateChanged();
-        }
+        setConnected(false);
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
     {
-        qDebug() << "WebSocket error:" << error_ << ":" << socket.errorString();
+        qCritical() << "WebSocket error:" << error_ << ":" << socket.errorString();
     });
 
     timerUpdateMessages.setInterval(RequestChatInterval);
     connect(&timerUpdateMessages, &QTimer::timeout, this, [this]()
     {
-        if (!state.connected)
+        if (!isConnected())
         {
             return;
         }
@@ -95,7 +84,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
     timerUpdateChannelStatus.setInterval(RequestChannelStatus);
     connect(&timerUpdateChannelStatus, &QTimer::timeout, this, [this]()
     {
-        if (!state.connected)
+        if (!isConnected())
         {
             return;
         }
@@ -118,7 +107,7 @@ GoodGame::GoodGame(QSettings& settings, const QString& settingsGroupPathParent, 
 
 ChatService::ConnectionState GoodGame::getConnectionState() const
 {
-    if (state.connected)
+    if (isConnected())
     {
         return ChatService::ConnectionState::Connected;
     }
@@ -307,7 +296,6 @@ void GoodGame::reconnectImpl()
 
     if (state.streamId.isEmpty())
     {
-        emit stateChanged();
         return;
     }
 
@@ -345,11 +333,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
     if (type == "channel_history")
     {
-        if (!state.connected)
-        {
-            state.connected = true;
-            emit stateChanged();
-        }
+        setConnected(true);
 
         QList<std::shared_ptr<Message>> messages;
         QList<std::shared_ptr<Author>> authors;
@@ -538,7 +522,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
     }
     else if (type == "error")
     {
-        qWarning() << "client received error, channel id =" << channelId_ << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
+        qCritical() << "client received error, channel id =" << channelId_ << ", error num =" << data.value("error_num").toInt() << ", error text =" << data.value("errorMsg").toString();
     }
     else if (type == "success_auth")
     {
