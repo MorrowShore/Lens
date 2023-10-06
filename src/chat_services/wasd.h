@@ -20,8 +20,8 @@ public:
         BINARY_EVENT = 5,
         BINARY_ACK = 6,
     };
-
-    explicit Wasd(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    
+    explicit Wasd(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
     QString getMainError() const override;

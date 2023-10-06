@@ -34,7 +34,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 
 }
 
-Rumble::Rumble(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
+Rumble::Rumble(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Rumble, false, parent)
     , network(network_)
     , sse(network)

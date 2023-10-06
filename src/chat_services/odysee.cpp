@@ -40,7 +40,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 
 }
 
-Odysee::Odysee(ChatHandler& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
+Odysee::Odysee(ChatManager& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Odysee, false, parent)
     , network(network_)
 {

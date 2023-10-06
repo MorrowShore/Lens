@@ -132,17 +132,17 @@ ScrollView {
             text: qsTr("Enable Sound when New Message Received")
 
             Component.onCompleted: {
-                checked = chatHandler.enabledSoundNewMessage;
+                checked = chatManager.enabledSoundNewMessage;
             }
 
             onCheckedChanged: {
-                chatHandler.enabledSoundNewMessage = checked;
+                chatManager.enabledSoundNewMessage = checked;
             }
 
             onClicked: {
                 if (checked)
                 {
-                    chatHandler.playNewMessageSound();
+                    chatManager.playNewMessageSound();
                 }
             }
         }
@@ -153,11 +153,11 @@ ScrollView {
                 enabled: outputToFile.enabled
 
                 Component.onCompleted: {
-                    checked = chatHandler.enabledShowAuthorNameChanged;
+                    checked = chatManager.enabledShowAuthorNameChanged;
                 }
 
                 onCheckedChanged: {
-                    chatHandler.enabledShowAuthorNameChanged = checked;
+                    chatManager.enabledShowAuthorNameChanged = checked;
                 }
             }
 
@@ -178,11 +178,11 @@ ScrollView {
                 text: qsTr("Proxy (SOCKS5)")
                 anchors.verticalCenter: parent.verticalCenter
                 Component.onCompleted: {
-                    checked = chatHandler.proxyEnabled;
+                    checked = chatManager.proxyEnabled;
                 }
 
                 onCheckedChanged: {
-                    chatHandler.proxyEnabled = checked;
+                    chatManager.proxyEnabled = checked;
                 }
             }
 
@@ -193,11 +193,11 @@ ScrollView {
                 placeholderText: qsTr("Host name...")
 
                 Component.onCompleted: {
-                    text = chatHandler.proxyServerAddress
+                    text = chatManager.proxyServerAddress
                 }
 
                 onTextChanged: {
-                    chatHandler.proxyServerAddress = text
+                    chatManager.proxyServerAddress = text
                 }
             }
 
@@ -217,7 +217,7 @@ ScrollView {
                 }
 
                 Component.onCompleted: {
-                    var port = chatHandler.proxyServerPort;
+                    var port = chatManager.proxyServerPort;
                     if (port !== -1)
                     {
                         text = port;
@@ -231,11 +231,11 @@ ScrollView {
                 onTextChanged: {
                     if (text == "")
                     {
-                        chatHandler.proxyServerPort = -1;
+                        chatManager.proxyServerPort = -1;
                     }
                     else
                     {
-                        chatHandler.proxyServerPort = text;
+                        chatManager.proxyServerPort = text;
                     }
                 }
             }
@@ -245,7 +245,7 @@ ScrollView {
             text: qsTr("Program folder")
 
             onClicked: {
-                chatHandler.openProgramFolder();
+                chatManager.openProgramFolder();
             }
         }
 

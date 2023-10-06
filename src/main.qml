@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
-import AxelChat.ChatHandler 1.0
+import AxelChat.ChatManager 1.0
 import AxelChat.ChatService 1.0
 import AxelChat.UpdateChecker 1.0
 import QtQuick.Window 2.15
@@ -173,7 +173,7 @@ Item {
         }
 
         Component.onCompleted: {
-            for (var i = 0; i < chatHandler.getServicesCount(); i++)
+            for (var i = 0; i < chatManager.getServicesCount(); i++)
             {
 
             Qt.createQmlObject(
@@ -183,7 +183,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 
 Row {
-    property var chatService: chatHandler.getServiceAtIndex(" + String("%1").arg(i) + ")
+    property var chatService: chatManager.getServiceAtIndex(" + String("%1").arg(i) + ")
 
     anchors.verticalCenter: parent.verticalCenter
     spacing: 4
@@ -235,7 +235,7 @@ Row {
             anchors.right: parent.right
             anchors.rightMargin: 4
             spacing: 8
-            visible: chatHandler.viewersTotalCount !== -1 && chatHandler.knownViewesServicesMoreOne
+            visible: chatManager.viewersTotalCount !== -1 && chatManager.knownViewesServicesMoreOne
 
             Image {
                 mipmap: true
@@ -252,7 +252,7 @@ Row {
                 font.pointSize: 10
                 color: "white"
 
-                text: String("%1").arg(chatHandler.viewersTotalCount)
+                text: String("%1").arg(chatManager.viewersTotalCount)
             }
         }
     }

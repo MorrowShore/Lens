@@ -2,7 +2,7 @@
 
 #include "i18n.h"
 #include "clipboardqml.h"
-#include "chathandler.h"
+#include "ChatManager.h"
 #include "githubapi.h"
 #include "appsponsormanager.h"
 #include "commandseditor.h"
@@ -45,7 +45,7 @@ private:
     I18n i18n;
     ClipboardQml qmlClipboard;
     GitHubApi github;
-    ChatHandler chatHandler;
+    ChatManager chatManager;
     CommandsEditor commandsEditor;
     LogDialog logWindow;
 

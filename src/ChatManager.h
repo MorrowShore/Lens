@@ -21,7 +21,7 @@
 #include "chatbot.h"
 #endif
 
-class ChatHandler : public QObject
+class ChatManager : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int  connectedCount                   READ connectedCount                                                             NOTIFY connectedCountChanged)
@@ -35,8 +35,8 @@ class ChatHandler : public QObject
     Q_PROPERTY(int     proxyServerPort    READ proxyServerPort    WRITE setProxyServerPort    NOTIFY proxyChanged)
 
 public:
-    explicit ChatHandler(QSettings& settings, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
-    ~ChatHandler();
+    explicit ChatManager(QSettings& settings, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    ~ChatManager();
 
     MessagesModel& getMessagesModel();
 
@@ -49,8 +49,8 @@ public:
 #ifdef QT_QUICK_LIB
     static void declareQml()
     {
-        qmlRegisterUncreatableType<ChatHandler> ("AxelChat.ChatHandler",
-                                                 1, 0, "ChatHandler", "Type cannot be created in QML");
+        qmlRegisterUncreatableType<ChatManager> ("AxelChat.ChatManager",
+                                                 1, 0, "ChatManager", "Type cannot be created in QML");
 
         qmlRegisterUncreatableType<OutputToFile> ("AxelChat.OutputToFile",
                                                   1, 0, "OutputToFile", "Type cannot be created in QML");

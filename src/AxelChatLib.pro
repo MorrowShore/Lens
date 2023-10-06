@@ -28,7 +28,7 @@ HEADERS += \
     models/messagesmodel.h \
     applicationinfo.h \
     axelchatlib_api.h \
-    chathandler.h \
+    ChatManager.h \
     utils.h
 
 SOURCES += \
@@ -40,7 +40,7 @@ SOURCES += \
     models/author.cpp \
     models/message.cpp \
     models/messagesmodel.cpp \
-    chathandler.cpp \
+    ChatManager.cpp \
     main.cpp
 
 RESOURCES +=

@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
-import AxelChat.ChatHandler 1.0
+import AxelChat.ChatManager 1.0
 import AxelChat.ChatService 1.0
 import AxelChat.UpdateChecker 1.0
 import QtQuick.Window 2.15
@@ -24,7 +24,7 @@ Item {
             y: 190
             anchors.fill: parent
             playing: true
-            source: chatHandler.connectedCount === 0 ? "qrc:/resources/images/sleeping_200_transparent.gif" : "qrc:/resources/images/cool_200_transparent.gif"
+            source: chatManager.connectedCount === 0 ? "qrc:/resources/images/sleeping_200_transparent.gif" : "qrc:/resources/images/cool_200_transparent.gif"
             smooth: true
             antialiasing: true
             asynchronous: true
@@ -57,7 +57,7 @@ Item {
         text: {
             var s = ""
 
-            if (chatHandler.connectedCount === 0)
+            if (chatManager.connectedCount === 0)
             {
                 s += qsTr("Nothing connected");
 

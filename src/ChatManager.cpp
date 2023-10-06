@@ -1,4 +1,4 @@
-#include "chathandler.h"
+#include "ChatManager.h"
 #include "chat_services/youtubehtml.h"
 #include "chat_services/youtubebrowser.h"
 #include "chat_services/twitch.h"
@@ -56,7 +56,7 @@ static const QList<QColor> GeneratingColors =
 
 }
 
-ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
+ChatManager::ChatManager(QSettings& settings_, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
     : QObject(parent)
     , settings(settings_)
     , network(network_)
@@ -68,7 +68,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     , webSocket(*this)
     , tcpServer(services)
 {
-    connect(&outputToFile, &OutputToFile::authorNameChanged, this, &ChatHandler::onAuthorNameChanged);
+    connect(&outputToFile, &OutputToFile::authorNameChanged, this, &ChatManager::onAuthorNameChanged);
 
     setEnabledSoundNewMessage(settings.value(SettingsEnabledSoundNewMessage, _enabledSoundNewMessage).toBool());
 
@@ -102,7 +102,7 @@ ChatHandler::ChatHandler(QSettings& settings_, QNetworkAccessManager& network_, 
     });
 }
 
-ChatHandler::~ChatHandler()
+ChatManager::~ChatManager()
 {
     const int count = services.count();
     for (int i = 0; i < count; i++)
@@ -111,7 +111,7 @@ ChatHandler::~ChatHandler()
     }
 }
 
-void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, const QList<std::shared_ptr<Author>>& authors)
+void ChatManager::onReadyRead(const QList<std::shared_ptr<Message>>& messages, const QList<std::shared_ptr<Author>>& authors)
 {
     ChatService* service = static_cast<ChatService*>(sender());
 
@@ -196,7 +196,7 @@ void ChatHandler::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
     }
 }
 
-void ChatHandler::sendTestMessage(const QString &text)
+void ChatManager::sendTestMessage(const QString &text)
 {
     std::shared_ptr<Author> author = Author::getSoftwareAuthor();
 
@@ -210,7 +210,7 @@ void ChatHandler::sendTestMessage(const QString &text)
     onReadyRead({message}, {author});
 }
 
-void ChatHandler::sendSoftwareMessage(const QString &text)
+void ChatManager::sendSoftwareMessage(const QString &text)
 {
     std::shared_ptr<Author> author = Author::getSoftwareAuthor();
 \
@@ -224,7 +224,7 @@ void ChatHandler::sendSoftwareMessage(const QString &text)
     onReadyRead({message}, {author});
 }
 
-void ChatHandler::playNewMessageSound()
+void ChatManager::playNewMessageSound()
 {
 #ifdef QT_MULTIMEDIA_LIB
     if (_soundDefaultNewMessage)
@@ -240,7 +240,7 @@ void ChatHandler::playNewMessageSound()
 #endif
 }
 
-void ChatHandler::onAuthorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values)
+void ChatManager::onAuthorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
@@ -262,12 +262,12 @@ void ChatHandler::onAuthorDataUpdated(const QString& authorId, const QMap<Author
     webSocket.sendAuthorValues(authorId, values);
 }
 
-void ChatHandler::clearMessages()
+void ChatManager::clearMessages()
 {
     messagesModel.clear();
 }
 
-void ChatHandler::onStateChanged()
+void ChatManager::onStateChanged()
 {
     ChatService* service = dynamic_cast<ChatService*>(sender());
     if (service)
@@ -283,13 +283,13 @@ void ChatHandler::onStateChanged()
 }
 
 #ifndef AXELCHAT_LIBRARY
-void ChatHandler::openProgramFolder()
+void ChatManager::openProgramFolder()
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + QCoreApplication::applicationDirPath()));
 }
 #endif
 
-void ChatHandler::onAuthorNameChanged(const Author& author, const QString &prevName, const QString &newName)
+void ChatManager::onAuthorNameChanged(const Author& author, const QString &prevName, const QString &newName)
 {
     if (_enableShowAuthorNameChanged)
     {
@@ -298,7 +298,7 @@ void ChatHandler::onAuthorNameChanged(const Author& author, const QString &prevN
     }
 }
 
-void ChatHandler::updateProxy()
+void ChatManager::updateProxy()
 {
     if (_enabledProxy)
     {
@@ -323,7 +323,7 @@ void ChatHandler::updateProxy()
     emit proxyChanged();
 }
 
-void ChatHandler::removeService(const int index)
+void ChatManager::removeService(const int index)
 {
     if (index >= services.count() || index < 0)
     {
@@ -342,15 +342,15 @@ void ChatHandler::removeService(const int index)
 }
 
 template<typename ChatServiceInheritedClass>
-void ChatHandler::addService()
+void ChatManager::addService()
 {
     static_assert(std::is_base_of<ChatService, ChatServiceInheritedClass>::value, "ChatServiceInheritedClass must derive from ChatService");
 
     std::shared_ptr<ChatServiceInheritedClass> service = std::make_shared<ChatServiceInheritedClass>(*this, settings, SettingsGroupPath, network, web, this);
 
-    QObject::connect(service.get(), &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
-    QObject::connect(service.get(), &ChatService::readyRead, this, &ChatHandler::onReadyRead);
-    QObject::connect(service.get(), &ChatService::authorDataUpdated, this, &ChatHandler::onAuthorDataUpdated);
+    QObject::connect(service.get(), &ChatService::stateChanged, this, &ChatManager::onStateChanged);
+    QObject::connect(service.get(), &ChatService::readyRead, this, &ChatManager::onReadyRead);
+    QObject::connect(service.get(), &ChatService::authorDataUpdated, this, &ChatManager::onAuthorDataUpdated);
 
     services.append(service);
 
@@ -367,7 +367,7 @@ void ChatHandler::addService()
     }
 }
 
-void ChatHandler::addTestMessages()
+void ChatManager::addTestMessages()
 {
     QList<std::shared_ptr<Message>> messages;
     QList<std::shared_ptr<Author>> authors;
@@ -642,23 +642,23 @@ void ChatHandler::addTestMessages()
 }
 
 #ifndef AXELCHAT_LIBRARY
-ChatBot& ChatHandler::getBot()
+ChatBot& ChatManager::getBot()
 {
     return bot;
 }
 
-OutputToFile& ChatHandler::getOutputToFile()
+OutputToFile& ChatManager::getOutputToFile()
 {
     return outputToFile;
 }
 #endif
 
-MessagesModel& ChatHandler::getMessagesModel()
+MessagesModel& ChatManager::getMessagesModel()
 {
     return messagesModel;
 }
 
-void ChatHandler::setEnabledSoundNewMessage(bool enabled)
+void ChatManager::setEnabledSoundNewMessage(bool enabled)
 {
     if (_enabledSoundNewMessage != enabled)
     {
@@ -670,7 +670,7 @@ void ChatHandler::setEnabledSoundNewMessage(bool enabled)
     }
 }
 
-void ChatHandler::setEnabledShowAuthorNameChanged(bool enabled)
+void ChatManager::setEnabledShowAuthorNameChanged(bool enabled)
 {
     if (_enableShowAuthorNameChanged != enabled)
     {
@@ -682,7 +682,7 @@ void ChatHandler::setEnabledShowAuthorNameChanged(bool enabled)
     }
 }
 
-int ChatHandler::connectedCount() const
+int ChatManager::connectedCount() const
 {
     int result = 0;
 
@@ -703,7 +703,7 @@ int ChatHandler::connectedCount() const
     return result;
 }
 
-int ChatHandler::getTotalViewers() const
+int ChatManager::getTotalViewers() const
 {
     int result = 0;
 
@@ -725,7 +725,7 @@ int ChatHandler::getTotalViewers() const
     return result;
 }
 
-bool ChatHandler::isKnownViewesServicesMoreOne() const
+bool ChatManager::isKnownViewesServicesMoreOne() const
 {
     int count = 0;
 
@@ -750,7 +750,7 @@ bool ChatHandler::isKnownViewesServicesMoreOne() const
     return false;
 }
 
-void ChatHandler::setProxyEnabled(bool enabled)
+void ChatManager::setProxyEnabled(bool enabled)
 {
     if (_enabledProxy != enabled)
     {
@@ -762,7 +762,7 @@ void ChatHandler::setProxyEnabled(bool enabled)
     }
 }
 
-void ChatHandler::setProxyServerAddress(QString address)
+void ChatManager::setProxyServerAddress(QString address)
 {
     address = address.trimmed();
 
@@ -776,7 +776,7 @@ void ChatHandler::setProxyServerAddress(QString address)
     }
 }
 
-void ChatHandler::setProxyServerPort(int port)
+void ChatManager::setProxyServerPort(int port)
 {
     if (_proxy.port() != port)
     {
@@ -788,7 +788,7 @@ void ChatHandler::setProxyServerPort(int port)
     }
 }
 
-QNetworkProxy ChatHandler::proxy() const
+QNetworkProxy ChatManager::proxy() const
 {
     if (_enabledProxy)
     {
@@ -798,12 +798,12 @@ QNetworkProxy ChatHandler::proxy() const
     return QNetworkProxy(QNetworkProxy::NoProxy);
 }
 
-int ChatHandler::getServicesCount() const
+int ChatManager::getServicesCount() const
 {
     return services.count();
 }
 
-ChatService *ChatHandler::getServiceAtIndex(int index) const
+ChatService *ChatManager::getServiceAtIndex(int index) const
 {
     if (index >= services.count() || index < 0)
     {
@@ -813,7 +813,7 @@ ChatService *ChatHandler::getServiceAtIndex(int index) const
     return services.at(index).get();
 }
 
-ChatService *ChatHandler::getServiceByType(int type) const
+ChatService *ChatManager::getServiceByType(int type) const
 {
     for (const std::shared_ptr<ChatService>& service : services)
     {
@@ -832,12 +832,12 @@ ChatService *ChatHandler::getServiceByType(int type) const
     return nullptr;
 }
 
-QUrl ChatHandler::getServiceIconUrl(int serviceType) const
+QUrl ChatManager::getServiceIconUrl(int serviceType) const
 {
     return ChatService::getIconUrl((AxelChat::ServiceType)serviceType);
 }
 
-QUrl ChatHandler::getServiceName(int serviceType) const
+QUrl ChatManager::getServiceName(int serviceType) const
 {
     return ChatService::getName((AxelChat::ServiceType)serviceType);
 }

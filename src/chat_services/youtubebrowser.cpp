@@ -14,7 +14,7 @@ static const int RequestStreamInterval = 10000;
 
 }
 
-YouTubeBrowser::YouTubeBrowser(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
+YouTubeBrowser::YouTubeBrowser(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager& web_, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, false, parent)
     , network(network_)
     , web(web_)

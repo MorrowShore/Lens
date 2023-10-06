@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.0
 import Qt.labs.settings 1.1
-import AxelChat.ChatHandler 1.0
+import AxelChat.ChatManager 1.0
 import AxelChat.ChatService 1.0
 import AxelChat.UpdateChecker 1.0
 import QtQuick.Window 2.15
@@ -141,7 +141,7 @@ Item {
         }
 
         Connections {
-            target: chatHandler
+            target: chatManager
             function onMessagesDataChanged() {
                 listMessages.needAutoScrollToBottom = listMessages.scrollbarOnBottom();
                 Qt.callLater(listMessages.autoScroll);
@@ -334,7 +334,7 @@ Item {
 
                         if (Global.windowChatMessageShowPlatformIcon)
                         {
-                            prefix += createImgHtmlTag(chatHandler.getServiceIconUrl(authorServiceType), badgePixelSize) + " "
+                            prefix += createImgHtmlTag(chatManager.getServiceIconUrl(authorServiceType), badgePixelSize) + " "
                         }
 
                         var i;
@@ -376,7 +376,7 @@ Item {
                         }
 
                         if (name.length === 0 && messageIsServiceMessage) {
-                            name = chatHandler.getServiceName(authorServiceType)
+                            name = chatManager.getServiceName(authorServiceType)
                         }
 
                         return prefix + name + postfix
@@ -427,7 +427,7 @@ Item {
                 fillMode: Image.PreserveAspectCrop
 
                 rounded: authorServiceType !== Global._SoftwareServiceType &&
-                         source !== chatHandler.getServiceIconUrl(authorServiceType);
+                         source !== chatManager.getServiceIconUrl(authorServiceType);
 
                 width: Global.windowChatMessageAvatarSize
                 height: Global.windowChatMessageAvatarSize
@@ -453,7 +453,7 @@ Item {
                         return authorAvatarUrl;
                     }
 
-                    return "" // chatHandler.getServiceIconUrl(authorServiceType)
+                    return "" // chatManager.getServiceIconUrl(authorServiceType)
                 }
 
                 MouseArea {

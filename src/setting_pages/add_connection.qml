@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import QtQuick.Window 2.15
-import AxelChat.ChatHandler 1.0
+import AxelChat.ChatManager 1.0
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import "../my_components" as MyComponents
@@ -24,8 +24,8 @@ ScrollView {
         focus: true
 
         Component.onCompleted: {
-            for (var i = chatHandler.getServicesCount() - 1; i >= 0; --i) {
-                var service = chatHandler.getServiceAtIndex(i)
+            for (var i = chatManager.getServicesCount() - 1; i >= 0; --i) {
+                var service = chatManager.getServiceAtIndex(i)
                 model.insert(0,
                              {
                                  name: service.getName(),
@@ -75,7 +75,7 @@ ScrollView {
                     visible: categoryDelegate.iconSource.length > 0
 
                     Rectangle {
-                        property var chatService: chatHandler.getServiceAtIndex(serviceIndex)
+                        property var chatService: chatManager.getServiceAtIndex(serviceIndex)
 
                         width: 14
                         height: width

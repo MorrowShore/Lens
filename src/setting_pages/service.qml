@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
-import AxelChat.ChatHandler 1.0
+import AxelChat.ChatManager 1.0
 import AxelChat.ChatService 1.0
 import AxelChat.UIBridgeElement 1.0
 import AxelChat.UIBridge 1.0
@@ -21,7 +21,7 @@ ScrollView {
 
     property var chatService: null
     Component.onCompleted: {
-        chatService = chatHandler.getServiceAtIndex(Global.windowSettingsServiceIndex)
+        chatService = chatManager.getServiceAtIndex(Global.windowSettingsServiceIndex)
     }
 
     Column {

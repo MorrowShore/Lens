@@ -1,5 +1,5 @@
 #include "websocket.h"
-#include "chathandler.h"
+#include "ChatManager.h"
 #include <QCoreApplication>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -13,10 +13,10 @@ static const int LastMessagesCount = 30;
 
 }
 
-WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
+WebSocket::WebSocket(ChatManager& chatManager_, QObject *parent)
     : QObject{parent}
     , server(QCoreApplication::applicationName(), QWebSocketServer::NonSecureMode)
-    , chatHandler(chatHandler_)
+    , chatManager(chatManager_)
 {
     connect(&server, &QWebSocketServer::closed, this, []()
     {
@@ -57,7 +57,7 @@ WebSocket::WebSocket(ChatHandler& chatHandler_, QObject *parent)
         sendHelloToClient(client);
         sendStateToClient(client);
 
-        const QList<std::shared_ptr<Message>> lastMessages = chatHandler.getMessagesModel().getLastMessages(LastMessagesCount);
+        const QList<std::shared_ptr<Message>> lastMessages = chatManager.getMessagesModel().getLastMessages(LastMessagesCount);
         sendMessagesToClient(lastMessages, client);
     });
 
@@ -124,7 +124,7 @@ void WebSocket::sendHelloToClient(QWebSocket *client)
 
     QJsonArray jsonServices;
 
-    for (const std::shared_ptr<ChatService>& service : chatHandler.getServices())
+    for (const std::shared_ptr<ChatService>& service : chatManager.getServices())
     {
         if (!service)
         {
@@ -167,7 +167,7 @@ void WebSocket::sendMessagesToClient(const QList<std::shared_ptr<Message>> &mess
         }
 
         const QString authorId = message->getAuthorId();
-        const std::shared_ptr<Author> author = chatHandler.getMessagesModel().getAuthor(authorId);
+        const std::shared_ptr<Author> author = chatManager.getMessagesModel().getAuthor(authorId);
         if (!author)
         {
             qCritical() << "author id" << authorId << "not found, message id =" << message->getId();
@@ -192,7 +192,7 @@ void WebSocket::sendStateToClient(QWebSocket *client)
 
     QJsonArray jsonServices;
 
-    for (const std::shared_ptr<ChatService>& service : chatHandler.getServices())
+    for (const std::shared_ptr<ChatService>& service : chatManager.getServices())
     {
         if (!service)
         {
@@ -205,7 +205,7 @@ void WebSocket::sendStateToClient(QWebSocket *client)
 
     QJsonObject data;
     data.insert("services", jsonServices);
-    data.insert("viewers", chatHandler.getTotalViewers());
+    data.insert("viewers", chatManager.getTotalViewers());
 
     root.insert("data", data);
 

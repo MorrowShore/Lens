@@ -15,7 +15,7 @@ void ChatWindow::declareQml()
     UIBridge::declareQml();
     QMLUtils::declareQml();
     I18n::declareQml();
-    ChatHandler::declareQml();
+    ChatManager::declareQml();
     GitHubApi::declareQml();
     ClipboardQml::declareQml();
     CommandsEditor::declareQml();
@@ -30,8 +30,8 @@ ChatWindow::ChatWindow(QWindow *parent)
     , appSponsorManager(network)
     , i18n(settings, "i18n", engine())
     , github(settings, "update_checker", network)
-    , chatHandler(settings, network, web)
-    , commandsEditor(chatHandler.getBot())
+    , chatManager(settings, network, web)
+    , commandsEditor(chatManager.getBot())
     , tray(QIcon(":/resources/images/axelchat-16x16.png"))
 
     , hideToTrayOnMinimize(settings, "hideToTrayOnMinimize", false)
@@ -131,7 +131,7 @@ ChatWindow::ChatWindow(QWindow *parent)
             QAction* action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
             connect(action, &QAction::triggered, this, [this]()
             {
-                chatHandler.clearMessages();
+                chatManager.clearMessages();
             });
             menu->addAction(action);
         }
@@ -158,14 +158,14 @@ ChatWindow::ChatWindow(QWindow *parent)
 
         qml->rootContext()->setContextProperty("chatWindow",         this);
         qml->rootContext()->setContextProperty("i18n",               &i18n);
-        qml->rootContext()->setContextProperty("chatHandler",        &chatHandler);
-        qml->rootContext()->setContextProperty("outputToFile",       &chatHandler.getOutputToFile());
-        qml->rootContext()->setContextProperty("chatBot",            &chatHandler.getBot());
-        qml->rootContext()->setContextProperty("authorQMLProvider",  &chatHandler.getAuthorQMLProvider());
+        qml->rootContext()->setContextProperty("chatManager",        &chatManager);
+        qml->rootContext()->setContextProperty("outputToFile",       &chatManager.getOutputToFile());
+        qml->rootContext()->setContextProperty("chatBot",            &chatManager.getBot());
+        qml->rootContext()->setContextProperty("authorQMLProvider",  &chatManager.getAuthorQMLProvider());
         qml->rootContext()->setContextProperty("updateChecker",      &github);
         qml->rootContext()->setContextProperty("clipboard",          &qmlClipboard);
         qml->rootContext()->setContextProperty("qmlUtils",           QMLUtils::instance());
-        qml->rootContext()->setContextProperty("messagesModel",      &chatHandler.getMessagesModel());
+        qml->rootContext()->setContextProperty("messagesModel",      &chatManager.getMessagesModel());
         qml->rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
         qml->rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
         qml->rootContext()->setContextProperty("logWindow",          &logWindow);

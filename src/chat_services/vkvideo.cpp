@@ -19,7 +19,7 @@ static const int StickerImageHeight = 128;
 
 }
 
-VkVideo::VkVideo(ChatHandler& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
+VkVideo::VkVideo(ChatManager& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::VkVideo, false, parent)
     , network(network_)
     , authStateInfo(ui.addLabel("Loading..."))

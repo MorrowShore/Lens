@@ -5,13 +5,13 @@
 #include <QWebSocketServer>
 #include <QWebSocket>
 
-class ChatHandler;
+class ChatManager;
 
 class WebSocket : public QObject
 {
     Q_OBJECT
 public:
-    explicit WebSocket(ChatHandler& chatHandler, QObject *parent = nullptr);
+    explicit WebSocket(ChatManager& chatManager, QObject *parent = nullptr);
     void sendMessages(const QList<std::shared_ptr<Message>>& messages);
     void sendState();
     void sendAuthorValues(const QString& authorId, const QMap<Author::Role, QVariant>& values);
@@ -28,5 +28,5 @@ private:
 
     QWebSocketServer server;
     QList<QWebSocket*> clients;
-    ChatHandler& chatHandler;
+    ChatManager& chatManager;
 };

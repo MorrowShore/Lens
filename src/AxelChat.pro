@@ -17,6 +17,7 @@ DEFINES += QT_MESSAGELOGCONTEXT
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    ChatManager.h \
     appsponsormanager.h \
     chat_services/discord/Channel.h \
     chat_services/discord/Guild.h \
@@ -66,7 +67,6 @@ HEADERS += \
     authorqmlprovider.h \
     botaction.h \
     chatbot.h \
-    chathandler.h \
     clipboardqml.h \
     commandseditor.h \
     commandsingleeditor.h \
@@ -82,6 +82,7 @@ HEADERS += \
     websocket.h
 
 SOURCES += \
+    ChatManager.cpp \
     appsponsormanager.cpp \
     chat_services/chatservice.cpp \
     chat_services/discord/Guild.cpp \
@@ -119,7 +120,6 @@ SOURCES += \
     authorqmlprovider.cpp \
     botaction.cpp \
     chatbot.cpp \
-    chathandler.cpp \
     clipboardqml.cpp \
     commandseditor.cpp \
     commandsingleeditor.cpp \

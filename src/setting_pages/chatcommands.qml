@@ -157,7 +157,7 @@ ScrollView {
     function sendTestMessage(){
         if (textFieldTestMessage.text.length > 0)
         {
-            chatHandler.sendTestMessage(textFieldTestMessage.text);
+            chatManager.sendTestMessage(textFieldTestMessage.text);
             textFieldTestMessage.text = "";
         }
     }

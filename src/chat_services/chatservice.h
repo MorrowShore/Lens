@@ -17,7 +17,7 @@
 #include <QJsonArray>
 #include <set>
 
-class ChatHandler;
+class ChatManager;
 class Author;
 class Message;
 
@@ -57,8 +57,8 @@ public:
     };
 
     static const QString UnknownBadge;
-
-    explicit ChatService(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
+    
+    explicit ChatService(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
     virtual ~ChatService(){}
 
     ChatService (const ChatService&) = delete;
@@ -135,8 +135,8 @@ protected:
     std::shared_ptr<Author> getServiceAuthor() const;
 
     const QString& getSettingsGroupPath() const { return settingsGroupPath; }
-
-    ChatHandler& manager;
+    
+    ChatManager& manager;
     State state;
     Setting<QString> stream;
     UIBridge ui;

@@ -4,7 +4,7 @@ import QtQuick.Window 2.15
 import QtQuick.Controls.Material 2.12
 import "my_components" as MyComponents
 import AxelChat.AuthorQMLProvider 1.0
-import AxelChat.ChatHandler 1.0
+import AxelChat.ChatManager 1.0
 import AxelChat.QMLUtils 1.0
 
 Window {

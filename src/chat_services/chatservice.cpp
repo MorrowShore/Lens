@@ -1,5 +1,5 @@
 #include "chatservice.h"
-#include "chathandler.h"
+#include "ChatManager.h"
 
 namespace
 {
@@ -11,7 +11,7 @@ static const int FirstReconnectPeriod = 100;
 
 const QString ChatService::UnknownBadge = "qrc:/resources/images/unknown-badge.png";
 
-ChatService::ChatService(ChatHandler& manager_, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
+ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
     : QObject(parent)
     , serviceType(serviceType_)
     , settingsGroupPath(settingsGroupPathParent + "/" + getServiceTypeId(serviceType_))
