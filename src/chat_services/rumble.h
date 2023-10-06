@@ -10,7 +10,7 @@ class Rumble : public ChatService
 {
     Q_OBJECT
 public:
-    explicit Rumble(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    explicit Rumble(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
     QString getMainError() const override;

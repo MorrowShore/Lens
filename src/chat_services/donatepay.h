@@ -9,7 +9,7 @@ class DonatePay : public ChatService
 {
     Q_OBJECT
 public:
-    explicit DonatePay(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    explicit DonatePay(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
 

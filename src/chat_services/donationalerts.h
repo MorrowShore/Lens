@@ -10,7 +10,7 @@ class DonationAlerts : public ChatService
 {
     Q_OBJECT
 public:
-    explicit DonationAlerts(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    explicit DonationAlerts(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
     TcpReply processTcpRequest(const TcpRequest &request) override;

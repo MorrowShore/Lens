@@ -1,4 +1,5 @@
 #include "chatservice.h"
+#include "chathandler.h"
 
 namespace
 {
@@ -10,15 +11,15 @@ static const int FirstReconnectPeriod = 100;
 
 const QString ChatService::UnknownBadge = "qrc:/resources/images/unknown-badge.png";
 
-ChatService::ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
+ChatService::ChatService(ChatHandler& manager_, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
     : QObject(parent)
-
     , serviceType(serviceType_)
     , settingsGroupPath(settingsGroupPathParent + "/" + getServiceTypeId(serviceType_))
+    , manager(manager_)
     , stream(settings, getSettingsGroupPath() + "/stream")
     , enabled(settings, getSettingsGroupPath() + "/enabled", false)
-    , lastSavedMessageId(settings, getSettingsGroupPath() + "/lastSavedMessageId")
     , enabledThirdPartyEmotes(settings, getSettingsGroupPath() + "/enabledThirdPartyEmotes", enabledThirdPartyEmotesDefault)
+    , lastSavedMessageId(settings, getSettingsGroupPath() + "/lastSavedMessageId")
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 

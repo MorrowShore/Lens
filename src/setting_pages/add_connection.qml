@@ -83,7 +83,7 @@ ScrollView {
                         y: parent.height - height / 2
                         border.width: 2
                         radius: width / 2
-                        border.color: root.color
+                        //border.color: root.color
                         visible: chatService !== null && chatService.enabled
 
                         color: {

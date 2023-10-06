@@ -9,7 +9,7 @@ class YouTubeBrowser : public ChatService
 {
     Q_OBJECT
 public:
-    explicit YouTubeBrowser(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    explicit YouTubeBrowser(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
     QString getMainError() const override;

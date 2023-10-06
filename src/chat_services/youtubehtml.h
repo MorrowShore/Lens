@@ -9,7 +9,7 @@ class YouTubeHtml : public ChatService
 {
     Q_OBJECT
 public:
-    explicit YouTubeHtml(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    explicit YouTubeHtml(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
     
     ConnectionState getConnectionState() const override;
     QString getMainError() const override;

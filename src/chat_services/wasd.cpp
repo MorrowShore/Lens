@@ -19,8 +19,8 @@ static const int RequestChannelInterval = 10000;
 
 };
 
-Wasd::Wasd(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
-    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::Wasd, false, parent)
+Wasd::Wasd(ChatHandler& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
+    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Wasd, false, parent)
     , network(network_)
     , socket("https://wasd.tv/")
 {

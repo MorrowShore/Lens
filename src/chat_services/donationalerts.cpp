@@ -55,8 +55,8 @@ bool checkReply(QNetworkReply *reply, const char *tag, QByteArray &resultData)
 
 }
 
-DonationAlerts::DonationAlerts(QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
-    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::DonationAlerts, false, parent)
+DonationAlerts::DonationAlerts(ChatHandler& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
+    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::DonationAlerts, false, parent)
     , network(network_)
     , auth(settings, getSettingsGroupPath() + "/auth", network)
     , authStateInfo(ui.addLabel("Loading..."))

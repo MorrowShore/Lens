@@ -15,8 +15,8 @@ static const int CheckPingSendTimeout = PingSendTimeout * 1.5;
 
 }
 
-DonatePay::DonatePay(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
-    : ChatService(settings, settingsGroupPathParent, AxelChat::ServiceType::DonatePayRu, false, parent)
+DonatePay::DonatePay(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
+    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::DonatePayRu, false, parent)
     , network(network_)
     , apiKey(settings, getSettingsGroupPath() + "/api_key", QString(), true)
     , domain("https://donatepay.ru")

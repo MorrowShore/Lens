@@ -346,7 +346,7 @@ void ChatHandler::addService()
 {
     static_assert(std::is_base_of<ChatService, ChatServiceInheritedClass>::value, "ChatServiceInheritedClass must derive from ChatService");
 
-    std::shared_ptr<ChatServiceInheritedClass> service = std::make_shared<ChatServiceInheritedClass>(settings, SettingsGroupPath, network, web, this);
+    std::shared_ptr<ChatServiceInheritedClass> service = std::make_shared<ChatServiceInheritedClass>(*this, settings, SettingsGroupPath, network, web, this);
 
     QObject::connect(service.get(), &ChatService::stateChanged, this, &ChatHandler::onStateChanged);
     QObject::connect(service.get(), &ChatService::readyRead, this, &ChatHandler::onReadyRead);

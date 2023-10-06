@@ -58,7 +58,7 @@ public:
 
     static const QString UnknownBadge;
 
-    explicit ChatService(QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
+    explicit ChatService(ChatHandler& manager, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
     virtual ~ChatService(){}
 
     ChatService (const ChatService&) = delete;
@@ -136,6 +136,7 @@ protected:
 
     const QString& getSettingsGroupPath() const { return settingsGroupPath; }
 
+    ChatHandler& manager;
     State state;
     Setting<QString> stream;
     UIBridge ui;
