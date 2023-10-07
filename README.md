@@ -32,7 +32,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - Proxy support
 - Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
 
-# Possibly in future updates
+# Job status
 - [x] Twitch support
 - [x] YouTube support
 - [x] Trovo support
