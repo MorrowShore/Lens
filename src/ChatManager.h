@@ -5,6 +5,7 @@
 #include "websocket.h"
 #include "tcpserver.h"
 #include "emotesprocessor.h"
+#include "BackendManager.h"
 #include "CefWebEngineQt/Manager.h"
 #include <QSettings>
 #include <QMap>
@@ -35,7 +36,7 @@ class ChatManager : public QObject
     Q_PROPERTY(int     proxyServerPort    READ proxyServerPort    WRITE setProxyServerPort    NOTIFY proxyChanged)
 
 public:
-    explicit ChatManager(QSettings& settings, QNetworkAccessManager& network, cweqt::Manager& web, QObject *parent = nullptr);
+    explicit ChatManager(QSettings& settings, QNetworkAccessManager& network, cweqt::Manager& web, BackendManager& backend, QObject *parent = nullptr);
     ~ChatManager();
 
     MessagesModel& getMessagesModel();
@@ -126,6 +127,7 @@ private:
     QSettings& settings;
     QNetworkAccessManager& network;
     cweqt::Manager& web;
+    BackendManager& backend;
 
     QList<std::shared_ptr<ChatService>> services;
 
