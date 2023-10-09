@@ -19,6 +19,7 @@ DEFINES += QT_MESSAGELOGCONTEXT
 HEADERS += \
     BackendManager.h \
     ChatManager.h \
+    QtStringUtils.h \
     appsponsormanager.h \
     chat_services/discord/Channel.h \
     chat_services/discord/Guild.h \
@@ -85,6 +86,7 @@ HEADERS += \
 SOURCES += \
     BackendManager.cpp \
     ChatManager.cpp \
+    QtStringUtils.cpp \
     appsponsormanager.cpp \
     chat_services/chatservice.cpp \
     chat_services/discord/Guild.cpp \

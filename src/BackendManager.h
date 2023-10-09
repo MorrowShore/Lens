@@ -10,7 +10,7 @@ public:
     void sendStarted();
 
 private:
-    void sendEvent(const QString& type, const QJsonValue& data);
+    void sendEvent(const QDateTime& time, const QString& type, const QJsonValue& data);
 
     QNetworkAccessManager& network;
 

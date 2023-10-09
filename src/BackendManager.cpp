@@ -1,5 +1,6 @@
 #include "BackendManager.h"
 #include "secrets.h"
+#include "QtStringUtils.h"
 #include "crypto/obfuscator.h"
 #include <QDebug>
 #include <QNetworkRequest>
@@ -82,16 +83,28 @@ BackendManager::BackendManager(QNetworkAccessManager& network_, QObject *parent)
 
 void BackendManager::sendStarted()
 {
-    sendEvent("SESSION_STARTED", getSessionInfo());
+    sendEvent(QDateTime::currentDateTime(), "SESSION_STARTED", getSessionInfo());
 }
 
-void BackendManager::sendEvent(const QString &type, const QJsonValue &data)
+void BackendManager::sendEvent(const QDateTime& time, const QString &type, const QJsonValue &data)
 {
+    const QJsonArray jsonEvents(
+        {
+            QJsonObject(
+            {
+                { "type", type },
+                { "time", QtStringUtils::dateTimeToStringISO8601WithMsWithOffsetFromUtc(time) },
+                { "data", data },
+            })
+        }
+    );
+
     const QJsonDocument doc(QJsonObject(
         {
-            { "session", getSessionHash() },
-            { "type", type },
-            { "data", data },
+            { "machine-hash", getMachineHash() },
+            { "session-hash", getSessionHash() },
+            { "type", "events" },
+            { "data", QJsonObject({{ "events", jsonEvents }})}
         }));
 
     QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/events")));
