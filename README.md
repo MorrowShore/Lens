@@ -144,6 +144,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 #define DONATIONALERTS_CLIENT_ID "<Paste DonationAlerts client id here>"
 #define DONATIONALERTS_API_KEY "<Paste DonationAlerts API key here>"
 #define BACKEND_API_ROOT_URL "<Paste API root url>"
+#define BACKEND_API_TOKEN "<Paste backend api token>"
 #define BACKEND_API_HASH_SALT "<Generate some random string>"
 ```
 3. Open file `<AxelChat_project_folder>/src/AxelChat.pro` with Qt Creator
