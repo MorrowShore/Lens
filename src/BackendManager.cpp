@@ -101,20 +101,19 @@ void BackendManager::sendEvent(const QDateTime& time, const QString &type, const
 
     const QJsonDocument doc(QJsonObject(
         {
-            { "token", OBFUSCATE(BACKEND_API_TOKEN) },
             { "machine-hash", getMachineHash() },
             { "session-hash", getSessionHash() },
             { "type", "events" },
             { "data", QJsonObject({{ "events", jsonEvents }})}
         }));
 
-    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/events")));
+    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/events?token=") + OBFUSCATE(BACKEND_API_TOKEN)));
     request.setRawHeader("Content-Type", "application/json");
 
     QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
 
     connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [type](QNetworkReply::NetworkError error)
     {
-        qCritical() << error << ", type =" << type;
+        qCritical() << error << ", event type =" << type;
     });
 }
