@@ -10,7 +10,7 @@ The terms used in this Privacy Policy have the same meanings as in our Terms and
 
 ## Information Collection and Use
 
-We may collect anonymous statistics about application usage.
+We may collect anonymous statistics about application usage to improve the services.
 
 The app does use third-party services that may collect information used to identify you.
 
