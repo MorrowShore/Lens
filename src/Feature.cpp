@@ -9,14 +9,16 @@ Feature::Feature(BackendManager& backend_, const QString& name_, QObject *parent
 
 }
 
-void Feature::setAsUsed()
+void Feature::setAsUsed() const
 {
+    Feature* this_ = const_cast<Feature*>(this);
+
     if (settedAsUsed)
     {
         return;
     }
 
-    backend.addUsedFeature(name);
+    this_->backend.addUsedFeature(name);
 
-    settedAsUsed = true;
+    this_->settedAsUsed = true;
 }

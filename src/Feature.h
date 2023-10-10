@@ -11,7 +11,7 @@ public:
     virtual ~Feature(){}
 
 protected:
-    void setAsUsed();
+    void setAsUsed() const;
 
 private:
     BackendManager& backend;
