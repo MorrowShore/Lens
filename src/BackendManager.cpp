@@ -104,7 +104,7 @@ void BackendManager::sendEvent(const QDateTime& time, const QString &type, const
             { "machine-hash", getMachineHash() },
             { "session-hash", getSessionHash() },
             { "type", "events" },
-            { "data", QJsonObject({{ "events", jsonEvents }})}
+            { "data", jsonEvents }
         }));
 
     QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/events?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
