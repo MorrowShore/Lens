@@ -115,5 +115,4 @@ void BackendManager::sendSessionUsage()
 void BackendManager::addUsedFeature(const QString &feature)
 {
     usedFeatures.insert(feature);
-    qDebug() << feature;
 }
