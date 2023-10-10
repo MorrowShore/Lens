@@ -43,8 +43,28 @@ static QString getSessionHash()
     return Hash;
 }
 
-static QJsonObject getSessionInfo()
+}
+
+BackendManager::BackendManager(QNetworkAccessManager& network_, QObject *parent)
+    : QObject{parent}
+    , network(network_)
+    , startTime(QDateTime::currentDateTime())
 {
+    usageDuration.start();
+}
+
+BackendManager::~BackendManager()
+{
+    sendSessionUsage();
+}
+
+void BackendManager::sendSessionUsage()
+{
+    const qint64 startedAtMs = startTime.toUTC().toMSecsSinceEpoch();
+    const int startedAtOffsetSec = startTime.toLocalTime().offsetFromUtc();
+
+    const qint64 durationMs = usageDuration.elapsed();
+
     const QJsonObject app(
         {
             { "name", QCoreApplication::applicationName() },
@@ -64,56 +84,31 @@ static QJsonObject getSessionInfo()
             { "hash", getMachineHash() },
         });
 
-    return QJsonObject(
+    const QJsonObject usage =
         {
+            { "startedAtMs", startedAtMs },
+            { "startedAtOffsetSec", startedAtOffsetSec },
+            { "durationMs", durationMs },
             { "app", app },
-            { "machine", machine},
-            { "hash", getSessionHash() },
-        });
-}
-
-}
-
-BackendManager::BackendManager(QNetworkAccessManager& network_, QObject *parent)
-    : QObject{parent}
-    , network(network_)
-{
-
-}
-
-void BackendManager::sendStarted()
-{
-    sendEvent(QDateTime::currentDateTime(), "SESSION_STARTED", getSessionInfo());
-}
-
-void BackendManager::sendEvent(const QDateTime& time, const QString &type, const QJsonValue &data)
-{
-    const QJsonArray jsonEvents(
-        {
-            QJsonObject(
-            {
-                { "type", type },
-                { "time", QtStringUtils::dateTimeToStringISO8601WithMsWithOffsetFromUtc(time) },
-                { "data", data },
-            })
-        }
-    );
+            { "machine", machine },
+        };
 
     const QJsonDocument doc(QJsonObject(
         {
             { "machineHash", getMachineHash() },
             { "sessionHash", getSessionHash() },
-            { "type", "events" },
-            { "data", jsonEvents }
+            { "usage", usage },
         }));
 
-    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/events?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
+    qDebug() << doc;
+
+    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/usage?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
     request.setRawHeader("Content-Type", "application/json");
 
     QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
 
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [type](QNetworkReply::NetworkError error)
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [](QNetworkReply::NetworkError error)
     {
-        qCritical() << error << ", event type =" << type;
+        qCritical() << error;
     });
 }

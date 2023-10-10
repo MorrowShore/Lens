@@ -69,8 +69,6 @@ ChatManager::ChatManager(QSettings& settings_, QNetworkAccessManager& network_, 
     , webSocket(*this)
     , tcpServer(services)
 {
-    backend.sendStarted();
-
     connect(&outputToFile, &OutputToFile::authorNameChanged, this, &ChatManager::onAuthorNameChanged);
 
     setEnabledSoundNewMessage(settings.value(SettingsEnabledSoundNewMessage, _enabledSoundNewMessage).toBool());

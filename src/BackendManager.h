@@ -1,17 +1,20 @@
 #pragma once
 
 #include <QNetworkAccessManager>
+#include <QElapsedTimer>
 
 class BackendManager : public QObject
 {
     Q_OBJECT
 public:
     explicit BackendManager(QNetworkAccessManager& network, QObject *parent = nullptr);
-    void sendStarted();
+    ~BackendManager();
 
 private:
-    void sendEvent(const QDateTime& time, const QString& type, const QJsonValue& data);
+    void sendSessionUsage();
 
     QNetworkAccessManager& network;
 
+    QElapsedTimer usageDuration;
+    const QDateTime startTime;
 };
