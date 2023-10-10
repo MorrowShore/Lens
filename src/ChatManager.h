@@ -36,6 +36,8 @@ class ChatManager : public QObject
     Q_PROPERTY(int     proxyServerPort    READ proxyServerPort    WRITE setProxyServerPort    NOTIFY proxyChanged)
 
 public:
+    BackendManager& backend;
+
     explicit ChatManager(QSettings& settings, QNetworkAccessManager& network, cweqt::Manager& web, BackendManager& backend, QObject *parent = nullptr);
     ~ChatManager();
 
@@ -150,8 +152,5 @@ private:
     QNetworkProxy _proxy = QNetworkProxy(QNetworkProxy::ProxyType::Socks5Proxy/*HttpProxy*/);
 
     TcpServer tcpServer;
-
-public:
-    BackendManager& backend;
 };
 

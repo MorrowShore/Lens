@@ -58,11 +58,11 @@ static const QList<QColor> GeneratingColors =
 
 ChatManager::ChatManager(QSettings& settings_, QNetworkAccessManager& network_, cweqt::Manager& web_, BackendManager& backend_, QObject *parent)
     : QObject(parent)
+    , backend(backend_)
     , settings(settings_)
     , network(network_)
     , web(web_)
-    , backend(backend_)
-    , emotesProcessor(settings_, SettingsGroupPath, network_)
+    , emotesProcessor(backend_, settings_, SettingsGroupPath, network_)
     , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, services)
     , bot(settings, SettingsGroupPath + "/chat_bot")
     , authorQMLProvider(*this, messagesModel, outputToFile)

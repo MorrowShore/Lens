@@ -14,8 +14,8 @@ static const int EmoteImageHeight = 32;
 
 }
 
-EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGroupPathParent_, QNetworkAccessManager& network_, QObject *parent)
-    : QObject{parent}
+EmotesProcessor::EmotesProcessor(BackendManager& backend, QSettings& settings_, const QString& settingsGroupPathParent_, QNetworkAccessManager& network_, QObject *parent)
+    : Feature(backend, "other:EmotesProcessor", parent)
     , settings(settings_)
     , settingsGroupPath(settingsGroupPathParent_ + "/emotes_processor")
     , network(network_)
@@ -52,6 +52,8 @@ EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGr
 
 void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
 {
+    Feature::setAsUsed();
+
     if (!message)
     {
         qWarning() << "message is null";
