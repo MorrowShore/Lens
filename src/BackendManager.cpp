@@ -101,8 +101,8 @@ void BackendManager::sendEvent(const QDateTime& time, const QString &type, const
 
     const QJsonDocument doc(QJsonObject(
         {
-            { "machine-hash", getMachineHash() },
-            { "session-hash", getSessionHash() },
+            { "machineHash", getMachineHash() },
+            { "sessionHash", getSessionHash() },
             { "type", "events" },
             { "data", jsonEvents }
         }));
