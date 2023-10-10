@@ -10,7 +10,7 @@ The terms used in this Privacy Policy have the same meanings as in our Terms and
 
 ## Information Collection and Use
 
-For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information, including but not limited to data for connecting to third-party services, including streaming services, donation services and others. We may also collect anonymized information about the machine on which the software is running, as well as information about the operation of the application.
+We may collect anonymous statistics about application usage.
 
 The app does use third-party services that may collect information used to identify you.
 
