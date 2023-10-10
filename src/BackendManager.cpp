@@ -124,8 +124,6 @@ void BackendManager::sendSessionUsage()
     {
         qCritical() << error;
     });
-
-    qDebug() << doc;
 }
 
 void BackendManager::setUsedLanguage(const QString &language)
