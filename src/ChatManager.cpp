@@ -304,6 +304,7 @@ void ChatManager::updateProxy()
     if (_enabledProxy)
     {
         network.setProxy(_proxy);
+        backend.addUsedFeature("Proxy");
     }
     else
     {
