@@ -186,7 +186,7 @@ ScrollView {
                 flat: true
                 icon.source: "qrc:/resources/images/help-round-button.svg"
                 onClicked: {
-                    Global.windowSettings.showInfo(qsTr("Allow to display emotes from %1. To display channel (custom) emotes, login to a Twitch account that is linked to these services").arg(parent.servicesNames))
+                    Global.windowSettings.showInfo(qsTr("Enables display of emoji from %1 for the current platform. To display custom emoji for the current platform, log into your Twitch account, which is linked to %1").arg(parent.servicesNames))
                 }
             }
         }
