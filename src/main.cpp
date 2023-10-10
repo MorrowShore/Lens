@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
     ChatWindow chatWindow(network, backend);
 
-    QtMiscUtils::setBeforeQuitDeferred([&]()
+    QtMiscUtils::setBeforeQuitDeferred([&backend, &chatWindow]()
     {
         backend.sendSessionUsage();
         chatWindow.hideAll();
