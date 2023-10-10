@@ -67,7 +67,7 @@ QString removePostfix(const QString& string, const QString& postfix, const Qt::C
 }
 
 OutputToFile::OutputToFile(QSettings &settings_, const QString &settingsGroupPath_, BackendManager& backend, QNetworkAccessManager& network_, const MessagesModel& messagesModel_, QList<std::shared_ptr<ChatService>>& services_, QObject *parent)
-    : Feature(backend, "other:OutputToFile", parent)
+    : Feature(backend, "OutputToFile", parent)
     , settings(settings_)
     , settingsGroupPath(settingsGroupPath_)
     , network(network_)

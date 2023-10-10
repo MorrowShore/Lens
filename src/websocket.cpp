@@ -14,7 +14,7 @@ static const int LastMessagesCount = 30;
 }
 
 WebSocket::WebSocket(ChatManager& chatManager_, QObject *parent)
-    : QObject{parent}
+    : Feature(chatManager_.backend, "WebSocket", parent)
     , server(QCoreApplication::applicationName(), QWebSocketServer::NonSecureMode)
     , chatManager(chatManager_)
 {
@@ -25,6 +25,8 @@ WebSocket::WebSocket(ChatManager& chatManager_, QObject *parent)
 
     connect(&server, &QWebSocketServer::newConnection, this, [this]()
     {
+        Feature::setAsUsed();
+
         QWebSocket* client = server.nextPendingConnection();
         if (!client)
         {

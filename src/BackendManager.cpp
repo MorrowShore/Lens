@@ -110,8 +110,6 @@ void BackendManager::sendSessionUsage()
     {
         qCritical() << error;
     });
-
-    qDebug() << doc;
 }
 
 void BackendManager::addUsedFeature(const QString &feature)

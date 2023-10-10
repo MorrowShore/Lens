@@ -6,7 +6,7 @@
 #include <QMediaContent>
 
 ChatBot::ChatBot(BackendManager& backend, QSettings& settings_, const QString& settingsGroup, QObject *parent)
-    : Feature(backend, "other:ChatBot", parent)
+    : Feature(backend, "ChatBot", parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroup)
 

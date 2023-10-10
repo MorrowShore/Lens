@@ -15,7 +15,7 @@ static const int EmoteImageHeight = 32;
 }
 
 EmotesProcessor::EmotesProcessor(BackendManager& backend, QSettings& settings_, const QString& settingsGroupPathParent_, QNetworkAccessManager& network_, QObject *parent)
-    : Feature(backend, "other:EmotesProcessor", parent)
+    : Feature(backend, "EmotesProcessor", parent)
     , settings(settings_)
     , settingsGroupPath(settingsGroupPathParent_ + "/emotes_processor")
     , network(network_)

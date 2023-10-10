@@ -2,12 +2,13 @@
 
 #include "models/message.h"
 #include "chat_services/chatservice.h"
+#include "Feature.h"
 #include <QWebSocketServer>
 #include <QWebSocket>
 
 class ChatManager;
 
-class WebSocket : public QObject
+class WebSocket : public Feature
 {
     Q_OBJECT
 public:
