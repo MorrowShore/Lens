@@ -11,10 +11,13 @@ public:
 
 public slots:
     void sendSessionUsage();
+    void addUsedFeature(const QString& feature);
 
 private:
     QNetworkAccessManager& network;
 
     QElapsedTimer usageDuration;
     const QDateTime startTime;
+
+    QSet<QString> usedFeatures;
 };

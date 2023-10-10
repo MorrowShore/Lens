@@ -127,7 +127,6 @@ private:
     QSettings& settings;
     QNetworkAccessManager& network;
     cweqt::Manager& web;
-    BackendManager& backend;
 
     QList<std::shared_ptr<ChatService>> services;
 
@@ -151,5 +150,8 @@ private:
     QNetworkProxy _proxy = QNetworkProxy(QNetworkProxy::ProxyType::Socks5Proxy/*HttpProxy*/);
 
     TcpServer tcpServer;
+
+public:
+    BackendManager& backend;
 };
 

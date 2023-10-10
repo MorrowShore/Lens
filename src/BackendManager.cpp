@@ -78,6 +78,12 @@ void BackendManager::sendSessionUsage()
             { "hash", getMachineHash() },
         });
 
+    QJsonArray features;
+    for (const QString& feature : qAsConst(usedFeatures))
+    {
+        features.append(feature);
+    }
+
     const QJsonObject usage =
         {
             { "startedAtMs", startedAtMs },
@@ -85,6 +91,7 @@ void BackendManager::sendSessionUsage()
             { "durationMs", durationMs },
             { "app", app },
             { "machine", machine },
+            { "features", features },
         };
 
     const QJsonDocument doc(QJsonObject(
@@ -103,4 +110,10 @@ void BackendManager::sendSessionUsage()
     {
         qCritical() << error;
     });
+}
+
+void BackendManager::addUsedFeature(const QString &feature)
+{
+    usedFeatures.insert(feature);
+    qDebug() << feature;
 }

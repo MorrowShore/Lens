@@ -173,6 +173,11 @@ void ChatService::reconnect()
     timerReconnect.stop();
     timerReconnect.start();
 
+    if (enabled.get())
+    {
+        manager.backend.addUsedFeature("chatService:" + getServiceTypeId(getServiceType()));
+    }
+
     reconnectImpl();
 
     emit stateChanged();
