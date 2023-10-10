@@ -1,5 +1,5 @@
 #include "goodgame.h"
-#include "models/messagesmodel.h"
+#include "utils/QtStringUtils.h"
 #include "models/message.h"
 #include "models/author.h"
 #include <QJsonObject>
@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QFileInfo>
 
 namespace
 {
@@ -170,7 +171,7 @@ void GoodGame::requestChannelStatus()
 void GoodGame::requestUserPage(const QString &authorName, const QString &authorId)
 {
     QNetworkRequest request(QUrl("https://goodgame.ru/user/" + authorId));
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, QtAxelChatUtils::UserAgentNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply, authorName, authorId]()
     {
@@ -238,13 +239,13 @@ QString GoodGame::getStreamId(const QString &stream)
     QString streamId = stream.trimmed().toLower();
     if (streamId.contains("goodgame.ru"))
     {
-        streamId = AxelChat::simplifyUrl(streamId);
+        streamId = QtStringUtils::simplifyUrl(streamId);
 
         bool ok = false;
-        streamId = AxelChat::removeFromStart(streamId, "goodgame.ru/channel/", Qt::CaseSensitivity::CaseInsensitive, &ok);
+        streamId = QtStringUtils::removeFromStart(streamId, "goodgame.ru/channel/", Qt::CaseSensitivity::CaseInsensitive, &ok);
         if (!ok)
         {
-            streamId = AxelChat::removeFromStart(streamId, "goodgame.ru/", Qt::CaseSensitivity::CaseInsensitive, &ok);
+            streamId = QtStringUtils::removeFromStart(streamId, "goodgame.ru/", Qt::CaseSensitivity::CaseInsensitive, &ok);
         }
 
         if (!ok)

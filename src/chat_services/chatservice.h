@@ -1,6 +1,5 @@
 #pragma once
 
-#include "utils.h"
 #include "setting.h"
 #include "chatservicestypes.h"
 #include "uibridge.h"

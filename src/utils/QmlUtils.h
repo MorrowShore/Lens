@@ -5,7 +5,7 @@
 #include <QQmlApplicationEngine>
 #include <QWindow>
 
-class QMLUtils : public QObject
+class QmlUtils : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool enabledHardwareGraphicsAccelerator READ enabledHardwareGraphicsAccelerator WRITE setEnabledHardwareGraphicsAccelerator NOTIFY dataChanged)
@@ -14,9 +14,9 @@ class QMLUtils : public QObject
 
 public:
     static void declareQml();
-    static QMLUtils* instance();
+    static QmlUtils* instance();
 
-    explicit QMLUtils(QSettings& settings, const QString& settingsGroup, QObject *parent = nullptr);
+    explicit QmlUtils(QSettings& settings, const QString& settingsGroup, QObject *parent = nullptr);
 
     void setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine);
 
@@ -43,7 +43,7 @@ signals:
     void triggered(const QString& action);
 
 private:
-    static QMLUtils* _instance;
+    static QmlUtils* _instance;
 
     QSettings& settings;
     const QString SettingsGroupPath = "qml_utils";

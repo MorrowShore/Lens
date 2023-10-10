@@ -1,6 +1,6 @@
 #include "ChatManager.h"
-#include "chat_services/youtubehtml.h"
-#include "chat_services/youtubebrowser.h"
+#include "chat_services/youtube/youtubehtml.h"
+#include "chat_services/youtube/youtubebrowser.h"
 #include "chat_services/twitch.h"
 #include "chat_services/trovo.h"
 #include "chat_services/rumble.h"

@@ -1,6 +1,6 @@
 #include "vkvideo.h"
 #include "secrets.h"
-#include "utils.h"
+#include "utils/QtStringUtils.h"
 #include "crypto/obfuscator.h"
 #include "models/message.h"
 #include <QNetworkRequest>
@@ -449,7 +449,7 @@ bool VkVideo::extractOwnerVideoId(const QString &videoiLink_, QString &ownerId, 
     videoId.clear();
 
     const QString videoiLink = videoiLink_.trimmed();
-    const QString simplifyed = AxelChat::simplifyUrl(videoiLink);
+    const QString simplifyed = QtStringUtils::simplifyUrl(videoiLink);
 
     if (!simplifyed.startsWith("vk.com", Qt::CaseSensitivity::CaseInsensitive))
     {

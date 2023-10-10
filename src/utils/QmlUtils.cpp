@@ -1,5 +1,5 @@
-#include "qmlutils.h"
-#include "utils.h"
+#include "QmlUtils.h"
+#include "QtMiscUtils.h"
 #include "log/loghandler.h"
 #include <QProcess>
 #include <QApplication>
@@ -21,9 +21,9 @@ static const QString SK_EnabledHighDpiScaling = "enabledHighDpiScaling";
 
 }
 
-QMLUtils* QMLUtils::_instance = nullptr;
+QmlUtils* QmlUtils::_instance = nullptr;
 
-QMLUtils::QMLUtils(QSettings& settings_, const QString& settingsGroup, QObject *parent)
+QmlUtils::QmlUtils(QSettings& settings_, const QString& settingsGroup, QObject *parent)
     : QObject(parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroup)
@@ -61,23 +61,23 @@ QMLUtils::QMLUtils(QSettings& settings_, const QString& settingsGroup, QObject *
     }
 }
 
-void QMLUtils::restartApplication()
+void QmlUtils::restartApplication()
 {
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-    qApp->quit();
+    QtMiscUtils::quitDeferred();
 }
 
-void QMLUtils::openLogDirectory()
+void QmlUtils::openLogDirectory()
 {
     LogHandler::openDirectory();
 }
 
-bool QMLUtils::enabledHardwareGraphicsAccelerator() const
+bool QmlUtils::enabledHardwareGraphicsAccelerator() const
 {
     return settings.value(SettingsGroupPath + "/" + SK_EnabledHardwareGraphicsAccelerator, true).toBool();
 }
 
-void QMLUtils::setEnabledHardwareGraphicsAccelerator(bool enabled)
+void QmlUtils::setEnabledHardwareGraphicsAccelerator(bool enabled)
 {
     if (enabled != enabledHardwareGraphicsAccelerator())
     {
@@ -86,12 +86,12 @@ void QMLUtils::setEnabledHardwareGraphicsAccelerator(bool enabled)
     }
 }
 
-bool QMLUtils::enabledHighDpiScaling() const
+bool QmlUtils::enabledHighDpiScaling() const
 {
     return settings.value(SettingsGroupPath + "/" + SK_EnabledHighDpiScaling, false).toBool();
 }
 
-void QMLUtils::setEnabledHighDpiScaling(bool enabled)
+void QmlUtils::setEnabledHighDpiScaling(bool enabled)
 {
     if (enabled != enabledHighDpiScaling())
     {
@@ -100,22 +100,22 @@ void QMLUtils::setEnabledHighDpiScaling(bool enabled)
     }
 }
 
-QString QMLUtils::buildCpuArchitecture() const
+QString QmlUtils::buildCpuArchitecture() const
 {
     return QSysInfo::buildCpuArchitecture();
 }
 
-void QMLUtils::setValue(const QString &key, const QVariant &value)
+void QmlUtils::setValue(const QString &key, const QVariant &value)
 {
     return settings.setValue(SettingsGroupPath + "/" + key, value);
 }
 
-bool QMLUtils::valueBool(const QString& key, bool defaultValue)
+bool QmlUtils::valueBool(const QString& key, bool defaultValue)
 {
     return settings.value(SettingsGroupPath + "/" + key, defaultValue).toBool();
 }
 
-qreal QMLUtils::valueReal(const QString &key, qreal defaultValue)
+qreal QmlUtils::valueReal(const QString &key, qreal defaultValue)
 {
     bool ok = false;
     const qreal result = settings.value(SettingsGroupPath + "/" + key, defaultValue).toReal(&ok);
@@ -127,23 +127,23 @@ qreal QMLUtils::valueReal(const QString &key, qreal defaultValue)
     return defaultValue;
 }
 
-void QMLUtils::updateWindowStyle(QWindow* window) const
+void QmlUtils::updateWindowStyle(QWindow* window) const
 {
     if (!window)
     {
         return;
     }
 
-    AxelChat::setDarkWindowFrame(window->winId());
+    QtMiscUtils::setDarkWindowFrame(window->winId());
 }
 
-void QMLUtils::declareQml()
+void QmlUtils::declareQml()
 {
-    qmlRegisterUncreatableType<QMLUtils> ("AxelChat.QMLUtils",
-                                         1, 0, "QMLUtils", "Type cannot be created in QML");
+    qmlRegisterUncreatableType<QmlUtils> ("AxelChat.QmlUtils",
+                                         1, 0, "QmlUtils", "Type cannot be created in QML");
 }
 
-QMLUtils *QMLUtils::instance()
+QmlUtils *QmlUtils::instance()
 {
     if (!_instance)
     {
@@ -153,7 +153,7 @@ QMLUtils *QMLUtils::instance()
     return _instance;
 }
 
-void QMLUtils::setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine_)
+void QmlUtils::setQmlApplicationEngine(const QQmlApplicationEngine* qmlEngine_)
 {
     qmlEngine = qmlEngine_;
 }

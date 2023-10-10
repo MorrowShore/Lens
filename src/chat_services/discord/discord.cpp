@@ -1,4 +1,4 @@
-#include "discord.h"
+#include "Discord.h"
 #include "secrets.h"
 #include "models/message.h"
 #include "crypto/obfuscator.h"

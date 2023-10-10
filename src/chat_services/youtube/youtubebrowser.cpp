@@ -1,5 +1,6 @@
 #include "youtubebrowser.h"
 #include "youtubeutils.h"
+#include "utils/QtAxelChatUtils.h"
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -205,7 +206,7 @@ void YouTubeBrowser::requestStreamPage()
     }
 
     QNetworkRequest request(state.streamUrl);
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, QtAxelChatUtils::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
 
     QNetworkReply* reply = network.get(request);

@@ -1,5 +1,6 @@
 #include "wasd.h"
 #include "secrets.h"
+#include "utils/QtStringUtils.h"
 #include "crypto/obfuscator.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -612,7 +613,7 @@ QString Wasd::extractChannelName(const QString &stream)
 {
     QString channelName = stream.toLower().trimmed();
 
-    const QString simpleUrl = AxelChat::simplifyUrl(stream);
+    const QString simpleUrl = QtStringUtils::simplifyUrl(stream);
 
     if (simpleUrl.startsWith("wasd.tv/", Qt::CaseSensitivity::CaseInsensitive))
     {

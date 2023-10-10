@@ -1,6 +1,6 @@
 #include "authorqmlprovider.h"
 #include "models/author.h"
-#include "chat_services/youtubeutils.h"
+#include "chat_services/youtube/youtubeutils.h"
 #include "ChatManager.h"
 #include <QDesktopServices>
 

@@ -1,5 +1,6 @@
 #include "trovo.h"
 #include "secrets.h"
+#include "utils/QtStringUtils.h"
 #include "models/message.h"
 #include "models/author.h"
 #include "crypto/obfuscator.h"
@@ -312,7 +313,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             {
                 if (chunk.startsWith(":"))
                 {
-                    const QString emote = AxelChat::removeFromStart(chunk, ":", Qt::CaseSensitivity::CaseInsensitive);
+                    const QString emote = QtStringUtils::removeFromStart(chunk, ":", Qt::CaseSensitivity::CaseInsensitive);
                     if (smiles.contains(emote))
                     {
                         if (!text.isEmpty())
@@ -393,8 +394,8 @@ QString Trovo::getChannelName(const QString &stream)
 
     if (channelName.startsWith("https://trovo.live/s/", Qt::CaseSensitivity::CaseInsensitive))
     {
-        channelName = AxelChat::simplifyUrl(channelName);
-        channelName = AxelChat::removeFromStart(channelName, "trovo.live/s/", Qt::CaseSensitivity::CaseInsensitive);
+        channelName = QtStringUtils::simplifyUrl(channelName);
+        channelName = QtStringUtils::removeFromStart(channelName, "trovo.live/s/", Qt::CaseSensitivity::CaseInsensitive);
 
         if (channelName.contains("/"))
         {

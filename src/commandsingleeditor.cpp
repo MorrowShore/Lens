@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include "botaction.h"
-#include "utils.h"
+#include "utils/QtMiscUtils.h"
 
 CommandSingleEditor::CommandSingleEditor(ChatBot& chatBot_, QWidget *parent) :
     QDialog(parent),
@@ -14,7 +14,7 @@ CommandSingleEditor::CommandSingleEditor(ChatBot& chatBot_, QWidget *parent) :
     ui->setupUi(this);
 
 #ifdef Q_OS_WINDOWS
-    AxelChat::setDarkWindowFrame(winId());
+    QtMiscUtils::setDarkWindowFrame(winId());
 #endif
 
     setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
@@ -87,7 +87,7 @@ CommandSingleEditor::~CommandSingleEditor()
 
 void CommandSingleEditor::showEvent(QShowEvent*)
 {
-    AxelChat::setDarkWindowFrame(winId());
+    QtMiscUtils::setDarkWindowFrame(winId());
 }
 
 void CommandSingleEditor::on_pushButtonCancel_clicked()

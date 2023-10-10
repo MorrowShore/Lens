@@ -1,5 +1,6 @@
 #include "chatservice.h"
 #include "ChatManager.h"
+#include "utils/QtStringUtils.h"
 
 namespace
 {

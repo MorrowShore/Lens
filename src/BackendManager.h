@@ -8,11 +8,11 @@ class BackendManager : public QObject
     Q_OBJECT
 public:
     explicit BackendManager(QNetworkAccessManager& network, QObject *parent = nullptr);
-    ~BackendManager();
 
-private:
+public slots:
     void sendSessionUsage();
 
+private:
     QNetworkAccessManager& network;
 
     QElapsedTimer usageDuration;

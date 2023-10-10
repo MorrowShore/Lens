@@ -1,6 +1,5 @@
 #include "BackendManager.h"
 #include "secrets.h"
-#include "QtStringUtils.h"
 #include "crypto/obfuscator.h"
 #include <QDebug>
 #include <QNetworkRequest>
@@ -53,11 +52,6 @@ BackendManager::BackendManager(QNetworkAccessManager& network_, QObject *parent)
     usageDuration.start();
 }
 
-BackendManager::~BackendManager()
-{
-    sendSessionUsage();
-}
-
 void BackendManager::sendSessionUsage()
 {
     const qint64 startedAtMs = startTime.toUTC().toMSecsSinceEpoch();
@@ -99,8 +93,6 @@ void BackendManager::sendSessionUsage()
             { "sessionHash", getSessionHash() },
             { "usage", usage },
         }));
-
-    qDebug() << doc;
 
     QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/usage?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
     request.setRawHeader("Content-Type", "application/json");

@@ -1,4 +1,5 @@
 #include "rumble.h"
+#include "utils/QtStringUtils.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QRandomGenerator>
@@ -179,11 +180,11 @@ QString Rumble::extractLinkId(const QString &rawLink)
 
     if (rawLink.startsWith("http", Qt::CaseSensitivity::CaseInsensitive) || rawLink.startsWith("rumble.com/", Qt::CaseSensitivity::CaseInsensitive))
     {
-        result = AxelChat::simplifyUrl(rawLink);
+        result = QtStringUtils::simplifyUrl(rawLink);
     }
 
-    result = AxelChat::removeFromStart(result, "rumble.com/", Qt::CaseSensitivity::CaseInsensitive);
-    result = AxelChat::removeFromEnd(result, ".html", Qt::CaseSensitivity::CaseInsensitive);
+    result = QtStringUtils::removeFromStart(result, "rumble.com/", Qt::CaseSensitivity::CaseInsensitive);
+    result = QtStringUtils::removeFromEnd(result, ".html", Qt::CaseSensitivity::CaseInsensitive);
 
     if (result.contains('/'))
     {
@@ -305,12 +306,12 @@ void Rumble::requestEmotes()
 
 QString Rumble::parseChatId(const QByteArray &html)
 {
-    return AxelChat::find(html, "data-id=\"", '"', 128);
+    return QtStringUtils::find(html, "data-id=\"", '"', 128);
 }
 
 QString Rumble::parseVideoId(const QByteArray &html)
 {
-    return AxelChat::find(html, "<link rel=alternate href=\"https://rumble.com/api/Media/oembed.json?url=https%3A%2F%2Frumble.com%2Fembed%2Fv", '"', 128);
+    return QtStringUtils::find(html, "<link rel=alternate href=\"https://rumble.com/api/Media/oembed.json?url=https%3A%2F%2Frumble.com%2Fembed%2Fv", '"', 128);
 }
 
 void Rumble::startReadChat()

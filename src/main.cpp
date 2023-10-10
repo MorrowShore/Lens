@@ -2,7 +2,8 @@
 #include "axelchatlib_api.h"
 #else
 #include "applicationinfo.h"
-#include "qmlutils.h"
+#include "utils/QtMiscUtils.h"
+#include "utils/QmlUtils.h"
 #include "chatwindow.h"
 #include "log/loghandler.h"
 #include "crypto/crypto.h"
@@ -30,8 +31,8 @@ int main(int argc, char *argv[])
 
     ChatWindow::declareQml();
 
-    QMLUtils::declareQml();
-    QMLUtils qmlUtils(settings, "qml_utils");
+    QmlUtils::declareQml();
+    QmlUtils qmlUtils(settings, "qml_utils");
 
     QApplication app(argc, argv);
 
@@ -47,7 +48,17 @@ int main(int argc, char *argv[])
 
     app.setWindowIcon(QIcon(":/icon.ico"));
 
-    ChatWindow chatWindow;
+    QNetworkAccessManager network;
+
+    BackendManager backend(network);
+
+    ChatWindow chatWindow(network, backend);
+
+    QtMiscUtils::setBeforeQuitDeferred([&]()
+    {
+        backend.sendSessionUsage();
+        chatWindow.hideAll();
+    }, 5000);
 
     splashScreen->close();
     delete splashScreen;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils.h"
+#include "utils/QtAxelChatUtils.h"
 #include "authorqmlprovider.h"
 #include "websocket.h"
 #include "tcpserver.h"

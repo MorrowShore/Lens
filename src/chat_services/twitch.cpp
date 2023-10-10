@@ -1,5 +1,6 @@
 #include "twitch.h"
 #include "secrets.h"
+#include "utils/QtStringUtils.h"
 #include "crypto/crypto.h"
 #include "models/messagesmodel.h"
 #include "models/author.h"
@@ -218,7 +219,7 @@ void Twitch::reconnectImpl()
 
     // user channel
 
-    const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(stream.get());
+    const QString simpleUserSpecifiedUserChannel = QtStringUtils::simplifyUrl(stream.get());
     rx = QRegExp("^twitch.tv/([^/]*)$", Qt::CaseInsensitive);
     if (rx.indexIn(simpleUserSpecifiedUserChannel) != -1)
     {

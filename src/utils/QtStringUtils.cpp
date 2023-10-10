@@ -1,30 +1,36 @@
-#pragma once
-
-#include <QString>
-#include <QDateTime>
-#include <QUrl>
-#include <QFile>
-#include <QDir>
+#include "QtStringUtils.h"
+#include <QTimeZone>
 #include <QDebug>
-#include <QJsonParseError>
-#include <QJsonObject>
-#include <QColor>
-#include <qwindowdefs.h>
 
-#ifdef Q_OS_WINDOWS
-#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
-#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
-#endif
-#include <dwmapi.h>
-#endif
-
-namespace AxelChat
+QString QtStringUtils::dateTimeToStringISO8601WithMsWithOffsetFromUtc(const QDateTime &dateTime)
 {
+    QString result = dateTime.toUTC().toString(Qt::DateFormat::ISODateWithMs);
+    if (result.endsWith('Z', Qt::CaseSensitivity::CaseInsensitive))
+    {
+        result = result.left(result.length() - 1);
+    }
 
-static const QByteArray UserAgentNetworkHeaderName = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36";
-static const QString DateTimeFileNameFormat = "yyyy-MM-ddThh-mm-ss.zzz";
+    const int offsetMs = dateTime.offsetFromUtc();
+    const bool belowZero = offsetMs < 0;
 
-static QString simplifyUrl(const QString& url)
+    const QTime offset = QTime::fromMSecsSinceStartOfDay(abs(offsetMs) * 1000);
+    const QString offsetStr = QString("%1:%2").arg(offset.hour(), 2, 10, QChar('0')).arg(offset.minute(), 2, 10, QChar('0'));
+
+    if (belowZero)
+    {
+        result += "-";
+    }
+    else
+    {
+        result += "+";
+    }
+
+    result += offsetStr;
+
+    return result;
+}
+
+QString QtStringUtils::simplifyUrl(const QString &url)
 {
     QString withoutHttpsWWW = url;
 
@@ -70,31 +76,7 @@ static QString simplifyUrl(const QString& url)
     return withoutSign;
 }
 
-static void saveDebugDataToFile(const QString& folder, const QString& fileName, const QByteArray& data)
-{
-    Q_UNUSED(folder)
-    Q_UNUSED(fileName)
-    Q_UNUSED(data)
-#ifndef AXELCHAT_LIBRARY
-#ifndef QT_NO_DEBUG
-    QDir().mkpath(folder);
-
-    QFile file(folder + "/" + fileName);
-    if (file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
-    {
-        file.write(data);
-        file.close();
-        qDebug() << "Saved to" << file.fileName();
-    }
-    else
-    {
-        qDebug() << "Failed to save" << file.fileName();
-    }
-#endif
-#endif
-}
-
-static QByteArray convertANSIWithUtf8Numbers(const QString& string)
+QByteArray QtStringUtils::convertANSIWithUtf8Numbers(const QString &string)
 {
     const QVector<uint>& ucs4str = string.toUcs4();
     QByteArray ba;
@@ -115,7 +97,7 @@ static QByteArray convertANSIWithUtf8Numbers(const QString& string)
     return ba;
 }
 
-static QString removeFromStart(const QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity, bool* ok = nullptr)
+QString QtStringUtils::removeFromStart(const QString &string, const QString &subString, const Qt::CaseSensitivity caseSensitivity, bool *ok)
 {
     if (!string.startsWith(subString, caseSensitivity))
     {
@@ -135,7 +117,7 @@ static QString removeFromStart(const QString& string, const QString& subString, 
     return string.mid(subString.length());
 }
 
-static QString removeFromEnd(const QString& string, const QString& subString, const Qt::CaseSensitivity caseSensitivity, bool* ok = nullptr)
+QString QtStringUtils::removeFromEnd(const QString &string, const QString &subString, const Qt::CaseSensitivity caseSensitivity, bool *ok)
 {
     if (!string.endsWith(subString, caseSensitivity))
     {
@@ -155,15 +137,7 @@ static QString removeFromEnd(const QString& string, const QString& subString, co
     return string.left(string.lastIndexOf(subString, -1, caseSensitivity));
 }
 
-#ifdef Q_OS_WINDOWS
-static void setDarkWindowFrame(const WId wid)
-{
-    BOOL value = TRUE;
-    ::DwmSetWindowAttribute((HWND)wid, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
-}
-#endif
-
-static std::unique_ptr<QJsonDocument> findJson(const QByteArray &data, const int startPos)
+std::unique_ptr<QJsonDocument> QtStringUtils::findJson(const QByteArray &data, const int startPos)
 {
     QJsonParseError parseError;
     QJsonDocument doc = QJsonDocument::fromJson(data.mid(startPos), &parseError);
@@ -180,7 +154,7 @@ static std::unique_ptr<QJsonDocument> findJson(const QByteArray &data, const int
     return std::unique_ptr<QJsonDocument>(new QJsonDocument(doc));
 }
 
-static std::unique_ptr<QJsonDocument> findJson(const QByteArray& data, const QByteArray& objectName, const QJsonValue::Type type, int& objectPosition, int startPosition = 0)
+std::unique_ptr<QJsonDocument> QtStringUtils::findJson(const QByteArray &data, const QByteArray &objectName, const QJsonValue::Type type, int &objectPosition, int startPosition)
 {
     objectPosition = -1;
 
@@ -261,7 +235,7 @@ static std::unique_ptr<QJsonDocument> findJson(const QByteArray& data, const QBy
     return findJson(data, objectPosition);
 }
 
-static QByteArray find(const QByteArray& data, const QByteArray& prefix, const QChar& postfix, const int maxLengthSearch)
+QByteArray QtStringUtils::find(const QByteArray &data, const QByteArray &prefix, const QChar &postfix, const int maxLengthSearch)
 {
     const int prefixStartPos = data.indexOf(prefix);
     if (prefixStartPos == -1)
@@ -294,22 +268,24 @@ static QByteArray find(const QByteArray& data, const QByteArray& prefix, const Q
     return data.mid(resultStartPos, resultLastPos - resultStartPos);
 }
 
-static QColor generateColor(const QString& hash, const QList<QColor>& colors)
+void QtStringUtils::saveDebugDataToFile(const QString &folder, const QString &fileName, const QByteArray &data)
 {
-    if (colors.isEmpty())
+    Q_UNUSED(folder)
+    Q_UNUSED(fileName)
+    Q_UNUSED(data)
+#ifndef QT_NO_DEBUG
+    QDir().mkpath(folder);
+
+    QFile file(folder + "/" + fileName);
+    if (file.open(QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Text))
     {
-        qWarning() << "colors is empty";
-        return QColor();
+        file.write(data);
+        file.close();
+        qDebug() << "Saved to" << file.fileName();
     }
-
-    uint32_t sum = 0;
-
-    for (const QChar& c : qAsConst(hash))
+    else
     {
-        sum += c.unicode();
+        qDebug() << "Failed to save" << file.fileName();
     }
-
-    return colors.at(sum % colors.count());
-}
-
+#endif
 }

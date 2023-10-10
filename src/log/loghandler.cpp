@@ -1,5 +1,6 @@
 #include "loghandler.h"
-#include "utils.h"
+#include "utils/QtAxelChatUtils.h"
+#include "utils/QtStringUtils.h"
 #include <QDateTime>
 #include <QStandardPaths>
 #include <QFile>
@@ -54,7 +55,7 @@ void LogHandler::initialize(const bool saveToFile_)
     const QDateTime startTime = QDateTime::currentDateTime();
 
     const QString dirPath = getDirectory();
-    fileName = dirPath + "/" + startTime.toString(AxelChat::DateTimeFileNameFormat) + ".log";
+    fileName = dirPath + "/" + startTime.toString(QtAxelChatUtils::DateTimeFileNameFormat) + ".log";
 
     const QDir dir(dirPath);
     if (!dir.exists())
@@ -100,7 +101,7 @@ void LogHandler::handler(QtMsgType type, const QMessageLogContext &context, cons
 
     if (context.file != nullptr)
     {
-        QString file = AxelChat::removeFromStart(context.file, "..\\src\\", Qt::CaseInsensitive);
+        QString file = QtStringUtils::removeFromStart(context.file, "..\\src\\", Qt::CaseInsensitive);
         if (!file.contains(":/"))
         {
             file = "file:///" + file;

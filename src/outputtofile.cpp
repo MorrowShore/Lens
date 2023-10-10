@@ -1,7 +1,8 @@
 #include "outputtofile.h"
+#include "utils/QtStringUtils.h"
 #include "models/author.h"
 #include "models/message.h"
-#include "chat_services/youtubeutils.h"
+#include "chat_services/youtube/youtubeutils.h"
 #include <QStandardPaths>
 #include <QGuiApplication>
 #include <QTextCodec>
@@ -353,7 +354,7 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
     }
 
     QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, QtAxelChatUtils::UserAgentNetworkHeaderName);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
     QNetworkReply* reply = network.get(request);
     connect(reply, &QNetworkReply::finished, this, [this, fileName, imageFormat, height, ignoreIfExists, url]()
@@ -555,7 +556,7 @@ QByteArray OutputToFile::prepare(const QString &text_)
     }
     else if (codec == Codec::ANSIWithUTF8Codes)
     {
-        return AxelChat::convertANSIWithUtf8Numbers(text);
+        return QtStringUtils::convertANSIWithUtf8Numbers(text);
     }
 
     qWarning() << "unknown codec";
@@ -746,7 +747,7 @@ void OutputToFile::reinit(bool forceUpdateOutputFolder)
 
     if (forceUpdateOutputFolder || _relativeSessionFolder.isEmpty())
     {
-        _relativeSessionFolder = "sessions/" + _startupDateTime.toString(AxelChat::DateTimeFileNameFormat);
+        _relativeSessionFolder = "sessions/" + _startupDateTime.toString(QtAxelChatUtils::DateTimeFileNameFormat);
     }
 
     const QString absoluteSessionFolder = outputDirectory.get() + "/" + _relativeSessionFolder;

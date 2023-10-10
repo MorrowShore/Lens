@@ -1,6 +1,7 @@
 #include "chatwindow.h"
 #include "applicationinfo.h"
-#include "qmlutils.h"
+#include "utils/QtMiscUtils.h"
+#include "utils/QmlUtils.h"
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QGuiApplication>
@@ -13,7 +14,7 @@ void ChatWindow::declareQml()
     qmlRegisterUncreatableType<UIBridge> ("AxelChat.ChatWindow", 1, 0, "ChatWindow", "Type cannot be created in QML");
 
     UIBridge::declareQml();
-    QMLUtils::declareQml();
+    QmlUtils::declareQml();
     I18n::declareQml();
     ChatManager::declareQml();
     GitHubApi::declareQml();
@@ -22,16 +23,17 @@ void ChatWindow::declareQml()
     LogDialog::declareQml();
 }
 
-ChatWindow::ChatWindow(QWindow *parent)
+ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_, QWindow *parent)
     : QQuickView(parent)
     , normalSizeWidthSetting(settings, "normalSizeWidth", 350)
     , normalSizeHeightSetting(settings, "normalSizeHeight", 600)
     , web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe")
-    , appSponsorManager(network)
-    , backend(network)
+    , network(network_)
+    , appSponsorManager(network_)
+    , backend(backend_)
     , i18n(settings, "i18n", engine())
-    , github(settings, "update_checker", network)
-    , chatManager(settings, network, web, backend)
+    , github(settings, "update_checker", network_)
+    , chatManager(settings, network_, web, backend)
     , commandsEditor(chatManager.getBot())
     , tray(QIcon(":/resources/images/axelchat-16x16.png"))
 
@@ -90,7 +92,7 @@ ChatWindow::ChatWindow(QWindow *parent)
             QAction* action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), menu);
             connect(action, &QAction::triggered, this, []()
             {
-                emit QMLUtils::instance()->triggered("open_settings_window");
+                emit QmlUtils::instance()->triggered("open_settings_window");
             });
             menu->addAction(action);
         }
@@ -143,7 +145,7 @@ ChatWindow::ChatWindow(QWindow *parent)
             QAction* action = new QAction(QIcon(":/resources/images/emblem-unreadable.png"), tr("Close"), menu);
             connect(action, &QAction::triggered, this, []()
             {
-                QApplication::quit();
+                QtMiscUtils::quitDeferred();
             });
             menu->addAction(action);
         }
@@ -165,7 +167,7 @@ ChatWindow::ChatWindow(QWindow *parent)
         qml->rootContext()->setContextProperty("authorQMLProvider",  &chatManager.getAuthorQMLProvider());
         qml->rootContext()->setContextProperty("updateChecker",      &github);
         qml->rootContext()->setContextProperty("clipboard",          &qmlClipboard);
-        qml->rootContext()->setContextProperty("qmlUtils",           QMLUtils::instance());
+        qml->rootContext()->setContextProperty("qmlUtils",           QmlUtils::instance());
         qml->rootContext()->setContextProperty("messagesModel",      &chatManager.getMessagesModel());
         qml->rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
         qml->rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
@@ -184,7 +186,7 @@ ChatWindow::ChatWindow(QWindow *parent)
     updateWindow();
 
 #ifdef Q_OS_WINDOWS
-    AxelChat::setDarkWindowFrame(winId());
+    QtMiscUtils::setDarkWindowFrame(winId());
 #endif
 
     loadWindowSize();
@@ -226,7 +228,7 @@ bool ChatWindow::event(QEvent *event)
         }
         else
         {
-            QApplication::quit();
+            QtMiscUtils::quitDeferred();
         }
     }
 

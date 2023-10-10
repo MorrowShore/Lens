@@ -1,5 +1,6 @@
 #include "youtubeutils.h"
-#include "utils.h"
+#include "utils/QtStringUtils.h"
+#include "utils/QtAxelChatUtils.h"
 #include "chat_services/chatservice.h"
 #include <QUrlQuery>
 
@@ -32,7 +33,7 @@ const QByteArray YouTubeUtils::AcceptLanguageNetworkHeaderName = "";
 
 QString YouTubeUtils::extractBroadcastId(const QString &link)
 {
-    const QString simpleUrl = AxelChat::simplifyUrl(link);
+    const QString simpleUrl = QtStringUtils::simplifyUrl(link);
 
     const QUrlQuery& urlQuery = QUrlQuery(QUrl(link).query());
 
@@ -260,7 +261,7 @@ void YouTubeUtils::parseActionsArray(const QJsonArray &array, const QByteArray &
             }
             else
             {
-                AxelChat::saveDebugDataToFile(FolderLogs, "unknown_item_structure.json", QJsonDocument(item).toJson());
+                QtStringUtils::saveDebugDataToFile(FolderLogs, "unknown_item_structure.json", QJsonDocument(item).toJson());
                 valid = false;
             }
 
@@ -462,7 +463,7 @@ void YouTubeUtils::parseActionsArray(const QJsonArray &array, const QByteArray &
         {
             QJsonDocument doc(actionObject);
             //printData(Q_FUNC_INFO + QString(": unknown json structure of array \"%1\"").arg("actions"), doc.toJson());
-            AxelChat::saveDebugDataToFile(FolderLogs, "unknown_action_structure.json", doc.toJson());
+            QtStringUtils::saveDebugDataToFile(FolderLogs, "unknown_action_structure.json", doc.toJson());
         }
 
         if (valid)
@@ -649,7 +650,7 @@ void YouTubeUtils::parseText(const QJsonObject &message, QList<std::shared_ptr<M
                 }
                 else
                 {
-                    AxelChat::saveDebugDataToFile(FolderLogs, "unknown_message_runs_unknown_navigationEndpoint_structure.json", QJsonDocument(message).toJson());
+                    QtStringUtils::saveDebugDataToFile(FolderLogs, "unknown_message_runs_unknown_navigationEndpoint_structure.json", QJsonDocument(message).toJson());
                 }
             }
 
@@ -676,17 +677,17 @@ void YouTubeUtils::parseText(const QJsonObject &message, QList<std::shared_ptr<M
                     }
                     else
                     {
-                        AxelChat::saveDebugDataToFile(FolderLogs, "unknown_message_runs_empty_emoji_structure.json", QJsonDocument(message).toJson());
+                        QtStringUtils::saveDebugDataToFile(FolderLogs, "unknown_message_runs_empty_emoji_structure.json", QJsonDocument(message).toJson());
                     }
                 }
                 else
                 {
-                    AxelChat::saveDebugDataToFile(FolderLogs, "unknown_message_runs_empty_thumbnails_structure.json", QJsonDocument(message).toJson());
+                    QtStringUtils::saveDebugDataToFile(FolderLogs, "unknown_message_runs_empty_thumbnails_structure.json", QJsonDocument(message).toJson());
                 }
             }
             else
             {
-                AxelChat::saveDebugDataToFile(FolderLogs, "unknown_message_runs_empty_thumbnails_structure.json", QJsonDocument(message).toJson());
+                QtStringUtils::saveDebugDataToFile(FolderLogs, "unknown_message_runs_empty_thumbnails_structure.json", QJsonDocument(message).toJson());
             }
         }
     }
@@ -700,7 +701,7 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
     if (start == -1)
     {
         qCritical() << "failed to parse originalViewCount";
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_originalViewCount_from_html_youtube.html", rawData);
+        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_originalViewCount_from_html_youtube.html", rawData);
         return -1;
     }
 
@@ -729,8 +730,8 @@ int YouTubeUtils::parseViews(const QByteArray &rawData)
     {
         YouTubeUtils::printData(Q_FUNC_INFO + QString(": failed to convert to number"), data);
 
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.html", rawData);
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.json", data);
+        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.html", rawData);
+        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_fail_to_convert_to_number_youtube.json", data);
         return -1;
     }
 

@@ -19,7 +19,7 @@ class ChatWindow : public QQuickView
 public:
     static void declareQml();
 
-    explicit ChatWindow(QWindow *parent = nullptr);
+    explicit ChatWindow(QNetworkAccessManager& network, BackendManager& backend, QWindow *parent = nullptr);
 
     virtual bool event(QEvent *event) override;
 
@@ -27,10 +27,12 @@ public:
 
 signals:
 
+public slots:
+    void hideAll();
+
 private slots:
     void toogleVisible();
     void updateWindow();
-    void hideAll();
     void saveWindowSize();
     void loadWindowSize();
 
@@ -41,9 +43,9 @@ private:
     Setting<int> normalSizeHeightSetting;
 
     cweqt::Manager web;
-    QNetworkAccessManager network;
+    QNetworkAccessManager& network;
     AppSponsorManager appSponsorManager;
-    BackendManager backend;
+    BackendManager& backend;
     I18n i18n;
     ClipboardQml qmlClipboard;
     GitHubApi github;

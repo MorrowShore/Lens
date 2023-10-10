@@ -1,5 +1,6 @@
 #include "youtubehtml.h"
-#include "utils.h"
+#include "utils/QtAxelChatUtils.h"
+#include "utils/QtStringUtils.h"
 #include "youtubeutils.h"
 #include "models/messagesmodel.h"
 #include "models/author.h"
@@ -99,7 +100,7 @@ void YouTubeHtml::onTimeoutRequestChat()
     }
 
     QNetworkRequest request(state.chatUrl);
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, QtAxelChatUtils::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
     QObject::connect(network.get(request), &QNetworkReply::finished, this, &YouTubeHtml::onReplyChatPage);
 }
@@ -138,7 +139,7 @@ void YouTubeHtml::onReplyChatPage()
     if (start == -1)
     {
         qCritical() << "not found actions";
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "not_found_actions_from_html_youtube.html", rawData);
+        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "not_found_actions_from_html_youtube.html", rawData);
         processBadChatReply();
         return;
     }
@@ -180,8 +181,8 @@ void YouTubeHtml::onReplyChatPage()
     {
         YouTubeUtils::printData(Q_FUNC_INFO + QString(": document is not array"), data);
 
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.html", rawData);
-        AxelChat::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.json", data);
+        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.html", rawData);
+        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.json", data);
         processBadChatReply();
     }
 }
@@ -194,7 +195,7 @@ void YouTubeHtml::onTimeoutRequestStreamPage()
     }
 
     QNetworkRequest request(state.streamUrl);
-    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, AxelChat::UserAgentNetworkHeaderName);
+    request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, QtAxelChatUtils::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
 
     QNetworkReply* reply = network.get(request);

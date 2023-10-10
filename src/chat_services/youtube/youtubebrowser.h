@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chatservice.h"
+#include "../chatservice.h"
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <memory>

@@ -19,12 +19,11 @@ DEFINES += QT_MESSAGELOGCONTEXT
 HEADERS += \
     BackendManager.h \
     ChatManager.h \
-    QtStringUtils.h \
     appsponsormanager.h \
     chat_services/discord/Channel.h \
     chat_services/discord/Guild.h \
     chat_services/discord/User.h \
-    chat_services/discord/guildsstorage.h \
+    chat_services/discord/GuildsStorage.h \
     chat_services/dlive.h \
     chat_services/donatepay.h \
     chat_services/donationalerts.h \
@@ -33,9 +32,9 @@ HEADERS += \
     chat_services/rumble.h \
     chat_services/vkvideo.h \
     chat_services/wasd.h \
-    chat_services/youtubebrowser.h \
-    chat_services/youtubehtml.h \
-    chat_services/youtubeutils.h \
+    chat_services/youtube/youtubebrowser.h \
+    chat_services/youtube/youtubehtml.h \
+    chat_services/youtube/youtubeutils.h \
     chatwindow.h \
     crypto/aes.h \
     crypto/crypto.h \
@@ -55,7 +54,7 @@ HEADERS += \
     tcprequest.h \
     chat_services/chatservice.h \
     chat_services/chatservicestypes.h \
-    chat_services/discord/discord.h \
+    chat_services/discord/Discord.h \
     chat_services/telegram.h \
     chat_services/trovo.h \
     chat_services/vkplaylive.h \
@@ -75,23 +74,24 @@ HEADERS += \
     githubapi.h \
     i18n.h \
     outputtofile.h \
-    qmlutils.h \
     setting.h \
     tcpserver.h \
     uibridge.h \
     uibridgeelement.h \
-    utils.h \
+    utils/QmlUtils.h \
+    utils/QtAxelChatUtils.h \
+    utils/QtMiscUtils.h \
+    utils/QtStringUtils.h \
     websocket.h
 
 SOURCES += \
     BackendManager.cpp \
     ChatManager.cpp \
-    QtStringUtils.cpp \
     appsponsormanager.cpp \
     chat_services/chatservice.cpp \
     chat_services/discord/Guild.cpp \
-    chat_services/discord/discord.cpp \
-    chat_services/discord/guildsstorage.cpp \
+    chat_services/discord/Discord.cpp \
+    chat_services/discord/GuildsStorage.cpp \
     chat_services/dlive.cpp \
     chat_services/donatepay.cpp \
     chat_services/donationalerts.cpp \
@@ -105,9 +105,9 @@ SOURCES += \
     chat_services/twitch.cpp \
     chat_services/vkvideo.cpp \
     chat_services/wasd.cpp \
-    chat_services/youtubebrowser.cpp \
-    chat_services/youtubehtml.cpp \
-    chat_services/youtubeutils.cpp \
+    chat_services/youtube/youtubebrowser.cpp \
+    chat_services/youtube/youtubehtml.cpp \
+    chat_services/youtube/youtubeutils.cpp \
     chatwindow.cpp \
     crypto/aes.cpp \
     crypto/crypto.cpp \
@@ -132,11 +132,14 @@ SOURCES += \
     main.cpp \
     oauth2.cpp \
     outputtofile.cpp \
-    qmlutils.cpp \
     ssemanager.cpp \
     tcpserver.cpp \
     uibridge.cpp \
     uibridgeelement.cpp \
+    utils/QmlUtils.cpp \
+    utils/QtAxelChatUtils.cpp \
+    utils/QtMiscUtils.cpp \
+    utils/QtStringUtils.cpp \
     websocket.cpp
 
 RESOURCES += qml.qrc \

@@ -1,4 +1,5 @@
 #include "vkplaylive.h"
+#include "utils/QtStringUtils.h"
 #include "models/message.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -102,7 +103,7 @@ VkPlayLive::VkPlayLive(ChatManager& manager, QSettings& settings, const QString&
                         int startPosition = 0;
                         do
                         {
-                            json = AxelChat::findJson(data, "websocket", QJsonValue::Type::Object, startPosition, startPosition);
+                            json = QtStringUtils::findJson(data, "websocket", QJsonValue::Type::Object, startPosition, startPosition);
                             if (json)
                             {
                                 info.token = json->object().value("token").toString();
@@ -298,7 +299,7 @@ QString VkPlayLive::extractChannelName(const QString &stream_)
 
     if (stream.startsWith("http", Qt::CaseSensitivity::CaseInsensitive))
     {
-        const QString simpleUrl = AxelChat::simplifyUrl(stream_);
+        const QString simpleUrl = QtStringUtils::simplifyUrl(stream_);
 
         if (simpleUrl.startsWith("vkplay.live/", Qt::CaseSensitivity::CaseInsensitive))
         {

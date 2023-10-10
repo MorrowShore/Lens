@@ -1,6 +1,6 @@
 #include "commandseditor.h"
 #include "ui_commandseditor.h"
-#include "utils.h"
+#include "utils/QtMiscUtils.h"
 #include <QDebug>
 #include <QMessageBox>
 
@@ -12,7 +12,7 @@ CommandsEditor::CommandsEditor(ChatBot& chatBot_, QWidget *parent) :
     ui->setupUi(this);
 
 #ifdef Q_OS_WINDOWS
-    AxelChat::setDarkWindowFrame(winId());
+    QtMiscUtils::setDarkWindowFrame(winId());
 #endif
 
     setWindowFlags(Qt::Window);
@@ -34,7 +34,7 @@ CommandsEditor::~CommandsEditor()
 
 void CommandsEditor::showEvent(QShowEvent*)
 {
-    AxelChat::setDarkWindowFrame(winId());
+    QtMiscUtils::setDarkWindowFrame(winId());
 }
 
 void CommandsEditor::on_pushButtonCreate_clicked()

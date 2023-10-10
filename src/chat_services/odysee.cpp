@@ -1,6 +1,7 @@
 #include "odysee.h"
 #include "models/message.h"
 #include "models/author.h"
+#include "utils/QtStringUtils.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -362,11 +363,11 @@ void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QS
     channel = QString();
     video = QString();
 
-    QString link = AxelChat::simplifyUrl(rawLink.trimmed());
+    QString link = QtStringUtils::simplifyUrl(rawLink.trimmed());
 
-    link = AxelChat::removeFromStart(link, "odysee.com", Qt::CaseInsensitive);
-    link = AxelChat::removeFromStart(link, "/", Qt::CaseInsensitive);
-    link = AxelChat::removeFromStart(link, "@", Qt::CaseInsensitive);
+    link = QtStringUtils::removeFromStart(link, "odysee.com", Qt::CaseInsensitive);
+    link = QtStringUtils::removeFromStart(link, "/", Qt::CaseInsensitive);
+    link = QtStringUtils::removeFromStart(link, "@", Qt::CaseInsensitive);
 
     link = QUrl::fromPercentEncoding(link.toUtf8());
 
@@ -381,7 +382,7 @@ void Odysee::extractChannelAndVideo(const QString &rawLink, QString &channel, QS
 QString Odysee::extractChannelId(const QString &rawLink)
 {
     QString id = rawLink.trimmed();
-    id = AxelChat::removeFromStart(id, "lbry://", Qt::CaseInsensitive);
+    id = QtStringUtils::removeFromStart(id, "lbry://", Qt::CaseInsensitive);
 
     if (!id.contains('#'))
     {

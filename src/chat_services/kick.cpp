@@ -1,6 +1,8 @@
 #include "kick.h"
+#include "utils/QtStringUtils.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QFileInfo>
 
 namespace
 {
@@ -507,9 +509,9 @@ QString Kick::extractChannelName(const QString &stream_)
     QString stream = stream_.trimmed();
     if (stream.contains('/'))
     {
-        stream = AxelChat::simplifyUrl(stream);
+        stream = QtStringUtils::simplifyUrl(stream);
         bool ok = false;
-        stream = AxelChat::removeFromStart(stream, "kick.com/", Qt::CaseSensitivity::CaseInsensitive, &ok);
+        stream = QtStringUtils::removeFromStart(stream, "kick.com/", Qt::CaseSensitivity::CaseInsensitive, &ok);
         if (!ok)
         {
             return QString();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils.h"
+#include "utils/QtAxelChatUtils.h"
 #include "setting.h"
 #include "models/messagesmodel.h"
 #include "chat_services/chatservice.h"

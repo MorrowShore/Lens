@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils.h"
+#include "utils/QtAxelChatUtils.h"
 #include "chatservice.h"
 #include "oauth2.h"
 #include <QWebSocket>

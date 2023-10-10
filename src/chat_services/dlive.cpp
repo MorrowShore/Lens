@@ -1,4 +1,5 @@
 #include "dlive.h"
+#include "utils/QtStringUtils.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -989,7 +990,7 @@ QString DLive::extractChannelName(const QString &stream)
 {
     QRegExp rx;
 
-    const QString simpleUserSpecifiedUserChannel = AxelChat::simplifyUrl(stream);
+    const QString simpleUserSpecifiedUserChannel = QtStringUtils::simplifyUrl(stream);
 
     QString result = stream;
 

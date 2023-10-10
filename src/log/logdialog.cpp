@@ -1,7 +1,7 @@
 #include "logdialog.h"
 #include "ui_logdialog.h"
 #include "loghandler.h"
-#include "utils.h"
+#include "utils/QtMiscUtils.h"
 #include <QMenu>
 #include <QClipboard>
 
@@ -12,7 +12,7 @@ LogDialog::LogDialog(QWidget *parent) :
     ui->setupUi(this);
 
 #ifdef Q_OS_WINDOWS
-    AxelChat::setDarkWindowFrame(winId());
+    QtMiscUtils::setDarkWindowFrame(winId());
 #endif
 
     setWindowFlags(Qt::Window);

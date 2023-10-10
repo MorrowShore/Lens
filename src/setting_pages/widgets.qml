@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
-import AxelChat.QMLUtils 1.0
+import AxelChat.QmlUtils 1.0
 import AxelChat.I18n 1.0
 import "../my_components" as MyComponents
 import "../"

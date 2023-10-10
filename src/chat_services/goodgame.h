@@ -1,7 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
-#include "utils.h"
+#include "utils/QtAxelChatUtils.h"
 #include <QObject>
 #include <QWebSocket>
 #include <QTimer>
