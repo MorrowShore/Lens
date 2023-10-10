@@ -13,7 +13,7 @@ static const int FirstReconnectPeriod = 100;
 const QString ChatService::UnknownBadge = "qrc:/resources/images/unknown-badge.png";
 
 ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
-    : Feature(manager_.backend, "chatService:" + getServiceTypeId(serviceType_), parent)
+    : Feature(manager_.backend, "ChatService:" + getServiceTypeId(serviceType_), parent)
     , serviceType(serviceType_)
     , settingsGroupPath(settingsGroupPathParent + "/" + getServiceTypeId(serviceType_))
     , manager(manager_)
