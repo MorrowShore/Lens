@@ -5,8 +5,8 @@
 #include <QJsonArray>
 #include <QMediaContent>
 
-ChatBot::ChatBot(QSettings& settings_, const QString& settingsGroup, QObject *parent)
-    : QObject(parent)
+ChatBot::ChatBot(BackendManager& backend, QSettings& settings_, const QString& settingsGroup, QObject *parent)
+    : Feature(backend, "other:ChatBot", parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroup)
 
@@ -150,6 +150,13 @@ void ChatBot::processMessage(const std::shared_ptr<Message>& message)
         return;
     }
 
+    if (!_enabledCommands)
+    {
+        return;
+    }
+
+    Feature::setAsUsed();
+
     for (BotAction* action : qAsConst(_actions))
     {
         if (canExecute(*action, *message))
@@ -203,12 +210,6 @@ bool ChatBot::canExecute(BotAction& action, const Message &message)
 
 void ChatBot::execute(BotAction &action)
 {
-    if (!_enabledCommands)
-    {
-        qDebug() << "commands is disabled!";
-        return;
-    }
-
     if (!action._active)
     {
         qDebug() << "The period of inactivity has not yet passed";

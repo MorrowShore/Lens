@@ -64,7 +64,7 @@ ChatManager::ChatManager(QSettings& settings_, QNetworkAccessManager& network_, 
     , web(web_)
     , emotesProcessor(backend_, settings_, SettingsGroupPath, network_)
     , outputToFile(settings, SettingsGroupPath + "/output_to_file", network, messagesModel, services)
-    , bot(settings, SettingsGroupPath + "/chat_bot")
+    , bot(backend_, settings, SettingsGroupPath + "/chat_bot")
     , authorQMLProvider(*this, messagesModel, outputToFile)
     , webSocket(*this)
     , tcpServer(services)
