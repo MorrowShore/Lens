@@ -107,7 +107,7 @@ void BackendManager::sendEvent(const QDateTime& time, const QString &type, const
             { "data", QJsonObject({{ "events", jsonEvents }})}
         }));
 
-    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/events?token=") + OBFUSCATE(BACKEND_API_TOKEN)));
+    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/events?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
     request.setRawHeader("Content-Type", "application/json");
 
     QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
