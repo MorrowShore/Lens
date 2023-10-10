@@ -19,6 +19,12 @@ class Manager : public QObject
 {
     Q_OBJECT
 public:
+    struct EngineInfo
+    {
+        QString version;
+        QString chromiumVersion;
+    };
+
     static const QStringList& getAvailableResourceTypes();
 
     explicit Manager(const QString& executablePath, QObject *parent = nullptr);
@@ -38,6 +44,8 @@ public:
                 const cweqt::Browser::Settings::Filter& filter,
                 std::function<void(std::shared_ptr<Response>, bool& closeBrowser)> onReceived);
 
+    EngineInfo getEngineInfo() const { return engineInfo; }
+
 signals:
     void initialized();
     void browserOpened(std::shared_ptr<Browser> browser);
@@ -47,12 +55,6 @@ private slots:
 
 private:
     friend class Browser;
-
-    struct EngineInfo
-    {
-        QString version;
-        QString chromiumVersion;
-    };
 
     void startProcess();
     void stopProcess();

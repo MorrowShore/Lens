@@ -3,12 +3,21 @@
 #include <QLocale>
 #include <QQmlEngine>
 
+namespace
+{
+
+static I18n* instance = nullptr;
+
+}
+
 I18n::I18n(QSettings& settings_, const QString& settingsGroup, QQmlEngine* qml_, QObject *parent) :
     QObject(parent),
     settings(settings_),
     SettingsGroupPath(settingsGroup),
     qml(qml_)
 {
+    instance = this;
+
     setLanguage(settings.value(SettingsGroupPath + "/" + SETTINGNAME_LANGUAGETAG, systemLanguage()).toString());
 }
 
@@ -111,4 +120,9 @@ void I18n::declareQml()
 QString I18n::language() const
 {
     return _languageTag;
+}
+
+I18n *I18n::getInstance()
+{
+    return instance;
 }

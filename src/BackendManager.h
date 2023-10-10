@@ -9,8 +9,13 @@ class BackendManager : public QObject
 public:
     explicit BackendManager(QNetworkAccessManager& network, QObject *parent = nullptr);
 
+    static BackendManager* getInstance();
+
 public slots:
     void sendSessionUsage();
+
+    void setUsedLanguage(const QString& language);
+    void setUsedWebEngineVersion(const QString& version, const QString& cefVersion);
     void addUsedFeature(const QString& feature);
 
 private:
@@ -20,4 +25,7 @@ private:
     const QDateTime startTime;
 
     QSet<QString> usedFeatures;
+    QString usedLanguage;
+    QString usedWebVersion;
+    QString usedCefVersion;
 };

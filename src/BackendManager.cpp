@@ -1,5 +1,6 @@
 #include "BackendManager.h"
 #include "secrets.h"
+#include "i18n.h"
 #include "crypto/obfuscator.h"
 #include <QDebug>
 #include <QNetworkRequest>
@@ -14,6 +15,7 @@
 namespace
 {
 
+BackendManager* instance = nullptr;
 static const QDateTime StartTime = QDateTime::currentDateTime();
 
 static QString getMachineHash()
@@ -49,7 +51,14 @@ BackendManager::BackendManager(QNetworkAccessManager& network_, QObject *parent)
     , network(network_)
     , startTime(QDateTime::currentDateTime())
 {
+    instance = this;
+
     usageDuration.start();
+}
+
+BackendManager *BackendManager::getInstance()
+{
+    return instance;
 }
 
 void BackendManager::sendSessionUsage()
@@ -65,6 +74,10 @@ void BackendManager::sendSessionUsage()
             { "version", QCoreApplication::applicationVersion() },
             { "buildArch", QSysInfo::buildCpuArchitecture() },
             { "buildAbi", QSysInfo::buildAbi() },
+            { "locale", I18n::getInstance() ? I18n::getInstance()->language() : QString() },
+            { "qtVersion", qVersion() },
+            { "webVersion", usedWebVersion },
+            { "cefVersion", usedCefVersion },
         });
 
     const QJsonObject machine(
@@ -75,6 +88,7 @@ void BackendManager::sendSessionUsage()
             { "productVersion", QSysInfo::productVersion() },
             { "kernelType", QSysInfo::kernelType() },
             { "kernelVersion", QSysInfo::kernelVersion() },
+            { "locale", QLocale::system().name() },
             { "hash", getMachineHash() },
         });
 
@@ -110,6 +124,19 @@ void BackendManager::sendSessionUsage()
     {
         qCritical() << error;
     });
+
+    qDebug() << doc;
+}
+
+void BackendManager::setUsedLanguage(const QString &language)
+{
+    usedLanguage = language;
+}
+
+void BackendManager::setUsedWebEngineVersion(const QString &version, const QString &cefVersion)
+{
+    usedWebVersion = version;
+    usedCefVersion = cefVersion;
 }
 
 void BackendManager::addUsedFeature(const QString &feature)

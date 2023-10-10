@@ -59,6 +59,12 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
     connect(ui.addSlider(&backgroundOpacity, tr("Background opacity"), 0.0, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
     connect(ui.addSlider(&windowOpacity, tr("Window opacity"), 0.1, 1.0, true).get(), &UIBridgeElement::valueChanged, this, &ChatWindow::updateWindow);
 
+    connect(&web, &cweqt::Manager::initialized, this, [this]()
+    {
+        const auto info = web.getEngineInfo();
+        backend.setUsedWebEngineVersion(info.version, info.chromiumVersion);
+    });
+
     {
         tray.setToolTip(QCoreApplication::applicationName());
 

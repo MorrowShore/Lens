@@ -18,6 +18,8 @@ public:
     static void declareQml();
     QString language() const;
 
+    static I18n* getInstance();
+
 signals:
     void languageChanged();
 
