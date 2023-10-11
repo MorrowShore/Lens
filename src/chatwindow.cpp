@@ -285,6 +285,8 @@ void ChatWindow::hideAll()
     {
         window->hide();
     }
+
+    tray.hide();
 }
 
 void ChatWindow::saveWindowSize()

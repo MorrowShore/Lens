@@ -56,8 +56,8 @@ int main(int argc, char *argv[])
 
     QtMiscUtils::setBeforeQuitDeferred([&backend, &chatWindow]()
     {
-        backend.sendSessionUsage();
         chatWindow.hideAll();
+        backend.sendSessionUsage();
     }, 5000);
 
     splashScreen->close();
