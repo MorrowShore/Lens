@@ -20,7 +20,7 @@ enum class ServiceType
     //BigoLive,
     //TikTok,
     //FacebookLive,
-    //NimoLive,
+    NimoTV,
     Odysee,
     VkPlayLive,
     VkVideo,

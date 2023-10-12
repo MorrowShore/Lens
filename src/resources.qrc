@@ -104,5 +104,6 @@
         <file>resources/images/odysee/badges/creator.svg</file>
         <file>resources/images/dlive-icon.svg</file>
         <file>resources/images/axelchat-icon.svg</file>
+        <file>resources/images/nimotv-icon.svg</file>
     </qresource>
 </RCC>
