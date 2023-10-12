@@ -96,7 +96,25 @@ std::shared_ptr<UIBridgeElement> UIBridge::addSlider(Setting<double> *setting, c
 
     element->setItemProperty("valueShowAsPercent", valueShowAsPercent);
 
+    addElement(element);
 
+    return element;
+}
+
+std::shared_ptr<UIBridgeElement> UIBridge::addComboBox(Setting<int> *setting, const QString &name, const QStringList& items)
+{
+    std::shared_ptr<UIBridgeElement> element = std::make_shared<UIBridgeElement>();
+
+    element->type = UIBridgeElement::Type::ComboBox;
+    element->settingInt = setting;
+
+    element->setItemProperty("name", name);
+    element->setItemProperty("model", items);
+
+    if (setting)
+    {
+        element->setItemProperty("currentIndex", setting->get());
+    }
 
     addElement(element);
 

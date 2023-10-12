@@ -1,6 +1,8 @@
 #include "QtStringUtils.h"
 #include <QTimeZone>
 #include <QDebug>
+#include <QFile>
+#include <QDir>
 
 QString QtStringUtils::dateTimeToStringISO8601WithMsWithOffsetFromUtc(const QDateTime &dateTime)
 {

@@ -31,5 +31,6 @@
         <file>UIBridge/UIBridgeLabel.qml</file>
         <file>UIBridge/UIBridgeSlider.qml</file>
         <file>UIBridge/UIBridgeSwitch.qml</file>
+        <file>UIBridge/UIBridgeComboBox.qml</file>
     </qresource>
 </RCC>

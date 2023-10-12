@@ -21,6 +21,7 @@ public:
         Button      = 30,
         Switch      = 32,
         Slider      = 40,
+        ComboBox    = 50,
     };
 
     explicit UIBridgeElement(QObject *parent = nullptr);
@@ -37,6 +38,9 @@ public:
 
     Setting<double>* getSettingDouble() { return settingDouble; }
     const Setting<double>* getSettingDouble() const { return settingDouble; }
+
+    Setting<int>* getSettingInt() { return settingInt; }
+    const Setting<int>* getSettingInt() const { return settingInt; }
 
     Q_INVOKABLE int getTypeInt() const { return (int)type; }
 
@@ -62,6 +66,7 @@ private slots:
     void onTextChanged();
     void onCheckedChanged();
     void onValueChanged();
+    void onCurrentIndexChanged();
 
 private:
     QQuickItem* item = nullptr;
@@ -69,10 +74,9 @@ private:
     Setting<QString>* settingString;
     Setting<bool>* settingBool;
     Setting<double>* settingDouble;
+    Setting<int>* settingInt;
 
     QAction* action = nullptr;
-
-    QList<QPair<int, QString>> comboBoxValues;
 
     Type type;
     QMap<QByteArray, QVariant> parameters;

@@ -17,6 +17,7 @@ public:
     std::shared_ptr<UIBridgeElement> addLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
     std::shared_ptr<UIBridgeElement> addSwitch(Setting<bool>* setting, const QString& name);
     std::shared_ptr<UIBridgeElement> addSlider(Setting<double>* setting, const QString& name, const double minValue, const double maxValue, const bool valueShowAsPercent = false);
+    std::shared_ptr<UIBridgeElement> addComboBox(Setting<int>* setting, const QString& name, const QStringList& items);
 
     Q_INVOKABLE int getElementsCount() const;
     Q_INVOKABLE int getElementType(const int index) const;

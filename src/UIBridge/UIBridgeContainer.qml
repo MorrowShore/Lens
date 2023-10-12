@@ -34,6 +34,7 @@ Rectangle
             Button:     30,
             Switch:     32,
             Slider:     40,
+            ComboBox:   50,
         }
 
         const container = column
@@ -43,6 +44,7 @@ Rectangle
         const buttonComponent     = Qt.createComponent("UIBridgeButton.qml")
         const switchComponent     = Qt.createComponent("UIBridgeSwitch.qml")
         const sliderComponent     = Qt.createComponent("UIBridgeSlider.qml")
+        const comboBoxComponent   = Qt.createComponent("UIBridgeComboBox.qml")
 
         for (var i = 0; i < bridge.getElementsCount(); ++i)
         {
@@ -55,6 +57,7 @@ Rectangle
             case Types.Button:      createComponent(container, i, type, buttonComponent);      break
             case Types.Switch:      createComponent(container, i, type, switchComponent);      break
             case Types.Slider:      createComponent(container, i, type, sliderComponent);      break
+            case Types.ComboBox:    createComponent(container, i, type, comboBoxComponent);    break
 
             default:
                 console.error("Unknown bridge component type ", type)

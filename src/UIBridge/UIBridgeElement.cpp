@@ -52,6 +52,11 @@ void UIBridgeElement::bindQuickItem(QQuickItem *item_)
     {
         QObject::connect(item, SIGNAL(valueChanged()), this, SLOT(onValueChanged()));
     }
+
+    if (type == Type::ComboBox)
+    {
+        QObject::connect(item, SIGNAL(currentIndexChanged()), this, SLOT(onCurrentIndexChanged()));
+    }
 }
 
 void UIBridgeElement::bindAction(QAction *action_)
@@ -265,7 +270,7 @@ void UIBridgeElement::onValueChanged()
 
     parameters.insert("value", value);
 
-    if (settingString)
+    if (settingDouble)
     {
         if (value != settingDouble->get())
         {
@@ -273,6 +278,50 @@ void UIBridgeElement::onValueChanged()
         }
 
         settingDouble->set(value);
+    }
+    else
+    {
+        qWarning() << "setting is null";
+    }
+
+    if (changed)
+    {
+        emit valueChanged();
+    }
+}
+
+void UIBridgeElement::onCurrentIndexChanged()
+{
+    QObject* sender_ = sender();
+    if (!sender_)
+    {
+        qCritical() << "sender is null";
+        return;
+    }
+
+    bool changed = false;
+
+    const int value = sender_->property("currentIndex").toInt();
+
+    qDebug() << value;
+
+    if (value != parameters.value("currentIndex"))
+    {
+        changed = true;
+    }
+
+    parameters.insert("currentIndex", value);
+
+    if (settingInt)
+    {
+        if (value != settingInt->get())
+        {
+            changed = true;
+        }
+
+        settingInt->set(value);
+
+        qDebug() << settingInt->getKey() << settingInt->get() << "OK";
     }
     else
     {
