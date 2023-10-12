@@ -11,6 +11,7 @@ class UIBridge : public QObject
 public:
     explicit UIBridge(QObject *parent = nullptr);
 
+    void addElement(const std::shared_ptr<UIBridgeElement>& element);
     std::shared_ptr<UIBridgeElement> addLabel(const QString& text);
     std::shared_ptr<UIBridgeElement> addButton(const QString& text, std::function<void()> invokeCallback);
     std::shared_ptr<UIBridgeElement> addLineEdit(Setting<QString>* setting, const QString& name, const QString& placeHolder = QString(), const bool passwordEcho = false);
@@ -34,7 +35,6 @@ signals:
     void elementChanged(const std::shared_ptr<UIBridgeElement>& element);
 
 private:
-    void addElement(const std::shared_ptr<UIBridgeElement>& element);
 
     QList<std::shared_ptr<UIBridgeElement>> elements;
 };

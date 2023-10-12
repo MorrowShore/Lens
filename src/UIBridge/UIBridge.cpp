@@ -14,8 +14,6 @@ std::shared_ptr<UIBridgeElement> UIBridge::addLabel(const QString &text)
     element->type = UIBridgeElement::Type::Label;
     element->setItemProperty("text", text);
 
-    element->updateItemProperties();
-
     addElement(element);
 
     return element;
@@ -29,8 +27,6 @@ std::shared_ptr<UIBridgeElement> UIBridge::addButton(const QString &text, std::f
 
     element->invokeCallback = invokeCallback;
     element->setItemProperty("text", text);
-
-    element->updateItemProperties();
 
     addElement(element);
 
@@ -58,8 +54,6 @@ std::shared_ptr<UIBridgeElement> UIBridge::addLineEdit(Setting<QString> *setting
         qWarning() << "setting is null";
     }
 
-    element->updateItemProperties();
-
     addElement(element);
 
     return element;
@@ -77,8 +71,6 @@ std::shared_ptr<UIBridgeElement> UIBridge::addSwitch(Setting<bool> *setting, con
     {
         element->setItemProperty("checked", setting->get());
     }
-
-    element->updateItemProperties();
 
     addElement(element);
 
@@ -104,7 +96,7 @@ std::shared_ptr<UIBridgeElement> UIBridge::addSlider(Setting<double> *setting, c
 
     element->setItemProperty("valueShowAsPercent", valueShowAsPercent);
 
-    element->updateItemProperties();
+
 
     addElement(element);
 
@@ -118,6 +110,8 @@ void UIBridge::addElement(const std::shared_ptr<UIBridgeElement> &element)
         qCritical() << "element is null";
         return;
     }
+
+    element->updateItemProperties();
 
     connect(element.get(), &UIBridgeElement::valueChanged, this, [this, element]()
     {
