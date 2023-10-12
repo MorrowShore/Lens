@@ -23,6 +23,7 @@ Links to the privacy policies of third-party services providers that may be used
 *   [Rumble](https://investors.rumble.com/privacy-policy)
 *   [Odysee](https://odysee.com/$/privacypolicy)
 *   [DLive](https://community.dlive.tv/about/privacy-policy/)
+*   [Nimo TV](https://www.nimo.tv/p/agreement6)
 *   [GoodGame](https://goodgame.ru/html/privacy-policy.html)
 *   [VK Play Live](https://documentation.vkplay.ru/terms_vkp/privacy_world_vkp)
 *   [VK Video](https://vk.com/terms)
