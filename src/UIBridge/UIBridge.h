@@ -1,7 +1,9 @@
 #pragma once
 
-#include "uibridgeelement.h"
-#include <QObject>
+#include "setting.h"
+#include <QQuickItem>
+
+class UIBridgeElement;
 
 class UIBridge : public QObject
 {
@@ -25,11 +27,7 @@ public:
 #ifdef QT_QUICK_LIB
     Q_INVOKABLE void bindQuickItem(const int index, QQuickItem* item);
 
-    static void declareQml()
-    {
-        qmlRegisterUncreatableType<UIBridge> ("AxelChat.UIBridge", 1, 0, "UIBridge", "Type cannot be created in QML");
-        UIBridgeElement::declareQml();
-    }
+    static void declareQml();
 #endif
 
 signals:

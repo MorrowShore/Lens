@@ -1,4 +1,5 @@
 #include "uibridge.h"
+#include "UIBridgeElement.h"
 
 UIBridge::UIBridge(QObject *parent)
     : QObject{parent}
@@ -151,6 +152,12 @@ void UIBridge::bindQuickItem(const int index, QQuickItem *item)
     }
 
     elements[index]->bindQuickItem(item);
+}
+
+void UIBridge::declareQml()
+{
+    qmlRegisterUncreatableType<UIBridge> ("AxelChat.UIBridge", 1, 0, "UIBridge", "Type cannot be created in QML");
+    UIBridgeElement::declareQml();
 }
 
 std::shared_ptr<UIBridgeElement> UIBridge::findBySetting(const Setting<QString> &setting) const

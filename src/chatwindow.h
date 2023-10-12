@@ -9,7 +9,7 @@
 #include "BackendManager.h"
 #include "log/logdialog.h"
 #include "setting.h"
-#include "uibridge.h"
+#include "UIBridge/UIBridge.h"
 #include <QQuickView>
 #include <QSystemTrayIcon>
 

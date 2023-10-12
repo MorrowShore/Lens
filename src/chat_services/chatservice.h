@@ -2,7 +2,7 @@
 
 #include "setting.h"
 #include "chatservicestypes.h"
-#include "uibridge.h"
+#include "UIBridge/UIBridge.h"
 #include "tcprequest.h"
 #include "tcpreply.h"
 #include "tcpserver.h"

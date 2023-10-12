@@ -20,6 +20,8 @@ HEADERS += \
     BackendManager.h \
     ChatManager.h \
     Feature.h \
+    UIBridge/UIBridge.h \
+    UIBridge/UIBridgeElement.h \
     appsponsormanager.h \
     chat_services/discord/Channel.h \
     chat_services/discord/Guild.h \
@@ -77,8 +79,6 @@ HEADERS += \
     outputtofile.h \
     setting.h \
     tcpserver.h \
-    uibridge.h \
-    uibridgeelement.h \
     utils/QmlUtils.h \
     utils/QtAxelChatUtils.h \
     utils/QtMiscUtils.h \
@@ -89,6 +89,8 @@ SOURCES += \
     BackendManager.cpp \
     ChatManager.cpp \
     Feature.cpp \
+    UIBridge/UIBridge.cpp \
+    UIBridge/UIBridgeElement.cpp \
     appsponsormanager.cpp \
     chat_services/chatservice.cpp \
     chat_services/discord/Guild.cpp \
@@ -136,8 +138,6 @@ SOURCES += \
     outputtofile.cpp \
     ssemanager.cpp \
     tcpserver.cpp \
-    uibridge.cpp \
-    uibridgeelement.cpp \
     utils/QmlUtils.cpp \
     utils/QtAxelChatUtils.cpp \
     utils/QtMiscUtils.cpp \
