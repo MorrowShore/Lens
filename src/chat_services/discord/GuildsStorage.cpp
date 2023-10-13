@@ -1,5 +1,5 @@
 #include "guildsstorage.h"
-#include "discord.h"
+#include "Discord.h"
 
 GuildsStorage::GuildsStorage(Discord& discord_, QNetworkAccessManager& network_, QObject *parent)
     : QObject(parent)

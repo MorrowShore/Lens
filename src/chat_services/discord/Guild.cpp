@@ -1,5 +1,5 @@
 #include "Guild.h"
-#include "discord.h"
+#include "Discord.h"
 
 Guild* Guild::fromJson(const QJsonObject &object, GuildsStorage& storage, Discord& discord, QNetworkAccessManager& network, QObject *parent)
 {
