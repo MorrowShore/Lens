@@ -81,6 +81,16 @@ QString OAuth2::getAccessToken() const
     return accessToken.get();
 }
 
+void OAuth2::setToken(const QString &token)
+{
+    setNewState(State::LoginInProgress);
+    accessToken.set(token);
+    refreshToken.set(QString());
+    validate();
+
+    emit stateChanged();
+}
+
 void OAuth2::login(const FlowType flowType, const QString& redirectUri_)
 {
     if (!configSetted)
@@ -125,8 +135,6 @@ void OAuth2::login(const FlowType flowType, const QString& redirectUri_)
     {
         qCritical() << "QDesktopServices: failed to open url";
     }
-
-    setNewState(State::LoginInProgress);
 }
 
 void OAuth2::logout()
@@ -198,7 +206,7 @@ void OAuth2::refresh()
     if (refreshToken.get().isEmpty())
     {
         //qWarning() << "refresh token is empty";
-        revoke();
+        //revoke();
         return;
     }
 

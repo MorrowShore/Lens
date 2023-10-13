@@ -924,19 +924,19 @@ to these chats/channels in access rights (at your own risk)</oldsource>
 <context>
     <name>DonationAlerts</name>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="82"/>
-        <location filename="chat_services/donationalerts.cpp" line="190"/>
-        <location filename="chat_services/donationalerts.cpp" line="195"/>
+        <location filename="chat_services/donationalerts.cpp" line="80"/>
+        <location filename="chat_services/donationalerts.cpp" line="189"/>
+        <location filename="chat_services/donationalerts.cpp" line="194"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="94"/>
+        <location filename="chat_services/donationalerts.cpp" line="93"/>
         <source>Dashboard</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="99"/>
+        <location filename="chat_services/donationalerts.cpp" line="98"/>
         <source>Donation page</source>
         <translation>Страница доната</translation>
     </message>
@@ -957,7 +957,7 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="189"/>
+        <location filename="chat_services/donationalerts.cpp" line="188"/>
         <source>Not logged in</source>
         <translation>Не авторизован</translation>
     </message>
@@ -966,32 +966,32 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">Для полноценной работы войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="194"/>
+        <location filename="chat_services/donationalerts.cpp" line="193"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="202"/>
+        <location filename="chat_services/donationalerts.cpp" line="201"/>
         <source>Logged in</source>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="209"/>
+        <location filename="chat_services/donationalerts.cpp" line="208"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="206"/>
+        <location filename="chat_services/donationalerts.cpp" line="205"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="435"/>
+        <location filename="chat_services/donationalerts.cpp" line="434"/>
         <source>Anonymous</source>
         <translation>Аноним</translation>
     </message>
     <message>
-        <location filename="chat_services/donationalerts.cpp" line="480"/>
+        <location filename="chat_services/donationalerts.cpp" line="479"/>
         <source>Audio</source>
         <translation>Аудио</translation>
     </message>
@@ -1194,7 +1194,7 @@ to these chats/channels in access rights (at your own risk)</oldsource>
 <context>
     <name>OAuth2</name>
     <message>
-        <location filename="oauth2.cpp" line="75"/>
+        <location filename="oauth2.cpp" line="76"/>
         <source>Now you can close the page and return to %1</source>
         <translation>Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
@@ -1707,7 +1707,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Twitch</name>
     <message>
-        <location filename="chat_services/twitch.cpp" line="38"/>
+        <location filename="chat_services/twitch.cpp" line="39"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
@@ -1722,16 +1722,17 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">OAuth-токен</translation>
     </message>
     <message>
+        <location filename="chat_services/twitch.cpp" line="70"/>
         <source>Get token</source>
         <oldsource>Get Token</oldsource>
-        <translation type="vanished">Получить токен</translation>
+        <translation>Получить токен</translation>
     </message>
     <message>
         <source>Ping timeout! Reconnection...</source>
         <translation type="vanished">Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="179"/>
+        <location filename="chat_services/twitch.cpp" line="191"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -1740,17 +1741,32 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">OAuth-токен не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="37"/>
+        <location filename="chat_services/twitch.cpp" line="38"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="670"/>
+        <location filename="chat_services/twitch.cpp" line="53"/>
+        <source>Method 1. Basic method:</source>
+        <translation>Способ 1: Основной способ:</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="68"/>
+        <source>Method 2. Get the token and paste into the field below:</source>
+        <translation>Способ 2: Получите токен и вставьте его в поле ниже:</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="76"/>
+        <source>Token</source>
+        <translation>Токен</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="682"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="683"/>
+        <location filename="chat_services/twitch.cpp" line="695"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
@@ -1760,9 +1776,9 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Для отображения аватарок войдите</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="54"/>
-        <location filename="chat_services/twitch.cpp" line="666"/>
-        <location filename="chat_services/twitch.cpp" line="671"/>
+        <location filename="chat_services/twitch.cpp" line="55"/>
+        <location filename="chat_services/twitch.cpp" line="678"/>
+        <location filename="chat_services/twitch.cpp" line="683"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
@@ -1775,7 +1791,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="182"/>
+        <location filename="chat_services/twitch.cpp" line="194"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
@@ -1792,7 +1808,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="665"/>
+        <location filename="chat_services/twitch.cpp" line="677"/>
         <source>Login for full functionality</source>
         <translation>Для полноценной работы войдите</translation>
     </message>
@@ -1805,7 +1821,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="684"/>
+        <location filename="chat_services/twitch.cpp" line="696"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
@@ -1869,30 +1885,30 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Ссылка трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="41"/>
-        <location filename="chat_services/vkvideo.cpp" line="429"/>
-        <location filename="chat_services/vkvideo.cpp" line="434"/>
+        <location filename="chat_services/vkvideo.cpp" line="39"/>
+        <location filename="chat_services/vkvideo.cpp" line="428"/>
+        <location filename="chat_services/vkvideo.cpp" line="433"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="81"/>
-        <location filename="chat_services/vkvideo.cpp" line="428"/>
+        <location filename="chat_services/vkvideo.cpp" line="80"/>
+        <location filename="chat_services/vkvideo.cpp" line="427"/>
         <source>Not logged in</source>
         <translation>Вы не вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="86"/>
+        <location filename="chat_services/vkvideo.cpp" line="85"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="91"/>
+        <location filename="chat_services/vkvideo.cpp" line="90"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="94"/>
+        <location filename="chat_services/vkvideo.cpp" line="93"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
@@ -1905,32 +1921,32 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="631"/>
+        <location filename="chat_services/vkvideo.cpp" line="630"/>
         <source>image</source>
         <translation>изображение</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="635"/>
+        <location filename="chat_services/vkvideo.cpp" line="634"/>
         <source>video</source>
         <translation>видео</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="639"/>
+        <location filename="chat_services/vkvideo.cpp" line="638"/>
         <source>audio</source>
         <translation>аудио</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="643"/>
+        <location filename="chat_services/vkvideo.cpp" line="642"/>
         <source>document</source>
         <translation>документ</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="650"/>
+        <location filename="chat_services/vkvideo.cpp" line="649"/>
         <source>sticker</source>
         <translation>стикер</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="660"/>
+        <location filename="chat_services/vkvideo.cpp" line="659"/>
         <source>unknown(%1)</source>
         <translation>неизвестно(%1)</translation>
     </message>
@@ -1939,18 +1955,18 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Вы не вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="433"/>
+        <location filename="chat_services/vkvideo.cpp" line="432"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="438"/>
+        <location filename="chat_services/vkvideo.cpp" line="437"/>
         <source>Logged in</source>
         <oldsource>Logged in as %1</oldsource>
         <translation>Вы вошли</translation>
     </message>
     <message>
-        <location filename="chat_services/vkvideo.cpp" line="439"/>
+        <location filename="chat_services/vkvideo.cpp" line="438"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>

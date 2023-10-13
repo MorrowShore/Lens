@@ -78,6 +78,10 @@ private:
     std::shared_ptr<UIBridgeElement> authStateInfo;
     std::shared_ptr<UIBridgeElement> loginButton;
 
+    std::shared_ptr<UIBridgeElement> getTokenButton;
+    std::shared_ptr<UIBridgeElement> tokenLineEdit;
+    Setting<QString> customToken;
+
     QTimer timerPing;
     QTimer timerCheckPong;
     QTimer timerUpdaetStreamInfo;

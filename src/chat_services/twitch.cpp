@@ -32,6 +32,7 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
   : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Twitch, true, parent)
   , network(network_)
   , authStateInfo(ui.addLabel("Loading..."))
+  , customToken(settings, QString())
   , auth(settings, getSettingsGroupPath() + "/auth", network)
 {
     ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));
@@ -48,6 +49,8 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
     config.revokeTokenUrl = "https://id.twitch.tv/oauth2/revoke";
     auth.setConfig(config);
     QObject::connect(&auth, &OAuth2::stateChanged, this, &Twitch::onAuthStateChanged);
+
+    ui.addLabel("\n" + tr("Method 1. Basic method:"));
     
     loginButton = ui.addButton(tr("Login"), [this]()
     {
@@ -62,18 +65,28 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
         }
     });
 
-    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [](const std::shared_ptr<UIBridgeElement>& element)
+    ui.addLabel("\n" + tr("Method 2. Get the token and paste into the field below:"));
+
+    getTokenButton = ui.addButton(tr("Get token"), [this]()
+    {
+        const QString redirectUri = "https://twitchapps.com/tmi/";
+        auth.login(OAuth2::FlowType::Implicit, redirectUri);
+    });
+
+    tokenLineEdit = ui.addLineEdit(&customToken, tr("Token"), "oauth:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true);
+
+    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {
-            qCritical() << "!element";
+            qCritical() << "element is null";
             return;
         }
 
-        Setting<QString>* setting = element->getSettingString();
-        if (!setting)
+        if (element == tokenLineEdit)
         {
-            return;
+            const QString token = QtStringUtils::removeFromStart(element->getSettingString()->get(), "oauth:", Qt::CaseSensitivity::CaseInsensitive);
+            auth.setToken(token);
         }
     });
 

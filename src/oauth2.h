@@ -41,6 +41,7 @@ public:
     QJsonObject getAuthorizationInfo() const { return authorizationInfo; }
     // TODO: deffered request
     QString getAccessToken() const;
+    void setToken(const QString& token);
 
 signals:
     void stateChanged();
