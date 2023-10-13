@@ -28,11 +28,9 @@ VkVideo::VkVideo(ChatManager& manager, QSettings &settings, const QString &setti
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));
     
     OAuth2::Config config;
-    config.flowType = OAuth2::FlowType::AuthorizationCode;
     config.clientId = OBFUSCATE(VK_APP_ID);
     config.clientSecret = OBFUSCATE(VK_SECURE_KEY);
     config.authorizationPageUrl = QString("https://oauth.vk.com/authorize?v=%1&display=page").arg(ApiVersion);
-    config.redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
     config.scope = "video+offline";
     config.requestTokenUrl = "https://oauth.vk.com/access_token";
     auth.setConfig(config);
@@ -47,7 +45,8 @@ VkVideo::VkVideo(ChatManager& manager, QSettings &settings, const QString &setti
         }
         else
         {
-            auth.login();
+            const QString redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
+            auth.login(OAuth2::FlowType::AuthorizationCode, redirectUrl);
         }
     });
 

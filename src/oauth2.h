@@ -11,15 +11,13 @@ class OAuth2 : public QObject
 {
     Q_OBJECT
 public:
-    enum class FlowType { /*Implicit,*/ AuthorizationCode, /*ClientCredentials*/ };
+    enum class FlowType { Implicit, AuthorizationCode, /*ClientCredentials*/ };
 
     struct Config
     {
-        FlowType flowType = FlowType::AuthorizationCode;
         QString clientId;
         QString clientSecret;
         QUrl authorizationPageUrl;
-        QUrl redirectUrl;
         QString scope;
         QUrl requestTokenUrl;
         QUrl validateTokenUrl;
@@ -48,7 +46,7 @@ signals:
     void stateChanged();
 
 public slots:
-    void login();
+    void login(const FlowType flowType, const QString& redirectUri);
     void logout();
     void refresh();
 
@@ -70,6 +68,7 @@ private:
 
     QNetworkAccessManager& network;
 
+    Setting<QString> redirectUri;
     Setting<QString> accessToken;
     Setting<QString> refreshToken;
 

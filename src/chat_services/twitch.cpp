@@ -38,11 +38,9 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
     
     OAuth2::Config config;
-    config.flowType = OAuth2::FlowType::AuthorizationCode;
     config.clientId = ClientID;
     config.clientSecret = OBFUSCATE(TWITCH_SECRET);
     config.authorizationPageUrl = "https://id.twitch.tv/oauth2/authorize";
-    config.redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
     config.scope = "openid+chat:read";
     config.requestTokenUrl = "https://id.twitch.tv/oauth2/token";
     config.validateTokenUrl = "https://id.twitch.tv/oauth2/validate";
@@ -59,7 +57,8 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
         }
         else
         {
-            auth.login();
+            const QString redirectUri = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
+            auth.login(OAuth2::FlowType::AuthorizationCode, redirectUri);
         }
     });
 

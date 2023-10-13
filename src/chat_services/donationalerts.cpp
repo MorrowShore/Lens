@@ -64,11 +64,9 @@ DonationAlerts::DonationAlerts(ChatManager& manager, QSettings &settings, const 
     ui.findBySetting(stream)->setItemProperty("visible", false);
     
     OAuth2::Config config;
-    config.flowType = OAuth2::FlowType::AuthorizationCode;
     config.clientId = ClientID;
     config.clientSecret = OBFUSCATE(DONATIONALERTS_API_KEY);
     config.authorizationPageUrl = "https://www.donationalerts.com/oauth/authorize";
-    config.redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
     config.scope = "oauth-user-show+oauth-donation-subscribe+oauth-donation-index";
     config.requestTokenUrl = "https://www.donationalerts.com/oauth/token";
     config.refreshTokenUrl = "https://www.donationalerts.com/oauth/token";
@@ -87,7 +85,8 @@ DonationAlerts::DonationAlerts(ChatManager& manager, QSettings &settings, const 
         }
         else
         {
-            auth.login();
+            const QString redirectUrl = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
+            auth.login(OAuth2::FlowType::AuthorizationCode, redirectUrl);
         }
     });
     

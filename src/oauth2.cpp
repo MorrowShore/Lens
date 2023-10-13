@@ -10,6 +10,7 @@
 OAuth2::OAuth2(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network_, QObject *parent)
     : QObject{parent}
     , network(network_)
+    , redirectUri(Setting<QString>(settings, settingsGroupPath + "/redirect_uri", QString(), true))
     , accessToken(Setting<QString>(settings, settingsGroupPath + "/access_token", QString(), true))
     , refreshToken(Setting<QString>(settings, settingsGroupPath + "/refresh_token", QString(), true))
 {
@@ -80,7 +81,7 @@ QString OAuth2::getAccessToken() const
     return accessToken.get();
 }
 
-void OAuth2::login()
+void OAuth2::login(const FlowType flowType, const QString& redirectUri_)
 {
     if (!configSetted)
     {
@@ -90,19 +91,21 @@ void OAuth2::login()
         return;
     }
 
+    redirectUri.set(redirectUri_);
+
     QUrlQuery query;
-    switch (config.flowType)
+    switch (flowType)
     {
-    /*case OAuth2::FlowType::Implicit:
+    case OAuth2::FlowType::Implicit:
         query.addQueryItem("response_type", "token");
-        break;*/
+        break;
     case OAuth2::FlowType::AuthorizationCode:
         query.addQueryItem("response_type", "code");
         break;
     }
 
     query.addQueryItem("client_id", config.clientId);
-    query.addQueryItem("redirect_uri", config.redirectUrl.toString());
+    query.addQueryItem("redirect_uri", redirectUri.get());
     query.addQueryItem("scope", config.scope);
 
     const QUrlQuery query2(config.authorizationPageUrl.query());
@@ -209,7 +212,7 @@ void OAuth2::refresh()
     query.addQueryItem("client_id", config.clientId);
     query.addQueryItem("client_secret", config.clientSecret);
     query.addQueryItem("refresh_token", refreshToken.get());
-    query.addQueryItem("redirect_uri", config.redirectUrl.toString());
+    query.addQueryItem("redirect_uri", redirectUri.get());
 
     QNetworkReply* reply = network.post(request, query.toString().toUtf8());
 
@@ -294,7 +297,7 @@ void OAuth2::requestOAuthTokenByCode(const QString &code)
     query.addQueryItem("grant_type", "authorization_code");
     query.addQueryItem("client_id", config.clientId);
     query.addQueryItem("client_secret", config.clientSecret);
-    query.addQueryItem("redirect_uri", config.redirectUrl.toString());
+    query.addQueryItem("redirect_uri", redirectUri.get());
     query.addQueryItem("code", code);
 
     QNetworkReply* reply = network.post(request, query.toString().toUtf8());
@@ -374,6 +377,7 @@ void OAuth2::clear()
 {
     accessToken.set(QString());
     refreshToken.set(QString());
+    redirectUri.set(QString());
     authorizationInfo = QJsonObject();
 
     emit stateChanged();
