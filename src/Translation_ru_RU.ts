@@ -1722,7 +1722,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">OAuth-токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="70"/>
+        <location filename="chat_services/twitch.cpp" line="68"/>
         <source>Get token</source>
         <oldsource>Get Token</oldsource>
         <translation>Получить токен</translation>
@@ -1732,7 +1732,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="191"/>
+        <location filename="chat_services/twitch.cpp" line="190"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -1747,26 +1747,32 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="chat_services/twitch.cpp" line="53"/>
-        <source>Method 1. Basic method:</source>
-        <translation>Способ 1: Основной способ:</translation>
+        <source>Method 1. Click the button below:</source>
+        <oldsource>Method 1. Basic method:</oldsource>
+        <translation>Способ 1: Нажмите кнопку ниже:</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="68"/>
+        <location filename="chat_services/twitch.cpp" line="66"/>
         <source>Method 2. Get the token and paste into the field below:</source>
         <translation>Способ 2: Получите токен и вставьте его в поле ниже:</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="76"/>
+        <location filename="chat_services/twitch.cpp" line="74"/>
         <source>Token</source>
         <translation>Токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="682"/>
+        <location filename="chat_services/twitch.cpp" line="701"/>
+        <source>For full functionality, login using one of the following methods:</source>
+        <translation>Для полноценной работы войдите в аккаунт одним из способов:</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="705"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="695"/>
+        <location filename="chat_services/twitch.cpp" line="717"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
@@ -1777,8 +1783,6 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="chat_services/twitch.cpp" line="55"/>
-        <location filename="chat_services/twitch.cpp" line="678"/>
-        <location filename="chat_services/twitch.cpp" line="683"/>
         <source>Login</source>
         <translation>Войти</translation>
     </message>
@@ -1791,7 +1795,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="194"/>
+        <location filename="chat_services/twitch.cpp" line="193"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
@@ -1808,9 +1812,8 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Теперь можете закрыть страницу и вернуться в %1</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="677"/>
         <source>Login for full functionality</source>
-        <translation>Для полноценной работы войдите</translation>
+        <translation type="vanished">Для полноценной работы войдите</translation>
     </message>
     <message>
         <source>Not logged in</source>
@@ -1821,7 +1824,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="696"/>
+        <location filename="chat_services/twitch.cpp" line="61"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>

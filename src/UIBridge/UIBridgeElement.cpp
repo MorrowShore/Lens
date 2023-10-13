@@ -113,6 +113,11 @@ void UIBridgeElement::setItemProperty(const QByteArray &name, const QVariant &va
     }
 }
 
+void UIBridgeElement::setVisible(const bool visible)
+{
+    setItemProperty("visible", visible);
+}
+
 void UIBridgeElement::updateItemProperties()
 {
     if (!item)

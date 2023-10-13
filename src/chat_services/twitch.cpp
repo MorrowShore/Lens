@@ -50,30 +50,29 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
     auth.setConfig(config);
     QObject::connect(&auth, &OAuth2::stateChanged, this, &Twitch::onAuthStateChanged);
 
-    ui.addLabel("\n" + tr("Method 1. Basic method:"));
+    notLoggedInElements.append(ui.addLabel("\n" + tr("Method 1. Click the button below:")));
     
-    loginButton = ui.addButton(tr("Login"), [this]()
+    notLoggedInElements.append(ui.addButton(tr("Login"), [this]()
     {
-        if (auth.isLoggedIn())
-        {
-            auth.logout();
-        }
-        else
-        {
-            const QString redirectUri = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
-            auth.login(OAuth2::FlowType::AuthorizationCode, redirectUri);
-        }
-    });
+        const QString redirectUri = "http://localhost:" + QString("%1").arg(TcpServer::Port) + "/chat_service/" + getServiceTypeId(getServiceType()) + "/auth_code";
+        auth.login(OAuth2::FlowType::AuthorizationCode, redirectUri);
+    }));
 
-    ui.addLabel("\n" + tr("Method 2. Get the token and paste into the field below:"));
+    loggedInElements.append(ui.addButton(tr("Logout"), [this]()
+    {
+        auth.logout();
+    }));
 
-    getTokenButton = ui.addButton(tr("Get token"), [this]()
+    notLoggedInElements.append(ui.addLabel("\n" + tr("Method 2. Get the token and paste into the field below:")));
+
+    notLoggedInElements.append(ui.addButton(tr("Get token"), [this]()
     {
         const QString redirectUri = "https://twitchapps.com/tmi/";
         auth.login(OAuth2::FlowType::Implicit, redirectUri);
-    });
+    }));
 
     tokenLineEdit = ui.addLineEdit(&customToken, tr("Token"), "oauth:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true);
+    notLoggedInElements.append(tokenLineEdit);
 
     connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
@@ -86,7 +85,10 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
         if (element == tokenLineEdit)
         {
             const QString token = QtStringUtils::removeFromStart(element->getSettingString()->get(), "oauth:", Qt::CaseSensitivity::CaseInsensitive);
-            auth.setToken(token);
+            if (!token.trimmed().isEmpty())
+            {
+                auth.setToken(token);
+            }
         }
     });
 
@@ -671,16 +673,39 @@ void Twitch::onAuthStateChanged()
 
     authorizedChannel = ChannelInfo();
 
+    if (auth.getState() == OAuth2::State::LoggedIn)
+    {
+        for (const auto& e : qAsConst(notLoggedInElements))
+        {
+            e->setVisible(false);
+        }
+
+        for (const auto& e : qAsConst(loggedInElements))
+        {
+            e->setVisible(true);
+        }
+    }
+    else
+    {
+        for (const auto& e : qAsConst(notLoggedInElements))
+        {
+            e->setVisible(true);
+        }
+
+        for (const auto& e : qAsConst(loggedInElements))
+        {
+            e->setVisible(false);
+        }
+    }
+
     switch (auth.getState())
     {
     case OAuth2::State::NotLoggedIn:
-        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("Login for full functionality"));
-        loginButton->setItemProperty("text", tr("Login"));
+        authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/error-alt-svgrepo-com.svg\" width=\"20\" height=\"20\"> " + tr("For full functionality, login using one of the following methods:"));
         break;
 
     case OAuth2::State::LoginInProgress:
         authStateInfo->setItemProperty("text", tr("Login in progress..."));
-        loginButton->setItemProperty("text", tr("Login"));
         break;
 
     case OAuth2::State::LoggedIn:
@@ -693,7 +718,7 @@ void Twitch::onAuthStateChanged()
         emit authorized(authorizedChannel);
 
         authStateInfo->setItemProperty("text", "<img src=\"qrc:/resources/images/tick.svg\" width=\"20\" height=\"20\"> " + tr("Logged in as %1").arg("<b>" + authorizedChannel.login + "</b>"));
-        loginButton->setItemProperty("text", tr("Logout"));
+
         requestGlobalBadges();
         requestChannelBadges(authorizedChannel);
         reconnect();

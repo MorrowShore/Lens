@@ -76,11 +76,11 @@ private:
     QWebSocket socket;
     
     std::shared_ptr<UIBridgeElement> authStateInfo;
-    std::shared_ptr<UIBridgeElement> loginButton;
-
-    std::shared_ptr<UIBridgeElement> getTokenButton;
     std::shared_ptr<UIBridgeElement> tokenLineEdit;
     Setting<QString> customToken;
+
+    QList<std::shared_ptr<UIBridgeElement>> notLoggedInElements;
+    QList<std::shared_ptr<UIBridgeElement>> loggedInElements;
 
     QTimer timerPing;
     QTimer timerCheckPong;

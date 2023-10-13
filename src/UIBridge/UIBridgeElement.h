@@ -48,6 +48,8 @@ public:
 
     void setItemProperty(const QByteArray& name, const QVariant& value);
 
+    void setVisible(const bool visible);
+
 #ifdef QT_QUICK_LIB
     static void declareQml()
     {
