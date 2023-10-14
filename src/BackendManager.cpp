@@ -17,7 +17,7 @@ namespace
 {
 
 static const int TimerCanSendUsageInterval = 30 * 1000;
-static const int TimerSendServicesInterval = 2 * 60 * 1000;
+static const int TimerSendServicesInterval = 60 * 1000;
 
 BackendManager* instance = nullptr;
 static const QDateTime StartTime = QDateTime::currentDateTime();
