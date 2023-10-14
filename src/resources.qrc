@@ -105,5 +105,6 @@
         <file>resources/images/dlive-icon.svg</file>
         <file>resources/images/axelchat-icon.svg</file>
         <file>resources/images/nimotv-icon.svg</file>
+        <file>resources/images/tick-with-warnings.svg</file>
     </qresource>
 </RCC>

@@ -208,6 +208,16 @@ TcpReply Twitch::processTcpRequest(const TcpRequest &request)
     return TcpReply::createTextHtmlError("Unknown path");
 }
 
+QStringList Twitch::getWarnings() const
+{
+    if (isConnected() && !auth.isLoggedIn())
+    {
+        return { tr("You are not logged in") };
+    }
+
+    return QStringList();
+}
+
 void Twitch::sendIRCMessage(const QString &message)
 {
     //qDebug() << "send:" << message.toUtf8() << "\n";

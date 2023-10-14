@@ -207,11 +207,23 @@ Row {
             border.width: 2
             radius: width / 2
             border.color: \"black\"
-            visible: status !== Global._ConnectedConnectionState
+            visible: !allOk  ///*status !== Global._ConnectedConnectionState &&*/ warnings.length !== 0
 
+            property bool allOk: (status === Global._ConnectedConnectionState && warnings.length === 0)
             property var status: chatService.connectionState
+            property var warnings: chatService.warnings
 
-            color: \"red\"
+            color: {
+                if (status !== Global._ConnectedConnectionState) {
+                    return \"red\"
+                }
+
+                if (warnings.length !== 0) {
+                    return \"orange\"
+                }
+
+                return \"lime\"
+            }
         }
     }
 

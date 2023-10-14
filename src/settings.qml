@@ -271,11 +271,19 @@ Window {
                                 visible: chatService !== null && chatService.enabled
 
                                 color: {
-                                    if (chatService !== null && chatService.connectionState === Global._ConnectedConnectionState) {
-                                        return "lime"
+                                    if (chatService === null) {
+                                        return "silver"
                                     }
 
-                                    return "red"
+                                    if (chatService.connectionState !== Global._ConnectedConnectionState) {
+                                        return "red"
+                                    }
+
+                                    if (chatService.warnings.length !== 0) {
+                                        return "orange"
+                                    }
+
+                                    return "lime"
                                 }
                             }
                         }

@@ -89,6 +89,10 @@ ScrollView {
                         return "qrc:/resources/images/error-alt-svgrepo-com.svg"
                     }
                     else if (chatService.connectionState === Global._ConnectedConnectionState) {
+                        if (chatService.warnings.length !== 0) {
+                            return "qrc:/resources/images/tick-with-warnings.svg"
+                        }
+
                         return "qrc:/resources/images/tick.svg"
                     }
 
@@ -114,6 +118,10 @@ ScrollView {
                     }
 
                     if (chatService.connectionState === _ConnectedConnectionState) {
+                        if (chatService.warnings.length !== 0) {
+                            return qsTr("Connected but there are problems")
+                        }
+
                         return qsTr("Connected")
                     }
 

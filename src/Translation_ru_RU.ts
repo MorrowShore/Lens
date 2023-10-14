@@ -1732,7 +1732,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Тайм-аут пинга! Переподключение...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="190"/>
+        <location filename="chat_services/twitch.cpp" line="193"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
@@ -1762,17 +1762,22 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation>Токен</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="701"/>
+        <location filename="chat_services/twitch.cpp" line="215"/>
+        <source>You are not logged in</source>
+        <translation>Вы не вошли</translation>
+    </message>
+    <message>
+        <location filename="chat_services/twitch.cpp" line="714"/>
         <source>For full functionality, login using one of the following methods:</source>
         <translation>Для полноценной работы войдите в аккаунт одним из способов:</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="705"/>
+        <location filename="chat_services/twitch.cpp" line="718"/>
         <source>Login in progress...</source>
         <translation>Вход...</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="717"/>
+        <location filename="chat_services/twitch.cpp" line="730"/>
         <source>Logged in as %1</source>
         <translation>Вы вошли как %1</translation>
     </message>
@@ -1795,7 +1800,7 @@ It is not recommended to use more than one %1 with the same bot</source>
         <translation type="vanished">Не авторизован</translation>
     </message>
     <message>
-        <location filename="chat_services/twitch.cpp" line="193"/>
+        <location filename="chat_services/twitch.cpp" line="196"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
@@ -2844,27 +2849,32 @@ Latest version available: %2</oldsource>
         <translation>Подключение...</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="117"/>
+        <location filename="setting_pages/service.qml" line="118"/>
+        <source>Connected but there are problems</source>
+        <translation>Подключено, но есть проблемы</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/service.qml" line="121"/>
         <source>Connected</source>
         <translation>Подключено</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="133"/>
+        <location filename="setting_pages/service.qml" line="137"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="143"/>
+        <location filename="setting_pages/service.qml" line="147"/>
         <source>Stream</source>
         <translation>Стрим</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="167"/>
+        <location filename="setting_pages/service.qml" line="171"/>
         <source>%1 emotes</source>
         <translation>%1 эмодзи</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="189"/>
+        <location filename="setting_pages/service.qml" line="193"/>
         <source>Enables display of emoji from %1 for the current platform. To display custom emoji for the current platform, log into your Twitch account, which is linked to %1</source>
         <oldsource>Allow to display emotes from %1. To display channel (custom) emotes, login to a Twitch account that is linked to these services</oldsource>
         <translation>Включает отображение эмодзи из %1 для текущей платформы. Чтобы отображались кастомные эмодзи для текущей платформы, войдите в аккаунт Твитча, который привязан к платформам %1</translation>
@@ -2874,7 +2884,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Трансляция</translation>
     </message>
     <message>
-        <location filename="setting_pages/service.qml" line="152"/>
+        <location filename="setting_pages/service.qml" line="156"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>

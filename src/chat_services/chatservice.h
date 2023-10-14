@@ -34,6 +34,7 @@ public:
 
     Q_PROPERTY(ConnectionState      connectionState              READ getConnectionState                 NOTIFY stateChanged)
     Q_PROPERTY(QString              mainError                    READ getMainError                       NOTIFY stateChanged)
+    Q_PROPERTY(QStringList          warnings                     READ getWarnings                       NOTIFY stateChanged)
 
     Q_PROPERTY(int                  viewersCount                 READ getViewers                         NOTIFY stateChanged)
 
@@ -124,6 +125,7 @@ private:
 
 protected:
     virtual void reconnectImpl() = 0;
+    virtual QStringList getWarnings() const { return QStringList(); }
 
     QString generateAuthorId(const QString& rawId) const;
     QString generateMessageId(const QString& rawId) const;

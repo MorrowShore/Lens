@@ -24,6 +24,7 @@ public:
     ConnectionState getConnectionState() const override;
     QString getMainError() const override;
     TcpReply processTcpRequest(const TcpRequest &request) override;
+    QStringList getWarnings() const override;
 
 signals:
     void authorized(const ChannelInfo& channelInfo);
