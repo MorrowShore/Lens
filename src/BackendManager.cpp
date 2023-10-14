@@ -72,35 +72,33 @@ BackendManager *BackendManager::getInstance()
     return instance;
 }
 
+void BackendManager::sendService(const ChatService& service)
+{
+    const QJsonDocument doc(QJsonObject(
+        {
+            { "instanceHash", instanceHash.get() },
+            { "service", getJsonService(service) },
+            { "app", getJsonApp() },
+            { "machine", getJsonMachine() },
+        }));
+
+    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/service?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
+    request.setRawHeader("Content-Type", "application/json");
+
+    QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
+
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [](QNetworkReply::NetworkError error)
+    {
+        qCritical() << error;
+    });
+}
+
 void BackendManager::sendSessionUsage()
 {
     const qint64 startedAtMs = startTime.toUTC().toMSecsSinceEpoch();
     const int startedAtOffsetSec = startTime.toLocalTime().offsetFromUtc();
 
     const qint64 durationMs = usageDuration.elapsed();
-
-    const QJsonObject app(
-        {
-            { "name", QCoreApplication::applicationName() },
-            { "version", QCoreApplication::applicationVersion() },
-            { "buildArch", QSysInfo::buildCpuArchitecture() },
-            { "buildAbi", QSysInfo::buildAbi() },
-            { "locale", I18n::getInstance() ? I18n::getInstance()->language() : QString() },
-            { "qtVersion", qVersion() },
-            { "webVersion", usedWebVersion },
-            { "cefVersion", usedCefVersion },
-        });
-
-    const QJsonObject machine(
-        {
-            { "currentArch", QSysInfo::currentCpuArchitecture() },
-            { "productName", QSysInfo::prettyProductName() },
-            { "productType", QSysInfo::productType() },
-            { "productVersion", QSysInfo::productVersion() },
-            { "kernelType", QSysInfo::kernelType() },
-            { "kernelVersion", QSysInfo::kernelVersion() },
-            { "locale", QLocale::system().name() },
-        });
 
     QJsonArray features;
     for (const QString& feature : qAsConst(usedFeatures))
@@ -120,8 +118,8 @@ void BackendManager::sendSessionUsage()
         {
             { "instanceHash", instanceHash.get() },
             { "usage", usage },
-            { "app", app },
-            { "machine", machine },
+            { "app", getJsonApp() },
+            { "machine", getJsonMachine() },
         }));
 
     QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/usage?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
@@ -149,4 +147,62 @@ void BackendManager::setUsedWebEngineVersion(const QString &version, const QStri
 void BackendManager::addUsedFeature(const QString &feature)
 {
     usedFeatures.insert(feature);
+}
+
+QJsonObject BackendManager::getJsonMachine() const
+{
+    return QJsonObject(
+        {
+            { "currentArch", QSysInfo::currentCpuArchitecture() },
+            { "productName", QSysInfo::prettyProductName() },
+            { "productType", QSysInfo::productType() },
+            { "productVersion", QSysInfo::productVersion() },
+            { "kernelType", QSysInfo::kernelType() },
+            { "kernelVersion", QSysInfo::kernelVersion() },
+            { "locale", QLocale::system().name() },
+         });
+}
+
+QJsonObject BackendManager::getJsonApp() const
+{
+    return QJsonObject(
+        {
+            { "name", QCoreApplication::applicationName() },
+            { "version", QCoreApplication::applicationVersion() },
+            { "buildArch", QSysInfo::buildCpuArchitecture() },
+            { "buildAbi", QSysInfo::buildAbi() },
+            { "locale", I18n::getInstance() ? I18n::getInstance()->language() : QString() },
+            { "qtVersion", qVersion() },
+            { "webVersion", usedWebVersion },
+            { "cefVersion", usedCefVersion },
+         });
+}
+
+QJsonObject BackendManager::getJsonServiceState(const ChatService::State &state)
+{
+    return QJsonObject(
+        {
+            { "connected", state.connected },
+            { "streamUrl", state.streamUrl.toString() },
+            { "viewers", state.viewers },
+         });
+}
+
+QJsonObject BackendManager::getJsonService(const ChatService &service)
+{
+    const ChatService::State& state = service.getState();
+
+    const QJsonObject jsonState = QJsonObject(
+        {
+            { "connected", state.connected },
+            { "streamUrl", state.streamUrl.toString() },
+            { "viewers", state.viewers },
+        });
+
+    return QJsonObject(
+        {
+            { "name", service.getName() },
+            { "typeId", ChatService::getServiceTypeId(service.getServiceType()) },
+            { "state", jsonState },
+        });
 }

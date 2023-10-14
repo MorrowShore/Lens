@@ -301,6 +301,12 @@ void ChatService::setViewers(const int count)
 {
     state.viewers = count;
     emit stateChanged();
+
+    if (!state.sendedState && state.connected && count != -1)
+    {
+        manager.backend.sendService(*this);
+        state.sendedState = true;
+    }
 }
 
 std::shared_ptr<Author> ChatService::getServiceAuthor() const

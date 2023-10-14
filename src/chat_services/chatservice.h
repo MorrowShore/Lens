@@ -56,6 +56,8 @@ public:
         QUrl chatUrl;
         QUrl controlPanelUrl;
         int viewers = -1;
+
+        bool sendedState = false;
     };
 
     static const QString UnknownBadge;

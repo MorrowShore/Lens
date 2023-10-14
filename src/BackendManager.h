@@ -1,6 +1,7 @@
 #pragma once
 
 #include "setting.h"
+#include "chat_services/chatservice.h"
 #include <QNetworkAccessManager>
 #include <QElapsedTimer>
 
@@ -13,6 +14,7 @@ public:
     static BackendManager* getInstance();
 
 public slots:
+    void sendService(const ChatService& service);
     void sendSessionUsage();
 
     void setUsedLanguage(const QString& language);
@@ -20,6 +22,11 @@ public slots:
     void addUsedFeature(const QString& feature);
 
 private:
+    QJsonObject getJsonMachine() const;
+    QJsonObject getJsonApp() const;
+    static QJsonObject getJsonServiceState(const ChatService::State &state);
+    static QJsonObject getJsonService(const ChatService& service);
+
     QNetworkAccessManager& network;
     Setting<QString> instanceHash;
 
