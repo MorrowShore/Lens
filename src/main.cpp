@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     QNetworkAccessManager network;
 
-    BackendManager backend(network);
+    BackendManager backend(settings, "BackendManager", network);
 
     ChatWindow chatWindow(network, backend);
 

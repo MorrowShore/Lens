@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QSysInfo>
 #include <QCryptographicHash>
+#include <QRandomGenerator>
 
 namespace
 {
@@ -18,40 +19,50 @@ namespace
 BackendManager* instance = nullptr;
 static const QDateTime StartTime = QDateTime::currentDateTime();
 
-static QString getMachineHash()
+static QString generateRandomString(const int length)
 {
-    static const QString Data =
-        OBFUSCATE(BACKEND_API_HASH_SALT)+
-        QSysInfo::machineHostName() +
-        QSysInfo::machineUniqueId() +
-        QSysInfo::prettyProductName() +
+    static const QString PossibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    QString result;
+    for(int i = 0; i < length; ++i)
+    {
+        int index = QRandomGenerator::securelySeeded().generate() % PossibleCharacters.length();
+
+        result.append(PossibleCharacters.at(index));
+    }
+
+    return result;
+}
+
+static QString generateDisposableHash()
+{
+    const QString data =
+        OBFUSCATE(BACKEND_API_HASH_SALT) +
+        generateRandomString(10).toUtf8() +
+        QCoreApplication::applicationName() +
+        QCoreApplication::applicationVersion() +
+        QDateTime::currentDateTime().toString().toUtf8() +
         OBFUSCATE(BACKEND_API_HASH_SALT);
 
-    static const QString Hash = QString::fromLatin1(QCryptographicHash::hash(Data.toUtf8(), QCryptographicHash::Algorithm::Sha256).toBase64());
+    const QString hash = QString::fromLatin1(QCryptographicHash::hash(data.toUtf8(), QCryptographicHash::Algorithm::Sha256).toBase64());
 
-    return Hash;
-}
-
-static QString getSessionHash()
-{
-    static const QString Data =
-        getMachineHash() +
-        QSysInfo::bootUniqueId() +
-        StartTime.toString(Qt::DateFormat::ISODateWithMs);
-
-    static const QString Hash = QString::fromLatin1(QCryptographicHash::hash(Data.toUtf8(), QCryptographicHash::Algorithm::Sha256).toBase64());
-
-    return Hash;
+    return hash;
 }
 
 }
 
-BackendManager::BackendManager(QNetworkAccessManager& network_, QObject *parent)
+BackendManager::BackendManager(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
     : QObject{parent}
     , network(network_)
+    , instanceHash(settings, settingsGroupPathParent + "/instanceHash", QString(), true)
     , startTime(QDateTime::currentDateTime())
 {
     instance = this;
+
+    if (instanceHash.get().isEmpty())
+    {
+        instanceHash.set(generateDisposableHash());
+    }
 
     usageDuration.start();
 }
@@ -89,7 +100,6 @@ void BackendManager::sendSessionUsage()
             { "kernelType", QSysInfo::kernelType() },
             { "kernelVersion", QSysInfo::kernelVersion() },
             { "locale", QLocale::system().name() },
-            { "hash", getMachineHash() },
         });
 
     QJsonArray features;
@@ -103,16 +113,15 @@ void BackendManager::sendSessionUsage()
             { "startedAtMs", startedAtMs },
             { "startedAtOffsetSec", startedAtOffsetSec },
             { "durationMs", durationMs },
-            { "app", app },
-            { "machine", machine },
             { "features", features },
         };
 
     const QJsonDocument doc(QJsonObject(
         {
-            { "machineHash", getMachineHash() },
-            { "sessionHash", getSessionHash() },
+            { "instanceHash", instanceHash.get() },
             { "usage", usage },
+            { "app", app },
+            { "machine", machine },
         }));
 
     QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/usage?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
