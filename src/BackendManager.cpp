@@ -81,79 +81,6 @@ BackendManager *BackendManager::getInstance()
     return instance;
 }
 
-void BackendManager::sendServices()
-{
-    QJsonArray jsonServices;
-    for (const QJsonObject& jsonService : qAsConst(services))
-    {
-        jsonServices.append(jsonService);
-    }
-
-    const QJsonDocument doc(QJsonObject(
-        {
-            { "instanceHash", instanceHash.get() },
-            { "services", jsonServices },
-            { "app", getJsonApp() },
-            { "machine", getJsonMachine() },
-        }));
-
-    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/services?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
-    request.setRawHeader("Content-Type", "application/json");
-
-    QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
-
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [](QNetworkReply::NetworkError error)
-    {
-        qCritical() << error;
-    });
-}
-
-void BackendManager::sendSessionUsage()
-{
-    if (timerCanSendUsage.isActive())
-    {
-        qDebug() << "timer CanSendUsage is active, ignore";
-        return;
-    }
-
-    const qint64 startedAtMs = startTime.toUTC().toMSecsSinceEpoch();
-    const int startedAtOffsetSec = startTime.toLocalTime().offsetFromUtc();
-
-    const qint64 durationMs = usageDuration.elapsed();
-
-    QJsonArray features;
-    for (const QString& feature : qAsConst(usedFeatures))
-    {
-        features.append(feature);
-    }
-
-    const QJsonObject usage =
-        {
-            { "startedAtMs", startedAtMs },
-            { "startedAtOffsetSec", startedAtOffsetSec },
-            { "durationMs", durationMs },
-            { "features", features },
-        };
-
-    const QJsonDocument doc(QJsonObject(
-        {
-            { "instanceHash", instanceHash.get() },
-            { "usage", usage },
-            { "app", getJsonApp() },
-            { "machine", getJsonMachine() },
-        }));
-
-    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/usage?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
-    request.setRawHeader("Content-Type", "application/json");
-
-    QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
-
-    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [](QNetworkReply::NetworkError error)
-    {
-        qCritical() << error;
-    });
-}
-
 void BackendManager::setUsedLanguage(const QString &language)
 {
     usedLanguage = language;
@@ -233,4 +160,77 @@ QJsonObject BackendManager::getJsonApp() const
             { "webVersion", usedWebVersion },
             { "cefVersion", usedCefVersion },
         });
+}
+
+void BackendManager::sendServices()
+{
+    QJsonArray jsonServices;
+    for (const QJsonObject& jsonService : qAsConst(services))
+    {
+        jsonServices.append(jsonService);
+    }
+
+    const QJsonDocument doc(QJsonObject(
+        {
+            { "instanceHash", instanceHash.get() },
+            { "services", jsonServices },
+            { "app", getJsonApp() },
+            { "machine", getJsonMachine() },
+        }));
+
+    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/services?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
+    request.setRawHeader("Content-Type", "application/json");
+
+    QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
+
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [](QNetworkReply::NetworkError error)
+    {
+        qCritical() << error;
+    });
+}
+
+void BackendManager::sendSessionUsage()
+{
+    if (timerCanSendUsage.isActive())
+    {
+        qDebug() << "timer CanSendUsage is active, ignore";
+        return;
+    }
+
+    const qint64 startedAtMs = startTime.toUTC().toMSecsSinceEpoch();
+    const int startedAtOffsetSec = startTime.toLocalTime().offsetFromUtc();
+
+    const qint64 durationMs = usageDuration.elapsed();
+
+    QJsonArray features;
+    for (const QString& feature : qAsConst(usedFeatures))
+    {
+        features.append(feature);
+    }
+
+    const QJsonObject usage =
+        {
+            { "startedAtMs", startedAtMs },
+            { "startedAtOffsetSec", startedAtOffsetSec },
+            { "durationMs", durationMs },
+            { "features", features },
+        };
+
+    const QJsonDocument doc(QJsonObject(
+        {
+            { "instanceHash", instanceHash.get() },
+            { "usage", usage },
+            { "app", getJsonApp() },
+            { "machine", getJsonMachine() },
+        }));
+
+    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/usage?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
+    request.setRawHeader("Content-Type", "application/json");
+
+    QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
+
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), this, [](QNetworkReply::NetworkError error)
+    {
+        qCritical() << error;
+    });
 }
