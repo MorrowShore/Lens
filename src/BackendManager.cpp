@@ -16,6 +16,9 @@
 namespace
 {
 
+static const int TimerCanSendUsageInterval = 30 * 1000;
+static const int TimerSendServicesInterval = 2 * 60 * 1000;
+
 BackendManager* instance = nullptr;
 static const QDateTime StartTime = QDateTime::currentDateTime();
 
@@ -65,6 +68,12 @@ BackendManager::BackendManager(QSettings& settings, const QString& settingsGroup
     }
 
     usageDuration.start();
+
+    timerCanSendUsage.setSingleShot(true);
+    timerCanSendUsage.setInterval(TimerCanSendUsageInterval);
+    timerCanSendUsage.start();
+
+    connect(&timerSendServices, &QTimer::timeout, this, &BackendManager::sendServices);
 }
 
 BackendManager *BackendManager::getInstance()
@@ -72,17 +81,23 @@ BackendManager *BackendManager::getInstance()
     return instance;
 }
 
-void BackendManager::sendService(const ChatService& service)
+void BackendManager::sendServices()
 {
+    QJsonArray jsonServices;
+    for (const QJsonObject& jsonService : qAsConst(services))
+    {
+        jsonServices.append(jsonService);
+    }
+
     const QJsonDocument doc(QJsonObject(
         {
             { "instanceHash", instanceHash.get() },
-            { "service", getJsonService(service) },
+            { "services", jsonServices },
             { "app", getJsonApp() },
             { "machine", getJsonMachine() },
         }));
 
-    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/service?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
+    QNetworkRequest request(QUrl(OBFUSCATE(BACKEND_API_ROOT_URL) + QString("/services?secret=") + OBFUSCATE(BACKEND_API_SECRET)));
     request.setRawHeader("Content-Type", "application/json");
 
     QNetworkReply* reply = network.post(request, doc.toJson(QJsonDocument::JsonFormat::Compact));
@@ -95,6 +110,12 @@ void BackendManager::sendService(const ChatService& service)
 
 void BackendManager::sendSessionUsage()
 {
+    if (timerCanSendUsage.isActive())
+    {
+        qDebug() << "timer CanSendUsage is active, ignore";
+        return;
+    }
+
     const qint64 startedAtMs = startTime.toUTC().toMSecsSinceEpoch();
     const int startedAtOffsetSec = startTime.toLocalTime().offsetFromUtc();
 
@@ -149,6 +170,37 @@ void BackendManager::addUsedFeature(const QString &feature)
     usedFeatures.insert(feature);
 }
 
+void BackendManager::setService(const ChatService &service)
+{
+    const ChatService::State& state = service.getState();
+
+    const QJsonObject jsonState = QJsonObject(
+        {
+            { "connected", state.connected },
+            { "streamUrl", state.streamUrl.toString() },
+            { "viewers", state.viewers },
+        });
+
+    const QString typeId = ChatService::getServiceTypeId(service.getServiceType());
+
+    const QJsonObject jsonService(
+        {
+            { "name", service.getName() },
+            { "typeId", typeId },
+            { "state", jsonState },
+        });
+
+    if (!services.contains(typeId))
+    {
+        timerSendServices.stop();
+        timerSendServices.setSingleShot(true);
+        timerSendServices.setInterval(TimerSendServicesInterval);
+        timerSendServices.start();
+    }
+
+    services.insert(typeId, jsonService);
+}
+
 QJsonObject BackendManager::getJsonMachine() const
 {
     return QJsonObject(
@@ -160,7 +212,7 @@ QJsonObject BackendManager::getJsonMachine() const
             { "kernelType", QSysInfo::kernelType() },
             { "kernelVersion", QSysInfo::kernelVersion() },
             { "locale", QLocale::system().name() },
-         });
+        });
 }
 
 QJsonObject BackendManager::getJsonApp() const
@@ -175,34 +227,5 @@ QJsonObject BackendManager::getJsonApp() const
             { "qtVersion", qVersion() },
             { "webVersion", usedWebVersion },
             { "cefVersion", usedCefVersion },
-         });
-}
-
-QJsonObject BackendManager::getJsonServiceState(const ChatService::State &state)
-{
-    return QJsonObject(
-        {
-            { "connected", state.connected },
-            { "streamUrl", state.streamUrl.toString() },
-            { "viewers", state.viewers },
-         });
-}
-
-QJsonObject BackendManager::getJsonService(const ChatService &service)
-{
-    const ChatService::State& state = service.getState();
-
-    const QJsonObject jsonState = QJsonObject(
-        {
-            { "connected", state.connected },
-            { "streamUrl", state.streamUrl.toString() },
-            { "viewers", state.viewers },
-        });
-
-    return QJsonObject(
-        {
-            { "name", service.getName() },
-            { "typeId", ChatService::getServiceTypeId(service.getServiceType()) },
-            { "state", jsonState },
         });
 }

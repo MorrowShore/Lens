@@ -304,7 +304,7 @@ void ChatService::setViewers(const int count)
 
     if (!state.sendedState && state.connected && count != -1)
     {
-        manager.backend.sendService(*this);
+        manager.backend.setService(*this);
         state.sendedState = true;
     }
 }

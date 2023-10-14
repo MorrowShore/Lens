@@ -230,7 +230,7 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
 
         if (info.version != SupportedVersion)
         {
-            qWarning() << "unsupported version" << version << ", supported version =" << SupportedVersion;
+            qWarning() << "unsupported version" << version << ", supported version =" << SupportedVersion << ", messsage =" << result;
         }
 
         if (info.wsChannel.isEmpty())

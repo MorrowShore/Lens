@@ -14,18 +14,19 @@ public:
     static BackendManager* getInstance();
 
 public slots:
-    void sendService(const ChatService& service);
     void sendSessionUsage();
 
     void setUsedLanguage(const QString& language);
     void setUsedWebEngineVersion(const QString& version, const QString& cefVersion);
     void addUsedFeature(const QString& feature);
+    void setService(const ChatService& service);
+
+private slots:
+    void sendServices();
 
 private:
     QJsonObject getJsonMachine() const;
     QJsonObject getJsonApp() const;
-    static QJsonObject getJsonServiceState(const ChatService::State &state);
-    static QJsonObject getJsonService(const ChatService& service);
 
     QNetworkAccessManager& network;
     Setting<QString> instanceHash;
@@ -37,4 +38,9 @@ private:
     QString usedLanguage;
     QString usedWebVersion;
     QString usedCefVersion;
+
+    QMap<QString, QJsonObject> services;
+
+    QTimer timerCanSendUsage;
+    QTimer timerSendServices;
 };
