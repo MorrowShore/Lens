@@ -201,6 +201,11 @@ void BackendManager::setService(const ChatService &service)
     services.insert(typeId, jsonService);
 }
 
+void BackendManager::onBeforeQuit()
+{
+    sendSessionUsage();
+}
+
 QJsonObject BackendManager::getJsonMachine() const
 {
     return QJsonObject(
