@@ -24,7 +24,6 @@ private slots:
     void requestChatByContinuation();
 
     void requestStreamPage();
-    void onReplyStreamPage();
 
 private:
     enum class ChatSource { ByChatPage, ByContinuation };

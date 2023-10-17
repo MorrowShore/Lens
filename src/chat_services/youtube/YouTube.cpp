@@ -333,45 +333,30 @@ void YouTube::requestStreamPage()
     request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
 
     QNetworkReply* reply = network.get(request);
-    if (!reply)
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        qCritical() << "!reply";
-        return;
-    }
+        const QByteArray rawData = reply->readAll();
+        reply->deleteLater();
 
-    QObject::connect(reply, &QNetworkReply::finished, this, &YouTube::onReplyStreamPage);
-}
+        if (rawData.isEmpty())
+        {
+            qCritical() << "raw data is empty";
+            processBadLivePageReply();
+            return;
+        }
 
-void YouTube::onReplyStreamPage()
-{
-    QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-    if (!reply)
-    {
-        qCritical() << "!reply";
-        return;
-    }
+        const int viewers = YouTubeUtils::parseViews(rawData);
+        setViewers(viewers);
 
-    const QByteArray rawData = reply->readAll();
-    reply->deleteLater();
-
-    if (rawData.isEmpty())
-    {
-        qCritical() << "raw data is empty";
-        processBadLivePageReply();
-        return;
-    }
-
-    const int viewers = YouTubeUtils::parseViews(rawData);
-    setViewers(viewers);
-
-    if (viewers != -1)
-    {
-        info.badLivePageReplies = 0;
-    }
-    else
-    {
-        processBadLivePageReply();
-    }
+        if (viewers != -1)
+        {
+            info.badLivePageReplies = 0;
+        }
+        else
+        {
+            processBadLivePageReply();
+        }
+    });
 }
 
 void YouTube::setChatSource(const ChatSource source)
