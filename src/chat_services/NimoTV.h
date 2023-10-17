@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include <QWebSocket>
 
 class NimoTV : public ChatService
 {
@@ -12,4 +13,10 @@ public:
 
 protected:
     void reconnectImpl() override;
+
+private slots:
+    void onWebSocketReceived(const QByteArray& bin);
+
+private:
+    QWebSocket socket;
 };
