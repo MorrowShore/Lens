@@ -38,15 +38,7 @@ ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QStri
     });
     timerReconnect.start(ReconnectPeriod);
 
-    QTimer::singleShot(FirstReconnectPeriod, this, [this]()
-    {
-        if (!isEnabled() || isConnected())
-        {
-            return;
-        }
-
-        reconnect();
-    });
+    QTimer::singleShot(FirstReconnectPeriod, this, [this]() { reconnect(); });
 }
 
 QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
