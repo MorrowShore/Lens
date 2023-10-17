@@ -36,8 +36,7 @@ HEADERS += \
     chat_services/rumble.h \
     chat_services/vkvideo.h \
     chat_services/wasd.h \
-    chat_services/youtube/youtubebrowser.h \
-    chat_services/youtube/youtubehtml.h \
+    chat_services/youtube/YouTube.h \
     chat_services/youtube/youtubeutils.h \
     chatwindow.h \
     crypto/aes.h \
@@ -111,8 +110,7 @@ SOURCES += \
     chat_services/twitch.cpp \
     chat_services/vkvideo.cpp \
     chat_services/wasd.cpp \
-    chat_services/youtube/youtubebrowser.cpp \
-    chat_services/youtube/youtubehtml.cpp \
+    chat_services/youtube/YouTube.cpp \
     chat_services/youtube/youtubeutils.cpp \
     chatwindow.cpp \
     crypto/aes.cpp \
