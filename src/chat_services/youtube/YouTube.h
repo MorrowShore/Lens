@@ -21,6 +21,8 @@ private slots:
     void requestChatPage();
     void onReplyChatPage();
 
+    void requestChatByContinuation();
+
     void requestStreamPage();
     void onReplyStreamPage();
 
@@ -29,6 +31,7 @@ private:
     {
         int badChatPageReplies = 0;
         int badLivePageReplies = 0;
+        QString continuation;
     };
 
     void processBadChatReply();
