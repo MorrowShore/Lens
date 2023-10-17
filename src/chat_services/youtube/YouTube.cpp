@@ -34,9 +34,9 @@ YouTube::YouTube(ChatManager& manager, QSettings& settings, const QString& setti
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
 
     ui.addSwitch(&allMessages,
-        tr("Reduce message filtering level on YouTube side (turn on at your own risk)"),
+        tr("Reduce message filtering level (turn on at your own risk)"),
         tr("Equivalent to selecting \"All messages are visible\" on the YouTube website. "
-           "However, YouTube can still filter some messages"));
+           "However, some messages can still be filtered on the YouTube side"));
 
     allMessages.setCallbackValueChanged([this](const bool&)
     {

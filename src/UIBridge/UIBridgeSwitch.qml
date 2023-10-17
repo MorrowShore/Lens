@@ -14,8 +14,6 @@ Row {
         switch1.checked = checked
     }
 
-    spacing: 6
-
     Switch {
         id: switch1
         text: parent.text

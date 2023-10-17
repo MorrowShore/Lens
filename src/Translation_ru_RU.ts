@@ -2056,14 +2056,15 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="chat_services/youtube/YouTube.cpp" line="37"/>
-        <source>Reduce message filtering level on YouTube side (turn on at your own risk)</source>
-        <translation>Понизить уровень фильтрации сообщений на стороне YouTube (включаете на свой страх и риск)</translation>
+        <source>Reduce message filtering level (turn on at your own risk)</source>
+        <oldsource>Reduce message filtering level on YouTube side (turn on at your own risk)</oldsource>
+        <translation>Понизить уровень фильтрации сообщений (включаете на свой страх и риск)</translation>
     </message>
     <message>
         <location filename="chat_services/youtube/YouTube.cpp" line="38"/>
-        <source>Equivalent to selecting &quot;All messages are visible&quot; on the YouTube website. However, YouTube can still filter some messages</source>
-        <oldsource>Equivalent to selecting &quot;All messages are visible&quot; on the YouTube website. Potential spam, obscenities, insults and some other messages will not be filtered by YouTube. However, YouTube can still filter some messages</oldsource>
-        <translation type="unfinished">Эквивалентно выбору &quot;Видны все сообщения&quot; на сайте YouTube. Однако, часть сообщений Ютуб по-прежнему может фильтровать</translation>
+        <source>Equivalent to selecting &quot;All messages are visible&quot; on the YouTube website. However, some messages can still be filtered on the YouTube side</source>
+        <oldsource>Equivalent to selecting &quot;All messages are visible&quot; on the YouTube website. However, YouTube can still filter some messages</oldsource>
+        <translation>Эквивалентно выбору &quot;Видны все сообщения&quot; на сайте YouTube. Однако, часть сообщений по-прежнему может фильтроваться на стороне YouTube</translation>
     </message>
     <message>
         <location filename="chat_services/youtube/YouTube.cpp" line="117"/>
