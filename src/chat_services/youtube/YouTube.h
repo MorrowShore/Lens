@@ -25,6 +25,12 @@ private slots:
     void onReplyStreamPage();
 
 private:
+    struct Info
+    {
+        int badChatPageReplies = 0;
+        int badLivePageReplies = 0;
+    };
+
     void processBadChatReply();
     void processBadLivePageReply();
 
@@ -35,6 +41,5 @@ private:
     QTimer timerRequestChat;
     QTimer timerRequestStreamPage;
 
-    int badChatReplies = 0;
-    int badLivePageReplies = 0;
+    Info info;
 };

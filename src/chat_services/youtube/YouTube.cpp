@@ -40,8 +40,7 @@ YouTube::YouTube(ChatManager& manager, QSettings& settings, const QString& setti
 
 void YouTube::reconnectImpl()
 {
-    badChatReplies = 0;
-    badLivePageReplies = 0;
+    info = Info();
 
     state.streamId = YouTubeUtils::extractBroadcastId(stream.get().trimmed());
 
@@ -175,7 +174,7 @@ void YouTube::onReplyChatPage()
             emit stateChanged();
         }
 
-        badChatReplies = 0;
+        info.badChatPageReplies = 0;
     }
     else
     {
@@ -232,7 +231,7 @@ void YouTube::onReplyStreamPage()
 
     if (viewers != -1)
     {
-        badLivePageReplies = 0;
+        info.badLivePageReplies = 0;
     }
     else
     {
@@ -242,9 +241,9 @@ void YouTube::onReplyStreamPage()
 
 void YouTube::processBadChatReply()
 {
-    badChatReplies++;
+    info.badChatPageReplies++;
 
-    if (badChatReplies >= MaxBadChatReplies)
+    if (info.badChatPageReplies >= MaxBadChatReplies)
     {
         if (isConnected() && !state.streamId.isEmpty())
         {
@@ -256,9 +255,9 @@ void YouTube::processBadChatReply()
 
 void YouTube::processBadLivePageReply()
 {
-    badLivePageReplies++;
+    info.badLivePageReplies++;
 
-    if (badLivePageReplies >= MaxBadLivePageReplies)
+    if (info.badLivePageReplies >= MaxBadLivePageReplies)
     {
         qWarning() << "too many bad live page replies!";
         setViewers(-1);
