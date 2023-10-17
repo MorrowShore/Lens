@@ -52,21 +52,11 @@ QString YouTubeUtils::extractBroadcastId(const QString &link)
         }
     }
 
-    //studio.youtube.com/video/rSjMyeISW7w/livestreaming
+    //youtube.com/video/rSjMyeISW7w/*
+    //studio.youtube.com/video/rSjMyeISW7w/*
     if (broadcastId.isEmpty())
     {
-        rx = QRegExp("^(studio\\.)?youtube.com/video/([^/]*)/livestreaming$", Qt::CaseInsensitive);
-        if (rx.indexIn(simpleUrl) != -1)
-        {
-            broadcastId = rx.cap(2);
-        }
-    }
-
-    //youtube.com/video/rSjMyeISW7w
-    //studio.youtube.com/video/rSjMyeISW7w
-    if (broadcastId.isEmpty())
-    {
-        rx = QRegExp("^(studio\\.)?youtube.com/video/([^/]*)$", Qt::CaseInsensitive);
+        rx = QRegExp("^(studio\\.)?youtube.com/video/([^/]*)", Qt::CaseInsensitive);
         if (rx.indexIn(simpleUrl) != -1)
         {
             broadcastId = rx.cap(2);
