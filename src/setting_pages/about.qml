@@ -189,7 +189,7 @@ ScrollView {
             y: 290
             height: 66
             text: qsTr("%1 is a free and cross-platform app for adding interactivity to live-streaming and interacting with viewers simultaneously for multiple live-streaming platforms").arg(Qt.application.name)
-                + "<br><br>" + qsTr("For feedback or cooperation, write to email %1").arg("<u><b>" + APP_INFO_EMAIL_STR + "</b></u>")
+                + "<br><br>" + qsTr("For feedback or cooperation, also write to email %1").arg("<u><b>" + APP_INFO_EMAIL_STR + "</b></u>")
                 + "<br><br>" + APP_INFO_LEGALCOPYRIGHT_STR_U
             anchors.left: parent.left
             anchors.right: parent.right
@@ -227,7 +227,25 @@ ScrollView {
             }
         }
 
+        Label {
+            x: 8
+            y: 120
+            text: qsTr("If you find a bug or have an idea, write to:")
+        }
+
         Button {
+            id: buttonIssues
+            x: 8
+            y: 140
+            text: qsTr("Feedback")
+            icon.source: "qrc:/resources/images/feedback.svg"
+
+            onClicked: {
+                Qt.openUrlExternally("https://docs.google.com/forms/d/e/1FAIpQLSeWahZ2AiyrPNtoF7LLrs3hO4ylYJmth4PmNvjSGsDxiwuwZg/viewform?usp=sf_link");
+            }
+        }
+
+        /*Button {
             id: buttonIssues
             x: 8
             y: 116
@@ -237,12 +255,13 @@ ScrollView {
             onClicked: {
                 Qt.openUrlExternally("https://github.com/3dproger/AxelChat/issues");
             }
-        }
+        }*/
 
         Button {
             id: buttonSource
-            x: 10
-            y: 170
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            y: 116
             text: qsTr("Source Code")
             icon.source: "qrc:/resources/images/github.svg"
 

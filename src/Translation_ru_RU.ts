@@ -2183,7 +2183,7 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>about</name>
     <message>
-        <location filename="setting_pages/about.qml" line="300"/>
+        <location filename="setting_pages/about.qml" line="319"/>
         <source>You are using the most current version!
 
 Current version: %1
@@ -2197,12 +2197,12 @@ Latest version available: %2</oldsource>
 Последняя доступная версия: %2</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="308"/>
+        <location filename="setting_pages/about.qml" line="327"/>
         <source>Failed to connect to server. Check your internet connection!</source>
         <translation>Не удалось подключиться к серверу. Проверьте подключение к интернету!</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="313"/>
+        <location filename="setting_pages/about.qml" line="332"/>
         <source>Request limits exceeded! Please try again later</source>
         <translation>Превышен лимит запросов! Пожалуйста, повторите попытку  позже</translation>
     </message>
@@ -2234,16 +2234,27 @@ Latest version available: %2</oldsource>
     </message>
     <message>
         <location filename="setting_pages/about.qml" line="192"/>
-        <source>For feedback or cooperation, write to email %1</source>
-        <translation>Для обратной связи или сотрудничества пишите на %1</translation>
+        <source>For feedback or cooperation, also write to email %1</source>
+        <oldsource>For feedback or cooperation, write to email %1</oldsource>
+        <translation>Для обратной связи или сотрудничества пишите также на %1</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="259"/>
+        <location filename="setting_pages/about.qml" line="233"/>
+        <source>If you find a bug or have an idea, write to:</source>
+        <translation>Обнаружили баг или появились идеи, пишите:</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/about.qml" line="240"/>
+        <source>Feedback</source>
+        <translation>Обратная связь</translation>
+    </message>
+    <message>
+        <location filename="setting_pages/about.qml" line="278"/>
         <source>Privacy Policy</source>
         <translation>Политика конфиденциальности</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="271"/>
+        <location filename="setting_pages/about.qml" line="290"/>
         <source>License, Terms and Conditions</source>
         <translation>Лицензия, условия и положения</translation>
     </message>
@@ -2280,7 +2291,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Для обратной связи или сотрудничества пишите на &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="246"/>
+        <location filename="setting_pages/about.qml" line="265"/>
         <source>Source Code</source>
         <translation>Исходный код</translation>
     </message>
@@ -2289,10 +2300,9 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Лицензия</translation>
     </message>
     <message>
-        <location filename="setting_pages/about.qml" line="234"/>
         <source>Complaints and suggestions (Issues)</source>
         <oldsource>Complaints and suggestions  (Issues)</oldsource>
-        <translation>Жалобы и предложения (Issues)</translation>
+        <translation type="vanished">Жалобы и предложения (Issues)</translation>
     </message>
     <message>
         <source>Complaints and Suggestions</source>
