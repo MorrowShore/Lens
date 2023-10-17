@@ -10,6 +10,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 [License, Terms and Conditions](https://github.com/3dproger/AxelChat/blob/main/LICENSE)
 
 [<img src="misc/images/button-download.png">](https://github.com/3dproger/AxelChat/releases)
+[<img src="misc/images/button-feedback.png">](https://docs.google.com/forms/d/e/1FAIpQLSeWahZ2AiyrPNtoF7LLrs3hO4ylYJmth4PmNvjSGsDxiwuwZg/viewform?usp=sf_link)
 [<img src="misc/images/button-support.png">](https://3dproger.github.io/AxelChat/sponsor)
 
 [![Download AxelChat](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/axelchat/files/latest/download)
