@@ -268,32 +268,8 @@ void YouTube::requestChatByContinuation()
             .value("liveChatContinuation").toObject();
 
         {
-            if (const QJsonValue actions = liveChatContinuation.value("actions"); actions.isArray())
-            {
-                const QJsonArray actionsArray = actions.toArray();
-
-                QList<std::shared_ptr<Message>> messages;
-                QList<std::shared_ptr<Author>> authors;
-
-                YouTubeUtils::parseActionsArray(actionsArray, data, messages, authors);
-
-                if (!messages.isEmpty())
-                {
-                    emit readyRead(messages, authors);
-                    emit stateChanged();
-                }
-
-                info.badChatPageReplies = 0;
-            }
-            else
-            {
-                processBadChatReply();
-            }
-        }
-
-        {
             const QJsonArray continuations = liveChatContinuation
-                .value("continuations").toArray();
+                                                 .value("continuations").toArray();
             if (continuations.isEmpty())
             {
                 qWarning() << "continuations not found";
@@ -317,6 +293,24 @@ void YouTube::requestChatByContinuation()
                 requestChat();
                 return;
             }
+        }
+
+        if (const QJsonValue actions = liveChatContinuation.value("actions"); actions.isArray())
+        {
+            const QJsonArray actionsArray = actions.toArray();
+
+            QList<std::shared_ptr<Message>> messages;
+            QList<std::shared_ptr<Author>> authors;
+
+            YouTubeUtils::parseActionsArray(actionsArray, data, messages, authors);
+
+            if (!messages.isEmpty())
+            {
+                emit readyRead(messages, authors);
+                emit stateChanged();
+            }
+
+            info.badChatPageReplies = 0;
         }
     });
 }
