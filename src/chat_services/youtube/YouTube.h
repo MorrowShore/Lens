@@ -45,6 +45,8 @@ private:
 
     QNetworkAccessManager& network;
 
+    Setting<bool> allMessages;
+
     QTimer timerRequestChat;
     QTimer timerRequestStreamPage;
 

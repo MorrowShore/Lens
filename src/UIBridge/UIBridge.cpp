@@ -59,13 +59,14 @@ std::shared_ptr<UIBridgeElement> UIBridge::addLineEdit(Setting<QString> *setting
     return element;
 }
 
-std::shared_ptr<UIBridgeElement> UIBridge::addSwitch(Setting<bool> *setting, const QString &name)
+std::shared_ptr<UIBridgeElement> UIBridge::addSwitch(Setting<bool> *setting, const QString &name, const QString& hint)
 {
     std::shared_ptr<UIBridgeElement> element = std::make_shared<UIBridgeElement>();
 
     element->type = UIBridgeElement::Type::Switch;
     element->settingBool = setting;
     element->setItemProperty("text", name);
+    element->setItemProperty("hint", hint);
 
     if (setting)
     {

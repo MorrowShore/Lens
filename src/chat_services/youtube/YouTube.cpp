@@ -29,8 +29,19 @@ static const int MaxBadLivePageReplies = 3;
 YouTube::YouTube(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, false, parent)
     , network(network_)
+    , allMessages(settings, getSettingsGroupPath() + "/allMessages", false)
 {
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
+
+    ui.addSwitch(&allMessages,
+        tr("Reduce message filtering level on YouTube side (turn on at your own risk)"),
+        tr("Equivalent to selecting \"All messages are visible\" on the YouTube website. "
+           "However, YouTube can still filter some messages"));
+
+    allMessages.setCallbackValueChanged([this](const bool&)
+    {
+        reconnect();
+    });
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTube::requestChat);
 
@@ -148,17 +159,24 @@ void YouTube::requestChatByChatPage()
             return;
         }
 
-        int startFindPos = 0;
-
         {
+            int startFindPos = 0;
+
+            if (allMessages.get())
+            {
+                startFindPos = rawData.indexOf("\"selected\":false,");
+            }
+            else
+            {
+                startFindPos = rawData.indexOf("\"selected\":true,");
+            }
+
             static const QString Prefix = "\"continuation\":\"";
-            if (const int start = rawData.indexOf(Prefix.toLatin1()) + Prefix.length(); start != -1)
+            if (const int start = rawData.indexOf(Prefix.toLatin1(), startFindPos) + Prefix.length(); start != -1)
             {
                 const int end = rawData.indexOf('"', start);
 
                 info.continuation = rawData.mid(start, end - start);
-
-                startFindPos = end;
 
                 if (info.continuation.isEmpty())
                 {
@@ -175,7 +193,7 @@ void YouTube::requestChatByChatPage()
             }
         }
 
-        const int start = rawData.indexOf("\"actions\":[", startFindPos);
+        const int start = rawData.indexOf("\"actions\":[");
         if (start == -1)
         {
             qCritical() << "not found actions";

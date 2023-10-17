@@ -2041,22 +2041,42 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>YouTube</name>
     <message>
-        <location filename="chat_services/youtube/YouTube.cpp" line="33"/>
+        <location filename="chat_services/youtube/YouTube.cpp" line="34"/>
         <source>Link or broadcast ID...</source>
         <translation>Ссылка или ID трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube/YouTube.cpp" line="106"/>
+        <source>Reduce YouTube auto-moderation (turn on at your own risk)</source>
+        <oldsource>Reduce YouTube auto-moderation (at one&apos;s own risk)</oldsource>
+        <translation type="vanished">Ослабить автомодерацию YouTube (включаете на свой страх и риск)</translation>
+    </message>
+    <message>
+        <source>Equivalent to selecting &quot;All messages are visible&quot; on the YouTube website</source>
+        <translation type="vanished">Эквивалентно выбору &quot;Видны все сообщения&quot; на сайте YouTube</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtube/YouTube.cpp" line="37"/>
+        <source>Reduce message filtering level on YouTube side (turn on at your own risk)</source>
+        <translation>Понизить уровень фильтрации сообщений на стороне YouTube (включаете на свой страх и риск)</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtube/YouTube.cpp" line="38"/>
+        <source>Equivalent to selecting &quot;All messages are visible&quot; on the YouTube website. However, YouTube can still filter some messages</source>
+        <oldsource>Equivalent to selecting &quot;All messages are visible&quot; on the YouTube website. Potential spam, obscenities, insults and some other messages will not be filtered by YouTube. However, YouTube can still filter some messages</oldsource>
+        <translation type="unfinished">Эквивалентно выбору &quot;Видны все сообщения&quot; на сайте YouTube. Однако, часть сообщений Ютуб по-прежнему может фильтровать</translation>
+    </message>
+    <message>
+        <location filename="chat_services/youtube/YouTube.cpp" line="117"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube/YouTube.cpp" line="111"/>
+        <location filename="chat_services/youtube/YouTube.cpp" line="122"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/youtube/YouTube.cpp" line="114"/>
+        <location filename="chat_services/youtube/YouTube.cpp" line="125"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
