@@ -18,7 +18,9 @@ protected:
     void reconnectImpl() override;
 
 private slots:
-    void requestChatPage();
+    void requestChat();
+
+    void requestChatByChatPage();
     void onReplyChatPage();
 
     void requestChatByContinuation();
@@ -27,13 +29,18 @@ private slots:
     void onReplyStreamPage();
 
 private:
+    enum class ChatSource { ByChatPage, ByContinuation };
+
     struct Info
     {
         int badChatPageReplies = 0;
         int badLivePageReplies = 0;
         QString continuation;
+
+        ChatSource chatSource = ChatSource::ByChatPage;
     };
 
+    void setChatSource(const ChatSource source);
     void processBadChatReply();
     void processBadLivePageReply();
 

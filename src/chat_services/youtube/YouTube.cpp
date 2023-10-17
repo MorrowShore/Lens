@@ -32,18 +32,7 @@ YouTube::YouTube(ChatManager& manager, QSettings& settings, const QString& setti
 {
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or broadcast ID..."));
 
-    QObject::connect(&timerRequestChat, &QTimer::timeout, this, [this]()
-    {
-        if (info.continuation.isEmpty())
-        {
-            requestChatPage();
-        }
-        else
-        {
-            requestChatByContinuation();
-        }
-    });
-
+    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTube::requestChat);
 
     QObject::connect(&timerRequestStreamPage,&QTimer::timeout, this, &YouTube::requestStreamPage);
     timerRequestStreamPage.start(RequestStreamInterval);
@@ -69,11 +58,31 @@ void YouTube::reconnectImpl()
         return;
     }
 
-    timerRequestChat.stop();
-    timerRequestChat.start(RequestChatPageInterval);
+    setChatSource(ChatSource::ByChatPage);
 
-    requestChatPage();
+    requestChat();
     requestStreamPage();
+}
+
+void YouTube::requestChat()
+{
+    if (!isEnabled())
+    {
+        return;
+    }
+
+    switch(info.chatSource)
+    {
+    case ChatSource::ByChatPage:
+        //qDebug() << "request by chat page";
+        requestChatByChatPage();
+        break;
+
+    case ChatSource::ByContinuation:
+        //qDebug() << "request by chat continuation";
+        requestChatByContinuation();
+        break;
+    }
 }
 
 ChatService::ConnectionState YouTube::getConnectionState() const
@@ -105,7 +114,7 @@ QString YouTube::getMainError() const
     return tr("Not connected");
 }
 
-void YouTube::requestChatPage()
+void YouTube::requestChatByChatPage()
 {
     if (!isEnabled() || state.chatUrl.isEmpty())
     {
@@ -166,8 +175,7 @@ void YouTube::onReplyChatPage()
             }
             else
             {
-                timerRequestChat.stop();
-                timerRequestChat.start(RequestChatByContinuationInterval);
+                setChatSource(ChatSource::ByContinuation);
             }
         }
         else
@@ -293,16 +301,15 @@ void YouTube::requestChatByContinuation()
 
         {
             const QJsonArray continuations = liveChatContinuation
-                                                 .value("continuations").toArray();
+                .value("continuations").toArray();
             if (continuations.isEmpty())
             {
                 qWarning() << "continuations not found";
 
                 info.continuation = QString();
 
-                timerRequestChat.stop();
-                timerRequestChat.start(RequestChatPageInterval);
-
+                setChatSource(ChatSource::ByChatPage);
+                requestChat();
                 return;
             }
 
@@ -314,9 +321,8 @@ void YouTube::requestChatByContinuation()
             {
                 qWarning() << "continuation is empty";
 
-                timerRequestChat.stop();
-                timerRequestChat.start(RequestChatPageInterval);
-
+                setChatSource(ChatSource::ByChatPage);
+                requestChat();
                 return;
             }
         }
@@ -374,6 +380,26 @@ void YouTube::onReplyStreamPage()
     {
         processBadLivePageReply();
     }
+}
+
+void YouTube::setChatSource(const ChatSource source)
+{
+    switch (source) {
+    case ChatSource::ByChatPage:
+        info.continuation = QString();
+        timerRequestChat.stop();
+        timerRequestChat.start(RequestChatPageInterval);
+        break;
+
+    case ChatSource::ByContinuation:
+        timerRequestChat.stop();
+        timerRequestChat.start(RequestChatByContinuationInterval);
+        break;
+    }
+
+    info.chatSource = source;
+
+    //qDebug() << "setted chat source =" << (int)source;
 }
 
 void YouTube::processBadChatReply()
