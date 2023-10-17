@@ -21,8 +21,6 @@ private slots:
     void requestChat();
 
     void requestChatByChatPage();
-    void onReplyChatPage();
-
     void requestChatByContinuation();
 
     void requestStreamPage();

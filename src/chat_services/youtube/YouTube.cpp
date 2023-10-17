@@ -17,7 +17,7 @@
 namespace
 {
 
-static const int RequestChatPageInterval = 2000;
+static const int RequestChatByChatPageInterval = 2000;
 static const int RequestChatByContinuationInterval = 1000;
 static const int RequestStreamInterval = 20000;
 
@@ -124,116 +124,108 @@ void YouTube::requestChatByChatPage()
     QNetworkRequest request(state.chatUrl);
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, QtAxelChatUtils::UserAgentNetworkHeaderName);
     request.setRawHeader("Accept-Language", YouTubeUtils::AcceptLanguageNetworkHeaderName);
-    QObject::connect(network.get(request), &QNetworkReply::finished, this, &YouTube::onReplyChatPage);
-}
-
-void YouTube::onReplyChatPage()
-{
-    QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
-    if (!reply)
+    QNetworkReply* reply = network.get(request);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
-        qCritical() << "reply is null";
-        return;
-    }
+        const QByteArray rawData = reply->readAll();
+        reply->deleteLater();
 
-    const QByteArray rawData = reply->readAll();
-    reply->deleteLater();
-
-    if (rawData.isEmpty())
-    {
-        processBadChatReply();
-        qCritical() << "raw data is empty";
-        return;
-    }
-
-    //AxelChat::saveDebugDataToFile(FolderLogs, "raw_last_youtube.html", rawData);
-
-    const QString startData = QString::fromUtf8(rawData.left(100));
-
-    if (startData.contains("<title>Oops</title>", Qt::CaseSensitivity::CaseInsensitive))
-    {
-        //ToDo: show message "bad url"
-        processBadChatReply();
-        return;
-    }
-
-    int startFindPos = 0;
-
-    {
-        static const QString Prefix = "\"continuation\":\"";
-        if (const int start = rawData.indexOf(Prefix.toLatin1()) + Prefix.length(); start != -1)
+        if (rawData.isEmpty())
         {
-            const int end = rawData.indexOf('"', start);
+            processBadChatReply();
+            qCritical() << "raw data is empty";
+            return;
+        }
 
-            info.continuation = rawData.mid(start, end - start);
+        //AxelChat::saveDebugDataToFile(FolderLogs, "raw_last_youtube.html", rawData);
 
-            startFindPos = end;
+        const QString startData = QString::fromUtf8(rawData.left(100));
 
-            if (info.continuation.isEmpty())
+        if (startData.contains("<title>Oops</title>", Qt::CaseSensitivity::CaseInsensitive))
+        {
+            //ToDo: show message "bad url"
+            processBadChatReply();
+            return;
+        }
+
+        int startFindPos = 0;
+
+        {
+            static const QString Prefix = "\"continuation\":\"";
+            if (const int start = rawData.indexOf(Prefix.toLatin1()) + Prefix.length(); start != -1)
             {
-                qWarning() << "continuation is empty";
+                const int end = rawData.indexOf('"', start);
+
+                info.continuation = rawData.mid(start, end - start);
+
+                startFindPos = end;
+
+                if (info.continuation.isEmpty())
+                {
+                    qWarning() << "continuation is empty";
+                }
+                else
+                {
+                    setChatSource(ChatSource::ByContinuation);
+                }
             }
             else
             {
-                setChatSource(ChatSource::ByContinuation);
+                qWarning() << "continuation not found";
             }
+        }
+
+        const int start = rawData.indexOf("\"actions\":[", startFindPos);
+        if (start == -1)
+        {
+            qCritical() << "not found actions";
+            QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "not_found_actions_from_html_youtube.html", rawData);
+            processBadChatReply();
+            return;
+        }
+
+        QByteArray data = rawData.mid(start + 10);
+        const int pos = data.lastIndexOf(",\"actionPanel\"");
+        if (pos != -1)
+        {
+            data = data.remove(pos, data.length());
+        }
+
+        //AxelChat::saveDebugDataToFile(FolderLogs, "last_youtube.json", data);
+
+        const QJsonDocument jsonDocument = QJsonDocument::fromJson(data);
+        if (jsonDocument.isArray())
+        {
+            if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
+            {
+                setConnected(true);
+            }
+
+            const QJsonArray actionsArray = jsonDocument.array();
+            //qDebug() << "array size = " << actionsArray.size();
+
+            QList<std::shared_ptr<Message>> messages;
+            QList<std::shared_ptr<Author>> authors;
+
+            YouTubeUtils::parseActionsArray(actionsArray, data, messages, authors);
+
+            if (!messages.isEmpty())
+            {
+                emit readyRead(messages, authors);
+                emit stateChanged();
+            }
+
+            info.badChatPageReplies = 0;
         }
         else
         {
-            qWarning() << "continuation not found";
+            YouTubeUtils::printData(Q_FUNC_INFO + QString(": document is not array"), data);
+
+            QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.html", rawData);
+            QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.json", data);
+            processBadChatReply();
         }
-    }
-
-    const int start = rawData.indexOf("\"actions\":[", startFindPos);
-    if (start == -1)
-    {
-        qCritical() << "not found actions";
-        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "not_found_actions_from_html_youtube.html", rawData);
-        processBadChatReply();
-        return;
-    }
-
-    QByteArray data = rawData.mid(start + 10);
-    const int pos = data.lastIndexOf(",\"actionPanel\"");
-    if (pos != -1)
-    {
-        data = data.remove(pos, data.length());
-    }
-
-    //AxelChat::saveDebugDataToFile(FolderLogs, "last_youtube.json", data);
-
-    const QJsonDocument jsonDocument = QJsonDocument::fromJson(data);
-    if (jsonDocument.isArray())
-    {
-        if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
-        {
-            setConnected(true);
-        }
-
-        const QJsonArray actionsArray = jsonDocument.array();
-        //qDebug() << "array size = " << actionsArray.size();
-
-        QList<std::shared_ptr<Message>> messages;
-        QList<std::shared_ptr<Author>> authors;
-
-        YouTubeUtils::parseActionsArray(actionsArray, data, messages, authors);
-
-        if (!messages.isEmpty())
-        {
-            emit readyRead(messages, authors);
-            emit stateChanged();
-        }
-
-        info.badChatPageReplies = 0;
-    }
-    else
-    {
-        YouTubeUtils::printData(Q_FUNC_INFO + QString(": document is not array"), data);
-
-        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.html", rawData);
-        QtStringUtils::saveDebugDataToFile(YouTubeUtils::FolderLogs, "failed_to_parse_from_html_youtube.json", data);
-        processBadChatReply();
-    }
+    });
 }
 
 void YouTube::requestChatByContinuation()
@@ -388,7 +380,7 @@ void YouTube::setChatSource(const ChatSource source)
     case ChatSource::ByChatPage:
         info.continuation = QString();
         timerRequestChat.stop();
-        timerRequestChat.start(RequestChatPageInterval);
+        timerRequestChat.start(RequestChatByChatPageInterval);
         break;
 
     case ChatSource::ByContinuation:
