@@ -8,13 +8,20 @@ Row {
 
     property string text: "Switch"
     property string hint: ""
-    property bool checked: switch1.checked
+    property bool checked: false
+
+    onCheckedChanged: {
+        switch1.checked = checked
+    }
 
     spacing: 6
 
     Switch {
         id: switch1
         text: parent.text
+        onCheckedChanged: {
+            root.checked = checked
+        }
     }
 
     RoundButton {
