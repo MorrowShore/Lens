@@ -123,7 +123,7 @@ QUrl ChatService::getIconUrl(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::VkPlayLive:         return QUrl("qrc:/resources/images/vkplaylive-icon.svg");
     case AxelChat::ServiceType::VkVideo:            return QUrl("qrc:/resources/images/vkvideo-icon.svg");
     case AxelChat::ServiceType::Wasd:               return QUrl("qrc:/resources/images/wasd-icon.svg");
-    case AxelChat::ServiceType::Rutube:             return QUrl("qrc:/resources/images/rutube-icon.png");
+    case AxelChat::ServiceType::Rutube:             return QUrl("qrc:/resources/images/rutube-icon.svg");
     case AxelChat::ServiceType::Telegram:           return QUrl("qrc:/resources/images/telegram-icon.svg");
     case AxelChat::ServiceType::Discord:            return QUrl("qrc:/resources/images/discord-icon.svg");
 

@@ -106,8 +106,8 @@
         <file>resources/images/axelchat-icon.svg</file>
         <file>resources/images/nimotv-icon.svg</file>
         <file>resources/images/tick-with-warnings.svg</file>
-        <file>resources/images/rutube-icon.png</file>
         <file>resources/images/rutube-verified.png</file>
         <file>resources/images/bigolive-icon.svg</file>
+        <file>resources/images/rutube-icon.svg</file>
     </qresource>
 </RCC>

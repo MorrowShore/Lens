@@ -220,7 +220,7 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> Rutube::parseResult(con
     const QString name = user.value("name").toString();
     const QString avatar = user.value("avatar_url").toString();
     const QString page = user.value("site_url").toString();
-    const bool official = user.value("is_official").toBool(); // TODO
+    const bool official = user.value("is_official").toBool();
 
     Author::Builder authorBuilder(getServiceType(), generateAuthorId(userRawId), name);
 
