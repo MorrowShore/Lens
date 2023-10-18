@@ -19,22 +19,7 @@ The AxelChat application collects chat from various streaming platforms and disp
   <img src="misc/images/github-social7.png">
 </p>
 
-# Features
-
-- Display messages from multiple streaming platforms at once
-- Display avatars of participants of chat
-- Displaying the number of viewers both total and for individual platforms
-- Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
-<p align="center">
-  <img src="misc/images/11.png">
-</p>
-
-- Sound commands that are activated by the corresponding message from the chat. There are built-in commands, but you can always add your own
-- Saving messages and other information on the fly to text files. It may be useful for further processing by other software
-- Proxy support
-- Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
-
-# Job status
+## Supported platforms
 - [x] Twitch support
 - [x] YouTube support
 - [x] Trovo support
@@ -59,18 +44,20 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [ ] Streamlabs support
 - [ ] Patreon support
 - [ ] Boosty support
-- [ ] Support for other platforms
+- [ ] Support for other platforms (you can offer me yourself)
+
+## Features
+- [x] Display messages from multiple streaming platforms at once
 - [x] Display avatars of participants of chat
 - [x] Displaying the number of viewers both total and for individual platforms
-- [x] Displays detailed information about a participant in a live chat in a separate window (including a link to the participant's page/channel)
-- [x] Built-in sound commands
-- [x] Output data to files in real time. Can be used to integrate with other programs
-- [x] Proxy support
-- [x] Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
+- [x] Displays detailed information about a participant in a live chat in a separate window including a link to the participant's page/channel (see example below)
+- [x] Sound commands that are activated by the corresponding message from the chat. There are built-in commands, but you can always add your own
+- [x] Saving messages and other information on the fly to text files. It may be useful for further processing by other software
+- [ ] Cross-platform
 - [ ] Web-based widgets
 - [ ] Appearance editor for Web-based widgets
 - [ ] Appearance presets (themes) for widgets
-- [x] BetterTTV, FrankerFaceZ, 7TV support on any streaming platform
+- [x] BetterTTV, FrankerFaceZ, 7TV emotes support on any streaming platform
 - [x] Ability to integrate with other applications via WebSocket
 - [x] Ability to integrate with other applications via file system
 - [x] Windows builds
@@ -79,6 +66,11 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [ ] Android builds
 - [ ] iOS builds
 - [ ] Many other improvements
+
+Example of a chat participant information window:
+<p align="center">
+  <img src="misc/images/11.png">
+</p>
 
 # FAQ
 - Is AxelChat considered a viewer? - Depending on the version of AxelChat and depending on the streaming platform, this may or may not be the case. If possible, we try not to allow AxelChat to be considered a viewer
