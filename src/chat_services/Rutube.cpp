@@ -9,6 +9,7 @@ namespace
 {
 
 static const int RequestChatInterval = 2000;
+static const int RequestViewersInterval = 10000;
 static const int MaxBadChatReplies = 3;
 
 }
@@ -21,6 +22,9 @@ Rutube::Rutube(ChatManager &manager, QSettings &settings, const QString &setting
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &Rutube::requestChat);
     timerRequestChat.start(RequestChatInterval);
+
+    QObject::connect(&timerRequestViewers, &QTimer::timeout, this, &Rutube::requestViewers);
+    timerRequestViewers.start(RequestViewersInterval);
 }
 
 ChatService::ConnectionState Rutube::getConnectionState() const
@@ -71,6 +75,7 @@ void Rutube::reconnectImpl()
     }
 
     requestChat();
+    requestViewers();
 }
 
 void Rutube::requestChat()
@@ -102,6 +107,7 @@ void Rutube::requestChat()
         if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
         {
             setConnected(true);
+            requestViewers();
         }
 
         QList<std::shared_ptr<Message>> messages;
@@ -129,8 +135,34 @@ void Rutube::requestChat()
     });
 }
 
+void Rutube::requestViewers()
+{
+    if (!isEnabled() || state.streamId.isEmpty() || !isConnected())
+    {
+        return;
+    }
+
+    QNetworkRequest request(QString("https://goya.rutube.ru/video/%1/?online=1").arg(state.streamId));
+    QNetworkReply* reply = network.get(request);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QByteArray rawData = reply->readAll();
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(rawData).object();
+
+        setViewers(root.value("views_online").toInt(-1));
+    });
+}
+
 void Rutube::processBadChatReply()
 {
+    if (!isEnabled() || state.streamId.isEmpty())
+    {
+        return;
+    }
+
     info.badChatPageReplies++;
 
     if (info.badChatPageReplies >= MaxBadChatReplies)

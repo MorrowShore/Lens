@@ -18,6 +18,7 @@ protected:
 
 private slots:
     void requestChat();
+    void requestViewers();
     void processBadChatReply();
 
 private:
@@ -34,4 +35,5 @@ private:
     Info info;
 
     QTimer timerRequestChat;
+    QTimer timerRequestViewers;
 };
