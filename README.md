@@ -67,7 +67,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [x] Output data to files in real time. Can be used to integrate with other programs
 - [x] Proxy support
 - [x] Cross-platform. However, not all current platforms have builds. Perhaps they will appear in the future, but for now you can make them yourself
-- [x] Web-based widgets
+- [ ] Web-based widgets
 - [ ] Appearance editor for Web-based widgets
 - [ ] Appearance presets (themes) for widgets
 - [x] BetterTTV, FrankerFaceZ, 7TV support on any streaming platform

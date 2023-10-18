@@ -103,7 +103,7 @@ ScrollView {
                 }
             }
 
-            Button {
+            /*Button {
                 anchors.verticalCenter: parent.verticalCenter
                 display: AbstractButton.TextBesideIcon
                 icon.source: 'qrc:/resources/images/settings-svgrepo-com.svg'
@@ -113,7 +113,7 @@ ScrollView {
                     stringCopyDialog.stringCopyable = "file:///" + applicationDirPath + "/widgets/index.html?widget=messages-widget-editor"
                     stringCopyDialog.open()
                 }
-            }
+            }*/
         }
 
         Rectangle {
