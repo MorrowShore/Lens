@@ -56,6 +56,7 @@ QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Rumble:             return "rumble";
     case AxelChat::ServiceType::DLive:              return "dlive";
     case AxelChat::ServiceType::NimoTV:             return "nimotv";
+    case AxelChat::ServiceType::BigoLive:           return "bigolive";
     case AxelChat::ServiceType::GoodGame:           return "goodgame";
     case AxelChat::ServiceType::VkPlayLive:         return "vkplaylive";
     case AxelChat::ServiceType::VkVideo:            return "vkvideo";
@@ -86,6 +87,7 @@ QString ChatService::getName(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Rumble:             return tr("Rumble");
     case AxelChat::ServiceType::DLive:              return tr("DLive");
     case AxelChat::ServiceType::NimoTV:             return tr("Nimo TV");
+    case AxelChat::ServiceType::BigoLive:           return tr("Bigo Live");
     case AxelChat::ServiceType::GoodGame:           return tr("GoodGame");
     case AxelChat::ServiceType::VkPlayLive:         return tr("VK Play Live");
     case AxelChat::ServiceType::VkVideo:            return tr("VK Video");
@@ -116,6 +118,7 @@ QUrl ChatService::getIconUrl(const AxelChat::ServiceType serviceType)
     case AxelChat::ServiceType::Rumble:             return QUrl("qrc:/resources/images/rumble-icon.svg");
     case AxelChat::ServiceType::DLive:              return QUrl("qrc:/resources/images/dlive-icon.svg");
     case AxelChat::ServiceType::NimoTV:             return QUrl("qrc:/resources/images/nimotv-icon.svg");
+    case AxelChat::ServiceType::BigoLive:           return QUrl("qrc:/resources/images/bigolive-icon.svg");
     case AxelChat::ServiceType::GoodGame:           return QUrl("qrc:/resources/images/goodgame-icon.svg");
     case AxelChat::ServiceType::VkPlayLive:         return QUrl("qrc:/resources/images/vkplaylive-icon.svg");
     case AxelChat::ServiceType::VkVideo:            return QUrl("qrc:/resources/images/vkvideo-icon.svg");

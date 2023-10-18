@@ -313,6 +313,7 @@ void Kick::requestChannelInfo(const QString &slug)
 
                 info.chatroomId = QString("%1").arg(chatroomId);
 
+                socket.setProxy(network.proxy());
                 socket.open("wss://ws-us2.pusher.com/app/" + APP_ID + "?protocol=7&client=js&version=7.6.0&flash=false");
             }
 

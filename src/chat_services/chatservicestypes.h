@@ -17,6 +17,7 @@ enum class ServiceType
     Kick,
     DLive,
     Rumble,
+    BigoLive,
     //BigoLive,
     //TikTok,
     //FacebookLive,

@@ -225,6 +225,7 @@ void DonatePay::requestSocketToken()
 
         if (!info.socketToken.isEmpty())
         {
+            socket.setProxy(network.proxy());
             socket.open(QUrl("wss://centrifugo.donatepay.ru:43002/connection/websocket"));
         }
         else

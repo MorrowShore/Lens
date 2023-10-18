@@ -288,6 +288,7 @@ void Odysee::requestLive()
 
         if (socket.state() != QAbstractSocket::SocketState::ConnectedState)
         {
+            socket.setProxy(network.proxy());
             socket.open(
                 "wss://sockety.odysee.tv/ws/commentron?id=" +
                 info.claimId +

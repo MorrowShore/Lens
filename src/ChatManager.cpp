@@ -10,6 +10,7 @@
 #include "chat_services/vkvideo.h"
 #include "chat_services/dlive.h"
 #include "chat_services/NimoTV.h"
+#include "chat_services/BigoLive.h"
 #include "chat_services/wasd.h"
 #include "chat_services/Rutube.h"
 #include "chat_services/kick.h"
@@ -86,6 +87,7 @@ ChatManager::ChatManager(QSettings& settings_, QNetworkAccessManager& network_, 
     addService<Kick>();
     addService<Rumble>();
     addService<DLive>();
+    addService<BigoLive>();
     //addService<NimoTV>();
     addService<Odysee>();
     addService<GoodGame>();

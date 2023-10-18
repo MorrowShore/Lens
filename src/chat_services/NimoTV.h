@@ -18,5 +18,6 @@ private slots:
     void onWebSocketReceived(const QByteArray& bin);
 
 private:
+    QNetworkAccessManager& network;
     QWebSocket socket;
 };

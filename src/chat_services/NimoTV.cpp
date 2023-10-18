@@ -1,7 +1,9 @@
 #include "NimoTV.h"
+#include <QNetworkAccessManager>
 
-NimoTV::NimoTV(ChatManager &manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network, cweqt::Manager &web, QObject *parent)
+NimoTV::NimoTV(ChatManager &manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager &web, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::NimoTV, false, parent)
+    , network(network_)
     , socket("https://www.nimo.tv")
 {
     ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));
@@ -68,6 +70,7 @@ void NimoTV::reconnectImpl()
         return;
     }
 
+    socket.setProxy(network.proxy());
     socket.open(QUrl("wss://2ffe8363-ws.master.live/?baseinfo=AwAAAfIk4ydDFiAwYWQ3MGI4ZWU1M2ExZDY1NDEwMTQ3MmQ0ODJkZWJiMSYQd2ViaDUmMC4wLjEmbmltbzYMTklNTyZSVSYxMDQ5RgBWAGx2AIYAlgCoDA=="));
 }
 

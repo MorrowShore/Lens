@@ -23,6 +23,7 @@ HEADERS += \
     UIBridge/UIBridge.h \
     UIBridge/UIBridgeElement.h \
     appsponsormanager.h \
+    chat_services/BigoLive.h \
     chat_services/NimoTV.h \
     chat_services/Rutube.h \
     chat_services/discord/Channel.h \
@@ -93,6 +94,7 @@ SOURCES += \
     UIBridge/UIBridge.cpp \
     UIBridge/UIBridgeElement.cpp \
     appsponsormanager.cpp \
+    chat_services/BigoLive.cpp \
     chat_services/NimoTV.cpp \
     chat_services/Rutube.cpp \
     chat_services/chatservice.cpp \

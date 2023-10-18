@@ -490,6 +490,7 @@ void DLive::requestChatRoom(const QString &displayName_)
 
         if (!isConnected() || socket.state() != QAbstractSocket::SocketState::ConnectedState)
         {
+            socket.setProxy(network.proxy());
             socket.open(QUrl("wss://graphigostream.prd.dlive.tv/"));
         }
 
