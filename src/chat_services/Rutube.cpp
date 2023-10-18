@@ -228,6 +228,11 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> Rutube::parseResult(con
         .setAvatar(avatar)
         .setPage(page);
 
+    if (official)
+    {
+        authorBuilder.addRightBadge(VerifiedBadge);
+    }
+
     auto author = authorBuilder.build();
 
     const QString messageRawId = payload.value("id").toString();
