@@ -11,6 +11,7 @@ namespace
 static const int RequestChatInterval = 2000;
 static const int RequestViewersInterval = 10000;
 static const int MaxBadChatReplies = 3;
+static const QString VerifiedBadge = "qrc:/resources/images/rutube-verified.png";
 
 }
 
@@ -195,12 +196,20 @@ QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> Rutube::parseResult(con
     const QString name = user.value("name").toString();
     const QString avatar = user.value("avatar_url").toString();
     const QString page = user.value("site_url").toString();
-    const bool official = user.value("is_official").toBool(); // TODO
+    const bool official = user.value("is_official").toBool();
 
-    auto author = Author::Builder(getServiceType(), generateAuthorId(userRawId), name)
+    Author::Builder authorBuilder(getServiceType(), generateAuthorId(userRawId), name);
+
+    authorBuilder
         .setAvatar(avatar)
-        .setPage(page)
-        .build();
+        .setPage(page);
+
+    if (official)
+    {
+        authorBuilder.addRightBadge(VerifiedBadge);
+    }
+
+    auto author = authorBuilder.build();
 
     const QString messageRawId = payload.value("id").toString();
     const QString text = payload.value("text").toString();
