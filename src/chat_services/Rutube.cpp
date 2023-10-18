@@ -178,7 +178,31 @@ void Rutube::processBadChatReply()
 
 QString Rutube::extractBroadcastId(const QString &raw)
 {
-    return raw; // TODO
+    const QString simpleUrl = QtStringUtils::simplifyUrl(raw);
+
+    {
+        static const QRegExp rx("^(studio\\.)?rutube.ru/.+/([^/]*)", Qt::CaseInsensitive);
+        if (rx.indexIn(simpleUrl) != -1)
+        {
+            if (const QString result = rx.cap(2); !result.isEmpty())
+            {
+                return result;
+            }
+        }
+    }
+
+    {
+        static const QRegExp rx("^[a-fA-F0-9]+$", Qt::CaseInsensitive);
+        if (rx.indexIn(simpleUrl) != -1)
+        {
+            if (const QString result = rx.cap(0); !result.isEmpty())
+            {
+                return result;
+            }
+        }
+    }
+
+    return QString();
 }
 
 QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> Rutube::parseResult(const QJsonObject &result)
