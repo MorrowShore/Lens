@@ -16,13 +16,22 @@ public:
 protected:
     void reconnectImpl() override;
 
+private slots:
+    void requestChat();
+    void processBadChatReply();
+
 private:
     struct Info
     {
         int badChatPageReplies = 0;
     };
 
+    QString extractBroadcastId(const QString& raw);
+    QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> parseResult(const QJsonObject& result);
+
     QNetworkAccessManager &network;
 
     Info info;
+
+    QTimer timerRequestChat;
 };

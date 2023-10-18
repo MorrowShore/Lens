@@ -108,12 +108,12 @@
 <context>
     <name>ChatManager</name>
     <message>
-        <location filename="ChatManager.cpp" line="208"/>
+        <location filename="ChatManager.cpp" line="210"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
     <message>
-        <location filename="ChatManager.cpp" line="297"/>
+        <location filename="ChatManager.cpp" line="299"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
     </message>
@@ -121,94 +121,99 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="77"/>
-        <location filename="chat_services/chatservice.cpp" line="99"/>
+        <location filename="chat_services/chatservice.cpp" line="78"/>
+        <location filename="chat_services/chatservice.cpp" line="101"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="80"/>
+        <location filename="chat_services/chatservice.cpp" line="81"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="81"/>
+        <location filename="chat_services/chatservice.cpp" line="82"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="82"/>
+        <location filename="chat_services/chatservice.cpp" line="83"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="85"/>
+        <location filename="chat_services/chatservice.cpp" line="86"/>
         <source>Rumble</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="83"/>
+        <location filename="chat_services/chatservice.cpp" line="84"/>
         <source>Kick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="84"/>
+        <location filename="chat_services/chatservice.cpp" line="85"/>
         <source>Odysee</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="86"/>
+        <location filename="chat_services/chatservice.cpp" line="87"/>
         <source>DLive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="87"/>
+        <location filename="chat_services/chatservice.cpp" line="88"/>
         <source>Nimo TV</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="88"/>
+        <location filename="chat_services/chatservice.cpp" line="89"/>
         <source>GoodGame</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="89"/>
+        <location filename="chat_services/chatservice.cpp" line="90"/>
         <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="90"/>
+        <location filename="chat_services/chatservice.cpp" line="91"/>
         <source>VK Video</source>
         <translation>VK Видео</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="91"/>
+        <location filename="chat_services/chatservice.cpp" line="92"/>
         <source>WASD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="92"/>
+        <location filename="chat_services/chatservice.cpp" line="93"/>
+        <source>Rutube</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="94"/>
         <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="93"/>
+        <location filename="chat_services/chatservice.cpp" line="95"/>
         <source>Discord</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="95"/>
+        <location filename="chat_services/chatservice.cpp" line="97"/>
         <source>DonationAlerts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="96"/>
+        <location filename="chat_services/chatservice.cpp" line="98"/>
         <source>DonatePay.ru</source>
         <oldsource>DonatePay</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="148"/>
+        <location filename="chat_services/chatservice.cpp" line="151"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
@@ -1167,25 +1172,25 @@ to these chats/channels in access rights (at your own risk)</oldsource>
 <context>
     <name>NimoTV</name>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="6"/>
+        <location filename="chat_services/NimoTV.cpp" line="7"/>
         <source>Channel</source>
         <oldsource>!Channel</oldsource>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="7"/>
+        <location filename="chat_services/NimoTV.cpp" line="8"/>
         <source>Link or channel name...</source>
         <oldsource>!Link or channel name...</oldsource>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="28"/>
+        <location filename="chat_services/NimoTV.cpp" line="56"/>
         <source>Channel not specified</source>
         <oldsource>!Channel not specified</oldsource>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="31"/>
+        <location filename="chat_services/NimoTV.cpp" line="59"/>
         <source>Not connected</source>
         <oldsource>!Not connected</oldsource>
         <translation>Не подключено</translation>
@@ -1378,6 +1383,29 @@ to these chats/channels in access rights (at your own risk)</oldsource>
     <message>
         <source>Successfully connected!</source>
         <translation type="vanished">Успешно подключено!</translation>
+    </message>
+</context>
+<context>
+    <name>Rutube</name>
+    <message>
+        <location filename="chat_services/Rutube.cpp" line="7"/>
+        <source>Broadcast link...</source>
+        <translation>Ссылка трансляции...</translation>
+    </message>
+    <message>
+        <location filename="chat_services/Rutube.cpp" line="28"/>
+        <source>Broadcast not specified</source>
+        <translation>Трансляция не указана</translation>
+    </message>
+    <message>
+        <location filename="chat_services/Rutube.cpp" line="33"/>
+        <source>The broadcast is not correct</source>
+        <translation>Трансляция указана некорректно</translation>
+    </message>
+    <message>
+        <location filename="chat_services/Rutube.cpp" line="36"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
     </message>
 </context>
 <context>
@@ -3223,14 +3251,12 @@ Latest version available: %2</oldsource>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="110"/>
         <source>Customize</source>
-        <translation>Настроить</translation>
+        <translation type="vanished">Настроить</translation>
     </message>
     <message>
-        <location filename="setting_pages/widgets.qml" line="112"/>
         <source>Copy this link and open in browser</source>
-        <translation>Скопируйте эту ссылку и откройте в браузере</translation>
+        <translation type="vanished">Скопируйте эту ссылку и откройте в браузере</translation>
     </message>
     <message>
         <location filename="setting_pages/widgets.qml" line="130"/>

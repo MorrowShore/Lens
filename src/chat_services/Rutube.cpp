@@ -1,10 +1,26 @@
 #include "Rutube.h"
+#include "utils/QtStringUtils.h"
+#include "models/message.h"
+#include "models/author.h"
+#include <QNetworkReply>
+#include <QNetworkRequest>
+
+namespace
+{
+
+static const int RequestChatInterval = 2000;
+static const int MaxBadChatReplies = 3;
+
+}
 
 Rutube::Rutube(ChatManager &manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager &, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Rutube, false, parent)
     , network(network_)
 {
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));
+
+    QObject::connect(&timerRequestChat, &QTimer::timeout, this, &Rutube::requestChat);
+    timerRequestChat.start(RequestChatInterval);
 }
 
 ChatService::ConnectionState Rutube::getConnectionState() const
@@ -40,7 +56,7 @@ void Rutube::reconnectImpl()
 {
     info = Info();
 
-    state.streamId = "3b4b0a568b91ef8f990365b46e10d549"; // TODO
+    state.streamId = extractBroadcastId(stream.get().trimmed());
 
     if (!state.streamId.isEmpty())
     {
@@ -54,5 +70,115 @@ void Rutube::reconnectImpl()
         return;
     }
 
+    requestChat();
+}
 
+void Rutube::requestChat()
+{
+    if (!isEnabled() || state.streamId.isEmpty())
+    {
+        return;
+    }
+
+    QNetworkRequest request(QString("https://rutube.ru/api/chat/%1?direction=past&format=json&limit=10").arg(state.streamId));
+    QNetworkReply* reply = network.get(request);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
+        const QByteArray rawData = reply->readAll();
+        reply->deleteLater();
+
+        const QJsonObject root = QJsonDocument::fromJson(rawData).object();
+        const QJsonValue resultValue = root.value("results");
+        if (!resultValue.isArray())
+        {
+            processBadChatReply();
+            qWarning() << "no results, root =" << root;
+            return;
+        }
+
+        info.badChatPageReplies = 0;
+
+        if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
+        {
+            setConnected(true);
+        }
+
+        QList<std::shared_ptr<Message>> messages;
+        QList<std::shared_ptr<Author>> authors;
+
+        const QJsonArray results = resultValue.toArray();
+        for (const QJsonValue& v : results)
+        {
+            const auto pair = parseResult(v.toObject());
+
+            if (pair.first && pair.second)
+            {
+                messages.append(pair.first);
+                authors.append(pair.second);
+            }
+        }
+
+        if (!messages.isEmpty() && !authors.isEmpty())
+        {
+            std::reverse(messages.begin(), messages.end());
+            std::reverse(authors.begin(), authors.end());
+
+            emit readyRead(messages, authors);
+        }
+    });
+}
+
+void Rutube::processBadChatReply()
+{
+    info.badChatPageReplies++;
+
+    if (info.badChatPageReplies >= MaxBadChatReplies)
+    {
+        if (isConnected() && !state.streamId.isEmpty())
+        {
+            qWarning() << "too many bad chat replies! Disonnecting...";
+            setConnected(false);
+        }
+    }
+}
+
+QString Rutube::extractBroadcastId(const QString &raw)
+{
+    return raw; // TODO
+}
+
+QPair<std::shared_ptr<Message>, std::shared_ptr<Author>> Rutube::parseResult(const QJsonObject &result)
+{
+    const QString type = result.value("type").toString();
+    if (type != "message")
+    {
+        qWarning() << "unknown type" << type << ", result =" << result;
+    }
+
+    const QJsonObject payload = result.value("payload").toObject();
+
+    const QJsonObject user = payload.value("user").toObject();
+    const QString userRawId = QString("%1").arg(user.value("id").toVariant().toLongLong());
+    const QString name = user.value("name").toString();
+    const QString avatar = user.value("avatar_url").toString();
+    const QString page = user.value("site_url").toString();
+    const bool official = user.value("is_official").toBool(); // TODO
+
+    auto author = Author::Builder(getServiceType(), generateAuthorId(userRawId), name)
+        .setAvatar(avatar)
+        .setPage(page)
+        .build();
+
+    const QString messageRawId = payload.value("id").toString();
+    const QString text = payload.value("text").toString();
+    const QDateTime publishedTime = QDateTime::fromSecsSinceEpoch(
+        payload.value("created_ts_real").toVariant().toLongLong());
+
+    auto message = Message::Builder(author, generateMessageId(messageRawId))
+        .addText(text)
+        .setPublishedTime(publishedTime)
+        .build();
+
+    return { message, author };
 }
