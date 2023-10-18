@@ -87,7 +87,7 @@ ChatManager::ChatManager(QSettings& settings_, QNetworkAccessManager& network_, 
     addService<Kick>();
     addService<Rumble>();
     addService<DLive>();
-    addService<BigoLive>();
+    //addService<BigoLive>();
     //addService<NimoTV>();
     addService<Odysee>();
     addService<GoodGame>();

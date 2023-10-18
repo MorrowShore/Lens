@@ -20,6 +20,8 @@ protected:
 private slots:
     void onWebSocketReceived(const QString& raw);
 
+    void sendStart();
+
 private:
     QNetworkAccessManager& network;
     QWebSocket socket;

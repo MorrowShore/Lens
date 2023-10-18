@@ -16,6 +16,8 @@ BigoLive::BigoLive(ChatManager &manager, QSettings &settings, const QString &set
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         qDebug() << "webSocket connected";
+
+        sendStart();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
@@ -71,4 +73,18 @@ void BigoLive::reconnectImpl()
 void BigoLive::onWebSocketReceived(const QString &raw)
 {
     qDebug() << raw;
+}
+
+void BigoLive::sendStart()
+{
+    //socket.sendTextMessage("512279{\"uid\":\"1246863887\",\"cookie\":\"BAAAAJliD6cFQQCepMP9Ri/p2PYdaBaukHlBrlOHiXU6+9ZO+01+fVlqRzPLKC8zIs1PogW+Pob0oFKqDoADbPz7KH+dfh2IVq5TeV/AjGfvTR6NZOMoShaOaf7mVXquZMXrNMwPMfY=\",\"secret\":\"0\",\"userName\":\"0\",\"deviceId\":\"web_6280920789e5e26ebdcc607b90295027\",\"userFlag\":\"0\",\"status\":\"0\",\"password\":\"0\",\"sdkVersion\":\"0\",\"displayType\":\"0\",\"pbVersion\":\"0\",\"lang\":\"cn\",\"loginLevel\":\"0\",\"clientVersionCode\":\"0\",\"clientType\":\"8\",\"clientOsVer\":\"0\",\"netConf\":{\"clientIp\":\"0\",\"proxySwitch\":\"0\",\"proxyTimestamp\":\"0\",\"mcc\":\"0\",\"mnc\":\"0\",\"countryCode\":\"CN\"}}");
+    //socket.sendTextMessage("1304{\"secretKey\":\"\",\"seqId\":\"1697643725448\",\"roomId\":\"6597447910794533486\",\"reserver\":\"1\",\"clientVersion\":\"0\",\"clientType\":\"7\",\"version\":\"15\",\"deviceid\":\"web_6280920789e5e26ebdcc607b90295027\",\"other\":[]}");
+
+    {
+        const QString MessageId = "512535";
+
+        QJsonObject();
+
+        socket.sendTextMessage(MessageId + "\t");
+    }
 }
