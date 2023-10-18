@@ -36,6 +36,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [ ] Facebook Live support
 - [ ] Nimo TV support
 - [ ] Huya Live support
+- [ ] Douyin support
 - [x] Discord support
 - [x] Telegram support
 - [x] DonationAlerts support
