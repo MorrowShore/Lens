@@ -25,6 +25,7 @@ enum class ServiceType
     VkPlayLive,
     VkVideo,
     Wasd,
+    Rutube,
 
     Telegram,
     Discord,

@@ -106,5 +106,6 @@
         <file>resources/images/axelchat-icon.svg</file>
         <file>resources/images/nimotv-icon.svg</file>
         <file>resources/images/tick-with-warnings.svg</file>
+        <file>resources/images/rutube-icon.png</file>
     </qresource>
 </RCC>
