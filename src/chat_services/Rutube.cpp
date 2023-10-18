@@ -67,7 +67,7 @@ void Rutube::reconnectImpl()
     {
         state.streamUrl = QUrl(QString("https://rutube.ru/video/%1/").arg(state.streamId));
 
-        state.controlPanelUrl = QUrl(QString("https://rutube.ru/livestreaming/%1/").arg(state.streamId));
+        state.controlPanelUrl = QUrl(QString("https://studio.rutube.ru/stream/%1").arg(state.streamId));
     }
 
     if (!isEnabled())
