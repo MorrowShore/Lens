@@ -19,7 +19,7 @@ The AxelChat application collects chat from various streaming platforms and disp
   <img src="misc/images/github-social7.png">
 </p>
 
-## Supported platforms
+# Supported platforms
 - [x] Twitch support
 - [x] YouTube support
 - [x] Trovo support
@@ -46,7 +46,7 @@ The AxelChat application collects chat from various streaming platforms and disp
 - [ ] Boosty support
 - [ ] Support for other platforms (you can offer me yourself)
 
-## Features
+# Features
 - [x] Display messages from multiple streaming platforms at once
 - [x] Display avatars of participants of chat
 - [x] Displaying the number of viewers both total and for individual platforms
