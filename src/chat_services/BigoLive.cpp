@@ -1,7 +1,7 @@
 #include "BigoLive.h"
 
 BigoLive::BigoLive(ChatManager &manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager &web, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::BigoLive, true, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::BigoLive, true, parent)
     , network(network_)
     , socket("https://www.bigo.tv")
 {

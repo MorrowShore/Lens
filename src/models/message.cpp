@@ -315,7 +315,7 @@ void Message::updateHtml()
     trimText(html);
 }
 
-QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> Message::Builder::createDeleter(const AxelChat::ServiceType serviceType, const QString &id)
+QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> Message::Builder::createDeleter(const ChatServiceType serviceType, const QString &id)
 {
     auto author = Author::Builder(serviceType, QString(), QString()).build();
 
@@ -327,7 +327,7 @@ QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> Message::Builder::creat
 QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> Message::Builder::createSoftware(const QString &text)
 {
     static const auto author = Author::Builder(
-                                   AxelChat::ServiceType::Software,
+                                   ChatServiceType::Software,
                                    "____SOFTWARE____",
                                    QCoreApplication::applicationName()).build();
 

@@ -138,7 +138,7 @@ void OutputToFile::resetSettings()
     setOutputFolder(standardOutputFolder());
 }
 
-void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages, const AxelChat::ServiceType serviceType)
+void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages, const ChatServiceType serviceType)
 {
     if (!enabled.get())
     {
@@ -212,9 +212,9 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
             continue;
         }
 
-        const AxelChat::ServiceType type = author->getServiceType();
+        const ChatServiceType type = author->getServiceType();
 
-        if (type == AxelChat::ServiceType::Unknown)
+        if (type == ChatServiceType::Unknown)
         {
             continue;
         }
@@ -261,7 +261,7 @@ void OutputToFile::writeMessages(const QList<std::shared_ptr<Message>>& messages
             currentLastMessageId = id;
         }
 
-        if (type != AxelChat::ServiceType::Unknown && type != AxelChat::ServiceType::Software)
+        if (type != ChatServiceType::Unknown && type != ChatServiceType::Software)
         {
             downloadAvatar(authorId, type, author->getValue(Author::Role::AvatarUrl).toUrl());
         }
@@ -297,10 +297,10 @@ void OutputToFile::showInExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(QString("file:///") + outputDirectory.get()));
 }
 
-void OutputToFile::downloadAvatar(const QString& authorId, const AxelChat::ServiceType serviceType, const QUrl &url_)
+void OutputToFile::downloadAvatar(const QString& authorId, const ChatServiceType serviceType, const QUrl &url_)
 {
     QUrl url = url_;
-    if (serviceType == AxelChat::ServiceType::YouTube)
+    if (serviceType == ChatServiceType::YouTube)
     {
         url = YouTubeUtils::createResizedAvatarUrl(url, avatarHeight);
     }
@@ -316,7 +316,7 @@ void OutputToFile::downloadAvatar(const QString& authorId, const AxelChat::Servi
         return;
     }
 
-    if (serviceType == AxelChat::ServiceType::Twitch)
+    if (serviceType == ChatServiceType::Twitch)
     {
         fileName = removePostfix(fileName, "-300x300", Qt::CaseSensitivity::CaseInsensitive);
     }
@@ -412,9 +412,9 @@ void OutputToFile::downloadImage(const QUrl &url, const QString &fileName, const
     });
 }
 
-void OutputToFile::downloadEmoji(const QUrl &url, const int height, const AxelChat::ServiceType serviceType)
+void OutputToFile::downloadEmoji(const QUrl &url, const int height, const ChatServiceType serviceType)
 {
-    if (serviceType == AxelChat::ServiceType::Unknown || serviceType == AxelChat::ServiceType::Software)
+    if (serviceType == ChatServiceType::Unknown || serviceType == ChatServiceType::Software)
     {
         return;
     }
@@ -564,12 +564,12 @@ QByteArray OutputToFile::prepare(const QString &text_)
     return text.toUtf8();
 }
 
-QString OutputToFile::getAuthorDirectory(const AxelChat::ServiceType serviceType, const QString &authorId) const
+QString OutputToFile::getAuthorDirectory(const ChatServiceType serviceType, const QString &authorId) const
 {
     return getServiceDirectory(serviceType) + "/authors/" + authorId;
 }
 
-QString OutputToFile::getServiceDirectory(const AxelChat::ServiceType serviceType) const
+QString OutputToFile::getServiceDirectory(const ChatServiceType serviceType) const
 {
     return outputDirectory.get() + "/services/" + ChatService::getServiceTypeId(serviceType);
 }

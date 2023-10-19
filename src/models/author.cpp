@@ -4,7 +4,7 @@
 #include <QMetaEnum>
 #include <QDebug>
 
-Author::Author(const AxelChat::ServiceType serviceType_,
+Author::Author(const ChatServiceType serviceType_,
                const QString &name_,
                const QString &authorId_,
                const QUrl &avatarUrl_,
@@ -35,7 +35,7 @@ const std::shared_ptr<Author> Author::getSoftwareAuthor()
 {
     static const QString authorId = "____SOFTWARE____";
     static const std::shared_ptr<Author> author = std::make_shared<Author>(
-        AxelChat::ServiceType::Software,
+        ChatServiceType::Software,
         QCoreApplication::applicationName(),
         authorId,
         QUrl("qrc:/resources/images/axelchat-rounded.svg"));

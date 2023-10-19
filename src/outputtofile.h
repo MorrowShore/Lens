@@ -38,11 +38,11 @@ public:
     Q_INVOKABLE int codecOption() const;
 
     void setOutputFolder(const QString& outputDirectory);
-    void writeMessages(const QList<std::shared_ptr<Message>>& messages, const AxelChat::ServiceType serviceType);
+    void writeMessages(const QList<std::shared_ptr<Message>>& messages, const ChatServiceType serviceType);
     Q_INVOKABLE void showInExplorer();
-    void downloadAvatar(const QString& authorId, const AxelChat::ServiceType serviceType, const QUrl &url);
-    QString getAuthorDirectory(const AxelChat::ServiceType serviceType, const QString& authorId) const;
-    QString getServiceDirectory(const AxelChat::ServiceType serviceType) const;
+    void downloadAvatar(const QString& authorId, const ChatServiceType serviceType, const QUrl &url);
+    QString getAuthorDirectory(const ChatServiceType serviceType, const QString& authorId) const;
+    QString getServiceDirectory(const ChatServiceType serviceType) const;
     void writeAuthors(const QList<std::shared_ptr<Author>>& authors);
     void writeServiceState(const ChatService* service) const;
     void writeApplicationState(const bool started, const int viewersTotalCount) const;
@@ -54,7 +54,7 @@ signals:
 
 private:
     QString convertUrlForFileName(const QUrl& url, const QString& imageFileFormat) const;
-    void downloadEmoji(const QUrl &url, const int height, const AxelChat::ServiceType serviceType);
+    void downloadEmoji(const QUrl &url, const int height, const ChatServiceType serviceType);
 
     void downloadImage(const QUrl &url, const QString& fileName, const QString& imageFormat, const int height, bool ignoreIfExists);
 

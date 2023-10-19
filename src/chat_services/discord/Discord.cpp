@@ -53,7 +53,7 @@ static const int MESSAGE_TYPE_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32;
 const QString Discord::ApiPrefix = "https://discord.com/api/v10";
 
 Discord::Discord(ChatManager& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Discord, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Discord, false, parent)
     , network(network_)
     , info(*this, network_)
     , applicationId(settings, getSettingsGroupPath() + "/client_id", QString(), true)

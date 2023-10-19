@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chat_services/chatservicestypes.h"
+#include "chat_services/ChatServiceType.h"
 #include <QString>
 #include <QUrl>
 #include <QColor>
@@ -72,7 +72,7 @@ public:
     class Builder
     {
     public:
-        Builder(const AxelChat::ServiceType serviceType, const QString& id, const QString& name)
+        Builder(const ChatServiceType serviceType, const QString& id, const QString& name)
             : result(std::make_shared<Author>(serviceType, name, id))
         {}
 
@@ -92,7 +92,7 @@ public:
         std::shared_ptr<Author> result;
     };
 
-    Author(const AxelChat::ServiceType serviceType,
+    Author(const ChatServiceType serviceType,
            const QString& name,
            const QString& authorId,
            const QUrl& avatarUrl = QUrl(),
@@ -114,7 +114,7 @@ public:
     {
         return authorId;
     }
-    inline AxelChat::ServiceType getServiceType() const
+    inline ChatServiceType getServiceType() const
     {
         return serviceType;
     }
@@ -146,7 +146,7 @@ public:
     };
 
 private:
-    const AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
+    const ChatServiceType serviceType = ChatServiceType::Unknown;
     QString name;
     QString authorId;
     QUrl avatarUrl;

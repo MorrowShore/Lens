@@ -131,7 +131,7 @@ void ChatManager::onReadyRead(const QList<std::shared_ptr<Message>>& messages, c
         return;
     }
 
-    const AxelChat::ServiceType serviceType = service ? service->getServiceType() : AxelChat::ServiceType::Unknown;
+    const ChatServiceType serviceType = service ? service->getServiceType() : ChatServiceType::Unknown;
 
     QList<std::shared_ptr<Message>> messagesValidToAdd;
     QList<std::shared_ptr<Author>> updatedAuthors;
@@ -247,7 +247,7 @@ void ChatManager::playNewMessageSound()
 
 void ChatManager::onAuthorDataUpdated(const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
-    AxelChat::ServiceType serviceType = AxelChat::ServiceType::Unknown;
+    ChatServiceType serviceType = ChatServiceType::Unknown;
     ChatService* service = qobject_cast<ChatService*>(sender());
     if (service)
     {
@@ -360,7 +360,7 @@ void ChatManager::addService()
 
     services.append(service);
 
-    if (service->getServiceType() == AxelChat::ServiceType::Twitch)
+    if (service->getServiceType() == ChatServiceType::Twitch)
     {
         if (std::shared_ptr<Twitch> twitch = std::dynamic_pointer_cast<Twitch>(service); twitch)
         {
@@ -384,7 +384,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::YouTube,
+                          ChatServiceType::YouTube,
                           QUuid::createUuid().toString(),
                           "Mario")
                           .setAvatar("https://static.wikia.nocookie.net/mario/images/e/e3/MPS_Mario.png/revision/latest/scale-to-width-down/350?cb=20220814154953")
@@ -401,7 +401,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Twitch,
+                          ChatServiceType::Twitch,
                           QUuid::createUuid().toString(),
                           "Big Smoke")
                           .setAvatar("https://static.wikia.nocookie.net/gtawiki/images/b/bf/BigSmoke-GTASAde.png/revision/latest/scale-to-width-down/350?cb=20211113214309")
@@ -417,7 +417,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Trovo,
+                          ChatServiceType::Trovo,
                           QUuid::createUuid().toString(),
                           "Luigi")
                           .setAvatar("https://static.wikia.nocookie.net/mario/images/7/72/MPSS_Luigi.png/revision/latest/scale-to-width-down/254?cb=20220705200355")
@@ -437,7 +437,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Kick,
+                          ChatServiceType::Kick,
                           QUuid::createUuid().toString(),
                           "Sonic")
                           .setAvatar("https://static.wikia.nocookie.net/sonic/images/5/57/Sonic_Superstars_Sonic.png/revision/latest/smart/width/53/height/53?cb=20230801191457")
@@ -453,7 +453,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Rumble,
+                          ChatServiceType::Rumble,
                           QUuid::createUuid().toString(),
                           "Battle Kid")
                           .setAvatar("https://static.wikia.nocookie.net/gamegrumps/images/6/67/Battle_Kid_Fortress_of_Peril.png/revision/latest?cb=20141019030833")
@@ -470,7 +470,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::DLive,
+                          ChatServiceType::DLive,
                           QUuid::createUuid().toString(),
                           "Knuckles")
                           .setAvatar("https://static.wikia.nocookie.net/sega/images/6/6e/Knuckles_the_Echidna_Sonic_Frontiers.webp/revision/latest?cb=20221108144328")
@@ -486,7 +486,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Odysee,
+                          ChatServiceType::Odysee,
                           QUuid::createUuid().toString(),
                           "Commander Keen")
                           .setAvatar("https://static.wikia.nocookie.net/p__/images/c/c5/248240-ck_goodbye_large.gif/revision/latest?cb=20161124032446&path-prefix=protagonist")
@@ -503,7 +503,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::GoodGame,
+                          ChatServiceType::GoodGame,
                           QUuid::createUuid().toString(),
                           "CJ")
                           .setAvatar("https://static.wikia.nocookie.net/gtawiki/images/2/29/CarlJohnson-GTASAde-Infobox.png/revision/latest/scale-to-width-down/350?cb=20211113054252")
@@ -523,7 +523,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::VkPlayLive,
+                          ChatServiceType::VkPlayLive,
                           QUuid::createUuid().toString(),
                           "Kenneth Rosenberg")
                           .setAvatar("https://static.wikia.nocookie.net/p__/images/b/b2/Ken_rosenberg.jpg/revision/latest?cb=20130915190559&path-prefix=protagonist")
@@ -539,7 +539,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::VkVideo,
+                          ChatServiceType::VkVideo,
                           QUuid::createUuid().toString(),
                           "Axel Stone")
                           .setAvatar("https://static.wikia.nocookie.net/streetsofrage/images/6/60/PXZ2-Axel_Stone.png/revision/latest?cb=20190829173626")
@@ -556,7 +556,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Wasd,
+                          ChatServiceType::Wasd,
                           QUuid::createUuid().toString(),
                           "Doom Guy")
                           .setAvatar("https://static.wikia.nocookie.net/doom/images/3/30/Doomguyface.jpg/revision/latest?cb=20110328073223")
@@ -573,7 +573,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Telegram,
+                          ChatServiceType::Telegram,
                           QUuid::createUuid().toString(),
                           "G-Man")
                           .setAvatar("https://static.wikia.nocookie.net/half-life/images/4/41/G-Man_Alyx_Trailer.jpg/revision/latest/scale-to-width-down/350?cb=20191122020607&path-prefix=en")
@@ -589,7 +589,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::Discord,
+                          ChatServiceType::Discord,
                           QUuid::createUuid().toString(),
                           "Gordon Freeman")
                           .setAvatar("https://static.wikia.nocookie.net/half-life/images/1/1f/GordonALYX.png/revision/latest/scale-to-width-down/350?cb=20220520125500&path-prefix=en")
@@ -606,7 +606,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::DonationAlerts,
+                          ChatServiceType::DonationAlerts,
                           QUuid::createUuid().toString(),
                           "S.D.")
                           .setAvatar("https://melmagazine.com/wp-content/uploads/2022/07/ggAsDmL-1-1024x726.jpeg")
@@ -626,7 +626,7 @@ void ChatManager::addTestMessages()
 
     {
         auto author = Author::Builder(
-                          AxelChat::ServiceType::DonatePayRu,
+                          ChatServiceType::DonatePayRu,
                           QUuid::createUuid().toString(),
                           "Scrooge McDuck")
                           .setAvatar("https://static.wikia.nocookie.net/disney/images/3/38/Scrooge_%28Mickey_Mouse_2013%29.jpeg/revision/latest/scale-to-width-down/1000?cb=20150114140251")
@@ -829,7 +829,7 @@ ChatService *ChatManager::getServiceByType(int type) const
             continue;
         }
 
-        if (service->getServiceType() == (AxelChat::ServiceType)type)
+        if (service->getServiceType() == (ChatServiceType)type)
         {
             return service.get();
         }
@@ -840,10 +840,10 @@ ChatService *ChatManager::getServiceByType(int type) const
 
 QUrl ChatManager::getServiceIconUrl(int serviceType) const
 {
-    return ChatService::getIconUrl((AxelChat::ServiceType)serviceType);
+    return ChatService::getIconUrl((ChatServiceType)serviceType);
 }
 
 QUrl ChatManager::getServiceName(int serviceType) const
 {
-    return ChatService::getName((AxelChat::ServiceType)serviceType);
+    return ChatService::getName((ChatServiceType)serviceType);
 }

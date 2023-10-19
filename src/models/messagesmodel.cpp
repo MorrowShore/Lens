@@ -174,7 +174,7 @@ QModelIndex MessagesModel::createIndexByExistingMessageId(const QString& id) con
     return createIndex(message->getRow() - removedRows, 0);
 }
 
-void MessagesModel::setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
+void MessagesModel::setAuthorValues(const ChatServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values)
 {
     std::shared_ptr<Author> author = authors.value(authorId, nullptr);
     if (!author)

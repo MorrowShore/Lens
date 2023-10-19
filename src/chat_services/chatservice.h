@@ -1,7 +1,7 @@
 #pragma once
 
 #include "setting.h"
-#include "chatservicestypes.h"
+#include "ChatServiceType.h"
 #include "UIBridge/UIBridge.h"
 #include "UIBridge/UIBridgeElement.h"
 #include "tcprequest.h"
@@ -62,7 +62,7 @@ public:
 
     static const QString UnknownBadge;
     
-    explicit ChatService(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
+    explicit ChatService(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, ChatServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent = nullptr);
     virtual ~ChatService(){}
 
     ChatService (const ChatService&) = delete;
@@ -70,9 +70,9 @@ public:
     ChatService& operator= (const ChatService&) = delete;
     ChatService&& operator= (ChatService&&) = delete;
 
-    static QString getServiceTypeId(const AxelChat::ServiceType serviceType);
-    static QString getName(const AxelChat::ServiceType serviceType);
-    static QUrl getIconUrl(const AxelChat::ServiceType serviceType);
+    static QString getServiceTypeId(const ChatServiceType serviceType);
+    static QString getName(const ChatServiceType serviceType);
+    static QUrl getIconUrl(const ChatServiceType serviceType);
 
     QUrl getChatUrl() const;
     QUrl getControlPanelUrl() const;
@@ -81,7 +81,7 @@ public:
     virtual ConnectionState getConnectionState() const = 0;
     virtual QString getMainError() const;
     virtual TcpReply processTcpRequest(const TcpRequest& request);
-    AxelChat::ServiceType getServiceType() const;
+    ChatServiceType getServiceType() const;
 
     void reconnect();
 
@@ -122,7 +122,7 @@ private slots:
     void onUIElementChanged(const std::shared_ptr<UIBridgeElement>& element);
 
 private:
-    const AxelChat::ServiceType serviceType;
+    const ChatServiceType serviceType;
     const QString settingsGroupPath;
 
 protected:

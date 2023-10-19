@@ -12,7 +12,7 @@ static const int RequestChatTimeoutSeconds = 3;
 }
 
 Telegram::Telegram(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Telegram, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Telegram, false, parent)
     , network(network_)
     , botToken(settings, getSettingsGroupPath() + "/bot_token", QString(), true)
     , showChatTitle(settings, getSettingsGroupPath() + "/show_chat_title", true)

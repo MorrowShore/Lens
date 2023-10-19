@@ -22,7 +22,7 @@ public:
     void clear();
     const std::shared_ptr<Author> getAuthor(const QString& authorId) const { return const_cast<MessagesModel&>(*this).getAuthor(authorId); }
     std::shared_ptr<Author> getAuthor(const QString& authorId) { return authors.value(authorId, nullptr); }
-    void setAuthorValues(const AxelChat::ServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values);
+    void setAuthorValues(const ChatServiceType serviceType, const QString& authorId, const QMap<Author::Role, QVariant>& values);
     QList<std::shared_ptr<Message>> getLastMessages(int count) const;
 
 private:

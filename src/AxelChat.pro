@@ -24,6 +24,7 @@ HEADERS += \
     UIBridge/UIBridgeElement.h \
     appsponsormanager.h \
     chat_services/BigoLive.h \
+    chat_services/ChatServiceType.h \
     chat_services/NimoTV.h \
     chat_services/Rutube.h \
     chat_services/discord/Channel.h \
@@ -58,7 +59,6 @@ HEADERS += \
     tcpreply.h \
     tcprequest.h \
     chat_services/chatservice.h \
-    chat_services/chatservicestypes.h \
     chat_services/discord/Discord.h \
     chat_services/telegram.h \
     chat_services/trovo.h \

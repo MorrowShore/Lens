@@ -42,7 +42,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 }
 
 Odysee::Odysee(ChatManager& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Odysee, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Odysee, false, parent)
     , network(network_)
 {
     ui.findBySetting(stream)->setItemProperty("name", tr("Stream"));

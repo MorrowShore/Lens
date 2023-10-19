@@ -16,7 +16,7 @@ static const int HeartbeatSendTimeout = 30 * 1000;
 }
 
 VkPlayLive::VkPlayLive(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::VkPlayLive, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::VkPlayLive, false, parent)
     , network(network_)
     , socket("https://vkplay.live")
 {

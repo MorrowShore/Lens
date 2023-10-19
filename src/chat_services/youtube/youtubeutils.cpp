@@ -7,7 +7,7 @@
 namespace
 {
 
-static const AxelChat::ServiceType ServiceType = AxelChat::ServiceType::YouTube;
+static const ChatServiceType ServiceType = ChatServiceType::YouTube;
 static const int EmojiPixelSize = 24;
 static const int StickerSize = 80;
 static const int BadgePixelSize = 64;

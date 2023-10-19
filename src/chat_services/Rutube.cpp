@@ -16,7 +16,7 @@ static const QString VerifiedBadge = "qrc:/resources/images/rutube-verified.png"
 }
 
 Rutube::Rutube(ChatManager &manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager &, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Rutube, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Rutube, false, parent)
     , network(network_)
 {
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Broadcast link..."));

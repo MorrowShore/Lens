@@ -27,7 +27,7 @@ static const int MaxBadLivePageReplies = 3;
 }
 
 YouTube::YouTube(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::YouTube, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::YouTube, false, parent)
     , network(network_)
     , allMessages(settings, getSettingsGroupPath() + "/allMessages", false)
 {

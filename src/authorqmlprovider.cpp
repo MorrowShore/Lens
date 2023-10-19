@@ -44,7 +44,7 @@ int AuthorQMLProvider::getServiceType() const
     const std::shared_ptr<Author> author = messagesModel.getAuthor(authorId);
     if (!author)
     {
-        return (int)AxelChat::ServiceType::Unknown;
+        return (int)ChatServiceType::Unknown;
     }
 
     return (int)author->getServiceType();
@@ -82,7 +82,7 @@ bool AuthorQMLProvider::openAvatar() const
 
     QUrl url = author->getValue(Author::Role::AvatarUrl).toUrl();
 
-    if (author->getServiceType() == AxelChat::ServiceType::YouTube)
+    if (author->getServiceType() == ChatServiceType::YouTube)
     {
         const QUrl url_ = YouTubeUtils::createResizedAvatarUrl(url, YouTubeAvatarSize);
         if (url_.isValid())

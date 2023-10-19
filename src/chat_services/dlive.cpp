@@ -93,7 +93,7 @@ static QString getGiftName(const QString& type)
 }
 
 DLive::DLive(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::DLive, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::DLive, false, parent)
     , network(network_)
     , socket("https://dlive.tv")
 {

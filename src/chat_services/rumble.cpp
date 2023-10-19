@@ -36,7 +36,7 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
 }
 
 Rumble::Rumble(ChatManager& manager, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Rumble, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Rumble, false, parent)
     , network(network_)
     , sse(network)
 {
@@ -121,12 +121,12 @@ QString Rumble::getMainError() const
 {
     if (stream.get().isEmpty())
     {
-        return tr("Channel not specified");
+        return tr("Broadcast not specified");
     }
 
     if (state.streamId.isEmpty())
     {
-        return tr("The channel is not correct");
+        return tr("The broadcast is not correct");
     }
 
     return tr("Not connected");

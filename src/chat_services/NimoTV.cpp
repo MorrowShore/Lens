@@ -2,7 +2,7 @@
 #include <QNetworkAccessManager>
 
 NimoTV::NimoTV(ChatManager &manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager &web, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::NimoTV, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::NimoTV, false, parent)
     , network(network_)
     , socket("https://www.nimo.tv")
 {

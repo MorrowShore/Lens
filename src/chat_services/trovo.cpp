@@ -52,7 +52,7 @@ static const int EmoteImageHeight = 40;
 }
 
 Trovo::Trovo(ChatManager& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
-    : ChatService(manager, settings, settingsGroupPathParent, AxelChat::ServiceType::Trovo, false, parent)
+    : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Trovo, false, parent)
     , network(network_)
 {
     ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));

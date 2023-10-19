@@ -1,11 +1,6 @@
 #pragma once
 
-#include <QObject>
-
-namespace AxelChat
-{
-
-enum class ServiceType
+enum class ChatServiceType
 {
     Unknown = 0,
     Software = 1,
@@ -40,5 +35,3 @@ enum class ServiceType
     //Patreon,
     //Boosty,
 };
-
-}

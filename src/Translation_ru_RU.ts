@@ -21,6 +21,19 @@
     </message>
 </context>
 <context>
+    <name>BigoLive</name>
+    <message>
+        <location filename="chat_services/BigoLive.cpp" line="54"/>
+        <source>Channel not specified</source>
+        <translation>Канал не указан</translation>
+    </message>
+    <message>
+        <location filename="chat_services/BigoLive.cpp" line="57"/>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+</context>
+<context>
     <name>BridgedLineEdit</name>
     <message>
         <source>Paste</source>
@@ -108,12 +121,12 @@
 <context>
     <name>ChatManager</name>
     <message>
-        <location filename="ChatManager.cpp" line="210"/>
+        <location filename="ChatManager.cpp" line="212"/>
         <source>Test Message</source>
         <translation>Тестовое сообщение</translation>
     </message>
     <message>
-        <location filename="ChatManager.cpp" line="299"/>
+        <location filename="ChatManager.cpp" line="301"/>
         <source>%1: &quot;%2&quot; changed name to &quot;%3&quot;</source>
         <translation>%1: &quot;%2&quot; сменил имя на &quot;%3&quot;</translation>
     </message>
@@ -121,99 +134,104 @@
 <context>
     <name>ChatService</name>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="78"/>
-        <location filename="chat_services/chatservice.cpp" line="101"/>
+        <location filename="chat_services/chatservice.cpp" line="79"/>
+        <location filename="chat_services/chatservice.cpp" line="103"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="81"/>
+        <location filename="chat_services/chatservice.cpp" line="82"/>
         <source>YouTube</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="82"/>
+        <location filename="chat_services/chatservice.cpp" line="83"/>
         <source>Twitch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="83"/>
+        <location filename="chat_services/chatservice.cpp" line="84"/>
         <source>Trovo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="86"/>
+        <location filename="chat_services/chatservice.cpp" line="87"/>
         <source>Rumble</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="84"/>
+        <location filename="chat_services/chatservice.cpp" line="85"/>
         <source>Kick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="85"/>
+        <location filename="chat_services/chatservice.cpp" line="86"/>
         <source>Odysee</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="87"/>
+        <location filename="chat_services/chatservice.cpp" line="88"/>
         <source>DLive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="88"/>
+        <location filename="chat_services/chatservice.cpp" line="89"/>
         <source>Nimo TV</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="89"/>
-        <source>GoodGame</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="chat_services/chatservice.cpp" line="90"/>
-        <source>VK Play Live</source>
+        <source>Bigo Live</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="91"/>
-        <source>VK Video</source>
-        <translation>VK Видео</translation>
+        <source>GoodGame</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="92"/>
-        <source>WASD</source>
+        <source>VK Play Live</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="93"/>
-        <source>Rutube</source>
-        <translation></translation>
+        <source>VK Video</source>
+        <translation>VK Видео</translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="94"/>
-        <source>Telegram</source>
+        <source>WASD</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="95"/>
-        <source>Discord</source>
+        <source>Rutube</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="96"/>
+        <source>Telegram</source>
         <translation></translation>
     </message>
     <message>
         <location filename="chat_services/chatservice.cpp" line="97"/>
+        <source>Discord</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="chat_services/chatservice.cpp" line="99"/>
         <source>DonationAlerts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="98"/>
+        <location filename="chat_services/chatservice.cpp" line="100"/>
         <source>DonatePay.ru</source>
         <oldsource>DonatePay</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="chat_services/chatservice.cpp" line="151"/>
+        <location filename="chat_services/chatservice.cpp" line="154"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
@@ -548,37 +566,37 @@
         <translation type="vanished">Успешно подключено!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="580"/>
+        <location filename="chat_services/dlive.cpp" line="581"/>
         <source>Just subscribed monthly!</source>
         <translation>Оформил(а) месячную подписку!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="586"/>
+        <location filename="chat_services/dlive.cpp" line="587"/>
         <source>Is celebrating %1-month sub streak!</source>
         <translation>Отмечает %1-месячную подписку!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="594"/>
+        <location filename="chat_services/dlive.cpp" line="595"/>
         <source>Just made a clip</source>
         <translation>Создал(а) клип</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="600"/>
+        <location filename="chat_services/dlive.cpp" line="601"/>
         <source>With %1 viewers now is HOSTING!</source>
         <translation>HOSTING с %1 зрителями!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="605"/>
+        <location filename="chat_services/dlive.cpp" line="606"/>
         <source>Gifted a one-month subscription to %1!</source>
         <translation>Подарил месячную подписку %1!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="610"/>
+        <location filename="chat_services/dlive.cpp" line="611"/>
         <source>Just received a one-month subscription from %1!</source>
         <translation>Получил месячную подписку от %1!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="906"/>
+        <location filename="chat_services/dlive.cpp" line="907"/>
         <source>Just donated %1 %2</source>
         <translation>Пожертвовал(а) %1 %2</translation>
     </message>
@@ -590,12 +608,12 @@ Amout: %2</source>
 Количество: %2</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="576"/>
+        <location filename="chat_services/dlive.cpp" line="577"/>
         <source>Just followed!</source>
         <translation>Начал(а) отслеживать!</translation>
     </message>
     <message>
-        <location filename="chat_services/dlive.cpp" line="590"/>
+        <location filename="chat_services/dlive.cpp" line="591"/>
         <source>Just added something to Chest!</source>
         <oldsource>just added something to Chest!</oldsource>
         <translation>Добавил(а) кое-что в сундук!</translation>
@@ -1172,25 +1190,25 @@ to these chats/channels in access rights (at your own risk)</oldsource>
 <context>
     <name>NimoTV</name>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="7"/>
+        <location filename="chat_services/NimoTV.cpp" line="9"/>
         <source>Channel</source>
         <oldsource>!Channel</oldsource>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="8"/>
+        <location filename="chat_services/NimoTV.cpp" line="10"/>
         <source>Link or channel name...</source>
         <oldsource>!Link or channel name...</oldsource>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="56"/>
+        <location filename="chat_services/NimoTV.cpp" line="58"/>
         <source>Channel not specified</source>
         <oldsource>!Channel not specified</oldsource>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/NimoTV.cpp" line="59"/>
+        <location filename="chat_services/NimoTV.cpp" line="61"/>
         <source>Not connected</source>
         <oldsource>!Not connected</oldsource>
         <translation>Не подключено</translation>
@@ -1363,12 +1381,14 @@ to these chats/channels in access rights (at your own risk)</oldsource>
     </message>
     <message>
         <location filename="chat_services/rumble.cpp" line="124"/>
-        <source>Channel not specified</source>
+        <source>Broadcast not specified</source>
+        <oldsource>Channel not specified</oldsource>
         <translation>Канал не указан</translation>
     </message>
     <message>
         <location filename="chat_services/rumble.cpp" line="129"/>
-        <source>The channel is not correct</source>
+        <source>The broadcast is not correct</source>
+        <oldsource>The channel is not correct</oldsource>
         <translation>Канал некорректен</translation>
     </message>
     <message>
@@ -1388,22 +1408,22 @@ to these chats/channels in access rights (at your own risk)</oldsource>
 <context>
     <name>Rutube</name>
     <message>
-        <location filename="chat_services/Rutube.cpp" line="7"/>
+        <location filename="chat_services/Rutube.cpp" line="22"/>
         <source>Broadcast link...</source>
         <translation>Ссылка трансляции...</translation>
     </message>
     <message>
-        <location filename="chat_services/Rutube.cpp" line="28"/>
+        <location filename="chat_services/Rutube.cpp" line="49"/>
         <source>Broadcast not specified</source>
         <translation>Трансляция не указана</translation>
     </message>
     <message>
-        <location filename="chat_services/Rutube.cpp" line="33"/>
+        <location filename="chat_services/Rutube.cpp" line="54"/>
         <source>The broadcast is not correct</source>
         <translation>Трансляция указана некорректно</translation>
     </message>
     <message>
-        <location filename="chat_services/Rutube.cpp" line="36"/>
+        <location filename="chat_services/Rutube.cpp" line="57"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>

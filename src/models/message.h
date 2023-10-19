@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chat_services/chatservicestypes.h"
+#include "chat_services/ChatServiceType.h"
 #include <QObject>
 #include <QDateTime>
 #include <QColor>
@@ -348,7 +348,7 @@ public:
             return result;
         }
 
-        static QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> createDeleter(const AxelChat::ServiceType serviceType, const QString& id);
+        static QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> createDeleter(const ChatServiceType serviceType, const QString& id);
 
         static QPair<std::shared_ptr<Author>, std::shared_ptr<Message>> createSoftware(const QString& text);
 

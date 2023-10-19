@@ -11,7 +11,7 @@ static const int FirstReconnectPeriod = 100;
 
 const QString ChatService::UnknownBadge = "qrc:/resources/images/unknown-badge.png";
 
-ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QString& settingsGroupPathParent, AxelChat::ServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
+ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QString& settingsGroupPathParent, ChatServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
     : Feature(manager_.backend, "ChatService:" + getServiceTypeId(serviceType_), parent)
     , serviceType(serviceType_)
     , settingsGroupPath(settingsGroupPathParent + "/" + getServiceTypeId(serviceType_))
@@ -41,94 +41,94 @@ ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QStri
     QTimer::singleShot(FirstReconnectPeriod, this, [this]() { reconnect(); });
 }
 
-QString ChatService::getServiceTypeId(const AxelChat::ServiceType serviceType)
+QString ChatService::getServiceTypeId(const ChatServiceType serviceType)
 {
     switch (serviceType)
     {
-    case AxelChat::ServiceType::Unknown:            return "unknown";
-    case AxelChat::ServiceType::Software:           return "software";
+    case ChatServiceType::Unknown:            return "unknown";
+    case ChatServiceType::Software:           return "software";
 
-    case AxelChat::ServiceType::YouTube:            return "youtube";
-    case AxelChat::ServiceType::Twitch:             return "twitch";
-    case AxelChat::ServiceType::Trovo:              return "trovo";
-    case AxelChat::ServiceType::Kick:               return "kick";
-    case AxelChat::ServiceType::Odysee:             return "odysee";
-    case AxelChat::ServiceType::Rumble:             return "rumble";
-    case AxelChat::ServiceType::DLive:              return "dlive";
-    case AxelChat::ServiceType::NimoTV:             return "nimotv";
-    case AxelChat::ServiceType::BigoLive:           return "bigolive";
-    case AxelChat::ServiceType::GoodGame:           return "goodgame";
-    case AxelChat::ServiceType::VkPlayLive:         return "vkplaylive";
-    case AxelChat::ServiceType::VkVideo:            return "vkvideo";
-    case AxelChat::ServiceType::Wasd:               return "wasd";
-    case AxelChat::ServiceType::Rutube:               return "rutube";
-    case AxelChat::ServiceType::Telegram:           return "telegram";
-    case AxelChat::ServiceType::Discord:            return "discord";
+    case ChatServiceType::YouTube:            return "youtube";
+    case ChatServiceType::Twitch:             return "twitch";
+    case ChatServiceType::Trovo:              return "trovo";
+    case ChatServiceType::Kick:               return "kick";
+    case ChatServiceType::Odysee:             return "odysee";
+    case ChatServiceType::Rumble:             return "rumble";
+    case ChatServiceType::DLive:              return "dlive";
+    case ChatServiceType::NimoTV:             return "nimotv";
+    case ChatServiceType::BigoLive:           return "bigolive";
+    case ChatServiceType::GoodGame:           return "goodgame";
+    case ChatServiceType::VkPlayLive:         return "vkplaylive";
+    case ChatServiceType::VkVideo:            return "vkvideo";
+    case ChatServiceType::Wasd:               return "wasd";
+    case ChatServiceType::Rutube:               return "rutube";
+    case ChatServiceType::Telegram:           return "telegram";
+    case ChatServiceType::Discord:            return "discord";
 
-    case AxelChat::ServiceType::DonationAlerts:     return "donationalerts";
-    case AxelChat::ServiceType::DonatePayRu:        return "donatepayru";
+    case ChatServiceType::DonationAlerts:     return "donationalerts";
+    case ChatServiceType::DonatePayRu:        return "donatepayru";
     }
 
     return "unknown";
 }
 
-QString ChatService::getName(const AxelChat::ServiceType serviceType)
+QString ChatService::getName(const ChatServiceType serviceType)
 {
     switch (serviceType)
     {
-    case AxelChat::ServiceType::Unknown:            return tr("Unknown");
-    case AxelChat::ServiceType::Software:           return QCoreApplication::applicationName();
+    case ChatServiceType::Unknown:            return tr("Unknown");
+    case ChatServiceType::Software:           return QCoreApplication::applicationName();
 
-    case AxelChat::ServiceType::YouTube:            return tr("YouTube");
-    case AxelChat::ServiceType::Twitch:             return tr("Twitch");
-    case AxelChat::ServiceType::Trovo:              return tr("Trovo");
-    case AxelChat::ServiceType::Kick:               return tr("Kick");
-    case AxelChat::ServiceType::Odysee:             return tr("Odysee");
-    case AxelChat::ServiceType::Rumble:             return tr("Rumble");
-    case AxelChat::ServiceType::DLive:              return tr("DLive");
-    case AxelChat::ServiceType::NimoTV:             return tr("Nimo TV");
-    case AxelChat::ServiceType::BigoLive:           return tr("Bigo Live");
-    case AxelChat::ServiceType::GoodGame:           return tr("GoodGame");
-    case AxelChat::ServiceType::VkPlayLive:         return tr("VK Play Live");
-    case AxelChat::ServiceType::VkVideo:            return tr("VK Video");
-    case AxelChat::ServiceType::Wasd:               return tr("WASD");
-    case AxelChat::ServiceType::Rutube:             return tr("Rutube");
-    case AxelChat::ServiceType::Telegram:           return tr("Telegram");
-    case AxelChat::ServiceType::Discord:            return tr("Discord");
+    case ChatServiceType::YouTube:            return tr("YouTube");
+    case ChatServiceType::Twitch:             return tr("Twitch");
+    case ChatServiceType::Trovo:              return tr("Trovo");
+    case ChatServiceType::Kick:               return tr("Kick");
+    case ChatServiceType::Odysee:             return tr("Odysee");
+    case ChatServiceType::Rumble:             return tr("Rumble");
+    case ChatServiceType::DLive:              return tr("DLive");
+    case ChatServiceType::NimoTV:             return tr("Nimo TV");
+    case ChatServiceType::BigoLive:           return tr("Bigo Live");
+    case ChatServiceType::GoodGame:           return tr("GoodGame");
+    case ChatServiceType::VkPlayLive:         return tr("VK Play Live");
+    case ChatServiceType::VkVideo:            return tr("VK Video");
+    case ChatServiceType::Wasd:               return tr("WASD");
+    case ChatServiceType::Rutube:             return tr("Rutube");
+    case ChatServiceType::Telegram:           return tr("Telegram");
+    case ChatServiceType::Discord:            return tr("Discord");
 
-    case AxelChat::ServiceType::DonationAlerts:     return tr("DonationAlerts");
-    case AxelChat::ServiceType::DonatePayRu:        return tr("DonatePay.ru");
+    case ChatServiceType::DonationAlerts:     return tr("DonationAlerts");
+    case ChatServiceType::DonatePayRu:        return tr("DonatePay.ru");
     }
 
     return tr("Unknown");
 }
 
-QUrl ChatService::getIconUrl(const AxelChat::ServiceType serviceType)
+QUrl ChatService::getIconUrl(const ChatServiceType serviceType)
 {
     switch (serviceType)
     {
-    case AxelChat::ServiceType::Unknown:            return QUrl();
-    case AxelChat::ServiceType::Software:           return QUrl("qrc:/resources/images/axelchat-icon.svg");
+    case ChatServiceType::Unknown:            return QUrl();
+    case ChatServiceType::Software:           return QUrl("qrc:/resources/images/axelchat-icon.svg");
 
-    case AxelChat::ServiceType::YouTube:            return QUrl("qrc:/resources/images/youtube-icon.svg");
-    case AxelChat::ServiceType::Twitch:             return QUrl("qrc:/resources/images/twitch-icon.svg");
-    case AxelChat::ServiceType::Trovo:              return QUrl("qrc:/resources/images/trovo-icon.svg");
-    case AxelChat::ServiceType::Kick:               return QUrl("qrc:/resources/images/kick-icon.svg");
-    case AxelChat::ServiceType::Odysee:             return QUrl("qrc:/resources/images/odysee-icon.svg");
-    case AxelChat::ServiceType::Rumble:             return QUrl("qrc:/resources/images/rumble-icon.svg");
-    case AxelChat::ServiceType::DLive:              return QUrl("qrc:/resources/images/dlive-icon.svg");
-    case AxelChat::ServiceType::NimoTV:             return QUrl("qrc:/resources/images/nimotv-icon.svg");
-    case AxelChat::ServiceType::BigoLive:           return QUrl("qrc:/resources/images/bigolive-icon.svg");
-    case AxelChat::ServiceType::GoodGame:           return QUrl("qrc:/resources/images/goodgame-icon.svg");
-    case AxelChat::ServiceType::VkPlayLive:         return QUrl("qrc:/resources/images/vkplaylive-icon.svg");
-    case AxelChat::ServiceType::VkVideo:            return QUrl("qrc:/resources/images/vkvideo-icon.svg");
-    case AxelChat::ServiceType::Wasd:               return QUrl("qrc:/resources/images/wasd-icon.svg");
-    case AxelChat::ServiceType::Rutube:             return QUrl("qrc:/resources/images/rutube-icon.svg");
-    case AxelChat::ServiceType::Telegram:           return QUrl("qrc:/resources/images/telegram-icon.svg");
-    case AxelChat::ServiceType::Discord:            return QUrl("qrc:/resources/images/discord-icon.svg");
+    case ChatServiceType::YouTube:            return QUrl("qrc:/resources/images/youtube-icon.svg");
+    case ChatServiceType::Twitch:             return QUrl("qrc:/resources/images/twitch-icon.svg");
+    case ChatServiceType::Trovo:              return QUrl("qrc:/resources/images/trovo-icon.svg");
+    case ChatServiceType::Kick:               return QUrl("qrc:/resources/images/kick-icon.svg");
+    case ChatServiceType::Odysee:             return QUrl("qrc:/resources/images/odysee-icon.svg");
+    case ChatServiceType::Rumble:             return QUrl("qrc:/resources/images/rumble-icon.svg");
+    case ChatServiceType::DLive:              return QUrl("qrc:/resources/images/dlive-icon.svg");
+    case ChatServiceType::NimoTV:             return QUrl("qrc:/resources/images/nimotv-icon.svg");
+    case ChatServiceType::BigoLive:           return QUrl("qrc:/resources/images/bigolive-icon.svg");
+    case ChatServiceType::GoodGame:           return QUrl("qrc:/resources/images/goodgame-icon.svg");
+    case ChatServiceType::VkPlayLive:         return QUrl("qrc:/resources/images/vkplaylive-icon.svg");
+    case ChatServiceType::VkVideo:            return QUrl("qrc:/resources/images/vkvideo-icon.svg");
+    case ChatServiceType::Wasd:               return QUrl("qrc:/resources/images/wasd-icon.svg");
+    case ChatServiceType::Rutube:             return QUrl("qrc:/resources/images/rutube-icon.svg");
+    case ChatServiceType::Telegram:           return QUrl("qrc:/resources/images/telegram-icon.svg");
+    case ChatServiceType::Discord:            return QUrl("qrc:/resources/images/discord-icon.svg");
 
-    case AxelChat::ServiceType::DonationAlerts:     return QUrl("qrc:/resources/images/donationalerts-icon.svg");
-    case AxelChat::ServiceType::DonatePayRu:        return QUrl("qrc:/resources/images/donatepay-icon.svg");
+    case ChatServiceType::DonationAlerts:     return QUrl("qrc:/resources/images/donationalerts-icon.svg");
+    case ChatServiceType::DonatePayRu:        return QUrl("qrc:/resources/images/donatepay-icon.svg");
     }
 
     return QUrl();
@@ -161,7 +161,7 @@ TcpReply ChatService::processTcpRequest(const TcpRequest&)
     return TcpReply::createTextHtmlOK(QString("Not implemented for %1 (%2)").arg(getName(), getServiceTypeId(getServiceType())));
 }
 
-AxelChat::ServiceType ChatService::getServiceType() const
+ChatServiceType ChatService::getServiceType() const
 {
     return serviceType;
 }
