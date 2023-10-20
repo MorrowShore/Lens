@@ -327,7 +327,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                     }
                     else
                     {
-                        qWarning() << "unknown emote" << emote;
+                        qWarning() << "unknown emote" << chunk;
 
                         text += chunk;
                     }
