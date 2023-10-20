@@ -49,7 +49,7 @@ Rumble::Rumble(ChatManager& manager, QSettings& settings, const QString& setting
 
         if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
         {
-            setConnected(true);
+            setConnected();
         }
     });
 
@@ -57,7 +57,7 @@ Rumble::Rumble(ChatManager& manager, QSettings& settings, const QString& setting
     {
         //qDebug() << "SSE stopped";
 
-        setConnected(false);
+        reset();
 
         if (isEnabled())
         {
@@ -132,7 +132,7 @@ QString Rumble::getMainError() const
     return tr("Not connected");
 }
 
-void Rumble::reconnectImpl()
+void Rumble::resetImpl()
 {
     info = Info();
     sse.stop();
@@ -145,12 +145,10 @@ void Rumble::reconnectImpl()
     }
 
     state.streamUrl = QUrl("https://rumble.com/" + state.streamId + ".html");
+}
 
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void Rumble::connectImpl()
+{
     info.viewerId = generateViewerId();
 
     requestVideoPage();
@@ -259,7 +257,7 @@ void Rumble::requestViewers()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
-            setConnected(false);
+            reset();
             return;
         }
 

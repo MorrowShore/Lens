@@ -25,7 +25,7 @@ ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QStri
 
     ui.addLineEdit(&stream, tr("Stream"));
     
-    connect(&ui, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
+    QObject::connect(&ui, &UIBridge::elementChanged, this, &ChatService::onUIElementChanged);
 
     QObject::connect(&timerReconnect, &QTimer::timeout, this, [this]()
     {
@@ -34,11 +34,11 @@ ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QStri
             return;
         }
 
-        reconnect();
+        connect();
     });
     timerReconnect.start(ReconnectPeriod);
 
-    QTimer::singleShot(FirstReconnectPeriod, this, [this]() { reconnect(); });
+    QTimer::singleShot(FirstReconnectPeriod, this, [this]() { connect(); });
 }
 
 QString ChatService::getServiceTypeId(const ChatServiceType serviceType)
@@ -166,19 +166,30 @@ ChatServiceType ChatService::getServiceType() const
     return serviceType;
 }
 
-void ChatService::reconnect()
+void ChatService::reset()
 {
     state = State();
 
     timerReconnect.stop();
     timerReconnect.start();
 
-    if (enabled.get())
+    resetImpl();
+
+    emit stateChanged();
+}
+
+void ChatService::connect()
+{
+    reset();
+
+    if (!enabled.get())
     {
-        Feature::setAsUsed();
+        return;
     }
 
-    reconnectImpl();
+    Feature::setAsUsed();
+
+    connectImpl();
 
     emit stateChanged();
 }
@@ -250,11 +261,11 @@ void ChatService::onUIElementChanged(const std::shared_ptr<UIBridgeElement> &ele
     if (settingString && *&settingString == &stream)
     {
         stream.set(stream.get().trimmed());
-        reconnect();
+        connect();
     }
     else if (settingBool && *&settingBool == &enabled)
     {
-        reconnect();
+        connect();
     }
 
     emit stateChanged();
@@ -276,17 +287,9 @@ QString ChatService::generateMessageId(const QString &rawId_) const
     return getServiceTypeId(getServiceType()) + "_" + rawId;
 }
 
-void ChatService::setConnected(const bool connected)
+void ChatService::setConnected()
 {
-    if (connected)
-    {
-        state.connected = true;
-    }
-    else
-    {
-        state = State();
-    }
-
+    state.connected = true;
     emit stateChanged();
 }
 
@@ -300,7 +303,7 @@ void ChatService::setViewers(const int count)
     state.viewers = count;
     emit stateChanged();
 
-    if (!state.sendedState && state.connected && count != -1)
+    if (!state.sendedState && isConnected() && count != -1)
     {
         manager.backend.setService(*this);
         state.sendedState = true;

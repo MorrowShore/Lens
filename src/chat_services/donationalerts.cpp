@@ -74,7 +74,7 @@ DonationAlerts::DonationAlerts(ChatManager& manager, QSettings &settings, const 
     QObject::connect(&auth, &OAuth2::stateChanged, this, [this]()
     {
         updateUI();
-        reconnect();
+        connect();
     });
     
     loginButton = ui.addButton(tr("Login"), [this]()
@@ -123,7 +123,7 @@ DonationAlerts::DonationAlerts(ChatManager& manager, QSettings &settings, const 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "webSocket disconnected";
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
@@ -225,8 +225,8 @@ void DonationAlerts::requestDonations()
     QNetworkRequest request(QString("https://www.donationalerts.com/api/v1/alerts/donations"));
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
-     {
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
@@ -244,7 +244,7 @@ void DonationAlerts::requestUser()
     QNetworkRequest request(QString("https://www.donationalerts.com/api/v1/user/oauth"));
     request.setRawHeader("Authorization", QByteArray("Bearer ") + auth.getAccessToken().toUtf8());
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
@@ -288,7 +288,7 @@ void DonationAlerts::requestSubscribeCentrifuge(const QString &clientId, const Q
     data.insert("channels", QJsonArray({"$alerts:donation_" + userId}));
 
     QNetworkReply* reply = network.post(request, QJsonDocument(data).toJson(QJsonDocument::JsonFormat::Compact));
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
@@ -340,7 +340,7 @@ void DonationAlerts::onReceiveWebSocket(const QString &rawData)
 
     if (result.value("type").toInt() == 1 && result.value("channel").toString().startsWith("$"))
     {
-        setConnected(true);
+        setConnected();
         return;
     }
 
@@ -508,14 +508,16 @@ void DonationAlerts::parseEvent(const QJsonObject &data)
     emit readyRead(messages, authors);
 }
 
-void DonationAlerts::reconnectImpl()
+void DonationAlerts::resetImpl()
 {
     socket.close();
     info = Info();
-
     updateUI();
+}
 
-    if (auth.getState() != OAuth2::State::LoggedIn || !isEnabled())
+void DonationAlerts::connectImpl()
+{
+    if (auth.getState() != OAuth2::State::LoggedIn)
     {
         return;
     }

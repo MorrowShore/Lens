@@ -323,7 +323,7 @@ void ChatManager::updateProxy()
             continue;
         }
 
-        service->reconnect();
+        service->reset();
     }
 
     emit proxyChanged();

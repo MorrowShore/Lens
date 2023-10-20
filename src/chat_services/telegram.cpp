@@ -37,7 +37,7 @@ Telegram::Telegram(ChatManager& manager, QSettings& settings, const QString& set
     ui.addSwitch(&showChatTitle, tr("Show chat name when possible"));
     ui.addSwitch(&allowPrivateChat, tr("Allow private chats (at one's own risk)"));
     
-    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
+    QObject::connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {
@@ -55,7 +55,7 @@ Telegram::Telegram(ChatManager& manager, QSettings& settings, const QString& set
         {
             const QString token = setting->get().trimmed();
             setting->set(token);
-            reconnect();
+            connect();
         }
     });
 
@@ -65,17 +65,15 @@ Telegram::Telegram(ChatManager& manager, QSettings& settings, const QString& set
     updateUI();
 }
 
-void Telegram::reconnectImpl()
+void Telegram::resetImpl()
 {
     info = Info();
 
     updateUI();
+}
 
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void Telegram::connectImpl()
+{
     requestUpdates();
 }
 
@@ -112,7 +110,7 @@ void Telegram::processBadChatReply()
         if (isConnected() && !botToken.get().isEmpty())
         {
             qWarning() << "too many bad chat replies! Disonnecting...";
-            setConnected(false);
+            reset();
         }
     }
 }
@@ -165,7 +163,7 @@ void Telegram::requestUpdates()
 
                 if (!isConnected() || !botToken.get().trimmed().isEmpty())
                 {
-                    setConnected(true);
+                    setConnected();
                 }
 
                 updateUI();

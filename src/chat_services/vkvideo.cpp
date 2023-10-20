@@ -41,7 +41,7 @@ VkVideo::VkVideo(ChatManager& manager, QSettings &settings, const QString &setti
         if (auth.isLoggedIn())
         {
             auth.logout();
-            reconnect();
+            connect();
         }
         else
         {
@@ -105,7 +105,7 @@ TcpReply VkVideo::processTcpRequest(const TcpRequest &request)
     return TcpReply::createTextHtmlError("Unknown path");
 }
 
-void VkVideo::reconnectImpl()
+void VkVideo::resetImpl()
 {
     info = Info();
 
@@ -116,8 +116,14 @@ void VkVideo::reconnectImpl()
 
     state.streamUrl = QUrl(QString("https://vk.com/video/lives?z=video%1_%2").arg(info.ownerId, info.videoId));
 
+    updateUI();
+}
+
+void VkVideo::connectImpl()
+{
     requestVideo();
     requestChat();
+
     updateUI();
 }
 
@@ -307,7 +313,7 @@ void VkVideo::requestVideo()
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
-            setConnected(false);
+            reset();
             return;
         }
 
@@ -339,7 +345,14 @@ void VkVideo::requestVideo()
 
         if (connected != isConnected())
         {
-            setConnected(connected);
+            if (connected)
+            {
+                setConnected();
+            }
+            else
+            {
+                reset();
+            }
         }
     });
 }

@@ -57,7 +57,7 @@ QString Rutube::getMainError() const
     return tr("Not connected");
 }
 
-void Rutube::reconnectImpl()
+void Rutube::resetImpl()
 {
     info = Info();
 
@@ -69,12 +69,10 @@ void Rutube::reconnectImpl()
 
         state.controlPanelUrl = QUrl(QString("https://studio.rutube.ru/stream/%1").arg(state.streamId));
     }
+}
 
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void Rutube::connectImpl()
+{
     requestChat();
     requestViewers();
 }
@@ -107,7 +105,7 @@ void Rutube::requestChat()
 
         if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
         {
-            setConnected(true);
+            setConnected();
             requestViewers();
         }
 
@@ -171,7 +169,7 @@ void Rutube::processBadChatReply()
         if (isConnected() && !state.streamId.isEmpty())
         {
             qWarning() << "too many bad chat replies! Disonnecting...";
-            setConnected(false);
+            reset();
         }
     }
 }

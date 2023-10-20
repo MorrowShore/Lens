@@ -40,7 +40,7 @@ YouTube::YouTube(ChatManager& manager, QSettings& settings, const QString& setti
 
     allMessages.setCallbackValueChanged([this](const bool&)
     {
-        reconnect();
+        connect();
     });
 
     QObject::connect(&timerRequestChat, &QTimer::timeout, this, &YouTube::requestChat);
@@ -49,7 +49,7 @@ YouTube::YouTube(ChatManager& manager, QSettings& settings, const QString& setti
     timerRequestStreamPage.start(RequestStreamInterval);
 }
 
-void YouTube::reconnectImpl()
+void YouTube::resetImpl()
 {
     info = Info();
 
@@ -63,12 +63,10 @@ void YouTube::reconnectImpl()
 
         state.controlPanelUrl = QUrl(QString("https://studio.youtube.com/video/%1/livestreaming").arg(state.streamId));
     }
+}
 
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void YouTube::connectImpl()
+{
     setChatSource(ChatSource::ByChatPage);
 
     requestChat();
@@ -216,7 +214,7 @@ void YouTube::requestChatByChatPage()
         {
             if (!isConnected() && !state.streamId.isEmpty() && isEnabled())
             {
-                setConnected(true);
+                setConnected();
             }
 
             const QJsonArray actionsArray = jsonDocument.array();
@@ -400,7 +398,7 @@ void YouTube::processBadChatReply()
         if (isConnected() && !state.streamId.isEmpty())
         {
             qWarning() << "too many bad chat replies! Disonnecting...";
-            setConnected(false);
+            reset();
         }
     }
 }

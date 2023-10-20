@@ -23,7 +23,8 @@ private slots:
     void onReceiveWebSocket(const QString& rawData);
 
 protected:
-    void reconnectImpl() override;
+    void resetImpl() override;
+    void connectImpl() override;
 
 private:
     struct Info

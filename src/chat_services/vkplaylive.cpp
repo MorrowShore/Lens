@@ -54,7 +54,7 @@ VkPlayLive::VkPlayLive(ChatManager& manager, QSettings& settings, const QString&
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -90,7 +90,7 @@ VkPlayLive::VkPlayLive(ChatManager& manager, QSettings& settings, const QString&
             QNetworkReply* reply = network.get(request);
             if (reply)
             {
-                connect(reply, &QNetworkReply::finished, this, [this, reply]()
+                QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
                 {
                     const QByteArray data = reply->readAll();
                     reply->deleteLater();
@@ -124,7 +124,7 @@ VkPlayLive::VkPlayLive(ChatManager& manager, QSettings& settings, const QString&
             QNetworkReply* reply = network.get(request);
             if (reply)
             {
-                connect(reply, &QNetworkReply::finished, this, [this, reply]()
+                QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
                 {
                     const QByteArray data = reply->readAll();
                     reply->deleteLater();
@@ -184,7 +184,7 @@ QString VkPlayLive::getMainError() const
     return tr("Not connected");
 }
 
-void VkPlayLive::reconnectImpl()
+void VkPlayLive::resetImpl()
 {
     socket.close();
 
@@ -200,6 +200,11 @@ void VkPlayLive::reconnectImpl()
     state.chatUrl = QUrl(QString("https://vkplay.live/%1/only-chat").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://vkplay.live/%1").arg(state.streamId));
     state.controlPanelUrl = QUrl(QString("https://vkplay.live/%1/studio").arg(state.streamId));
+}
+
+void VkPlayLive::connectImpl()
+{
+
 }
 
 void VkPlayLive::onWebSocketReceived(const QString &rawData)
@@ -223,10 +228,10 @@ void VkPlayLive::onWebSocketReceived(const QString &rawData)
 
         if (!isConnected() && !state.streamId.isEmpty() && !info.wsChannel.isEmpty() && !info.token.isEmpty())
         {
-            setConnected(true);
+            setConnected();
         }
 
-        static const QString SupportedVersion = "3.2.3";
+        static const QString SupportedVersion = "0.0.0";
 
         if (info.version != SupportedVersion)
         {

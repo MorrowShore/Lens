@@ -85,7 +85,7 @@ Trovo::Trovo(ChatManager& manager, QSettings &settings, const QString &settingsG
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -98,7 +98,7 @@ Trovo::Trovo(ChatManager& manager, QSettings &settings, const QString &settingsG
     timerPing.start();
 
     timerUpdateChannelInfo.setInterval(RequestChannelInfoPariod);
-    connect(&timerUpdateChannelInfo, &QTimer::timeout, this, [this]()
+    QObject::connect(&timerUpdateChannelInfo, &QTimer::timeout, this, [this]()
     {
         if (!isEnabled() || !isConnected())
         {
@@ -134,7 +134,7 @@ QString Trovo::getMainError() const
     return tr("Not connected");
 }
 
-void Trovo::reconnectImpl()
+void Trovo::resetImpl()
 {
     oauthToken.clear();
     channelId.clear();
@@ -150,11 +150,11 @@ void Trovo::reconnectImpl()
         state.streamUrl = QUrl("https://trovo.live/s/" + state.streamId);
         state.chatUrl = QUrl("https://trovo.live/chat/" + state.streamId);
     }
+}
 
-    if (isEnabled())
-    {
-        requestChannelId();
-    }
+void Trovo::connectImpl()
+{
+    requestChannelId();
 }
 
 void Trovo::onWebSocketReceived(const QString& rawData)
@@ -177,7 +177,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
     {
         if (nonce == NonceAuth)
         {
-            setConnected(true);
+            setConnected();
             requestChannelInfo();
         }
         else
@@ -425,7 +425,7 @@ void Trovo::requestChannelId()
     object.insert("user", usersNames);
 
     QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
@@ -460,7 +460,7 @@ void Trovo::requestChatToken()
     request.setRawHeader("Accept", "application/json");
     request.setRawHeader("Client-ID", ClientID.toUtf8());
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
@@ -493,7 +493,7 @@ void Trovo::requestChannelInfo()
     object.insert("channel_id", channelId);
 
     QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
@@ -526,7 +526,7 @@ void Trovo::requsetSmiles()
     object.insert("emote_type", 0);
 
     QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))

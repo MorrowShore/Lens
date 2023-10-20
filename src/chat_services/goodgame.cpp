@@ -61,7 +61,7 @@ GoodGame::GoodGame(ChatManager& manager, QSettings& settings, const QString& set
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -70,7 +70,7 @@ GoodGame::GoodGame(ChatManager& manager, QSettings& settings, const QString& set
     });
 
     timerUpdateMessages.setInterval(RequestChatInterval);
-    connect(&timerUpdateMessages, &QTimer::timeout, this, [this]()
+    QObject::connect(&timerUpdateMessages, &QTimer::timeout, this, [this]()
     {
         if (!isConnected())
         {
@@ -82,7 +82,7 @@ GoodGame::GoodGame(ChatManager& manager, QSettings& settings, const QString& set
     timerUpdateMessages.start();
 
     timerUpdateChannelStatus.setInterval(RequestChannelStatus);
-    connect(&timerUpdateChannelStatus, &QTimer::timeout, this, [this]()
+    QObject::connect(&timerUpdateChannelStatus, &QTimer::timeout, this, [this]()
     {
         if (!isConnected())
         {
@@ -154,7 +154,7 @@ void GoodGame::requestChannelStatus()
 
     QNetworkRequest request(QUrl("https://goodgame.ru/api/4/stream/" + channelName));
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QJsonObject root = QJsonDocument::fromJson(reply->readAll()).object();
 
@@ -173,7 +173,7 @@ void GoodGame::requestUserPage(const QString &authorName, const QString &authorI
     QNetworkRequest request(QUrl("https://goodgame.ru/user/" + authorId));
     request.setHeader(QNetworkRequest::KnownHeaders::UserAgentHeader, QtAxelChatUtils::UserAgentNetworkHeaderName);
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply, authorName, authorId]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply, authorName, authorId]()
     {
         const QByteArray data = reply->readAll();
         reply->deleteLater();
@@ -212,7 +212,7 @@ void GoodGame::requestSmiles()
 {
     QNetworkRequest request(QUrl("https://goodgame.ru/api/4/smiles"));
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QJsonArray array = QJsonDocument::fromJson(reply->readAll()).array();
         reply->deleteLater();
@@ -264,7 +264,7 @@ QString GoodGame::getStreamId(const QString &stream)
     return streamId;
 }
 
-void GoodGame::reconnectImpl()
+void GoodGame::resetImpl()
 {
     socket.close();
 
@@ -284,12 +284,12 @@ void GoodGame::reconnectImpl()
         requestSmiles();
         return;
     }
+}
 
-    if (isEnabled())
-    {
-        socket.setProxy(network.proxy());
-        socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
-    }
+void GoodGame::connectImpl()
+{
+    socket.setProxy(network.proxy());
+    socket.open(QUrl("wss://chat-1.goodgame.ru/chat2/"));
 }
 
 void GoodGame::onWebSocketReceived(const QString &rawData)
@@ -309,7 +309,7 @@ void GoodGame::onWebSocketReceived(const QString &rawData)
 
     if (type == "channel_history")
     {
-        setConnected(true);
+        setConnected();
 
         QList<std::shared_ptr<Message>> messages;
         QList<std::shared_ptr<Author>> authors;

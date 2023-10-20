@@ -74,7 +74,7 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
     tokenLineEdit = ui.addLineEdit(&customToken, tr("Token"), "oauth:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true);
     notLoggedInElements.append(tokenLineEdit);
 
-    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
+    QObject::connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {
@@ -118,8 +118,7 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "webSocket disconnected";
-
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_){
@@ -136,7 +135,7 @@ Twitch::Twitch(ChatManager& manager, QSettings& settings, const QString& setting
         if (isConnected())
         {
             qWarning() << "Pong timeout! Reconnection...";
-            setConnected(false);
+            reset();
         }
     });
 
@@ -224,7 +223,7 @@ void Twitch::sendIRCMessage(const QString &message)
     socket.sendTextMessage(message);
 }
 
-void Twitch::reconnectImpl()
+void Twitch::resetImpl()
 {
     socket.close();
 
@@ -263,13 +262,18 @@ void Twitch::reconnectImpl()
     {
         state.chatUrl = QUrl(QString("https://www.twitch.tv/popout/%1/chat").arg(state.streamId));
         state.streamUrl = QUrl(QString("https://www.twitch.tv/%1").arg(state.streamId));
-
-        if (isEnabled())
-        {
-            socket.setProxy(network.proxy());
-            socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
-        }
     }
+}
+
+void Twitch::connectImpl()
+{
+    if (state.streamId.isEmpty())
+    {
+        return;
+    }
+
+    socket.setProxy(network.proxy());
+    socket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
 }
 
 void Twitch::onIRCMessage(const QString &rawData)
@@ -307,7 +311,7 @@ void Twitch::onIRCMessage(const QString &rawData)
 
         if (!isConnected() && rawMessage.startsWith(':') && rawMessage.count(':') == 1 && rawMessage.contains("JOIN #", Qt::CaseSensitivity::CaseInsensitive))
         {
-            setConnected(true);
+            setConnected();
         }
 
         if (rawMessage.startsWith(":" + TwitchIRCHost))
@@ -731,7 +735,7 @@ void Twitch::onAuthStateChanged()
 
         requestGlobalBadges();
         requestChannelBadges(authorizedChannel);
-        reconnect();
+        connect();
         break;
     }
     }

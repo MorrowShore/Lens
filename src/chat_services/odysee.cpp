@@ -59,14 +59,14 @@ Odysee::Odysee(ChatManager& manager, QSettings &settings, const QString &setting
     QObject::connect(&socket, &QWebSocket::connected, this, [this]()
     {
         //qDebug() << "webSocket connected";
-        setConnected(true);
+        setConnected();
         sendPing();
     });
 
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "webSocket disconnected";
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -82,7 +82,7 @@ Odysee::Odysee(ChatManager& manager, QSettings &settings, const QString &setting
         }
 
         qWarning() << "Pong timeout! Reconnection...";
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&timerSendPing, &QTimer::timeout, this, [this]()
@@ -136,7 +136,7 @@ QString Odysee::getMainError() const
     return tr("Not connected");
 }
 
-void Odysee::reconnectImpl()
+void Odysee::resetImpl()
 {
     socket.close();
 
@@ -153,8 +153,11 @@ void Odysee::reconnectImpl()
     }
 
     state.controlPanelUrl = "https://odysee.com/$/livestream";
+}
 
-    if (!isEnabled() || state.streamId.isEmpty())
+void Odysee::connectImpl()
+{
+    if (state.streamId.isEmpty())
     {
         return;
     }

@@ -23,8 +23,7 @@ BigoLive::BigoLive(ChatManager &manager, QSettings &settings, const QString &set
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         qDebug() << "webSocket disconnected";
-
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -57,15 +56,13 @@ QString BigoLive::getMainError() const
     return tr("Not connected");
 }
 
-void BigoLive::reconnectImpl()
+void BigoLive::resetImpl()
 {
     socket.close();
+}
 
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void BigoLive::connectImpl()
+{
     socket.setProxy(network.proxy());
     socket.open(QUrl("wss://wss.bigolive.tv/bigo/official/web"));
 }

@@ -12,7 +12,8 @@ public:
     QString getMainError() const override;
 
 protected:
-    void reconnectImpl() override;
+    void resetImpl() override;
+    void connectImpl() override;
 
 private slots:
     void onWebSocketReceived(const QByteArray& bin);

@@ -33,7 +33,8 @@ signals:
 public slots:
 
 protected:
-    void reconnectImpl() override;
+    void resetImpl() override;
+    void connectImpl() override;
 
 private slots:
     void sendIRCMessage(const QString& message);

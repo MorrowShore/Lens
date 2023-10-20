@@ -97,7 +97,7 @@ Discord::Discord(ChatManager& manager, QSettings &settings, const QString &setti
     ui.addSwitch(&showGuildName, tr("Show server name"));
     ui.addSwitch(&showChannelName, tr("Show channel name"));
     
-    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
+    QObject::connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {
@@ -109,7 +109,7 @@ Discord::Discord(ChatManager& manager, QSettings &settings, const QString &setti
         {
             if (*&setting == &applicationId || *&setting == &botToken)
             {
-                reconnect();
+                connect();
             }
         }
     });
@@ -136,7 +136,7 @@ Discord::Discord(ChatManager& manager, QSettings &settings, const QString &setti
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
-        processDisconnected();
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -190,21 +190,24 @@ QString Discord::getMainError() const
     return tr("Not connected");
 }
 
-void Discord::reconnectImpl()
+void Discord::resetImpl()
 {
     socket.close();
 
     info = Info(*this, network);
 
-    processDisconnected();
+    updateUI();
+}
 
-    if (!isCanConnect() || !isEnabled())
+void Discord::connectImpl()
+{
+    if (!isCanConnect())
     {
         return;
     }
 
     QNetworkReply* reply = network.get(createRequestAsBot(QUrl(ApiPrefix + "/gateway/bot")));
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
@@ -376,20 +379,14 @@ bool Discord::isCanConnect() const
     return !applicationId.get().isEmpty() && !botToken.get().isEmpty();
 }
 
-void Discord::processDisconnected()
-{
-    setConnected(false);
-    updateUI();
-}
-
 void Discord::tryProcessConnected()
 {
     if (!info.guilds->isGuildsLoaded())
     {
         return;
     }
-
-    setConnected(true);
+    
+    setConnected();
 
     updateUI();
 }
@@ -447,7 +444,7 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
 
         if (user.id == info.botUser.id)
         {
-            reconnect();
+            reset();
         }
         else
         {
@@ -468,7 +465,7 @@ void Discord::parseDispatch(const QString &eventType, const QJsonObject &data)
 void Discord::parseInvalidSession(const bool resumableSession)
 {
     Q_UNUSED(resumableSession) //TODO
-    reconnect();
+    reset();
 }
 
 void Discord::parseMessageCreate(const QJsonObject &jsonMessage)
@@ -616,7 +613,7 @@ void Discord::parseMessageCreateUserJoin(const QJsonObject &jsonMessage)
 
     if (user.id == info.botUser.id)
     {
-        reconnect();
+        reset();
         return;
     }
 

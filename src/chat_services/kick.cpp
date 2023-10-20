@@ -52,8 +52,7 @@ Kick::Kick(ChatManager& manager, QSettings &settings, const QString &settingsGro
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
-
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -68,10 +67,7 @@ Kick::Kick(ChatManager& manager, QSettings &settings, const QString &settingsGro
             return;
         }
 
-        if (!isConnected())
-        {
-            reconnect();
-        }
+        connect();
     });
 
     QObject::connect(&timerRequestChannelInfo, &QTimer::timeout, this, [this]()
@@ -131,7 +127,7 @@ QString Kick::getMainError() const
     return tr("Not connected");
 }
 
-void Kick::reconnectImpl()
+void Kick::resetImpl()
 {
     socket.close();
 
@@ -148,11 +144,11 @@ void Kick::reconnectImpl()
 
     state.chatUrl = QUrl(QString("https://kick.com/%1/chatroom").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://kick.com/%1").arg(state.streamId));
+}
 
-    if (isEnabled())
-    {
-        requestChannelInfo(state.streamId);
-    }
+void Kick::connectImpl()
+{
+    requestChannelInfo(state.streamId);
 }
 
 void Kick::onWebSocketReceived(const QString &rawData)
@@ -220,7 +216,7 @@ void Kick::onWebSocketReceived(const QString &rawData)
     }
     else if (type == "pusher:connection_established" || type == "pusher_internal:subscription_succeeded")
     {
-        setConnected(true);
+        setConnected();
 
         sendPing();
     }

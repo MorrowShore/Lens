@@ -42,7 +42,7 @@ DonatePay::DonatePay(ChatManager& manager, QSettings& settings, const QString& s
         QDesktopServices::openUrl(QUrl(domain + "/billing/transactions"));
     });
     
-    connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
+    QObject::connect(&ui, QOverload<const std::shared_ptr<UIBridgeElement>&>::of(&UIBridge::elementChanged), this, [this](const std::shared_ptr<UIBridgeElement>& element)
     {
         if (!element)
         {
@@ -60,7 +60,7 @@ DonatePay::DonatePay(ChatManager& manager, QSettings& settings, const QString& s
         {
             const QString apiKey = setting->get().trimmed();
             setting->set(apiKey);
-            reconnect();
+            connect();
         }
     });
 
@@ -129,7 +129,6 @@ DonatePay::DonatePay(ChatManager& manager, QSettings& settings, const QString& s
     });
 
     updateUI();
-    reconnect();
 }
 
 ChatService::ConnectionState DonatePay::getConnectionState() const
@@ -170,7 +169,7 @@ void DonatePay::requestUser()
     }
 
     QNetworkReply* reply = network.get(QNetworkRequest(domain + "/api/v1/user?access_token=" + key));
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QByteArray rawData = reply->readAll();
         const QJsonObject root = QJsonDocument::fromJson(rawData).object();
@@ -216,7 +215,7 @@ void DonatePay::requestSocketToken()
     const QByteArray data = QJsonDocument(QJsonObject({ { "access_token", key } })).toJson();
 
     QNetworkReply* reply = network.post(request, data);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QByteArray rawData = reply->readAll();
         const QJsonObject root = QJsonDocument::fromJson(rawData).object();
@@ -248,7 +247,7 @@ void DonatePay::requestSubscribeCentrifuge(const QString &clientId, const QStrin
     data.insert("channels", QJsonArray({"$public:" + userId}));
 
     QNetworkReply* reply = network.post(request, QJsonDocument(data).toJson(QJsonDocument::JsonFormat::Compact));
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         qDebug() << reply->readAll();
 
@@ -280,19 +279,15 @@ void DonatePay::onReceiveWebSocket(const QString &rawData)
     }
 }
 
-void DonatePay::reconnectImpl()
+void DonatePay::resetImpl()
 {
     info = Info();
 
     updateUI();
+}
 
-    emit stateChanged();
-
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void DonatePay::connectImpl()
+{
     timerReconnect.start();
     requestUser();
     requestSocketToken();

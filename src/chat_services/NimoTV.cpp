@@ -28,7 +28,7 @@ NimoTV::NimoTV(ChatManager &manager, QSettings &settings, const QString &setting
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         qDebug() << "WebSocket disconnected";
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -61,15 +61,13 @@ QString NimoTV::getMainError() const
     return tr("Not connected");
 }
 
-void NimoTV::reconnectImpl()
+void NimoTV::resetImpl()
 {
     socket.close();
+}
 
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void NimoTV::connectImpl()
+{
     socket.setProxy(network.proxy());
     socket.open(QUrl("wss://2ffe8363-ws.master.live/?baseinfo=AwAAAfIk4ydDFiAwYWQ3MGI4ZWU1M2ExZDY1NDEwMTQ3MmQ0ODJkZWJiMSYQd2ViaDUmMC4wLjEmbmltbzYMTklNTyZSVSYxMDQ5RgBWAGx2AIYAlgCoDA=="));
 }

@@ -121,7 +121,7 @@ DLive::DLive(ChatManager& manager, QSettings& settings, const QString& settingsG
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -176,7 +176,7 @@ QString DLive::getMainError() const
     return tr("Not connected");
 }
 
-void DLive::reconnectImpl()
+void DLive::resetImpl()
 {
     info = Info();
 
@@ -192,12 +192,10 @@ void DLive::reconnectImpl()
     }
 
     state.streamUrl = "https://dlive.tv/" + state.streamId;
+}
 
-    if (!isEnabled())
-    {
-        return;
-    }
-
+void DLive::connectImpl()
+{
     requestChatRoom(state.streamId);
     requestLiveStream(state.streamId);
 }
@@ -409,7 +407,7 @@ void DLive::onWebSocketReceived(const QString &raw)
     }
     else if (type == "connection_ack")
     {
-        setConnected(true);
+        setConnected();
 
         checkPingTimer.setInterval(CheckPingTimeout);
         checkPingTimer.start();
@@ -452,7 +450,7 @@ void DLive::requestChatRoom(const QString &displayName_)
     request.setRawHeader("Content-Type", "application/json");
 
     QNetworkReply* reply = network.post(request, body);
-    connect(reply, &QNetworkReply::finished, this, [this, reply, displayName]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply, displayName]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
@@ -531,7 +529,7 @@ void DLive::requestLiveStream(const QString &displayName_)
     request.setRawHeader("Content-Type", "application/json");
 
     QNetworkReply* reply = network.post(request, body);
-    connect(reply, &QNetworkReply::finished, this, [this, reply, displayName]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply, displayName]()
     {
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))

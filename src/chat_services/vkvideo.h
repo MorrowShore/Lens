@@ -15,7 +15,8 @@ public:
     TcpReply processTcpRequest(const TcpRequest &request) override;
 
 protected:
-    void reconnectImpl() override;
+    void resetImpl() override;
+    void connectImpl() override;
 
 private slots:
     void requestChat();

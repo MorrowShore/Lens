@@ -61,7 +61,7 @@ Wasd::Wasd(ChatManager& manager, QSettings &settings, const QString &settingsGro
     QObject::connect(&socket, &QWebSocket::disconnected, this, [this]()
     {
         //qDebug() << "WebSocket disconnected";
-        setConnected(false);
+        reset();
     });
 
     QObject::connect(&socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, [this](QAbstractSocket::SocketError error_)
@@ -121,6 +121,8 @@ QString Wasd::getMainError() const
         return tr("Channel not specified");
     }
 
+    qDebug() << state.streamId;
+
     if (state.streamId.isEmpty())
     {
         return tr("The channel is not correct");
@@ -129,7 +131,7 @@ QString Wasd::getMainError() const
     return tr("Not connected");
 }
 
-void Wasd::reconnectImpl()
+void Wasd::resetImpl()
 {
     socket.close();
 
@@ -148,12 +150,17 @@ void Wasd::reconnectImpl()
 
     state.chatUrl = QUrl(QString("https://wasd.tv/chat?channel_name=%1").arg(state.streamId));
     state.streamUrl = QUrl(QString("https://wasd.tv/%1").arg(state.streamId));
+}
 
-    if (isEnabled())
+void Wasd::connectImpl()
+{
+    if (state.streamId.isEmpty())
     {
-        requestTokenJWT();
-        requestChannel(state.streamId);
+        return;
     }
+
+    requestTokenJWT();
+    requestChannel(state.streamId);
 }
 
 void Wasd::onWebSocketReceived(const QString &rawData)
@@ -206,7 +213,7 @@ void Wasd::requestTokenJWT()
     request.setRawHeader("Authorization", QString("Token %1").arg(ApiToken).toUtf8());
 
     QNetworkReply* reply = network.post(request, QByteArray());
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QByteArray data = reply->readAll();
         reply->deleteLater();
@@ -227,7 +234,7 @@ void Wasd::requestChannel(const QString &channelName)
     QNetworkRequest request(QUrl("https://wasd.tv/api/v2/broadcasts/public?channel_name=" + channelName));
 
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply, channelName]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply, channelName]()
     {
         const QByteArray data = reply->readAll();
         reply->deleteLater();
@@ -242,13 +249,7 @@ void Wasd::requestChannel(const QString &channelName)
             if (!isLive)
             {
                 qWarning() << "channel" << channelName << "is not live";
-
-                setConnected(false);
-
-                socket.close();
-                info.channelId = QString();
-                info.streamId = QString();
-
+                reset();
                 return;
             }
 
@@ -289,7 +290,7 @@ void Wasd::requestSmiles()
     QNetworkRequest request(QUrl("https://static.wasd.tv/settings/smiles.json"));
 
     QNetworkReply* reply = network.get(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]()
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
         const QByteArray data = reply->readAll();
         reply->deleteLater();
@@ -551,7 +552,7 @@ void Wasd::parseEventJoined(const QJsonObject &)
 {
     if (!isConnected() && !state.streamId.isEmpty())
     {
-        setConnected(true);
+        setConnected();
     }
 }
 

@@ -83,7 +83,7 @@ public:
     virtual TcpReply processTcpRequest(const TcpRequest& request);
     ChatServiceType getServiceType() const;
 
-    void reconnect();
+    void reset();
 
     int getViewers() const;
 
@@ -126,13 +126,17 @@ private:
     const QString settingsGroupPath;
 
 protected:
-    virtual void reconnectImpl() = 0;
+    virtual void resetImpl() = 0;
+
+    virtual void connectImpl() = 0;
     virtual QStringList getWarnings() const { return QStringList(); }
+
+    void connect();
 
     QString generateAuthorId(const QString& rawId) const;
     QString generateMessageId(const QString& rawId) const;
 
-    void setConnected(const bool connected);
+    void setConnected();
     bool isConnected() const;
 
     void setViewers(const int count);

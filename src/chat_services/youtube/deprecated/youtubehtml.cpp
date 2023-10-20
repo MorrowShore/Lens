@@ -249,7 +249,7 @@ void YouTubeHtml::processBadChatReply()
         if (isConnected() && !state.streamId.isEmpty())
         {
             qWarning() << "too many bad chat replies! Disonnecting...";
-            setConnected(false);
+            reset();
         }
     }
 }
