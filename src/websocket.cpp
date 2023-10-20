@@ -10,6 +10,7 @@ namespace
 
 static const int Port = 8355;
 static const int LastMessagesCount = 30;
+static const int SendPingInterval = 3000;
 
 }
 
@@ -76,6 +77,13 @@ WebSocket::WebSocket(ChatManager& chatManager_, QObject *parent)
     {
         qCritical() << "Failed to open web socket server";
     }
+
+    connect(&sendPingTimer, &QTimer::timeout, this, [this]()
+    {
+        sendPing();
+    });
+    sendPingTimer.setInterval(SendPingInterval);
+    sendPingTimer.start();
 }
 
 void WebSocket::sendMessages(const QList<std::shared_ptr<Message>>& messages)
@@ -146,6 +154,11 @@ void WebSocket::sendHelloToClient(QWebSocket *client)
     root.insert("data", data);
 
     send(root, {client});
+}
+
+void WebSocket::sendPing()
+{
+    send({ {"type", "ping"} }, clients);
 }
 
 void WebSocket::sendMessagesToClient(const QList<std::shared_ptr<Message>> &messages, QWebSocket *client)

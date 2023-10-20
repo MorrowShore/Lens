@@ -5,6 +5,7 @@
 #include "Feature.h"
 #include <QWebSocketServer>
 #include <QWebSocket>
+#include <QTimer>
 
 class ChatManager;
 
@@ -23,6 +24,7 @@ private:
     void send(const QJsonObject& object, const QList<QWebSocket*>& clients);
 
     void sendHelloToClient(QWebSocket* client);
+    void sendPing();
     void sendMessagesToClient(const QList<std::shared_ptr<Message>>& messages, QWebSocket* client);
     void sendStateToClient(QWebSocket* client);
     void sendAuthorValuesToClient(QWebSocket* client, const QString& authorId, const QMap<Author::Role, QVariant>& values);
@@ -30,4 +32,5 @@ private:
     QWebSocketServer server;
     QList<QWebSocket*> clients;
     ChatManager& chatManager;
+    QTimer sendPingTimer;
 };
