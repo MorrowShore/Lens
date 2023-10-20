@@ -280,11 +280,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 {
                     if (foundColon)
                     {
-                        if (SmilesValidSymbols.contains(c))
-                        {
-                            chunk += c;
-                        }
-                        else
+                        if (c == ' ')
                         {
                             if (!chunk.isEmpty())
                             {
@@ -295,6 +291,10 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                             chunk += c;
 
                             foundColon = false;
+                        }
+                        else
+                        {
+                            chunk += c;
                         }
                     }
                     else

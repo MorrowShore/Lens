@@ -41,7 +41,6 @@ private:
     QTimer timerPing;
     QTimer timerUpdateChannelInfo;
 
-    inline static const QString SmilesValidSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789!.";
     QHash<QString, QUrl> smiles;
 };
 
