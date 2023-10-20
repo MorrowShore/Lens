@@ -196,6 +196,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             const QJsonObject jsonMessage = v.toObject();
             const int type = jsonMessage.value("type").toInt();
             const QString content = jsonMessage.value("content").toString().trimmed();
+
             const QString authorName = jsonMessage.value("nick_name").toString().trimmed();
             const QString avatar = jsonMessage.value("avatar").toString().trimmed();
 
@@ -264,7 +265,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             bool foundColon = false;
             for (const QChar& c : content)
             {
-                if (c == ":")
+                if (c == ':')
                 {
                     if (!chunk.isEmpty())
                     {
@@ -311,7 +312,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             QString text;
             for (const QString& chunk : chunks)
             {
-                if (chunk.startsWith(":"))
+                if (chunk.startsWith(':'))
                 {
                     const QString emote = QtStringUtils::removeFromStart(chunk, ":", Qt::CaseSensitivity::CaseInsensitive);
                     if (smiles.contains(emote))
@@ -326,6 +327,8 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                     }
                     else
                     {
+                        qWarning() << "unknown emote" << emote;
+
                         text += chunk;
                     }
                 }
