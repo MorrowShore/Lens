@@ -291,3 +291,13 @@ void QtStringUtils::saveDebugDataToFile(const QString &folder, const QString &fi
     }
 #endif
 }
+
+void QtStringUtils::toUpperFirstChar(QString &text)
+{
+    if (text.isEmpty())
+    {
+        return;
+    }
+
+    text[0] = text[0].toUpper();
+}

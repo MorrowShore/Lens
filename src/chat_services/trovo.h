@@ -32,9 +32,11 @@ private:
     void requestChannelInfo();
     void requsetSmiles();
 
-    void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const bool bold) const;
+    void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const QJsonObject& contentData, const bool bold, const bool toUpperFirstChar) const;
     void parseTodo19(const QJsonValue& jsonContent, Message::Builder& builder) const;
     void parseSpell(const QJsonValue& jsonContent, Message::Builder& builder) const;
+
+    static void replaceWithData(QString& text, const QJsonObject& contentData);
 
     static bool isEmote(const QString& chunk, const QString* prevChunk);
 

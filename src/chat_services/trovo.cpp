@@ -247,6 +247,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             const QJsonObject jsonMessage = v.toObject();
             const int type = jsonMessage.value("type").toInt();
             const QJsonValue content = jsonMessage.value("content");
+            const QJsonObject contentData = jsonMessage.value("content_data").toObject();
 
             const QString authorName = jsonMessage.value("nick_name").toString().trimmed();
             const QString avatar = jsonMessage.value("avatar").toString().trimmed();
@@ -315,11 +316,15 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             if (type == (int)ChatMessageType::Normal)
             {
                 //qDebug() << jsonMessage;
-                parseContentAsText(content, messageBuilder, false);
+                parseContentAsText(content, messageBuilder, contentData, false, false);
             }
-            else if (type == (int)ChatMessageType::Welcome)
+            else if (
+                type == (int)ChatMessageType::Subscription ||
+                type == (int)ChatMessageType::Follow ||
+                type == (int)ChatMessageType::Welcome
+                )
             {
-                parseContentAsText(content, messageBuilder, true);
+                parseContentAsText(content, messageBuilder, contentData, true, true);
             }
             else if (type == (int)ChatMessageType::Todo19)
             {
@@ -335,13 +340,22 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 // TODO:
                 continue;
             }
-            else if (type == (int)ChatMessageType::Spell)
+            else if (type == (int)ChatMessageType::Spell || type == (int)ChatMessageType::CustomSpell)
             {
                 parseSpell(content, messageBuilder);
             }
             else
             {
                 qWarning() << "unknown message type" << type << ", message =" << jsonMessage;
+
+                if (content.isString())
+                {
+                    parseContentAsText(content, messageBuilder, contentData, true, true);
+                }
+                else
+                {
+                    parseContentAsText("[OBJECT]", messageBuilder, contentData, true, true);
+                }
             }
 
             messages.append(messageBuilder.build());
@@ -584,7 +598,7 @@ void Trovo::requsetSmiles()
     });
 }
 
-void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& builder, const bool bold) const
+void Trovo::parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const QJsonObject& contentData, const bool bold, const bool toUpperFirstChar) const
 {
     Message::TextStyle style;
     style.bold = bold;
@@ -641,6 +655,8 @@ void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& 
         chunks.append(chunk);
     }
 
+    bool isFirstChunk = false;
+
     QString text;
     for (int i = 0; i < chunks.count(); i++)
     {
@@ -654,8 +670,17 @@ void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& 
             {
                 if (!text.isEmpty())
                 {
+                    replaceWithData(text, contentData);
+
+                    if (isFirstChunk && toUpperFirstChar)
+                    {
+                        QtStringUtils::toUpperFirstChar(text);
+                    }
+
                     builder.addText(text, style);
                     text = QString();
+
+                    isFirstChunk = false;
                 }
 
                 builder.addImage(QUrl(smiles.value(emote)), EmoteImageHeight);
@@ -674,6 +699,12 @@ void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& 
 
     if (!text.isEmpty())
     {
+        if (isFirstChunk && toUpperFirstChar)
+        {
+            QtStringUtils::toUpperFirstChar(text);
+        }
+
+        replaceWithData(text, contentData);
         builder.addText(text, style);
     }
 }
@@ -739,6 +770,33 @@ void Trovo::parseSpell(const QJsonValue &jsonContent, Message::Builder &builder)
     builder.addText("(" + gift + ")");
 }
 
+void Trovo::replaceWithData(QString &text, const QJsonObject &contentData)
+{
+    const QStringList keys = contentData.keys();
+    for (const QString& key : keys)
+    {
+        QString value;
+
+        const QJsonValue v = contentData.value(key);
+        if (v.isString())
+        {
+            value = v.toString();
+        }
+        else if (v.isDouble())
+        {
+            value = QString("%1").arg(v.toDouble());
+        }
+        else
+        {
+            continue;
+        }
+
+        const QString keyChunk = "{" + key + "}";
+
+        text.replace(keyChunk, value);
+    }
+}
+
 bool Trovo::isEmote(const QString &chunk, const QString *prevChunk)
 {
     if (chunk.isEmpty() || chunk == ":")
@@ -746,7 +804,10 @@ bool Trovo::isEmote(const QString &chunk, const QString *prevChunk)
         return false;
     }
 
-    if (chunk.startsWith("://") && prevChunk && prevChunk->startsWith("http", Qt::CaseSensitivity::CaseInsensitive))
+    if (chunk.startsWith("://") && prevChunk && (
+            prevChunk->endsWith("https", Qt::CaseSensitivity::CaseInsensitive) ||
+            prevChunk->endsWith("http", Qt::CaseSensitivity::CaseInsensitive)
+        ))
     {
         return false;
     }

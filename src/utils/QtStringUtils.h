@@ -16,6 +16,7 @@ public:
     static std::unique_ptr<QJsonDocument> findJson(const QByteArray& data, const QByteArray& objectName, const QJsonValue::Type type, int& objectPosition, int startPosition = 0);
     static QByteArray find(const QByteArray& data, const QByteArray& prefix, const QChar& postfix, const int maxLengthSearch);
     static void saveDebugDataToFile(const QString& folder, const QString& fileName, const QByteArray& data);
+    static void toUpperFirstChar(QString& text);
 
 private:
     QtStringUtils(){}
