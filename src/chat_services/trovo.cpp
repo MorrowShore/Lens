@@ -263,23 +263,6 @@ void Trovo::onWebSocketReceived(const QString& rawData)
 
             // https://developer.trovo.live/docs/Chat%20Service.html#_3-4-chat-message-types-and-samples
 
-            /*if ((type >= 5 && type <= 9) || (type >= 5001 && type <= 5009) || (type >= 5012 && type <= 5013))
-            {
-                //TODO
-                continue;
-            }
-            else if (type != 0)
-            {
-                qWarning() << "unknown message type" << type << ", message =" << jsonMessage;
-                continue;
-            }
-
-            if (authorName.isEmpty() || authorIdNum == 0 || !ok)
-            {
-                qWarning() << "ignore not valid message, message =" << jsonMessage;
-                continue;
-            }*/
-
             QUrl avatarUrl;
             if (!avatar.isEmpty())
             {
