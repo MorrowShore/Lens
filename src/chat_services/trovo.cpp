@@ -98,6 +98,12 @@ enum class ChatMessageType {
 
     /// Custom Spells
     CustomSpell = 5009,
+
+    /// Stream on/off messages, invisible to the viewers
+    StreamOnOff = 5012,
+
+    /// Unfollow message. Shows when someone unfollows the channel
+    Unfollow = 5013,
 };
 
 }
@@ -334,15 +340,13 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 // TODO: {"avatar":"https://headicon.trovo.live/user/r26pqbiaaaaabjbf35s3bwq7cy.jpeg?ext=gif&t=31","content":"{\"id\":520004217,\"num\":1,\"price\":100}","content_data":{"ace_bullet":{"show_bullet":false,"status":false,"user_type":2},"combo_info":{"end":0,"id":"9PAki2XB","num":1,"t_combo":1,"t_send":1},"gift_price_info":{"currencyType":1,"number":100},"normal_emote_enabled":"","space_fans_ext":{"l":"19","s":"1"}},"custom_role":"[{\"roleName\":\"supermod\",\"roleType\":100005},{\"roleName\":\"subscriber\",\"roleType\":100004},{\"roleName\":\"Streamer Friends\",\"roleType\":200000},{\"roleName\":\"Kitty\",\"roleType\":200000},{\"roleName\":\"Captain\",\"roleType\":200000},{\"roleName\":\"Queens\",\"roleType\":200000},{\"roleName\":\"follower\",\"roleType\":100006}]","decos":["PKC_Normal"],"medals":["ace_knight","sub_L4_T1","editor","supermod","CustomRoleMedal.103326919.CAR-200000-2"],"message_id":"1697862915656548603_103326919_100187278_2887057889_1","nick_name":"Cubanees","roles":["supermod","subscriber","Streamer Friends","Kitty","Captain","Queens","follower"],"send_time":1697862915,"sender_id":100187278,"sub_lv":"L4","sub_tier":"1","type":19,"uid":100187278,"user_name":"Cubanees"}
                 continue;
             }
-            else if (type == (int)ChatMessageType::Event)
-            {
-                //qDebug() << jsonMessage;
-                // TODO:
-                continue;
-            }
             else if (type == (int)ChatMessageType::Spell || type == (int)ChatMessageType::CustomSpell)
             {
                 parseSpell(content, messageBuilder);
+            }
+            else if (type == (int)ChatMessageType::Unfollow || type == (int)ChatMessageType::StreamOnOff)
+            {
+                continue;
             }
             else
             {
