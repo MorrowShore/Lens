@@ -33,7 +33,8 @@ private:
     void requsetSmiles();
 
     void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder) const;
-    void parsePrice(const QJsonValue& jsonContent, Message::Builder& builder) const;
+    void parseTodo19(const QJsonValue& jsonContent, Message::Builder& builder) const;
+    void parseSpell(const QJsonValue& jsonContent, Message::Builder& builder) const;
 
     static bool isEmote(const QString& chunk, const QString* prevChunk);
 

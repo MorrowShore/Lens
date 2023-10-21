@@ -319,14 +319,20 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             }
             else if (type == (int)ChatMessageType::Todo19)
             {
-                qDebug() << content;
+                //qDebug() << jsonMessage;
+                //parseTodo19(content, messageBuilder);
 
-                parsePrice(content, messageBuilder);
+                // TODO: {"avatar":"https://headicon.trovo.live/user/r26pqbiaaaaabjbf35s3bwq7cy.jpeg?ext=gif&t=31","content":"{\"id\":520004217,\"num\":1,\"price\":100}","content_data":{"ace_bullet":{"show_bullet":false,"status":false,"user_type":2},"combo_info":{"end":0,"id":"9PAki2XB","num":1,"t_combo":1,"t_send":1},"gift_price_info":{"currencyType":1,"number":100},"normal_emote_enabled":"","space_fans_ext":{"l":"19","s":"1"}},"custom_role":"[{\"roleName\":\"supermod\",\"roleType\":100005},{\"roleName\":\"subscriber\",\"roleType\":100004},{\"roleName\":\"Streamer Friends\",\"roleType\":200000},{\"roleName\":\"Kitty\",\"roleType\":200000},{\"roleName\":\"Captain\",\"roleType\":200000},{\"roleName\":\"Queens\",\"roleType\":200000},{\"roleName\":\"follower\",\"roleType\":100006}]","decos":["PKC_Normal"],"medals":["ace_knight","sub_L4_T1","editor","supermod","CustomRoleMedal.103326919.CAR-200000-2"],"message_id":"1697862915656548603_103326919_100187278_2887057889_1","nick_name":"Cubanees","roles":["supermod","subscriber","Streamer Friends","Kitty","Captain","Queens","follower"],"send_time":1697862915,"sender_id":100187278,"sub_lv":"L4","sub_tier":"1","type":19,"uid":100187278,"user_name":"Cubanees"}
+                continue;
             }
             else if (type == (int)ChatMessageType::Event)
             {
-                // TODO: {"content":"{content}","message_id":"1697857380154179591_100187278_0_2887060856_1","nick_name":"","send_time":1697857380,"type":5007}
+                qDebug() << jsonMessage;
                 continue;
+            }
+            else if (type == (int)ChatMessageType::Spell)
+            {
+                parseSpell(content, messageBuilder);
             }
             else
             {
@@ -682,18 +688,65 @@ void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& 
     }
 }
 
-void Trovo::parsePrice(const QJsonValue &jsonContent, Message::Builder& builder) const
+void Trovo::parseTodo19(const QJsonValue &jsonContent, Message::Builder& builder) const
 {
-    const QJsonObject root = QJsonDocument::fromJson(jsonContent.toString().toUtf8()).object();
+    builder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightedMessageColor);
 
     Message::TextStyle style;
     style.bold = true;
 
+    const QJsonObject root = QJsonDocument::fromJson(jsonContent.toString().toUtf8()).object();
+
     const int price = root.value("price").toInt();
 
     builder.addText(tr("Price: %1").arg(price), style);
+}
 
-    builder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightedMessageColor);
+void Trovo::parseSpell(const QJsonValue &jsonContent, Message::Builder &builder) const
+{
+    Message::TextStyle boldStyle;
+    boldStyle.bold = true;
+
+    const QJsonObject root = QJsonDocument::fromJson(jsonContent.toString().toUtf8()).object();
+
+    const QString gift = root.value("gift").toString();
+    const int num = root.value("num").toInt();
+    const int giftValue = root.value("gift_value").toInt();
+    const QString valueType = root.value("value_type").toString();
+
+    QString valueName;
+
+    if (valueType == "Elixir")
+    {
+        valueName = tr("Elixir");
+
+        builder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, QColor(100, 105, 239));
+    }
+    else if (valueType == "Mana")
+    {
+        valueName = tr("Mana");
+
+        builder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, QColor(122, 206, 226));
+    }
+    else
+    {
+        valueName = valueType;
+
+        builder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightedMessageColor);
+
+        qWarning() << "unknown value type" << valueType << ", content =" << jsonContent;
+    }
+
+    builder.addText(valueName + QString(": %1").arg(giftValue), boldStyle);
+
+    if (num > 1)
+    {
+        builder.addText(QString(" x%1").arg(num), boldStyle);
+    }
+
+    builder.addText("\n");
+
+    builder.addText("(" + gift + ")");
 }
 
 bool Trovo::isEmote(const QString &chunk, const QString *prevChunk)
