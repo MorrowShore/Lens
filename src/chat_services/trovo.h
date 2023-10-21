@@ -32,7 +32,7 @@ private:
     void requestChannelInfo();
     void requsetSmiles();
 
-    void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder) const;
+    void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const bool bold) const;
     void parseTodo19(const QJsonValue& jsonContent, Message::Builder& builder) const;
     void parseSpell(const QJsonValue& jsonContent, Message::Builder& builder) const;
 

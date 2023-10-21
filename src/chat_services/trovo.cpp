@@ -315,7 +315,11 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             if (type == (int)ChatMessageType::Normal)
             {
                 //qDebug() << jsonMessage;
-                parseContentAsText(content, messageBuilder);
+                parseContentAsText(content, messageBuilder, false);
+            }
+            else if (type == (int)ChatMessageType::Welcome)
+            {
+                parseContentAsText(content, messageBuilder, true);
             }
             else if (type == (int)ChatMessageType::Todo19)
             {
@@ -327,7 +331,8 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             }
             else if (type == (int)ChatMessageType::Event)
             {
-                qDebug() << jsonMessage;
+                //qDebug() << jsonMessage;
+                // TODO:
                 continue;
             }
             else if (type == (int)ChatMessageType::Spell)
@@ -338,24 +343,6 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             {
                 qWarning() << "unknown message type" << type << ", message =" << jsonMessage;
             }
-
-            /*QList<std::shared_ptr<Message::Content>> contents;
-
-            if (type == 0)
-            {
-                parseContentAsText(content, contents);
-            }
-            else if (type == 19)
-            {
-                parsePrice(content, contents);
-            }
-
-            std::shared_ptr<Message> message = std::make_shared<Message>(
-                contents,
-                author,
-                publishedAt,
-                QDateTime::currentDateTime(),
-                getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));*/
 
             messages.append(messageBuilder.build());
             authors.append(author);
@@ -597,8 +584,11 @@ void Trovo::requsetSmiles()
     });
 }
 
-void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& builder) const
+void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& builder, const bool bold) const
 {
+    Message::TextStyle style;
+    style.bold = bold;
+
     const QString raw = jsonContent.toString();
 
     QStringList chunks;
@@ -664,7 +654,7 @@ void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& 
             {
                 if (!text.isEmpty())
                 {
-                    builder.addText(text);
+                    builder.addText(text, style);
                     text = QString();
                 }
 
@@ -684,7 +674,7 @@ void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& 
 
     if (!text.isEmpty())
     {
-        builder.addText(text);
+        builder.addText(text, style);
     }
 }
 
