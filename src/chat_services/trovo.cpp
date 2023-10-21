@@ -655,7 +655,7 @@ void Trovo::parseContentAsText(const QJsonValue& jsonContent, Message::Builder& 
         chunks.append(chunk);
     }
 
-    bool isFirstChunk = false;
+    bool isFirstChunk = true;
 
     QString text;
     for (int i = 0; i < chunks.count(); i++)
