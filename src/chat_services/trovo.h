@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chatservice.h"
+#include "models/message.h"
 #include <QWebSocket>
 #include <QTimer>
 
@@ -30,6 +31,11 @@ private:
     void requestChatToken();
     void requestChannelInfo();
     void requsetSmiles();
+
+    void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder) const;
+    void parsePrice(const QJsonValue& jsonContent, Message::Builder& builder) const;
+
+    static bool isEmote(const QString& chunk, const QString* prevChunk);
 
     QNetworkAccessManager& network;
 

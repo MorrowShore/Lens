@@ -1,7 +1,6 @@
 #include "trovo.h"
 #include "secrets.h"
 #include "utils/QtStringUtils.h"
-#include "models/message.h"
 #include "models/author.h"
 #include "crypto/obfuscator.h"
 #include <QNetworkReply>
@@ -11,6 +10,17 @@
 
 namespace
 {
+
+static const int RequestChannelInfoPariod = 10000;
+static const int PingPeriod = 30 * 1000;
+
+static const QString NonceAuth = "AUTH";
+
+static const QString ClientID = OBFUSCATE(TROVO_CLIENT_ID);
+
+static const int EmoteImageHeight = 40;
+
+static const QColor HighlightedMessageColor = QColor(122, 229, 187);
 
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
@@ -40,14 +50,55 @@ static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& result
     return true;
 }
 
-static const int RequestChannelInfoPariod = 10000;
-static const int PingPeriod = 30 * 1000;
+enum class ChatMessageType {
+    /// Normal chat messages.
+    Normal = 0,
 
-static const QString NonceAuth = "AUTH";
+    /// Spells, including: mana spells, elixir spells
+    Spell = 5,
 
-static const QString ClientID = OBFUSCATE(TROVO_CLIENT_ID);
+    /// Magic chat - super cap chat
+    MagicSuperCap = 6,
 
-static const int EmoteImageHeight = 40;
+    /// Magic chat - colorful chat
+    MagicColorful = 7,
+
+    /// Magic chat - spell chat
+    MagicSpell = 8,
+
+    /// Magic chat - bullet screen chat
+    MagicBulletScreen = 9,
+
+    /// TODO
+    Todo19 = 19,
+
+    /// Subscription message. Shows when someone subscribes to the channel.
+    Subscription = 5001,
+
+    /// System message.
+    System = 5002,
+
+    /// Follow message. Shows when someone follows the channel.
+    Follow = 5003,
+
+    /// Welcome message when viewer joins the channel.
+    Welcome = 5004,
+
+    /// Gift sub message. When a user randomly sends gift subscriptions to one or more users in the channel.
+    GiftSub = 5005,
+
+    /// Gift sub message. The detailed messages when a user sends a gift subscription to another user.
+    GiftSubDetailed = 5006,
+
+    /// Activity / events message. For platform level events.
+    Event = 5007,
+
+    /// Welcome message when users join the channel from raid.
+    Raid = 5008,
+
+    /// Custom Spells
+    CustomSpell = 5009,
+};
 
 }
 
@@ -195,7 +246,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
         {
             const QJsonObject jsonMessage = v.toObject();
             const int type = jsonMessage.value("type").toInt();
-            const QString content = jsonMessage.value("content").toString().trimmed();
+            const QJsonValue content = jsonMessage.value("content");
 
             const QString authorName = jsonMessage.value("nick_name").toString().trimmed();
             const QString avatar = jsonMessage.value("avatar").toString().trimmed();
@@ -205,7 +256,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
 
             // https://developer.trovo.live/docs/Chat%20Service.html#_3-4-chat-message-types-and-samples
 
-            if ((type >= 5 && type <= 9) || (type >= 5001 && type <= 5009) || (type >= 5012 && type <= 5013))
+            /*if ((type >= 5 && type <= 9) || (type >= 5001 && type <= 5009) || (type >= 5012 && type <= 5013))
             {
                 //TODO
                 continue;
@@ -216,11 +267,11 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 continue;
             }
 
-            if (content.isEmpty() || authorName.isEmpty() || authorIdNum == 0 || !ok)
+            if (authorName.isEmpty() || authorIdNum == 0 || !ok)
             {
                 qWarning() << "ignore not valid message, message =" << jsonMessage;
                 continue;
-            }
+            }*/
 
             QUrl avatarUrl;
             if (!avatar.isEmpty())
@@ -238,7 +289,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             std::shared_ptr<Author> author = std::make_shared<Author>(
                 getServiceType(),
                 authorName,
-                getServiceTypeId(getServiceType()) + QString("/%1").arg(authorIdNum),
+                generateAuthorId(QString("%1").arg(authorIdNum)),
                 avatarUrl,
                 QUrl("https://trovo.live/s/" + authorName));
 
@@ -257,90 +308,40 @@ void Trovo::onWebSocketReceived(const QString& rawData)
 
             const QString messageId = jsonMessage.value("message_id").toString().trimmed();
 
-            QList<std::shared_ptr<Message::Content>> contents;
+            Message::Builder messageBuilder(author, generateMessageId(messageId));
 
-            QStringList chunks;
+            messageBuilder.setPublishedTime(publishedAt);
 
-            QString chunk;
-            bool foundColon = false;
-            for (const QChar& c : content)
+            if (type == (int)ChatMessageType::Normal)
             {
-                if (c == ':')
-                {
-                    if (!chunk.isEmpty())
-                    {
-                        chunks.append(chunk);
-                        chunk.clear();
-                    }
+                //qDebug() << jsonMessage;
+                parseContentAsText(content, messageBuilder);
+            }
+            else if (type == (int)ChatMessageType::Todo19)
+            {
+                qDebug() << content;
 
-                    chunk += c;
-                    foundColon = true;
-                }
-                else
-                {
-                    if (foundColon)
-                    {
-                        if (c == ' ')
-                        {
-                            if (!chunk.isEmpty())
-                            {
-                                chunks.append(chunk);
-                                chunk.clear();
-                            }
-
-                            chunk += c;
-
-                            foundColon = false;
-                        }
-                        else
-                        {
-                            chunk += c;
-                        }
-                    }
-                    else
-                    {
-                        chunk += c;
-                    }
-                }
+                parsePrice(content, messageBuilder);
+            }
+            else if (type == (int)ChatMessageType::Event)
+            {
+                // TODO: {"content":"{content}","message_id":"1697857380154179591_100187278_0_2887060856_1","nick_name":"","send_time":1697857380,"type":5007}
+                continue;
+            }
+            else
+            {
+                qWarning() << "unknown message type" << type << ", message =" << jsonMessage;
             }
 
-            if  (!chunk.isEmpty())
+            /*QList<std::shared_ptr<Message::Content>> contents;
+
+            if (type == 0)
             {
-                chunks.append(chunk);
+                parseContentAsText(content, contents);
             }
-
-            QString text;
-            for (const QString& chunk : chunks)
+            else if (type == 19)
             {
-                if (chunk.startsWith(':'))
-                {
-                    const QString emote = QtStringUtils::removeFromStart(chunk, ":", Qt::CaseSensitivity::CaseInsensitive);
-                    if (smiles.contains(emote))
-                    {
-                        if (!text.isEmpty())
-                        {
-                            contents.append(std::make_shared<Message::Text>(text));
-                            text = QString();
-                        }
-
-                        contents.append(std::make_shared<Message::Image>(QUrl(smiles.value(emote)), EmoteImageHeight));
-                    }
-                    else
-                    {
-                        qWarning() << "unknown emote" << chunk;
-
-                        text += chunk;
-                    }
-                }
-                else
-                {
-                    text += chunk;
-                }
-            }
-
-            if (!text.isEmpty())
-            {
-                contents.append(std::make_shared<Message::Text>(text));
+                parsePrice(content, contents);
             }
 
             std::shared_ptr<Message> message = std::make_shared<Message>(
@@ -348,9 +349,9 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                 author,
                 publishedAt,
                 QDateTime::currentDateTime(),
-                getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));
+                getServiceTypeId(getServiceType()) + QString("/%1").arg(messageId));*/
 
-            messages.append(message);
+            messages.append(messageBuilder.build());
             authors.append(author);
         }
 
@@ -588,4 +589,124 @@ void Trovo::requsetSmiles()
             smiles.insert(name, url);
         }
     });
+}
+
+void Trovo::parseContentAsText(const QJsonValue &jsonContent, Message::Builder& builder) const
+{
+    const QString raw = jsonContent.toString();
+
+    QStringList chunks;
+
+    QString chunk;
+    bool foundColon = false;
+    for (const QChar& c : raw)
+    {
+        if (c == ':')
+        {
+            if (!chunk.isEmpty())
+            {
+                chunks.append(chunk);
+                chunk.clear();
+            }
+
+            chunk += c;
+            foundColon = true;
+        }
+        else
+        {
+            if (foundColon)
+            {
+                if (c == ' ')
+                {
+                    if (!chunk.isEmpty())
+                    {
+                        chunks.append(chunk);
+                        chunk.clear();
+                    }
+
+                    chunk += c;
+
+                    foundColon = false;
+                }
+                else
+                {
+                    chunk += c;
+                }
+            }
+            else
+            {
+                chunk += c;
+            }
+        }
+    }
+
+    if  (!chunk.isEmpty())
+    {
+        chunks.append(chunk);
+    }
+
+    QString text;
+    for (int i = 0; i < chunks.count(); i++)
+    {
+        const QString* prevChunk = i > 0 ? &chunks[i - 1] : nullptr;
+        const QString& chunk = chunks[i];
+
+        if (chunk.startsWith(':') && isEmote(chunk, prevChunk))
+        {
+            const QString emote = QtStringUtils::removeFromStart(chunk, ":", Qt::CaseSensitivity::CaseInsensitive);
+            if (smiles.contains(emote))
+            {
+                if (!text.isEmpty())
+                {
+                    builder.addText(text);
+                    text = QString();
+                }
+
+                builder.addImage(QUrl(smiles.value(emote)), EmoteImageHeight);
+            }
+            else
+            {
+                qWarning() << "unknown emote" << chunk << ", raw =" << raw;
+                text += chunk;
+            }
+        }
+        else
+        {
+            text += chunk;
+        }
+    }
+
+    if (!text.isEmpty())
+    {
+        builder.addText(text);
+    }
+}
+
+void Trovo::parsePrice(const QJsonValue &jsonContent, Message::Builder& builder) const
+{
+    const QJsonObject root = QJsonDocument::fromJson(jsonContent.toString().toUtf8()).object();
+
+    Message::TextStyle style;
+    style.bold = true;
+
+    const int price = root.value("price").toInt();
+
+    builder.addText(tr("Price: %1").arg(price), style);
+
+    builder.setForcedColor(Message::ColorRole::BodyBackgroundColorRole, HighlightedMessageColor);
+}
+
+bool Trovo::isEmote(const QString &chunk, const QString *prevChunk)
+{
+    if (chunk.isEmpty() || chunk == ":")
+    {
+        return false;
+    }
+
+    if (chunk.startsWith("://") && prevChunk && prevChunk->startsWith("http", Qt::CaseSensitivity::CaseInsensitive))
+    {
+        return false;
+    }
+
+    return true;
 }
