@@ -234,6 +234,4 @@ void BackendManager::sendSessionUsage()
     {
         qCritical() << error;
     });
-
-    qDebug() << doc;
 }
