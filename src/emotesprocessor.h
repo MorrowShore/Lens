@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Feature.h"
 #include "chat_services/twitch.h"
 #include "emote_services/emoteservice.h"
 #include "models/message.h"
@@ -8,11 +7,11 @@
 #include <QSettings>
 #include <QTimer>
 
-class EmotesProcessor : public Feature
+class EmotesProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit EmotesProcessor(BackendManager& backend, QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit EmotesProcessor(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
     void processMessage(std::shared_ptr<Message> message);
     void connectTwitch(std::shared_ptr<Twitch> twitch);
 

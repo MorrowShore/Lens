@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Feature.h"
 #include "utils/QtAxelChatUtils.h"
 #include "setting.h"
 #include "models/messagesmodel.h"
@@ -8,9 +7,7 @@
 #include <QObject>
 #include <QSettings>
 
-class BackendManager;
-
-class OutputToFile : public Feature
+class OutputToFile : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString outputFolderPath READ getOutputFolder WRITE setOutputFolder NOTIFY outputFolderChanged)
@@ -25,7 +22,7 @@ public:
         ANSIWithUTF8Codes = 200
     };
 
-    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, BackendManager& backend, QNetworkAccessManager& network, const MessagesModel& messages, QList<std::shared_ptr<ChatService>>& services, QObject *parent = nullptr);
+    explicit OutputToFile(QSettings& settings, const QString& settingsGroupPath, QNetworkAccessManager& network, const MessagesModel& messages, QList<std::shared_ptr<ChatService>>& services, QObject *parent = nullptr);
     ~OutputToFile();
 
     bool isEnabled() const;

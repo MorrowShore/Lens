@@ -20,7 +20,6 @@ HEADERS += \
     Backend/BackendManager.h \
     Backend/SponsorshipManager.h \
     ChatManager.h \
-    Feature.h \
     UIBridge/UIBridge.h \
     UIBridge/UIBridgeElement.h \
     chat_services/BigoLive.h \
@@ -91,7 +90,6 @@ SOURCES += \
     Backend/BackendManager.cpp \
     Backend/SponsorshipManager.cpp \
     ChatManager.cpp \
-    Feature.cpp \
     UIBridge/UIBridge.cpp \
     UIBridge/UIBridgeElement.cpp \
     chat_services/BigoLive.cpp \

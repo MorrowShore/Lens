@@ -2,6 +2,7 @@
 #include "emote_services/betterttv.h"
 #include "emote_services/frankerfacez.h"
 #include "emote_services/seventv.h"
+#include "Backend/BackendManager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -14,8 +15,8 @@ static const int EmoteImageHeight = 32;
 
 }
 
-EmotesProcessor::EmotesProcessor(BackendManager& backend, QSettings& settings_, const QString& settingsGroupPathParent_, QNetworkAccessManager& network_, QObject *parent)
-    : Feature(backend, "EmotesProcessor", parent)
+EmotesProcessor::EmotesProcessor(QSettings& settings_, const QString& settingsGroupPathParent_, QNetworkAccessManager& network_, QObject *parent)
+    : QObject(parent)
     , settings(settings_)
     , settingsGroupPath(settingsGroupPathParent_ + "/emotes_processor")
     , network(network_)
@@ -52,7 +53,7 @@ EmotesProcessor::EmotesProcessor(BackendManager& backend, QSettings& settings_, 
 
 void EmotesProcessor::processMessage(std::shared_ptr<Message> message)
 {
-    Feature::setAsUsed();
+    BackendManager::getInstance()->addUsedFeature("EmotesProcessor");
 
     if (!message)
     {

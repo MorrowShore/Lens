@@ -1,14 +1,15 @@
 #include "chatbot.h"
 #include "models/message.h"
 #include "utils/QtStringUtils.h"
+#include "Backend/BackendManager.h"
 #include <QSoundEffect>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QMediaContent>
 #include <QFileInfo>
 
-ChatBot::ChatBot(BackendManager& backend, QSettings& settings_, const QString& settingsGroup, QObject *parent)
-    : Feature(backend, "ChatBot", parent)
+ChatBot::ChatBot(QSettings& settings_, const QString& settingsGroup, QObject *parent)
+    : QObject(parent)
     , settings(settings_)
     , SettingsGroupPath(settingsGroup)
 
@@ -157,7 +158,7 @@ void ChatBot::processMessage(const std::shared_ptr<Message>& message)
         return;
     }
 
-    Feature::setAsUsed();
+    BackendManager::getInstance()->addUsedFeature("ChatBot");
 
     for (BotAction* action : qAsConst(_actions))
     {

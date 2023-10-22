@@ -1,12 +1,11 @@
 #pragma once
 
 #include "botaction.h"
-#include "Feature.h"
 #include "models/message.h"
 #include <QSettings>
 #include <QMediaPlayer>
 
-class ChatBot : public Feature
+class ChatBot : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged())
@@ -14,7 +13,7 @@ class ChatBot : public Feature
     Q_PROPERTY(bool includeBuiltInCommands READ includeBuiltInCommands WRITE setIncludeBuiltInCommands NOTIFY includedBuiltInCommandsChanged())
 
 public:
-    explicit ChatBot(BackendManager& backend, QSettings& settings, const QString& settingsGroup, QObject *parent = nullptr);
+    explicit ChatBot(QSettings& settings, const QString& settingsGroup, QObject *parent = nullptr);
 
     int volume() const;
 

@@ -12,7 +12,7 @@ static const int FirstReconnectPeriod = 100;
 const QString ChatService::UnknownBadge = "qrc:/resources/images/unknown-badge.png";
 
 ChatService::ChatService(ChatManager& manager_, QSettings& settings, const QString& settingsGroupPathParent, ChatServiceType serviceType_, const bool enabledThirdPartyEmotesDefault, QObject *parent)
-    : Feature(manager_.backend, "ChatService:" + getServiceTypeId(serviceType_), parent)
+    : QObject(parent)
     , serviceType(serviceType_)
     , settingsGroupPath(settingsGroupPathParent + "/" + getServiceTypeId(serviceType_))
     , manager(manager_)
@@ -187,7 +187,7 @@ void ChatService::connect()
         return;
     }
 
-    Feature::setAsUsed();
+    manager.backend.addUsedFeature("ChatService:" + getServiceTypeId(getServiceType()));
 
     connectImpl();
 

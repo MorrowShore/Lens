@@ -15,7 +15,7 @@ static const int SendPingInterval = 3000;
 }
 
 WebSocket::WebSocket(ChatManager& chatManager_, QObject *parent)
-    : Feature(chatManager_.backend, "WebSocket", parent)
+    : QObject(parent)
     , server(QCoreApplication::applicationName(), QWebSocketServer::NonSecureMode)
     , chatManager(chatManager_)
 {
@@ -26,7 +26,7 @@ WebSocket::WebSocket(ChatManager& chatManager_, QObject *parent)
 
     connect(&server, &QWebSocketServer::newConnection, this, [this]()
     {
-        Feature::setAsUsed();
+        chatManager.backend.addUsedFeature("WebSocket");
 
         QWebSocket* client = server.nextPendingConnection();
         if (!client)

@@ -7,7 +7,6 @@
 #include "tcprequest.h"
 #include "tcpreply.h"
 #include "tcpserver.h"
-#include "Feature.h"
 #include "models/author.h"
 #include "CefWebEngineQt/Manager.h"
 #include <QSettings>
@@ -22,7 +21,7 @@ class ChatManager;
 class Author;
 class Message;
 
-class ChatService : public Feature
+class ChatService : public QObject
 {
     Q_OBJECT
 
