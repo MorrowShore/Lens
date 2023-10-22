@@ -340,6 +340,7 @@ void ChatManager::removeService(const int index)
     std::shared_ptr<ChatService> service = services.at(index);
     if (service)
     {
+        service->reset();
         QObject::disconnect(service.get(), nullptr, this, nullptr);
         QObject::disconnect(this, nullptr, service.get(), nullptr);
     }
