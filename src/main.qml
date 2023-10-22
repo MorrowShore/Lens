@@ -94,6 +94,9 @@ Item {
             if (action === "open_settings_window") {
                 Global.openSettingsWindow()
             }
+            else if (action === "open_connections_window") {
+                Global.openConnectionsWindow()
+            }
             else {
                 console.log("Unknown triggered action '", action, "'")
             }

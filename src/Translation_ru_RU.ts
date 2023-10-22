@@ -542,6 +542,19 @@
     </message>
 </context>
 <context>
+    <name>ConnectionsWindow</name>
+    <message>
+        <location filename="ConnectionsWindow.qml" line="14"/>
+        <source>Connections</source>
+        <translation>Подключения</translation>
+    </message>
+    <message>
+        <location filename="ConnectionsWindow.qml" line="63"/>
+        <source>Ok</source>
+        <translation>Ок</translation>
+    </message>
+</context>
+<context>
     <name>DLive</name>
     <message>
         <location filename="chat_services/dlive.cpp" line="174"/>
@@ -3000,8 +3013,9 @@ Latest version available: %2</oldsource>
     <name>settings</name>
     <message>
         <location filename="settings.qml" line="14"/>
-        <source>AxelChat Settings</source>
-        <translation>Настройки AxelChat</translation>
+        <source>Settings</source>
+        <oldsource>AxelChat Settings</oldsource>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="settings.qml" line="47"/>
@@ -3044,12 +3058,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Новое подключ.</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="182"/>
+        <location filename="settings.qml" line="165"/>
         <source>Widgets</source>
         <translation>Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="188"/>
+        <location filename="settings.qml" line="171"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -3058,17 +3072,17 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Участники</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="176"/>
+        <location filename="settings.qml" line="159"/>
         <source>Common</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="200"/>
+        <location filename="settings.qml" line="177"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="206"/>
+        <location filename="settings.qml" line="183"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -3077,7 +3091,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="212"/>
+        <location filename="settings.qml" line="189"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>

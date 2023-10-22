@@ -89,8 +89,17 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
                 toogleVisible();
             });
             menu->addAction(actionHideToTray);
+        }
 
-            menu->addSeparator();
+        menu->addSeparator();
+
+        {
+            QAction* action = new QAction(QIcon(":/resources/images/link.svg"), tr("Connections"), menu);
+            connect(action, &QAction::triggered, this, []()
+            {
+                emit QmlUtils::instance()->triggered("open_connections_window");
+            });
+            menu->addAction(action);
         }
 
         {
@@ -101,6 +110,8 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
             });
             menu->addAction(action);
         }
+
+        menu->addSeparator();
 
         {
             auto element = ui.addSwitch(&stayOnTop, tr("Stay on top"));

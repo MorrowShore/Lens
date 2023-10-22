@@ -13,8 +13,9 @@ QtObject {
 
     property var windowChat
     property var windowSettings
+    property var windowConnections
 
-    property int windowSettingsServiceIndex: 0
+    property int serviceIndex: 0
 
     property bool windowChatShowViewersCount : true
 
@@ -47,5 +48,15 @@ QtObject {
         }
 
         windowSettings.show()
+    }
+
+    function openConnectionsWindow() {
+        if (typeof(windowConnections) == "undefined")
+        {
+            var component = Qt.createComponent("qrc:/ConnectionsWindow.qml")
+            windowConnections = component.createObject(windowChat)
+        }
+
+        windowConnections.show()
     }
 }

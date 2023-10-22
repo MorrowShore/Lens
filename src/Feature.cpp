@@ -1,5 +1,5 @@
 #include "Feature.h"
-#include "BackendManager.h"
+#include "Backend/BackendManager.h"
 
 Feature::Feature(BackendManager& backend_, const QString& name_, QObject *parent)
     : QObject(parent)

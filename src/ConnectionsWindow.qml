@@ -2,8 +2,6 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.12
 import QtQuick.Window 2.15
-import AxelChat.ChatManager 1.0
-import AxelChat.OutputToFile 1.0
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import "my_components" as MyComponents
@@ -11,7 +9,7 @@ import "."
 
 Window {
     id: root
-    title: qsTr("Settings")
+    title: qsTr("Connections")
     flags: {
         var windowFlags = Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowTitleHint |
                 Qt.WindowCloseButtonHint
@@ -26,45 +24,15 @@ Window {
     color: "#202225"
 
     Component.onCompleted: {
-        Global.windowSettings = this
+        Global.windowConnections = this
     }
 
     Settings {
         id: settings
-        category: "settings_window"
+        category: "connections_window"
         property alias window_width:  root.width;
         property alias window_height: root.height;
         property alias category_index: listViewCategories.currentIndex
-    }
-
-    function showRestartDialog() {
-        restartDialog.open()
-    }
-
-    Dialog {
-        id: restartDialog
-        anchors.centerIn: parent
-        title: qsTr("Changes will take effect after restarting the program");
-        modal: true
-        footer: DialogButtonBox {
-            Button {
-                flat: true
-                text: qsTr("Close")
-                DialogButtonBox.buttonRole: DialogButtonBox.DestructiveRole
-                onClicked: {
-                    restartDialog.close();
-                }
-            }
-            Button {
-                flat: true
-                text: qsTr("Restart")
-                DialogButtonBox.buttonRole: DialogButtonBox.ActionRole
-                onClicked: {
-                    restartDialog.close();
-                    Qt.callLater(qmlUtils.restartApplication);
-                }
-            }
-        }
     }
 
     function showInfo(text) {
@@ -151,40 +119,25 @@ Window {
                 }
 
                 Component.onCompleted: {
+                    for (var i = chatManager.getServicesCount() - 1; i >= 0; --i) {
+                        var service = chatManager.getServiceAtIndex(i)
+                        model.insert(0,
+                            {
+                                name: service.getName(),
+                                category: "service",
+                                iconSource: service.getIconUrl().toString(),
+                                serviceIndex: i
+                            })
+                    }
+
                     currentIndex = settings.category_index
+
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
                 }
 
                 model: ListModel {
-                    ListElement {
-                        name: qsTr("Common")
-                        category: "common"
-                        iconSource: ""
-                    }
-                    ListElement {
-                        name: qsTr("Widgets")
-                        category: "widgets"
-                        iconSource: ""
-                    }
-                    ListElement {
-                        name: qsTr("Appearance")
-                        category: "appearance"
-                        iconSource: ""
-                    }
-                    ListElement {
-                        name: qsTr("Chat Commands")
-                        category: "chat_commands"
-                        iconSource: ""
-                    }
-                    ListElement {
-                        name: qsTr("Output to Files")
-                        category: "output_to_files"
-                        iconSource: ""
-                    }
-                    ListElement {
-                        name: qsTr("About AxelChat")
-                        category: "about_software"
-                        iconSource: ""
-                    }
                 }
 
                 delegate: ItemDelegate {
@@ -220,6 +173,35 @@ Window {
                             source: categoryDelegate.iconSource
                             fillMode: Image.PreserveAspectFit
                             visible: categoryDelegate.iconSource.length > 0
+
+                            Rectangle {
+                                property var chatService: chatManager.getServiceAtIndex(serviceIndex)
+
+                                width: 14
+                                height: width
+                                x: parent.width - width / 2
+                                y: parent.height - height / 2
+                                border.width: 2
+                                radius: width / 2
+                                border.color: root.color
+                                visible: chatService !== null && chatService.enabled
+
+                                color: {
+                                    if (chatService === null) {
+                                        return "silver"
+                                    }
+
+                                    if (chatService.connectionState !== Global._ConnectedConnectionState) {
+                                        return "red"
+                                    }
+
+                                    if (chatService.warnings.length !== 0) {
+                                        return "orange"
+                                    }
+
+                                    return "lime"
+                                }
+                            }
                         }
 
                         Text {
@@ -242,33 +224,10 @@ Window {
                         return
                     }
 
-                    if (currentItem.category === "common")
+                    if (currentItem.category === "service")
                     {
-                        stackViewCategories.replace("setting_pages/common.qml");
-                    }
-                    else if (currentItem.category === "widgets")
-                    {
-                        stackViewCategories.replace("setting_pages/widgets.qml");
-                    }
-                    else if (currentItem.category === "appearance")
-                    {
-                        stackViewCategories.replace("setting_pages/appearance.qml")
-                    }
-                    else if (currentItem.category === "members")
-                    {
-                        stackViewCategories.replace("setting_pages/authors.qml")
-                    }
-                    else if (currentItem.category === "output_to_files")
-                    {
-                        stackViewCategories.replace("setting_pages/outputtofile.qml");
-                    }
-                    else if (currentItem.category === "chat_commands")
-                    {
-                        stackViewCategories.replace("setting_pages/chatcommands.qml");
-                    }
-                    else if (currentItem.category === "about_software")
-                    {
-                        stackViewCategories.replace("setting_pages/about.qml");
+                        Global.serviceIndex = currentIndex
+                        stackViewCategories.replace("setting_pages/service.qml")
                     }
                 }
             }
@@ -280,7 +239,7 @@ Window {
         x: categories.width
         width: parent.width - x
         height: parent.height
-        initialItem: "setting_pages/common.qml"
+        initialItem: "setting_pages/service.qml"
 
         replaceExit: Transition {
             OpacityAnimator {

@@ -21,7 +21,7 @@ ScrollView {
 
     property var chatService: null
     Component.onCompleted: {
-        chatService = chatManager.getServiceAtIndex(Global.windowSettingsServiceIndex)
+        chatService = chatManager.getServiceAtIndex(Global.serviceIndex)
     }
 
     Column {
@@ -194,7 +194,7 @@ ScrollView {
                 flat: true
                 icon.source: "qrc:/resources/images/help-round-button.svg"
                 onClicked: {
-                    Global.windowSettings.showInfo(qsTr("Enables display of emoji from %1 for the current platform. To display custom emoji for the current platform, log into your Twitch account, which is linked to %1").arg(parent.servicesNames))
+                    Global.windowConnections.showInfo(qsTr("Enables display of emoji from %1 for the current platform. To display custom emoji for the current platform, log into your Twitch account, which is linked to %1").arg(parent.servicesNames))
                 }
             }
         }
