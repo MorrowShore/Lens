@@ -22,6 +22,22 @@ static const int EmoteImageHeight = 40;
 
 static const QColor HighlightedMessageColor = QColor(122, 229, 187);
 
+// https://developer.trovo.live/docs/Chat%20Service.html#_3-5-user-roles
+static const QHash<QString, QString> RolesBadges =
+{
+    { "ace_adventurer",     "https://img.trovo.live/imgupload/application/20220906_x5gzbj3ozr.webp" },
+    { "ace_knight",         "https://img.trovo.live/imgupload/application/20220907_p4jw3wqa6wp.webp" },
+    { "ace_duke",           "https://img.trovo.live/imgupload/application/20221010_ozmkpbxeqds.webp" },
+    { "ace_king",           "https://img.trovo.live/imgupload/application/20220908_e3cnd5u8yyb.gif" },
+    { "ace_emperor",        "https://img.trovo.live/imgupload/application/20220908_unx49rqnum.gif" },
+    { "ace_poseidon",       "https://img.trovo.live/imgupload/application/20230508_z26mb4telqr.gif" },
+
+    { "creator",            "https://static.trovo.live/imgupload/application/20200423_yp9vmkduxdBroadcaster.png" },
+    { "moderator",          "https://static.trovo.live/imgupload/application/20200421_iz479k1142n2x.png" },
+    { "supermod",           "https://img.trovo.live/imgupload/application/20210513_pdfg0v26ef,20210513_pdfg0v26ef.png" },
+    { "editor",             "https://img.trovo.live/imgupload/application/20210531_6sxlsgmgane,20210531_6sxlsgmgane.png" },
+};
+
 static bool checkReply(QNetworkReply *reply, const char *tag, QByteArray& resultData)
 {
     resultData.clear();
@@ -258,6 +274,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
         for (const QJsonValue& v : qAsConst(chats))
         {
             const QJsonObject jsonMessage = v.toObject();
+
             const int type = jsonMessage.value("type").toInt();
             const QJsonValue content = jsonMessage.value("content");
             const QJsonObject contentData = jsonMessage.value("content_data").toObject();
@@ -265,30 +282,64 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             const QString authorName = jsonMessage.value("nick_name").toString().trimmed();
             const QString avatar = jsonMessage.value("avatar").toString().trimmed();
 
+            const QJsonArray medals = jsonMessage.value("medals").toArray();
+
             bool ok = false;
             const int64_t authorIdNum = jsonMessage.value("sender_id").toVariant().toLongLong(&ok);
 
             // https://developer.trovo.live/docs/Chat%20Service.html#_3-4-chat-message-types-and-samples
 
-            QUrl avatarUrl;
+            QString avatarUrl;
             if (!avatar.isEmpty())
             {
                 if (avatar.startsWith("http", Qt::CaseSensitivity::CaseInsensitive))
                 {
-                    avatarUrl = QUrl(avatar);
+                    avatarUrl = avatar;
                 }
                 else
                 {
-                    avatarUrl = QUrl("https://headicon.trovo.live/user/" + avatar);
+                    avatarUrl = "https://headicon.trovo.live/user/" + avatar;
                 }
             }
 
-            std::shared_ptr<Author> author = std::make_shared<Author>(
-                getServiceType(),
-                authorName,
-                generateAuthorId(QString("%1").arg(authorIdNum)),
-                avatarUrl,
-                QUrl("https://trovo.live/s/" + authorName));
+            Author::Builder authorBuilder(getServiceType(), generateAuthorId(QString("%1").arg(authorIdNum)), authorName);
+
+            authorBuilder.setAvatar(avatarUrl);
+            authorBuilder.setPage("https://trovo.live/s/" + authorName);
+
+            for (const QJsonValue& v : qAsConst(medals))
+            {
+                const QString medal = v.toString();
+                if (medal == "follower")
+                {
+                    continue;
+                }
+
+                if (const auto it = RolesBadges.find(medal); it != RolesBadges.end())
+                {
+                    authorBuilder.addLeftBadge(it.value());
+                }
+                else
+                {
+                    //TODO:
+
+                    static const QSet<QString> IgnoreRolesTODO =
+                        {
+                            "spacefanslv0_5",
+                            "spacefanslv6_10",
+                            "spacefanslv11_15",
+                        };
+
+                    if (!IgnoreRolesTODO.contains(medal) &&
+                        !medal.startsWith("CustomRoleMedal", Qt::CaseSensitivity::CaseInsensitive) &&
+                        !medal.startsWith("CustomSubBadge", Qt::CaseSensitivity::CaseInsensitive))
+                    {
+                        qWarning() << "unknown medal" << medal << ", author =" << authorName;
+                    }
+
+                    //authorBuilder.addLeftBadge(UnknownBadge);
+                }
+            }
 
             QDateTime publishedAt;
 
@@ -304,6 +355,8 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             }
 
             const QString messageId = jsonMessage.value("message_id").toString().trimmed();
+
+            auto author = authorBuilder.build();
 
             Message::Builder messageBuilder(author, generateMessageId(messageId));
 
