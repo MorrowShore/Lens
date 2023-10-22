@@ -328,6 +328,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
                             "spacefanslv0_5",
                             "spacefanslv6_10",
                             "spacefanslv11_15",
+                            "spacefanslv16_20",
                         };
 
                     if (!IgnoreRolesTODO.contains(medal) &&
