@@ -65,14 +65,14 @@ private:
     QList<AppSponsor> sponsors;
 };
 
-class AppSponsorManager : public QObject
+class SponsorshipManager : public QObject
 {
     Q_OBJECT
 public:
     AppSponsorModel model;
     QList<AppSupportMethod> methods;
 
-    explicit AppSponsorManager(QNetworkAccessManager& network, QObject *parent = nullptr);
+    explicit SponsorshipManager(QNetworkAccessManager& network, QObject *parent = nullptr);
 
 signals:
 

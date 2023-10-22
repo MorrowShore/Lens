@@ -56,6 +56,7 @@ static QString generateDisposableHash()
 
 BackendManager::BackendManager(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network_, QObject *parent)
     : QObject{parent}
+    , sponsorship(network_)
     , network(network_)
     , instanceHash(settings, settingsGroupPathParent + "/instanceHash", QString(), true)
     , startTime(QDateTime::currentDateTime())

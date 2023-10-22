@@ -1,4 +1,4 @@
-#include "appsponsormanager.h"
+#include "SponsorshipManager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -19,7 +19,7 @@ static const QString SupportMethodsUrl = "https://raw.githubusercontent.com/3dpr
 
 };
 
-AppSponsorManager::AppSponsorManager(QNetworkAccessManager &network_, QObject *parent)
+SponsorshipManager::SponsorshipManager(QNetworkAccessManager &network_, QObject *parent)
     : QObject{parent}
     , network(network_)
 {
@@ -27,7 +27,7 @@ AppSponsorManager::AppSponsorManager(QNetworkAccessManager &network_, QObject *p
     requestSupportMethods();
 }
 
-void AppSponsorManager::requestSponsors()
+void SponsorshipManager::requestSponsors()
 {
     QNetworkReply* reply = network.get(QNetworkRequest(SponsorsUrl));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()
@@ -79,7 +79,7 @@ void AppSponsorManager::requestSponsors()
     });
 }
 
-void AppSponsorManager::requestSupportMethods()
+void SponsorshipManager::requestSupportMethods()
 {
     QNetworkReply* reply = network.get(QNetworkRequest(SupportMethodsUrl));
     connect(reply, &QNetworkReply::finished, this, [this, reply]()

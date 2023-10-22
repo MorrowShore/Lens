@@ -29,7 +29,6 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
     , normalSizeHeightSetting(settings, "normalSizeHeight", 600)
     , web(QCoreApplication::applicationDirPath() + "/CefWebEngine/CefWebEngine.exe")
     , network(network_)
-    , appSponsorManager(network_)
     , backend(backend_)
     , i18n(settings, "i18n", engine())
     , github(settings, "update_checker", network_)
@@ -175,7 +174,7 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
         qml->rootContext()->setContextProperty("clipboard",          &qmlClipboard);
         qml->rootContext()->setContextProperty("qmlUtils",           QmlUtils::instance());
         qml->rootContext()->setContextProperty("messagesModel",      &chatManager.getMessagesModel());
-        qml->rootContext()->setContextProperty("appSponsorsModel",   &appSponsorManager.model);
+        qml->rootContext()->setContextProperty("appSponsorsModel",   &backend.sponsorship.model);
         qml->rootContext()->setContextProperty("commandsEditor",     &commandsEditor);
         qml->rootContext()->setContextProperty("logWindow",          &logWindow);
 

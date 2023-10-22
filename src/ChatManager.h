@@ -5,7 +5,7 @@
 #include "websocket.h"
 #include "tcpserver.h"
 #include "emotesprocessor.h"
-#include "BackendManager.h"
+#include "Backend/BackendManager.h"
 #include "CefWebEngineQt/Manager.h"
 #include <QSettings>
 #include <QMap>

@@ -17,12 +17,12 @@ DEFINES += QT_MESSAGELOGCONTEXT
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    BackendManager.h \
+    Backend/BackendManager.h \
+    Backend/SponsorshipManager.h \
     ChatManager.h \
     Feature.h \
     UIBridge/UIBridge.h \
     UIBridge/UIBridgeElement.h \
-    appsponsormanager.h \
     chat_services/BigoLive.h \
     chat_services/ChatServiceType.h \
     chat_services/NimoTV.h \
@@ -88,12 +88,12 @@ HEADERS += \
     websocket.h
 
 SOURCES += \
-    BackendManager.cpp \
+    Backend/BackendManager.cpp \
+    Backend/SponsorshipManager.cpp \
     ChatManager.cpp \
     Feature.cpp \
     UIBridge/UIBridge.cpp \
     UIBridge/UIBridgeElement.cpp \
-    appsponsormanager.cpp \
     chat_services/BigoLive.cpp \
     chat_services/NimoTV.cpp \
     chat_services/Rutube.cpp \

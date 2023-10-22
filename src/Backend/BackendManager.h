@@ -1,6 +1,7 @@
 #pragma once
 
 #include "setting.h"
+#include "SponsorshipManager.h"
 #include "chat_services/chatservice.h"
 #include <QNetworkAccessManager>
 #include <QElapsedTimer>
@@ -9,6 +10,8 @@ class BackendManager : public QObject
 {
     Q_OBJECT
 public:
+    SponsorshipManager sponsorship;
+
     explicit BackendManager(QSettings& settings, const QString& settingsGroupPathParent, QNetworkAccessManager& network, QObject *parent = nullptr);
 
     static BackendManager* getInstance();

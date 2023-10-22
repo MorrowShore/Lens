@@ -4,9 +4,8 @@
 #include "clipboardqml.h"
 #include "ChatManager.h"
 #include "githubapi.h"
-#include "appsponsormanager.h"
 #include "commandseditor.h"
-#include "BackendManager.h"
+#include "Backend/BackendManager.h"
 #include "log/logdialog.h"
 #include "setting.h"
 #include "UIBridge/UIBridge.h"
@@ -44,7 +43,6 @@ private:
 
     cweqt::Manager web;
     QNetworkAccessManager& network;
-    AppSponsorManager appSponsorManager;
     BackendManager& backend;
     I18n i18n;
     ClipboardQml qmlClipboard;
