@@ -327,8 +327,6 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             }
             else if (type == (int)ChatMessageType::Follow)
             {
-                qDebug() << content;
-
                 if (!showFollow.get())
                 {
                     continue;
