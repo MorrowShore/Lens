@@ -63,7 +63,7 @@ Item {
 
                 if (typeof(root.settingsWindow) == "undefined" || !root.settingsWindow.visible)
                 {
-                   s += "\n\n" + qsTr("Right click on the window to open the settings");
+                   s += "\n\n" + qsTr("Right-click and select \"Connections\"");
                 }
             }
             else

@@ -261,18 +261,18 @@
         <translation>Непрозрачность окна</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="97"/>
-        <location filename="chatwindow.cpp" line="180"/>
+        <location filename="chatwindow.cpp" line="106"/>
+        <location filename="chatwindow.cpp" line="191"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="128"/>
+        <location filename="chatwindow.cpp" line="139"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="106"/>
+        <location filename="chatwindow.cpp" line="117"/>
         <source>Stay on top</source>
         <translation>Поверх всех окон</translation>
     </message>
@@ -293,32 +293,33 @@
         <translation>Запускать свёрнутым в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="117"/>
+        <location filename="chatwindow.cpp" line="128"/>
         <source>Window frame</source>
         <translation>Оконная рамка</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="150"/>
+        <location filename="chatwindow.cpp" line="161"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="166"/>
+        <location filename="chatwindow.cpp" line="97"/>
+        <location filename="chatwindow.cpp" line="177"/>
         <source>Connections</source>
         <translation>Подключения</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="191"/>
+        <location filename="chatwindow.cpp" line="211"/>
         <source>Hide in tray</source>
         <translation>Спрятать в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="247"/>
+        <location filename="chatwindow.cpp" line="267"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="251"/>
+        <location filename="chatwindow.cpp" line="271"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -544,12 +545,12 @@
 <context>
     <name>ConnectionsWindow</name>
     <message>
-        <location filename="ConnectionsWindow.qml" line="14"/>
+        <location filename="ConnectionsWindow.qml" line="12"/>
         <source>Connections</source>
         <translation>Подключения</translation>
     </message>
     <message>
-        <location filename="ConnectionsWindow.qml" line="63"/>
+        <location filename="ConnectionsWindow.qml" line="61"/>
         <source>Ok</source>
         <translation>Ок</translation>
     </message>
@@ -1345,7 +1346,8 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="139"/>
+        <location filename="chatwindow.cpp" line="150"/>
+        <location filename="chatwindow.cpp" line="202"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>
     </message>
@@ -2082,8 +2084,9 @@ It is not recommended to use more than one %1 with the same bot</source>
     </message>
     <message>
         <location filename="WaitAnimationPage.qml" line="66"/>
-        <source>Right click on the window to open the settings</source>
-        <translation>Кликните правой кнопкой мыши по окну, чтобы открыть настройки</translation>
+        <source>Right-click and select &quot;Connections&quot;</source>
+        <oldsource>Right click on the window to open the settings</oldsource>
+        <translation>Кликните правой кнопкой мыши и выберите &quot;Подключения&quot;</translation>
     </message>
     <message>
         <location filename="WaitAnimationPage.qml" line="71"/>
@@ -3058,12 +3061,12 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Новое подключ.</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="165"/>
+        <location filename="settings.qml" line="164"/>
         <source>Widgets</source>
         <translation>Виджеты</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="171"/>
+        <location filename="settings.qml" line="169"/>
         <source>Appearance</source>
         <translation>Оформление</translation>
     </message>
@@ -3077,12 +3080,12 @@ Latest version available: %2</oldsource>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="177"/>
+        <location filename="settings.qml" line="174"/>
         <source>Chat Commands</source>
         <translation>Команды чата</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="183"/>
+        <location filename="settings.qml" line="179"/>
         <source>Output to Files</source>
         <translation>Вывод в файл</translation>
     </message>
@@ -3091,7 +3094,7 @@ Latest version available: %2</oldsource>
         <translation type="vanished">Прочее</translation>
     </message>
     <message>
-        <location filename="settings.qml" line="189"/>
+        <location filename="settings.qml" line="184"/>
         <source>About AxelChat</source>
         <translation>Об AxelChat</translation>
     </message>
