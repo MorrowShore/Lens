@@ -28,7 +28,7 @@ public:
 signals:
 
 public slots:
-    void hideAll();
+    void hideAll(const bool includeTray);
 
 private slots:
     void toogleVisible();

@@ -36,6 +36,20 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    {
+        QFile fileStyle(":/theme/Yami.qss");
+        if (!fileStyle.exists())
+        {
+            qDebug() << "Unable to set stylesheet, file not found";
+        }
+        else
+        {
+            fileStyle.open(QFile::ReadOnly | QFile::Text);
+            QTextStream ts(&fileStyle);
+            qApp->setStyleSheet(ts.readAll());
+        }
+    }
+
     QApplication::setQuitOnLastWindowClosed(false);
 
     if (!Crypto::test())
@@ -56,7 +70,7 @@ int main(int argc, char *argv[])
 
     QtMiscUtils::setBeforeQuitDeferred([&backend, &chatWindow]()
     {
-        chatWindow.hideAll();
+        chatWindow.hideAll(true);
         backend.onBeforeQuit();
     }, 5000);
 

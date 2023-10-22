@@ -218,7 +218,7 @@ bool ChatWindow::event(QEvent *event)
     {
         if (windowState() & Qt::WindowMinimized && hideToTrayOnMinimize.get())
         {
-            QTimer::singleShot(250, this, &ChatWindow::hideAll);
+            QTimer::singleShot(250, this, [this](){ hideAll(false); });
             return true;
         }
     }
@@ -229,7 +229,7 @@ bool ChatWindow::event(QEvent *event)
 
         if (hideToTrayOnClose.get())
         {
-            QTimer::singleShot(250, this, &ChatWindow::hideAll);
+            QTimer::singleShot(250, this, [this](){ hideAll(false); });
             return true;
         }
         else
@@ -245,7 +245,7 @@ void ChatWindow::toogleVisible()
 {
     if (isVisible())
     {
-        hideAll();
+        hideAll(false);
     }
     else
     {
@@ -277,7 +277,7 @@ void ChatWindow::updateWindow()
     setOpacity(windowOpacity.get());
 }
 
-void ChatWindow::hideAll()
+void ChatWindow::hideAll(const bool includeTray)
 {
     const QWindowList windows = QApplication::topLevelWindows();
 
@@ -286,7 +286,10 @@ void ChatWindow::hideAll()
         window->hide();
     }
 
-    tray.hide();
+    if (includeTray)
+    {
+        tray.hide();
+    }
 }
 
 void ChatWindow::saveWindowSize()
