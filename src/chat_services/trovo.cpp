@@ -111,9 +111,18 @@ enum class ChatMessageType {
 Trovo::Trovo(ChatManager& manager, QSettings &settings, const QString &settingsGroupPathParent, QNetworkAccessManager &network_, cweqt::Manager&, QObject *parent)
     : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Trovo, false, parent)
     , network(network_)
+    , showWelcome       (settings, getSettingsGroupPath() + "/showWelcome",         true)
+    , showUnfollow      (settings, getSettingsGroupPath() + "/showUnfollow",        false)
+    , showFollow        (settings, getSettingsGroupPath() + "/showFollow",          true)
+    , showSubscription  (settings, getSettingsGroupPath() + "/showSubscription",    true)
 {
     ui.findBySetting(stream)->setItemProperty("name", tr("Channel"));
     ui.findBySetting(stream)->setItemProperty("placeholderText", tr("Link or channel name..."));
+
+    ui.addSwitch(&showWelcome, tr("Show entrance to space"));
+    ui.addSwitch(&showFollow, tr("Show follow"));
+    ui.addSwitch(&showUnfollow, tr("Show unfollow"));
+    ui.addSwitch(&showSubscription, tr("Show subscription"));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
     {
@@ -305,15 +314,45 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             if (type == (int)ChatMessageType::Normal)
             {
                 //qDebug() << jsonMessage;
-                parseContentAsText(content, messageBuilder, contentData, false, false);
+                parseContentAsText(content, messageBuilder, contentData, false, false, false);
             }
-            else if (
-                type == (int)ChatMessageType::Subscription ||
-                type == (int)ChatMessageType::Follow ||
-                type == (int)ChatMessageType::Welcome
-                )
+            else if (type == (int)ChatMessageType::Subscription)
             {
-                parseContentAsText(content, messageBuilder, contentData, true, true);
+                if (!showSubscription.get())
+                {
+                    continue;
+                }
+
+                parseContentAsText(tr("Just subscribed!"), messageBuilder, contentData, false, true, false);
+            }
+            else if (type == (int)ChatMessageType::Follow)
+            {
+                qDebug() << content;
+
+                if (!showFollow.get())
+                {
+                    continue;
+                }
+
+                parseContentAsText(tr("Just followed!"), messageBuilder, contentData, true, false, false);
+            }
+            else if (type == (int)ChatMessageType::Welcome)
+            {
+                if (!showWelcome.get())
+                {
+                    continue;
+                }
+
+                parseContentAsText(tr("Just entered space!"), messageBuilder, contentData, true, false, false);
+            }
+            else if (type == (int)ChatMessageType::Unfollow)
+            {
+                if (!showUnfollow.get())
+                {
+                    continue;
+                }
+
+                parseContentAsText(tr("Just unfollowed"), messageBuilder, contentData, true, false, false);
             }
             else if (type == (int)ChatMessageType::Todo19)
             {
@@ -333,7 +372,7 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             {
                 parseSpell(content, messageBuilder);
             }
-            else if (type == (int)ChatMessageType::Unfollow || type == (int)ChatMessageType::StreamOnOff)
+            else if (type == (int)ChatMessageType::StreamOnOff)
             {
                 continue;
             }
@@ -343,11 +382,11 @@ void Trovo::onWebSocketReceived(const QString& rawData)
 
                 if (content.isString())
                 {
-                    parseContentAsText(content, messageBuilder, contentData, true, true);
+                    parseContentAsText(content, messageBuilder, contentData, true, false, false);
                 }
                 else
                 {
-                    parseContentAsText("[OBJECT]", messageBuilder, contentData, true, true);
+                    parseContentAsText("[OBJECT]", messageBuilder, contentData, true, false, false);
                 }
             }
 
@@ -603,9 +642,10 @@ void Trovo::requsetSmiles()
     });
 }
 
-void Trovo::parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const QJsonObject& contentData, const bool bold, const bool toUpperFirstChar) const
+void Trovo::parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const QJsonObject& contentData, const bool italic, const bool bold, const bool toUpperFirstChar) const
 {
     Message::TextStyle style;
+    style.italic = italic;
     style.bold = bold;
 
     const QString raw = jsonContent.toString();

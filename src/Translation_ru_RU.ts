@@ -319,7 +319,7 @@
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="271"/>
+        <location filename="chatwindow.cpp" line="272"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -1757,37 +1757,81 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Trovo</name>
     <message>
-        <location filename="chat_services/trovo.cpp" line="115"/>
+        <location filename="chat_services/trovo.cpp" line="119"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="116"/>
+        <location filename="chat_services/trovo.cpp" line="120"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="188"/>
+        <source>Show welcome</source>
+        <translation type="obsolete">Показывать приветствие</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="122"/>
+        <source>Show entrance to space</source>
+        <translation>Показывать вход в пространство</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="123"/>
+        <source>Show follow</source>
+        <translation>Показывать начало отслеживания</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="124"/>
+        <source>Show unfollow</source>
+        <translation>Показывать конец отслеживания</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="125"/>
+        <source>Show subscription</source>
+        <translation>Показывать подписки</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="197"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="191"/>
+        <location filename="chat_services/trovo.cpp" line="200"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="716"/>
+        <location filename="chat_services/trovo.cpp" line="326"/>
+        <source>Just subscribed!</source>
+        <translation>Подписался(ась)!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="337"/>
+        <source>Just followed!</source>
+        <translation>Начал(а) отслеживать!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="346"/>
+        <source>Just entered space!</source>
+        <translation>Вошёл(ла) в пространство!</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="355"/>
+        <source>Just unfollowed</source>
+        <translation>Перестал(а) отслеживать</translation>
+    </message>
+    <message>
+        <location filename="chat_services/trovo.cpp" line="768"/>
         <source>Price: %1</source>
         <translation>Стоимость: %1</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="735"/>
+        <location filename="chat_services/trovo.cpp" line="787"/>
         <source>Elixir</source>
         <translation>Эликсир</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="741"/>
+        <location filename="chat_services/trovo.cpp" line="793"/>
         <source>Mana</source>
         <translation>Мана</translation>
     </message>

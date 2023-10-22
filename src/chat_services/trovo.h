@@ -32,7 +32,7 @@ private:
     void requestChannelInfo();
     void requsetSmiles();
 
-    void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const QJsonObject& contentData, const bool bold, const bool toUpperFirstChar) const;
+    void parseContentAsText(const QJsonValue& jsonContent, Message::Builder& builder, const QJsonObject& contentData, const bool italic, const bool bold, const bool toUpperFirstChar) const;
     void parseTodo19(const QJsonValue& jsonContent, Message::Builder& builder) const;
     void parseSpell(const QJsonValue& jsonContent, Message::Builder& builder) const;
 
@@ -43,6 +43,11 @@ private:
     QNetworkAccessManager& network;
 
     QWebSocket socket;
+
+    Setting<bool> showWelcome;
+    Setting<bool> showUnfollow;
+    Setting<bool> showFollow;
+    Setting<bool> showSubscription;
 
     QString oauthToken;
     QString channelId;
