@@ -36,6 +36,12 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    qApp->setStyleSheet(R"(
+        * {
+            font-size: 14px;
+        }
+    )");
+
     //QtMiscUtils::setAppStyleSheetFromFile(":/qdarkstyle/dark/style.qss");
 
     QApplication::setQuitOnLastWindowClosed(false);
