@@ -160,6 +160,19 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
     }
 
     {
+        contextMenu = new QMenu();
+
+        {
+            QAction* action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), contextMenu);
+            connect(action, &QAction::triggered, this, []()
+            {
+                emit QmlUtils::instance()->triggered("open_settings_window");
+            });
+            contextMenu->addAction(action);
+        }
+    }
+
+    {
         QQmlEngine* qml = engine();
 
         qml->rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
@@ -289,6 +302,26 @@ void ChatWindow::hideAll(const bool includeTray)
     {
         tray.hide();
     }
+}
+
+void ChatWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::MouseButton::RightButton)
+    {
+        event->accept();
+
+        if (!contextMenu)
+        {
+            qCritical() << "context menu is null";
+            return;
+        }
+
+        contextMenu->exec(event->globalPos());
+
+        return;
+    }
+
+    QQuickView::mouseReleaseEvent(event);
 }
 
 void ChatWindow::saveWindowSize()

@@ -29,6 +29,9 @@ signals:
 public slots:
     void hideAll(const bool includeTray);
 
+protected:
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
 private slots:
     void toogleVisible();
     void updateWindow();
@@ -67,4 +70,6 @@ private:
 
     Setting<double> backgroundOpacity;
     Setting<double> windowOpacity;
+
+    QMenu* contextMenu = nullptr;
 };
