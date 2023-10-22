@@ -26,7 +26,7 @@ private slots:
     void ping();
 
 private:
-    static QString getChannelName(const QString& stream);
+    static QString extractChannelName(const QString& stream);
     void requestChannelId();
     void requestChatToken();
     void requestChannelInfo();

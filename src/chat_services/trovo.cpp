@@ -221,7 +221,7 @@ void Trovo::resetImpl()
 
     socket.close();
 
-    state.streamId = getChannelName(stream.get());
+    state.streamId = extractChannelName(stream.get());
 
     state.controlPanelUrl = QUrl("https://studio.trovo.live/stream");
 
@@ -478,28 +478,32 @@ void Trovo::ping()
     }
 }
 
-QString Trovo::getChannelName(const QString &stream)
+QString Trovo::extractChannelName(const QString &stream)
 {
-    QString channelName = stream.toLower().trimmed();
-
-    if (channelName.startsWith("https://trovo.live/s/", Qt::CaseSensitivity::CaseInsensitive))
     {
-        channelName = QtStringUtils::simplifyUrl(channelName);
-        channelName = QtStringUtils::removeFromStart(channelName, "trovo.live/s/", Qt::CaseSensitivity::CaseInsensitive);
-
-        if (channelName.contains("/"))
+        static const QRegExp rx("^[a-zA-Z0-9_\\-]+$", Qt::CaseInsensitive);
+        if (rx.indexIn(stream.toLower().trimmed()) != -1)
         {
-            channelName = channelName.left(channelName.indexOf("/"));
+            return stream.toLower().trimmed();
         }
     }
 
-    QRegExp rx("^[a-zA-Z0-9_\\-]+$", Qt::CaseInsensitive);
-    if (rx.indexIn(channelName) == -1)
+    const QString simpleUrl = QtStringUtils::simplifyUrl(stream.trimmed().toLower());
+
     {
-        return QString();
+        //https://trovo.live/s/*
+
+        static const QRegExp rx("^trovo.live/(?:s|chat)/([^/]*)", Qt::CaseInsensitive);
+        if (rx.indexIn(simpleUrl) != -1)
+        {
+            if (const QString result = rx.cap(1); !result.isEmpty())
+            {
+                return result;
+            }
+        }
     }
 
-    return channelName;
+    return QString();
 }
 
 void Trovo::requestChannelId()
