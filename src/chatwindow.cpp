@@ -199,6 +199,15 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
         contextMenu->addSeparator();
 
         {
+            QAction* action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), contextMenu);
+            connect(action, &QAction::triggered, this, [this]()
+            {
+                chatManager.clearMessages();
+            });
+            contextMenu->addAction(action);
+        }
+
+        {
             QAction* action = new QAction(tr("Hide in tray"), contextMenu);
             connect(action, &QAction::triggered, this, [this]()
             {
