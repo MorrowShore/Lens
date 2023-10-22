@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-    QtMiscUtils::setAppStyleSheetFromFile(":/qdarkstyle/dark/style.qss");
+    //QtMiscUtils::setAppStyleSheetFromFile(":/qdarkstyle/dark/style.qss");
 
     QApplication::setQuitOnLastWindowClosed(false);
 
