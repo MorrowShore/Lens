@@ -163,10 +163,35 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
         contextMenu = new QMenu();
 
         {
+            QAction* action = new QAction(QIcon(":/resources/images/link.svg"), tr("Connections"), contextMenu);
+
+            QFont font = action->font();
+            font.setBold(true);
+            action->setFont(font);
+
+            connect(action, &QAction::triggered, this, []()
+            {
+                emit QmlUtils::instance()->triggered("open_connections_window");
+            });
+            contextMenu->addAction(action);
+        }
+
+        {
             QAction* action = new QAction(QIcon(":/resources/images/applications-system.png"), tr("Settings"), contextMenu);
             connect(action, &QAction::triggered, this, []()
             {
                 emit QmlUtils::instance()->triggered("open_settings_window");
+            });
+            contextMenu->addAction(action);
+        }
+
+        contextMenu->addSeparator();
+
+        {
+            QAction* action = new QAction(tr("Hide in tray"), contextMenu);
+            connect(action, &QAction::triggered, this, [this]()
+            {
+                toogleVisible();
             });
             contextMenu->addAction(action);
         }

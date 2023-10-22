@@ -15,9 +15,8 @@
 <context>
     <name>AppSponsorManager</name>
     <message>
-        <location filename="appsponsormanager.cpp" line="67"/>
         <source>Donator</source>
-        <translation>Донатер</translation>
+        <translation type="vanished">Донатер</translation>
     </message>
 </context>
 <context>
@@ -43,12 +42,12 @@
 <context>
     <name>ChatBot</name>
     <message>
-        <location filename="chatbot.cpp" line="262"/>
+        <location filename="chatbot.cpp" line="264"/>
         <source>Custom commands</source>
         <translation>Пользовательские команды</translation>
     </message>
     <message>
-        <location filename="chatbot.cpp" line="269"/>
+        <location filename="chatbot.cpp" line="271"/>
         <source>Built-in commands</source>
         <translation>Встроенные команды</translation>
     </message>
@@ -252,63 +251,74 @@
         <translation type="vanished">Спрятать в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="59"/>
+        <location filename="chatwindow.cpp" line="58"/>
         <source>Background opacity</source>
         <translation>Непрозрачность фона</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="60"/>
+        <location filename="chatwindow.cpp" line="59"/>
         <source>Window opacity</source>
         <translation>Непрозрачность окна</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="98"/>
+        <location filename="chatwindow.cpp" line="97"/>
+        <location filename="chatwindow.cpp" line="180"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="129"/>
+        <location filename="chatwindow.cpp" line="128"/>
         <source>Ignore Mouse</source>
         <translation>Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="107"/>
+        <location filename="chatwindow.cpp" line="106"/>
         <source>Stay on top</source>
         <translation>Поверх всех окон</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="54"/>
+        <location filename="chatwindow.cpp" line="53"/>
         <source>Hide to tray when minimized</source>
         <oldsource>Hide to tray on minimize</oldsource>
         <translation>Скрыть в трей при сворачивании</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="55"/>
+        <location filename="chatwindow.cpp" line="54"/>
         <source>Hide to tray on close</source>
         <translation>Скрыть в трей при закрытии</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="57"/>
+        <location filename="chatwindow.cpp" line="56"/>
         <source>Run minimized to tray</source>
         <translation>Запускать свёрнутым в трей</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="118"/>
+        <location filename="chatwindow.cpp" line="117"/>
         <source>Window frame</source>
         <translation>Оконная рамка</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="151"/>
+        <location filename="chatwindow.cpp" line="150"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="210"/>
+        <location filename="chatwindow.cpp" line="166"/>
+        <source>Connections</source>
+        <translation>Подключения</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="191"/>
+        <source>Hide in tray</source>
+        <translation>Спрятать в трей</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="247"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="214"/>
+        <location filename="chatwindow.cpp" line="251"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
@@ -1322,7 +1332,7 @@ to these chats/channels in access rights (at your own risk)</oldsource>
         <translation type="vanished">Игнорировать мышь</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="140"/>
+        <location filename="chatwindow.cpp" line="139"/>
         <source>Clear Messages</source>
         <translation>Очистить сообщения</translation>
     </message>
@@ -1433,6 +1443,14 @@ to these chats/channels in access rights (at your own risk)</oldsource>
     <message>
         <source>Reset</source>
         <translation type="vanished">Сбросить</translation>
+    </message>
+</context>
+<context>
+    <name>SponsorshipManager</name>
+    <message>
+        <location filename="Backend/SponsorshipManager.cpp" line="67"/>
+        <source>Donator</source>
+        <translation>Донатер</translation>
     </message>
 </context>
 <context>
@@ -1724,37 +1742,37 @@ It is not recommended to use more than one %1 with the same bot</source>
 <context>
     <name>Trovo</name>
     <message>
-        <location filename="chat_services/trovo.cpp" line="109"/>
+        <location filename="chat_services/trovo.cpp" line="115"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="110"/>
+        <location filename="chat_services/trovo.cpp" line="116"/>
         <source>Link or channel name...</source>
         <translation>Ссылка или имя канала...</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="182"/>
+        <location filename="chat_services/trovo.cpp" line="188"/>
         <source>Channel not specified</source>
         <translation>Канал не указан</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="185"/>
+        <location filename="chat_services/trovo.cpp" line="191"/>
         <source>Not connected</source>
         <translation>Не подключено</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="699"/>
+        <location filename="chat_services/trovo.cpp" line="716"/>
         <source>Price: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Стоимость: %1</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="718"/>
+        <location filename="chat_services/trovo.cpp" line="735"/>
         <source>Elixir</source>
         <translation>Эликсир</translation>
     </message>
     <message>
-        <location filename="chat_services/trovo.cpp" line="724"/>
+        <location filename="chat_services/trovo.cpp" line="741"/>
         <source>Mana</source>
         <translation>Мана</translation>
     </message>
