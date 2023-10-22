@@ -45,7 +45,6 @@ private:
     QWebSocket socket;
 
     Setting<bool> showWelcome;
-    Setting<bool> showUnfollow;
     Setting<bool> showFollow;
     Setting<bool> showSubscription;
 

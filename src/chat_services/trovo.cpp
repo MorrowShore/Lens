@@ -112,7 +112,6 @@ Trovo::Trovo(ChatManager& manager, QSettings &settings, const QString &settingsG
     : ChatService(manager, settings, settingsGroupPathParent, ChatServiceType::Trovo, false, parent)
     , network(network_)
     , showWelcome       (settings, getSettingsGroupPath() + "/showWelcome",         true)
-    , showUnfollow      (settings, getSettingsGroupPath() + "/showUnfollow",        false)
     , showFollow        (settings, getSettingsGroupPath() + "/showFollow",          true)
     , showSubscription  (settings, getSettingsGroupPath() + "/showSubscription",    true)
 {
@@ -121,7 +120,6 @@ Trovo::Trovo(ChatManager& manager, QSettings &settings, const QString &settingsG
 
     ui.addSwitch(&showWelcome, tr("Show entrance to space"));
     ui.addSwitch(&showFollow, tr("Show follow"));
-    ui.addSwitch(&showUnfollow, tr("Show unfollow"));
     ui.addSwitch(&showSubscription, tr("Show subscription"));
 
     QObject::connect(&socket, &QWebSocket::stateChanged, this, [](QAbstractSocket::SocketState state)
@@ -345,12 +343,8 @@ void Trovo::onWebSocketReceived(const QString& rawData)
             }
             else if (type == (int)ChatMessageType::Unfollow)
             {
-                if (!showUnfollow.get())
-                {
-                    continue;
-                }
-
-                parseContentAsText(tr("Just unfollowed"), messageBuilder, contentData, true, false, false);
+                //TODO
+                continue;
             }
             else if (type == (int)ChatMessageType::Todo19)
             {
