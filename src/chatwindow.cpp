@@ -147,7 +147,7 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
         }
 
         {
-            QAction* action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
+            QAction* action = new QAction(QIcon(":/resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), menu);
             connect(action, &QAction::triggered, this, [this]()
             {
                 chatManager.clearMessages();
@@ -199,7 +199,7 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
         contextMenu->addSeparator();
 
         {
-            QAction* action = new QAction(QIcon("://resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), contextMenu);
+            QAction* action = new QAction(QIcon(":/resources/images/ic-trash.png"), QTranslator::tr("Clear Messages"), contextMenu);
             connect(action, &QAction::triggered, this, [this]()
             {
                 chatManager.clearMessages();
@@ -208,7 +208,7 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
         }
 
         {
-            QAction* action = new QAction(tr("Hide in tray"), contextMenu);
+            QAction* action = new QAction(QIcon(":/resources/images/hide.svg"), tr("Hide in tray"), contextMenu);
             connect(action, &QAction::triggered, this, [this]()
             {
                 toogleVisible();
@@ -265,10 +265,12 @@ bool ChatWindow::event(QEvent *event)
     if (isVisible())
     {
         actionHideToTray->setText(tr("Hide"));
+        actionHideToTray->setIcon(QIcon(":/resources/images/hide.svg"));
     }
     else
     {
         actionHideToTray->setText(tr("Show"));
+        actionHideToTray->setIcon(QIcon(":/resources/images/show.svg"));
     }
 
     if (event->type() == QEvent::WindowStateChange)

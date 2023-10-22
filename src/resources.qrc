@@ -110,5 +110,7 @@
         <file>resources/images/bigolive-icon.svg</file>
         <file>resources/images/rutube-icon.svg</file>
         <file>resources/images/link.svg</file>
+        <file>resources/images/hide.svg</file>
+        <file>resources/images/show.svg</file>
     </qresource>
 </RCC>

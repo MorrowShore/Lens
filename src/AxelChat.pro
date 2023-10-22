@@ -149,7 +149,6 @@ SOURCES += \
     websocket.cpp
 
 RESOURCES += qml.qrc \
-    qdarkstyle/theme/style.qrc \
     resources.qrc
 
 contains(QT_ARCH, i386)|contains(QT_ARCH, x86_64) {
