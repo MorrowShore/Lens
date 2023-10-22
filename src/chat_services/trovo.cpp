@@ -454,7 +454,6 @@ void Trovo::requestChannelId()
         channelId = channelId_;
 
         requsetSmiles();
-        requestChatToken();
     });
 }
 
@@ -532,30 +531,41 @@ void Trovo::requsetSmiles()
     QNetworkReply* reply = network.post(request, QJsonDocument(object).toJson());
     QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]()
     {
+        requestChatToken();
+
         QByteArray data;
         if (!checkReply(reply, Q_FUNC_INFO, data))
         {
             return;
         }
 
-        const QJsonObject channels = QJsonDocument::fromJson(data).object().value("channels").toObject();
+        const QJsonObject root = QJsonDocument::fromJson(data).object();
 
-        const QJsonArray channelsArray = channels.value("customizedEmotes").toObject().value("channel").toArray();
-        if (!channelsArray.isEmpty())
+        const QJsonObject channels = root.value("channels").toObject();
+
         {
-            const QJsonArray emotes = channelsArray.first().toObject().value("emotes").toArray();
-            for (const QJsonValue& v : qAsConst(emotes))
+            const QJsonArray jsonChannels = channels.value("customizedEmotes").toObject().value("channel").toArray();
+            for (const QJsonValue& v : qAsConst(jsonChannels))
             {
-                const QJsonObject emote = v.toObject();
-                const QString name = emote.value("name").toString();
-                const QUrl url(emote.value("url").toString());
+                const QJsonObject jsonChannel = v.toObject();
 
-                if (name.isEmpty() || url.isEmpty())
+                const QJsonArray jsonEmotes = jsonChannel.value("emotes").toArray();
+
+                for (const QJsonValue& v : qAsConst(jsonEmotes))
                 {
-                    continue;
-                }
+                    const QJsonObject jsonEmote = v.toObject();
 
-                smiles.insert(name, url);
+                    const QString name = jsonEmote.value("name").toString();
+                    const QUrl url(jsonEmote.value("url").toString());
+
+                    if (name.isEmpty() || url.isEmpty())
+                    {
+                        qWarning() << "name or url is empty, name =" << name << ", url =" << url;
+                        continue;
+                    }
+
+                    smiles.insert(name, url);
+                }
             }
         }
 
@@ -568,6 +578,7 @@ void Trovo::requsetSmiles()
 
             if (name.isEmpty() || url.isEmpty())
             {
+                qWarning() << "name or url is empty, name =" << name << ", url =" << url;
                 continue;
             }
 
@@ -583,6 +594,7 @@ void Trovo::requsetSmiles()
 
             if (name.isEmpty() || url.isEmpty())
             {
+                qWarning() << "name or url is empty, name =" << name << ", url =" << url;
                 continue;
             }
 
