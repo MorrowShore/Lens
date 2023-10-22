@@ -492,6 +492,7 @@ QString Trovo::extractChannelName(const QString &stream)
 
     {
         //https://trovo.live/s/*
+        //https://trovo.live/chat/*
 
         static const QRegExp rx("^trovo.live/(?:s|chat)/([^/]*)", Qt::CaseInsensitive);
         if (rx.indexIn(simpleUrl) != -1)

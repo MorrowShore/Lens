@@ -42,7 +42,7 @@ ChatWindow::ChatWindow(QNetworkAccessManager& network_, BackendManager& backend_
     , transparentForInput(settings, "transparentForInput", false)
     , stayOnTop(settings, "stayOnTop", false)
     , windowFrame(settings, "windowFrame", true)
-    , backgroundOpacity(settings, "backgroundOpacity", 0.4)
+    , backgroundOpacity(settings, "backgroundOpacity", 1.0)
     , windowOpacity(settings, "windowOpacity", 1.0)
 {
     transparentForInput.setCallbackValueChanged([this](bool)
