@@ -36,19 +36,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-    {
-        QFile fileStyle(":/theme/Yami.qss");
-        if (!fileStyle.exists())
-        {
-            qDebug() << "Unable to set stylesheet, file not found";
-        }
-        else
-        {
-            fileStyle.open(QFile::ReadOnly | QFile::Text);
-            QTextStream ts(&fileStyle);
-            qApp->setStyleSheet(ts.readAll());
-        }
-    }
+    QtMiscUtils::setAppStyleSheetFromFile(":/qdarkstyle/dark/style.qss");
 
     QApplication::setQuitOnLastWindowClosed(false);
 

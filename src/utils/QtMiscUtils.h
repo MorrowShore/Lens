@@ -12,6 +12,7 @@ public:
 
     static void setBeforeQuitDeferred(std::function<void()> callback, const int timeBeforeQuitDeferred);
     static void quitDeferred();
+    static bool setAppStyleSheetFromFile(const QString& fileName);
 
 private:
     QtMiscUtils(){}

@@ -1,5 +1,6 @@
 #include "QtMiscUtils.h"
-#include <QCoreApplication>
+#include <QApplication>
+#include <QFile>
 #include <QTimer>
 #include <QDebug>
 
@@ -44,4 +45,19 @@ void QtMiscUtils::quitDeferred()
     }
 
     QTimer::singleShot(timeBeforeQuitDeferred, &QCoreApplication::quit);
+}
+
+bool QtMiscUtils::setAppStyleSheetFromFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        qCritical() << "failed to open file" << fileName << ", error:" << file.errorString();
+        return false;
+    }
+
+    QTextStream ts(&file);
+    qApp->setStyleSheet(ts.readAll());
+
+    return true;
 }
