@@ -37,7 +37,7 @@ public:
     void addAction(BotAction* action);
     void rewriteAction(int index, BotAction* action);
     void deleteAction(int index);
-    void executeAction(int index);
+    bool executeAction(int index);
     Q_INVOKABLE QString commandsText() const;
 
 signals:
@@ -48,7 +48,7 @@ signals:
 public slots:
     void setVolume(int volume);
     void processMessage(const std::shared_ptr<Message>& message);
-    void execute(BotAction& action);
+    bool execute(BotAction& action);
 
 private:
     bool canExecute(BotAction& action, const Message &message);

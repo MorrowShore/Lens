@@ -1,9 +1,11 @@
 #include "chatbot.h"
 #include "models/message.h"
+#include "utils/QtStringUtils.h"
 #include <QSoundEffect>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QMediaContent>
+#include <QFileInfo>
 
 ChatBot::ChatBot(BackendManager& backend, QSettings& settings_, const QString& settingsGroup, QObject *parent)
     : Feature(backend, "ChatBot", parent)
@@ -112,21 +114,21 @@ void ChatBot::deleteAction(int index)
     saveCommands();
 }
 
-void ChatBot::executeAction(int index)
+bool ChatBot::executeAction(int index)
 {
     if (index < 0)
     {
         qDebug() << "index < 0";
-        return;
+        return false;
     }
 
     if (index >= _actions.count())
     {
         qDebug() << "index >= _actions.count()";
-        return;
+        return false;
     }
 
-    execute(*_actions[index]);
+    return execute(*_actions[index]);
 }
 
 void ChatBot::setVolume(int volume)
@@ -159,10 +161,9 @@ void ChatBot::processMessage(const std::shared_ptr<Message>& message)
 
     for (BotAction* action : qAsConst(_actions))
     {
-        if (canExecute(*action, *message))
+        if (canExecute(*action, *message) && execute(*action))
         {
             message->setFlag(Message::Flag::BotCommand, true);
-            execute(*action);
         }
     }
 
@@ -170,10 +171,9 @@ void ChatBot::processMessage(const std::shared_ptr<Message>& message)
     {
         for (BotAction* action : qAsConst(_builtInActions))
         {
-            if (canExecute(*action, *message))
+            if (canExecute(*action, *message) && execute(*action))
             {
                 message->setFlag(Message::Flag::BotCommand, true);
-                execute(*action);
             }
         }
     }
@@ -208,12 +208,12 @@ bool ChatBot::canExecute(BotAction& action, const Message &message)
     return false;
 }
 
-void ChatBot::execute(BotAction &action)
+bool ChatBot::execute(BotAction &action)
 {
     if (!action._active)
     {
         qDebug() << "The period of inactivity has not yet passed";
-        return;
+        return false;
     }
 
     switch (action._type)
@@ -253,6 +253,8 @@ void ChatBot::execute(BotAction &action)
             action._inactivityTimer.start(BotAction::DEFAULT_INACTIVITY_TIME * 1000);
         }
     }
+
+    return true;
 }
 
 QString ChatBot::commandsText() const
@@ -347,38 +349,25 @@ void ChatBot::initBuiltinCommands()
     _builtInActions.append(BotAction::createSoundPlay({"!lockAndLoad"},         QUrl(FilePrefix + "chc_lock_and_load.wav")));
     _builtInActions.append(BotAction::createSoundPlay({"!cj"},                  QUrl(FilePrefix + "cj.wav")));
     _builtInActions.append(BotAction::createSoundPlay({"!crickets"},            QUrl(FilePrefix + "crickets.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!dejavu"},              QUrl(FilePrefix + "deja-vu.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!doIt"},                QUrl(FilePrefix + "do_it.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!dramatic"},            QUrl(FilePrefix + "dramatic.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!dramatic2"},           QUrl(FilePrefix + "dramatic2.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!error"},               QUrl(FilePrefix + "error_xp.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!eurobeat"},            QUrl(FilePrefix + "eurobeat.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!final"},               QUrl(FilePrefix + "final.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!gandalf", "!gendalf"}, QUrl(FilePrefix + "gandalf_shallnotpass.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!gas", "!gaz"},         QUrl(FilePrefix + "gas.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!gg"},                  QUrl(FilePrefix + "gg.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!gigaChad"},            QUrl(FilePrefix + "giga-chad-music.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!missionCompleted"},    QUrl(FilePrefix + "gta-sa-done.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!quack"},               QUrl(FilePrefix + "mac-quack.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!toasty"},              QUrl(FilePrefix + "mk-toasty.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!nooo"},                QUrl(FilePrefix + "nooo.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!omaewamou"},           QUrl(FilePrefix + "omaewamou.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!omaewamou2"},          QUrl(FilePrefix + "omaewamou2.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!phub"},                QUrl(FilePrefix + "phub-x-see-you-again.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!run"},                 QUrl(FilePrefix + "run.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!fail"},                QUrl(FilePrefix + "sad_trombone.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!sad"},                 QUrl(FilePrefix + "sadaffleck.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!sad2"},                QUrl(FilePrefix + "sad-violin.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!saxophone"},           QUrl(FilePrefix + "saxophone.mp3")));
+    _builtInActions.append(BotAction::createSoundPlay({"!sad"},                 QUrl(FilePrefix + "sad-violin.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!surprise"},            QUrl(FilePrefix + "surprise-mf.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!suspense"},            QUrl(FilePrefix + "suspense.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!toBeContinued"},       QUrl(FilePrefix + "to_be_continued.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!tobyfox"},             QUrl(FilePrefix + "tobyfox.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!tralala"},             QUrl(FilePrefix + "tralala.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!tuturu"},              QUrl(FilePrefix + "tuturu.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!uwu"},                 QUrl(FilePrefix + "uwu.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!wow"},                 QUrl(FilePrefix + "wow.mp3")));
-    _builtInActions.append(BotAction::createSoundPlay({"!xFiles"},              QUrl(FilePrefix + "x-files.mp3")));
     _builtInActions.append(BotAction::createSoundPlay({"!yeay"},                QUrl(FilePrefix + "yeay-childrens.mp3")));
 }
 

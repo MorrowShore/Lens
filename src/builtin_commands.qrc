@@ -7,38 +7,26 @@
         <file>resources/sound/commands/cj.wav</file>
         <file>resources/sound/commands/crickets.mp3</file>
         <file>resources/sound/commands/deja-vu.mp3</file>
-        <file>resources/sound/commands/do_it.mp3</file>
         <file>resources/sound/commands/dramatic.mp3</file>
-        <file>resources/sound/commands/eurobeat.mp3</file>
-        <file>resources/sound/commands/final.mp3</file>
         <file>resources/sound/commands/gandalf_shallnotpass.mp3</file>
-        <file>resources/sound/commands/gas.mp3</file>
         <file>resources/sound/commands/gg.mp3</file>
         <file>resources/sound/commands/gta-sa-done.mp3</file>
         <file>resources/sound/commands/mk-toasty.mp3</file>
         <file>resources/sound/commands/nooo.mp3</file>
         <file>resources/sound/commands/omaewamou.mp3</file>
-        <file>resources/sound/commands/omaewamou2.mp3</file>
-        <file>resources/sound/commands/run.mp3</file>
         <file>resources/sound/commands/sad_trombone.mp3</file>
-        <file>resources/sound/commands/sadaffleck.mp3</file>
         <file>resources/sound/commands/sad-violin.mp3</file>
-        <file>resources/sound/commands/saxophone.mp3</file>
-        <file>resources/sound/commands/to_be_continued.mp3</file>
         <file>resources/sound/commands/tuturu.mp3</file>
         <file>resources/sound/commands/wow.mp3</file>
-        <file>resources/sound/commands/x-files.mp3</file>
         <file>resources/sound/commands/aww.mp3</file>
         <file>resources/sound/commands/dramatic2.mp3</file>
         <file>resources/sound/commands/error_xp.mp3</file>
-        <file>resources/sound/commands/giga-chad-music.mp3</file>
         <file>resources/sound/commands/mac-quack.mp3</file>
-        <file>resources/sound/commands/phub-x-see-you-again.mp3</file>
         <file>resources/sound/commands/surprise-mf.mp3</file>
         <file>resources/sound/commands/tobyfox.mp3</file>
-        <file>resources/sound/commands/tralala.mp3</file>
         <file>resources/sound/commands/uwu.mp3</file>
         <file>resources/sound/commands/yeay-childrens.mp3</file>
         <file>resources/sound/commands/suspense.mp3</file>
+        <file>resources/sound/commands/do_it.mp3</file>
     </qresource>
 </RCC>
