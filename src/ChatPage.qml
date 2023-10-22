@@ -483,8 +483,8 @@ Item {
                 wrapMode: Text.Wrap
                 textFormat: TextEdit.RichText
                 text: messageHtml
-                font.weight: messageIsBotCommand ? Font.Black : Font.DemiBold
-                font.italic: messageMarkedAsDeleted || messageIsTwitchAction
+                //font.weight: messageIsBotCommand ? Font.Black : Font.DemiBold
+                font.italic: messageMarkedAsDeleted || messageIsTwitchAction || messageIsBotCommand
                 selectByMouse: true
                 selectByKeyboard: true
                 readOnly: true
@@ -537,15 +537,8 @@ Item {
                         }
                         else
                         {
-                            if (messageIsBotCommand)
-                            {
-                                return "yellow";
-                            }
-                            else
-                            {
-                                //Normal message
-                                return "white";
-                            }
+                            //Normal message
+                            return "white";
                         }
                     }
 
